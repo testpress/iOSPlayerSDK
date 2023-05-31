@@ -9,7 +9,7 @@ import SwiftUI
 import AVKit
 
 public struct TPStreamPlayer: View {
-    @State var player = TPAVPlayer(accessToken: "553157af-6754-4061-a089-8f6e44c7476f")
+    @State var player = TPAVPlayer(accessToken: "5f3ded52-ace8-487e-809c-10de895872d6")
 //    @State var player = AVPlayer(url: URL(string:"https://s3.eu-central-1.wasabisys.com/sampletestvideos/bigbuckbunny/bbb_sunflower_1080p_60fps_normal.mp4")!)
 
     @State var isPlaying: Bool = false
@@ -19,7 +19,7 @@ public struct TPStreamPlayer: View {
 
     public var body: some View {
         VStack {
-            VideoPlayer(player: player)
+            TPVideoPlayer(player: player)
                 .frame(width: 320, height: 180, alignment: .center)
             Button {
                 isPlaying ? player.pause() : player.play()

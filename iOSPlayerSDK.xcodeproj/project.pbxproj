@@ -18,6 +18,7 @@
 		8E6389DF2A2751C800306FA4 /* TPAVPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389DE2A2751C800306FA4 /* TPAVPlayer.swift */; };
 		8E6389E22A275AA800306FA4 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389E12A275AA800306FA4 /* API.swift */; };
 		8E6389E52A275B2A00306FA4 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 8E6389E42A275B2A00306FA4 /* Alamofire */; };
+		8E6389E92A278D1D00306FA4 /* ContentKeyDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389E82A278D1D00306FA4 /* ContentKeyDelegate.swift */; };
 		8EDE99AF2A2643B000E43EA9 /* iOSPlayerSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* iOSPlayerSDK.framework */; };
 		8EDE99B42A2643B000E43EA9 /* iOSPlayerSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */; };
 		8EDE99B52A2643B000E43EA9 /* iOSPlayerSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 8EDE99A72A2643B000E43EA9 /* iOSPlayerSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -64,6 +65,7 @@
 		8E6389DC2A27338F00306FA4 /* TPVideoPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPVideoPlayer.swift; sourceTree = "<group>"; };
 		8E6389DE2A2751C800306FA4 /* TPAVPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPAVPlayer.swift; sourceTree = "<group>"; };
 		8E6389E12A275AA800306FA4 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		8E6389E82A278D1D00306FA4 /* ContentKeyDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentKeyDelegate.swift; sourceTree = "<group>"; };
 		8EDE99A42A2643B000E43EA9 /* iOSPlayerSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = iOSPlayerSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EDE99A72A2643B000E43EA9 /* iOSPlayerSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = iOSPlayerSDK.h; sourceTree = "<group>"; };
 		8EDE99AE2A2643B000E43EA9 /* iOSPlayerSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSPlayerSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -149,6 +151,14 @@
 			path = Network;
 			sourceTree = "<group>";
 		};
+		8E6389E72A278D0400306FA4 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				8E6389E82A278D1D00306FA4 /* ContentKeyDelegate.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
 		8EDE999A2A2643B000E43EA9 = {
 			isa = PBXGroup;
 			children = (
@@ -173,6 +183,7 @@
 		8EDE99A62A2643B000E43EA9 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				8E6389E72A278D0400306FA4 /* Managers */,
 				8E6389E02A275A2700306FA4 /* Network */,
 				8E6389BA2A2724BB00306FA4 /* Models */,
 				8E6389B92A2724AA00306FA4 /* Views */,
@@ -346,6 +357,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8E6389E92A278D1D00306FA4 /* ContentKeyDelegate.swift in Sources */,
 				8E6389DD2A27338F00306FA4 /* TPVideoPlayer.swift in Sources */,
 				8E6389BC2A2724D000306FA4 /* TPStreamPlayer.swift in Sources */,
 				8E6389E22A275AA800306FA4 /* API.swift in Sources */,

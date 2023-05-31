@@ -15,7 +15,10 @@ class TPAVPlayer: AVPlayer {
     init(accessToken: String) {
         self.accessToken = accessToken
         super.init()
-        API.getPlaybackURL(accessToken: accessToken, completion: self.APIResponse)
+        API.getPlaybackURL(accessToken: accessToken) {[weak self] asset, error in
+            guard let self = self else { return }
+            self.APIResponse(asset, error)
+        }
     }
     
     override init() {
@@ -30,13 +33,24 @@ class TPAVPlayer: AVPlayer {
         super.init(playerItem: item)
     }
     
-    func APIResponse(asset: API.Asset?, error: Error?) {
+    func APIResponse(_ asset: API.Asset?, _ error: Error?) {
         if let asset = asset {
             let url = URL(string: asset.video.playbackURL)
-            let playerItem = AVPlayerItem(url: url!)
+            let avURLAsset = AVURLAsset(url: url!)
+            if (asset.video.isProtected) {
+                registerForEncryptedVideo(avURLAsset)
+            }
+            let playerItem = AVPlayerItem(asset: avURLAsset)
             self.replaceCurrentItem(with: playerItem)
         } else if let error = error {
             debugPrint(error.localizedDescription)
         }
+    }
+    
+    func registerForEncryptedVideo(_ asset: AVURLAsset) {
+        let contentKeySession = AVContentKeySession(keySystem: AVContentKeySystem.fairPlayStreaming)
+        let contentKeyDelegateQueue = DispatchQueue(label: "com.tpstreams.iOSPlayerSDK.ContentKeyDelegateQueue")
+        contentKeySession.setDelegate(ContentKeyDelegate(), queue: contentKeyDelegateQueue)
+        contentKeySession.addContentKeyRecipient(asset)
     }
 }
