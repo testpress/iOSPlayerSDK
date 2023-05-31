@@ -22,7 +22,7 @@ class TPVideoPlayerUIView: UIView {
 
 
 struct TPVideoPlayer: UIViewRepresentable {
-    var player: AVPlayer
+    var player: TPAVPlayer
 
     func makeUIView(context: Context) -> TPVideoPlayerUIView {
         let videoPlaybackView = TPVideoPlayerUIView()
