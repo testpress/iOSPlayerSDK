@@ -37,9 +37,8 @@ class TPAVPlayer: AVPlayer {
         if let asset = asset {
             let url = URL(string: asset.video.playbackURL)
             let avURLAsset = AVURLAsset(url: url!)
-            if (asset.video.isProtected) {
-                registerForEncryptedVideo(avURLAsset)
-            }
+            ContentKeyManager.shared.contentKeySession.addContentKeyRecipient(avURLAsset)
+            self.activateAudioSession()
             let playerItem = AVPlayerItem(asset: avURLAsset)
             self.replaceCurrentItem(with: playerItem)
         } else if let error = error {
@@ -47,10 +46,12 @@ class TPAVPlayer: AVPlayer {
         }
     }
     
-    func registerForEncryptedVideo(_ asset: AVURLAsset) {
-        let contentKeySession = AVContentKeySession(keySystem: AVContentKeySystem.fairPlayStreaming)
-        let contentKeyDelegateQueue = DispatchQueue(label: "com.tpstreams.iOSPlayerSDK.ContentKeyDelegateQueue")
-        contentKeySession.setDelegate(ContentKeyDelegate(), queue: contentKeyDelegateQueue)
-        contentKeySession.addContentKeyRecipient(asset)
+    func activateAudioSession() {
+        let audioSession = AVAudioSession.sharedInstance()
+        do {
+            try audioSession.setCategory(AVAudioSession.Category.playback)
+        } catch {
+            debugPrint("Setting category to AVAudioSessionCategoryPlayback failed.")
+        }
     }
 }
