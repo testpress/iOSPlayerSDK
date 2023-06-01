@@ -12,7 +12,7 @@ import AVKit
 public class TPAVPlayer: AVPlayer {
     var accessToken: String?
     
-    init(accessToken: String) {
+    public init(accessToken: String) {
         guard TPStreamsSDK.orgCode != nil else {
             fatalError("You must call TPStreamsSDK.initialize")
         }

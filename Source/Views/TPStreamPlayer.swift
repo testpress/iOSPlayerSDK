@@ -9,9 +9,10 @@ import SwiftUI
 import AVKit
 
 public struct TPStreamPlayer: View {
-    @State var player = TPAVPlayer(accessToken: "5f3ded52-ace8-487e-809c-10de895872d6")
+    var player: TPAVPlayer
     
-    public init() {
+    public init(player: TPAVPlayer) {
+        self.player = player
     }
 
     public var body: some View {
@@ -21,11 +22,5 @@ public struct TPStreamPlayer: View {
                     player.play()
                 }
         }.background(Color.black)
-    }
-}
-
-struct TPStreamPlayer_Previews: PreviewProvider {
-    static var previews: some View {
-        TPStreamPlayer()
     }
 }

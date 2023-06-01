@@ -11,7 +11,8 @@ import TPStreamsSDK
 struct ContentView: View {
     var body: some View {
         VStack {
-            TPStreamPlayer()
+            var player = TPAVPlayer(accessToken: "5f3ded52-ace8-487e-809c-10de895872d6")
+            TPStreamPlayer(player: player)
                 .frame(height: 240)
             Spacer()
         }
