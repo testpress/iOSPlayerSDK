@@ -9,10 +9,17 @@ import Foundation
 import AVKit
 
 
-class TPAVPlayer: AVPlayer {
+public class TPAVPlayer: AVPlayer {
     var accessToken: String?
     
     init(accessToken: String) {
+        guard TPStreamsSDK.orgCode != nil else {
+            fatalError("You must call TPStreamsSDK.initialize")
+        }
+        
+        if (accessToken.isEmpty) {
+            fatalError("AccessToken cannot be empty")
+        }
         self.accessToken = accessToken
         super.init()
         API.getPlaybackURL(accessToken: accessToken) {[weak self] asset, error in
@@ -38,20 +45,10 @@ class TPAVPlayer: AVPlayer {
             let url = URL(string: asset.video.playbackURL)
             let avURLAsset = AVURLAsset(url: url!)
             ContentKeyManager.shared.contentKeySession.addContentKeyRecipient(avURLAsset)
-            self.activateAudioSession()
             let playerItem = AVPlayerItem(asset: avURLAsset)
             self.replaceCurrentItem(with: playerItem)
         } else if let error = error {
             debugPrint(error.localizedDescription)
-        }
-    }
-    
-    func activateAudioSession() {
-        let audioSession = AVAudioSession.sharedInstance()
-        do {
-            try audioSession.setCategory(AVAudioSession.Category.playback)
-        } catch {
-            debugPrint("Setting category to AVAudioSessionCategoryPlayback failed.")
         }
     }
 }

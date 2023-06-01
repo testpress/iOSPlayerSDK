@@ -28,9 +28,8 @@ class API {
     }
     
     static func getPlaybackURL(accessToken: String, completion:@escaping(Asset?, Error?) -> Void) {
-        let orgCode = "6eafqn"
         let assetId = "68PAFnYTjSU"
-        let url = URL(string: String(format: "https://app.tpstreams.com/api/v1/%@/assets/%@/?access_token=%@", orgCode, assetId, accessToken))!
+        let url = URL(string: String(format: "https://app.tpstreams.com/api/v1/%@/assets/%@/?access_token=%@", TPStreamsSDK.orgCode!, assetId, accessToken))!
 
         AF.request(url).responseData { response in
             switch response.result {
@@ -48,7 +47,6 @@ class API {
     }
     
     static func getDRMLicense(_ spcData: Data, _ contentID: String, _ completion:@escaping(Data?, Error?) -> Void) -> Void {
-        let orgCode = "6eafqn"
         let assetId = "68PAFnYTjSU"
         let accessToken = "5f3ded52-ace8-487e-809c-10de895872d6"
         
@@ -57,7 +55,7 @@ class API {
             "assetId" : contentID
         ] as [String : String]
         
-        let url = URL(string: String(format:"https://app.tpstreams.com/api/v1/\(orgCode)/assets/\(assetId)/drm_license/?access_token=\(accessToken)&drm_type=fairplay"))!
+        let url = URL(string: String(format:"https://app.tpstreams.com/api/v1/\(TPStreamsSDK.orgCode!)/assets/\(assetId)/drm_license/?access_token=\(accessToken)&drm_type=fairplay"))!
         let headers: HTTPHeaders = [
             .contentType("application/json")
         ]
