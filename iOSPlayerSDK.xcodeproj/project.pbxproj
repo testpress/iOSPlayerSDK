@@ -166,7 +166,7 @@
 			isa = PBXGroup;
 			children = (
 				8EDE99A62A2643B000E43EA9 /* Source */,
-				8EDE99B22A2643B000E43EA9 /* iOSPlayerSDKTests */,
+				8EDE99B22A2643B000E43EA9 /* Tests */,
 				8E6389C22A27277D00306FA4 /* Example */,
 				8EDE99A52A2643B000E43EA9 /* Products */,
 				8E6389D12A2728CA00306FA4 /* Frameworks */,
@@ -195,12 +195,12 @@
 			path = Source;
 			sourceTree = "<group>";
 		};
-		8EDE99B22A2643B000E43EA9 /* iOSPlayerSDKTests */ = {
+		8EDE99B22A2643B000E43EA9 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
 				8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */,
 			);
-			path = iOSPlayerSDKTests;
+			path = Tests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
