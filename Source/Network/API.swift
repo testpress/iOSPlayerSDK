@@ -55,10 +55,13 @@ class API {
         let parameters = [
             "spc": spcData.base64EncodedString(),
             "assetId" : contentID
-        ] as [String : Any]
+        ] as [String : String]
         
         let url = URL(string: String(format:"https://app.tpstreams.com/api/v1/\(orgCode)/assets/\(assetId)/drm_license/?access_token=\(accessToken)&drm_type=fairplay"))!
-        AF.request(url, method: .post, parameters: parameters).responseData { response in
+        let headers: HTTPHeaders = [
+            .contentType("application/json")
+        ]
+        AF.request(url, method: .post, parameters: parameters, encoder: JSONParameterEncoder.prettyPrinted, headers: headers).responseData { response in
             alamoFireOnComplete(response, completion)
         }
     }
