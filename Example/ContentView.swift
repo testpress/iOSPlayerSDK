@@ -12,8 +12,9 @@ struct ContentView: View {
     var body: some View {
         VStack {
             TPStreamPlayer()
+                .frame(height: 240)
+            Spacer()
         }
-        .padding()
     }
 }
 

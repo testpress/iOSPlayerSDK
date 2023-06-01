@@ -19,6 +19,7 @@
 		8E6389E22A275AA800306FA4 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389E12A275AA800306FA4 /* API.swift */; };
 		8E6389E52A275B2A00306FA4 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 8E6389E42A275B2A00306FA4 /* Alamofire */; };
 		8E6389E92A278D1D00306FA4 /* ContentKeyDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389E82A278D1D00306FA4 /* ContentKeyDelegate.swift */; };
+		8E6C5CB22A28AB94003EC948 /* ContentKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6C5CB12A28AB94003EC948 /* ContentKeyManager.swift */; };
 		8EDE99AF2A2643B000E43EA9 /* iOSPlayerSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* iOSPlayerSDK.framework */; };
 		8EDE99B42A2643B000E43EA9 /* iOSPlayerSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */; };
 		8EDE99B52A2643B000E43EA9 /* iOSPlayerSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 8EDE99A72A2643B000E43EA9 /* iOSPlayerSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -66,6 +67,7 @@
 		8E6389DE2A2751C800306FA4 /* TPAVPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPAVPlayer.swift; sourceTree = "<group>"; };
 		8E6389E12A275AA800306FA4 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		8E6389E82A278D1D00306FA4 /* ContentKeyDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentKeyDelegate.swift; sourceTree = "<group>"; };
+		8E6C5CB12A28AB94003EC948 /* ContentKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentKeyManager.swift; sourceTree = "<group>"; };
 		8EDE99A42A2643B000E43EA9 /* iOSPlayerSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = iOSPlayerSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EDE99A72A2643B000E43EA9 /* iOSPlayerSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = iOSPlayerSDK.h; sourceTree = "<group>"; };
 		8EDE99AE2A2643B000E43EA9 /* iOSPlayerSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSPlayerSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -155,6 +157,7 @@
 			isa = PBXGroup;
 			children = (
 				8E6389E82A278D1D00306FA4 /* ContentKeyDelegate.swift */,
+				8E6C5CB12A28AB94003EC948 /* ContentKeyManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -362,6 +365,7 @@
 				8E6389BC2A2724D000306FA4 /* TPStreamPlayer.swift in Sources */,
 				8E6389E22A275AA800306FA4 /* API.swift in Sources */,
 				8E6389DF2A2751C800306FA4 /* TPAVPlayer.swift in Sources */,
+				8E6C5CB22A28AB94003EC948 /* ContentKeyManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -405,6 +409,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -434,6 +439,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -581,6 +587,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -611,6 +618,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
