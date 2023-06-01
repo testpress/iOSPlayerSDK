@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import iOSPlayerSDK
+import TPStreamsSDK
 
 import UIKit
 

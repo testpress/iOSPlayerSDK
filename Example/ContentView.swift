@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import iOSPlayerSDK
+import TPStreamsSDK
 
 struct ContentView: View {
     var body: some View {

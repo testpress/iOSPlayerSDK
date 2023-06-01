@@ -12,8 +12,8 @@
 		8E6389C62A27277D00306FA4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389C52A27277D00306FA4 /* ContentView.swift */; };
 		8E6389C82A27278000306FA4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E6389C72A27278000306FA4 /* Assets.xcassets */; };
 		8E6389CB2A27278000306FA4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E6389CA2A27278000306FA4 /* Preview Assets.xcassets */; };
-		8E6389D72A27297500306FA4 /* iOSPlayerSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* iOSPlayerSDK.framework */; };
-		8E6389D82A27297500306FA4 /* iOSPlayerSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* iOSPlayerSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8E6389D72A27297500306FA4 /* TPStreamsSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */; };
+		8E6389D82A27297500306FA4 /* TPStreamsSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8E6389DD2A27338F00306FA4 /* TPVideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389DC2A27338F00306FA4 /* TPVideoPlayer.swift */; };
 		8E6389DF2A2751C800306FA4 /* TPAVPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389DE2A2751C800306FA4 /* TPAVPlayer.swift */; };
 		8E6389E22A275AA800306FA4 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389E12A275AA800306FA4 /* API.swift */; };
@@ -21,7 +21,7 @@
 		8E6389E92A278D1D00306FA4 /* ContentKeyDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389E82A278D1D00306FA4 /* ContentKeyDelegate.swift */; };
 		8E6C5CB22A28AB94003EC948 /* ContentKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6C5CB12A28AB94003EC948 /* ContentKeyManager.swift */; };
 		8E6C5CB52A28BD9A003EC948 /* TPStreamsSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6C5CB42A28BD9A003EC948 /* TPStreamsSDK.swift */; };
-		8EDE99AF2A2643B000E43EA9 /* iOSPlayerSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* iOSPlayerSDK.framework */; };
+		8EDE99AF2A2643B000E43EA9 /* TPStreamsSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */; };
 		8EDE99B42A2643B000E43EA9 /* iOSPlayerSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */; };
 		8EDE99B52A2643B000E43EA9 /* iOSPlayerSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 8EDE99A72A2643B000E43EA9 /* iOSPlayerSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
@@ -50,7 +50,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				8E6389D82A27297500306FA4 /* iOSPlayerSDK.framework in Embed Frameworks */,
+				8E6389D82A27297500306FA4 /* TPStreamsSDK.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -70,7 +70,7 @@
 		8E6389E82A278D1D00306FA4 /* ContentKeyDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentKeyDelegate.swift; sourceTree = "<group>"; };
 		8E6C5CB12A28AB94003EC948 /* ContentKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentKeyManager.swift; sourceTree = "<group>"; };
 		8E6C5CB42A28BD9A003EC948 /* TPStreamsSDK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsSDK.swift; sourceTree = "<group>"; };
-		8EDE99A42A2643B000E43EA9 /* iOSPlayerSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = iOSPlayerSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TPStreamsSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EDE99A72A2643B000E43EA9 /* iOSPlayerSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = iOSPlayerSDK.h; sourceTree = "<group>"; };
 		8EDE99AE2A2643B000E43EA9 /* iOSPlayerSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSPlayerSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSPlayerSDKTests.swift; sourceTree = "<group>"; };
@@ -81,7 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8E6389D72A27297500306FA4 /* iOSPlayerSDK.framework in Frameworks */,
+				8E6389D72A27297500306FA4 /* TPStreamsSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,7 +97,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8EDE99AF2A2643B000E43EA9 /* iOSPlayerSDK.framework in Frameworks */,
+				8EDE99AF2A2643B000E43EA9 /* TPStreamsSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -178,7 +178,7 @@
 		8EDE99A52A2643B000E43EA9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8EDE99A42A2643B000E43EA9 /* iOSPlayerSDK.framework */,
+				8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */,
 				8EDE99AE2A2643B000E43EA9 /* iOSPlayerSDKTests.xctest */,
 				8E6389C12A27277D00306FA4 /* Example.app */,
 			);
@@ -239,9 +239,9 @@
 			productReference = 8E6389C12A27277D00306FA4 /* Example.app */;
 			productType = "com.apple.product-type.application";
 		};
-		8EDE99A32A2643B000E43EA9 /* iOSPlayerSDK */ = {
+		8EDE99A32A2643B000E43EA9 /* TPStreamsSDK */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8EDE99B82A2643B000E43EA9 /* Build configuration list for PBXNativeTarget "iOSPlayerSDK" */;
+			buildConfigurationList = 8EDE99B82A2643B000E43EA9 /* Build configuration list for PBXNativeTarget "TPStreamsSDK" */;
 			buildPhases = (
 				8EDE999F2A2643B000E43EA9 /* Headers */,
 				8EDE99A02A2643B000E43EA9 /* Sources */,
@@ -252,12 +252,12 @@
 			);
 			dependencies = (
 			);
-			name = iOSPlayerSDK;
+			name = TPStreamsSDK;
 			packageProductDependencies = (
 				8E6389E42A275B2A00306FA4 /* Alamofire */,
 			);
 			productName = iOSPlayerSDK;
-			productReference = 8EDE99A42A2643B000E43EA9 /* iOSPlayerSDK.framework */;
+			productReference = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		8EDE99AD2A2643B000E43EA9 /* iOSPlayerSDKTests */ = {
@@ -316,7 +316,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8EDE99A32A2643B000E43EA9 /* iOSPlayerSDK */,
+				8EDE99A32A2643B000E43EA9 /* TPStreamsSDK */,
 				8EDE99AD2A2643B000E43EA9 /* iOSPlayerSDKTests */,
 				8E6389C02A27277D00306FA4 /* Example */,
 			);
@@ -386,12 +386,12 @@
 /* Begin PBXTargetDependency section */
 		8E6389DA2A27297500306FA4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 8EDE99A32A2643B000E43EA9 /* iOSPlayerSDK */;
+			target = 8EDE99A32A2643B000E43EA9 /* TPStreamsSDK */;
 			targetProxy = 8E6389D92A27297500306FA4 /* PBXContainerItemProxy */;
 		};
 		8EDE99B12A2643B000E43EA9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 8EDE99A32A2643B000E43EA9 /* iOSPlayerSDK */;
+			target = 8EDE99A32A2643B000E43EA9 /* TPStreamsSDK */;
 			targetProxy = 8EDE99B02A2643B000E43EA9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -693,7 +693,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8EDE99B82A2643B000E43EA9 /* Build configuration list for PBXNativeTarget "iOSPlayerSDK" */ = {
+		8EDE99B82A2643B000E43EA9 /* Build configuration list for PBXNativeTarget "TPStreamsSDK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8EDE99B92A2643B000E43EA9 /* Debug */,
