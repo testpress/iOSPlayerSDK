@@ -107,7 +107,6 @@
 		8E6389B92A2724AA00306FA4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				8E6389BB2A2724D000306FA4 /* TPStreamPlayer.swift */,
 				8E6389DC2A27338F00306FA4 /* TPVideoPlayer.swift */,
 			);
 			path = Views;
@@ -186,6 +185,7 @@
 				8EDE99A72A2643B000E43EA9 /* iOSPlayerSDK.h */,
 				8E6C5CB42A28BD9A003EC948 /* TPStreamsSDK.swift */,
 				8E6389DE2A2751C800306FA4 /* TPAVPlayer.swift */,
+				8E6389BB2A2724D000306FA4 /* TPStreamPlayer.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
