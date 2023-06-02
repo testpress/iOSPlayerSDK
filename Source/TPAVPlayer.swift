@@ -25,10 +25,10 @@ public class TPAVPlayer: AVPlayer {
         self.assetID = assetID
 
         super.init()
-        loadAsset()
+        self.initializePlayerWithAsset()
     }
     
-    private func loadAsset() {
+    private func initializePlayerWithAsset() {
         API.getAsset(assetID, accessToken) { [weak self] asset, error in
             guard let self = self else { return }
             
