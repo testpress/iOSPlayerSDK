@@ -15,8 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         TPStreamsSDK.initialize(orgCode: "6eafqn")
         return true
     }
-    
-    // Implement other AppDelegate methods as needed
 }
 
 @main
