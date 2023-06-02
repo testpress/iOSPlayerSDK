@@ -27,7 +27,7 @@ class API {
         }
     }
     
-    static func fetchAsset(_ assetID: String, _ accessToken: String, completion:@escaping(Asset?, Error?) -> Void) {
+    static func getAsset(_ assetID: String, _ accessToken: String, completion:@escaping(Asset?, Error?) -> Void) {
         let url = URL(string: String(format: "https://app.tpstreams.com/api/v1/%@/assets/%@/?access_token=%@", TPStreamsSDK.orgCode!, assetID, accessToken))!
 
         AF.request(url).responseData { response in

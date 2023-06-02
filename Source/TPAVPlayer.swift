@@ -25,30 +25,38 @@ public class TPAVPlayer: AVPlayer {
         self.assetID = assetID
 
         super.init()
-        API.fetchAsset(assetID, accessToken) { [weak self] asset, error in
+        fetchAsset()
+    }
+    
+    private func fetchAsset() {
+        API.getAsset(assetID, accessToken) { [weak self] asset, error in
             guard let self = self else { return }
             
             if let asset = asset {
-                self.configurePlayer(withAsset: asset)
+                self.setup(withAsset: asset)
             } else if let error = error{
                 debugPrint(error.localizedDescription)
             }
         }
     }
     
-    private func configurePlayer(withAsset asset: API.Asset) {
+    private func setup(withAsset asset: API.Asset) {
         guard let url = URL(string: asset.video.playbackURL) else {
             debugPrint("Invalid playback URL received from API: \(asset.video.playbackURL)")
             return
         }
         
         let avURLAsset = AVURLAsset(url: url)
-        self.prepareAssetForDRMPlayback(avURLAsset)
-        let playerItem = AVPlayerItem(asset: avURLAsset)
+        self.setPlaybackURL(avURLAsset)
+        self.setupDRM(avURLAsset)
+    }
+    
+    private func setPlaybackURL(_ asset: AVURLAsset){
+        let playerItem = AVPlayerItem(asset: asset)
         self.replaceCurrentItem(with: playerItem)
     }
     
-    private func prepareAssetForDRMPlayback(_ avURLAsset: AVURLAsset) {
+    private func setupDRM(_ avURLAsset: AVURLAsset) {
         ContentKeyManager.shared.contentKeySession.addContentKeyRecipient(avURLAsset)
         ContentKeyManager.shared.contentKeyDelegate.setAssetDetails(assetID, accessToken)
     }
