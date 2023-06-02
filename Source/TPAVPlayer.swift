@@ -25,31 +25,31 @@ public class TPAVPlayer: AVPlayer {
         self.assetID = assetID
 
         super.init()
-        
         loadAsset()
     }
     
     private func loadAsset() {
         API.getAsset(assetID, accessToken) { [weak self] asset, error in
             guard let self = self else { return }
-            self.handleAPIResponse(asset: asset, error: error)
+            
+            if let asset = asset {
+                self.setupPlayer(withAsset: asset)
+            } else if let error = error{
+                debugPrint(error.localizedDescription)
+            }
         }
     }
     
-    private func handleAPIResponse(asset: API.Asset?, error: Error?) {
-        if let asset = asset {
-            guard let url = URL(string: asset.video.playbackURL) else {
-                debugPrint("Got invalid playback URL from API")
-                return
-            }
-            
-            let avURLAsset = AVURLAsset(url: url)
-            self.prepareAssetForDRMPlayback(avURLAsset)
-            let playerItem = AVPlayerItem(asset: avURLAsset)
-            self.replaceCurrentItem(with: playerItem)
-        } else if let error = error {
-            debugPrint(error.localizedDescription)
+    private func setupPlayer(withAsset asset: API.Asset) {
+        guard let url = URL(string: asset.video.playbackURL) else {
+            debugPrint("Invalid playback URL received from API: \(asset.video.playbackURL)")
+            return
         }
+        
+        let avURLAsset = AVURLAsset(url: url)
+        self.prepareAssetForDRMPlayback(avURLAsset)
+        let playerItem = AVPlayerItem(asset: avURLAsset)
+        self.replaceCurrentItem(with: playerItem)
     }
     
     private func prepareAssetForDRMPlayback(_ avURLAsset: AVURLAsset) {
