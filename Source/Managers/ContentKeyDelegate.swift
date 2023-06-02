@@ -9,7 +9,9 @@ import AVFoundation
 
 class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
     var contentID: String?
-    
+    var assetID: String?
+    var accessToken: String?
+
     enum ProgramError: Error {
         case missingApplicationCertificate
         case noCKCReturnedByKSM
@@ -92,6 +94,13 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
     }
 
     func requestCKC(_ spcData: Data, _ completion: @escaping(Data?, Error?) -> Void) {
-        API.getDRMLicense(spcData, contentID!, completion)
+        guard let assetID = assetID,
+              let accessToken = accessToken else { return }
+        API.getDRMLicense(assetID, accessToken, spcData, contentID!, completion)
+    }
+    
+    func setAssetDetails(_ assetID: String, _ accessToken: String) {
+        self.assetID = assetID
+        self.accessToken = accessToken
     }
 }

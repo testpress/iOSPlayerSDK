@@ -11,18 +11,21 @@ import AVKit
 
 public class TPAVPlayer: AVPlayer {
     var accessToken: String?
+    var assetID: String?
     
-    public init(accessToken: String) {
+    public init(assetID: String, accessToken: String) {
         guard TPStreamsSDK.orgCode != nil else {
             fatalError("You must call TPStreamsSDK.initialize")
         }
         
-        if (accessToken.isEmpty) {
-            fatalError("AccessToken cannot be empty")
+        if (accessToken.isEmpty || assetID.isEmpty) {
+            fatalError("AccessToken/AssetID cannot be empty")
         }
         self.accessToken = accessToken
+        self.assetID = assetID
+
         super.init()
-        API.getPlaybackURL(accessToken: accessToken) {[weak self] asset, error in
+        API.getAsset(assetID, accessToken) {[weak self] asset, error in
             guard let self = self else { return }
             self.APIResponse(asset, error)
         }
@@ -44,11 +47,16 @@ public class TPAVPlayer: AVPlayer {
         if let asset = asset {
             let url = URL(string: asset.video.playbackURL)
             let avURLAsset = AVURLAsset(url: url!)
-            ContentKeyManager.shared.contentKeySession.addContentKeyRecipient(avURLAsset)
+            self.prepareAssetForDRMPlayback(avURLAsset)
             let playerItem = AVPlayerItem(asset: avURLAsset)
             self.replaceCurrentItem(with: playerItem)
         } else if let error = error {
             debugPrint(error.localizedDescription)
         }
+    }
+    
+    func prepareAssetForDRMPlayback(_ avURLAsset: AVURLAsset) {
+        ContentKeyManager.shared.contentKeySession.addContentKeyRecipient(avURLAsset)
+        ContentKeyManager.shared.contentKeyDelegate.setAssetDetails(assetID!, accessToken!)
     }
 }

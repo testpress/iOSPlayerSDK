@@ -7,12 +7,14 @@
 
 import SwiftUI
 import TPStreamsSDK
+import AVKit
 
 struct ContentView: View {
     var body: some View {
         VStack {
-            var player = TPAVPlayer(accessToken: "5f3ded52-ace8-487e-809c-10de895872d6")
-            TPStreamPlayer(player: player)
+            let player = TPAVPlayer(assetID: "8eaHZjXt6km",
+                                    accessToken: "16b608ba-9979-45a0-94fb-b27c1a86b3c1")
+            VideoPlayer(player: player)
                 .frame(height: 240)
             Spacer()
         }
