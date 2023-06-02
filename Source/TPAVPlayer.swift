@@ -25,22 +25,18 @@ public class TPAVPlayer: AVPlayer {
         self.assetID = assetID
 
         super.init()
-        self.initializePlayerWithAsset()
-    }
-    
-    private func initializePlayerWithAsset() {
-        API.getAsset(assetID, accessToken) { [weak self] asset, error in
+        API.fetchAsset(assetID, accessToken) { [weak self] asset, error in
             guard let self = self else { return }
             
             if let asset = asset {
-                self.setupPlayer(withAsset: asset)
+                self.configurePlayer(withAsset: asset)
             } else if let error = error{
                 debugPrint(error.localizedDescription)
             }
         }
     }
     
-    private func setupPlayer(withAsset asset: API.Asset) {
+    private func configurePlayer(withAsset asset: API.Asset) {
         guard let url = URL(string: asset.video.playbackURL) else {
             debugPrint("Invalid playback URL received from API: \(asset.video.playbackURL)")
             return
