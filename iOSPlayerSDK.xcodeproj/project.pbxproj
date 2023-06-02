@@ -113,14 +113,6 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		8E6389BA2A2724BB00306FA4 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				8E6389DE2A2751C800306FA4 /* TPAVPlayer.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
 		8E6389C22A27277D00306FA4 /* Example */ = {
 			isa = PBXGroup;
 			children = (
@@ -190,10 +182,10 @@
 			children = (
 				8E6389E72A278D0400306FA4 /* Managers */,
 				8E6389E02A275A2700306FA4 /* Network */,
-				8E6389BA2A2724BB00306FA4 /* Models */,
 				8E6389B92A2724AA00306FA4 /* Views */,
 				8EDE99A72A2643B000E43EA9 /* iOSPlayerSDK.h */,
 				8E6C5CB42A28BD9A003EC948 /* TPStreamsSDK.swift */,
+				8E6389DE2A2751C800306FA4 /* TPAVPlayer.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
