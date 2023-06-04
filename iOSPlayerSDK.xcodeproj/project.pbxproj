@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0377C40E2A2B1C7300F7E58F /* BaseAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C40D2A2B1C7300F7E58F /* BaseAPI.swift */; };
+		0377C4112A2B1F0700F7E58F /* Asset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C4102A2B1F0700F7E58F /* Asset.swift */; };
+		0377C4132A2B272C00F7E58F /* TestpressAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C4122A2B272C00F7E58F /* TestpressAPI.swift */; };
 		8E6389BC2A2724D000306FA4 /* TPStreamPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389BB2A2724D000306FA4 /* TPStreamPlayer.swift */; };
 		8E6389C42A27277D00306FA4 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389C32A27277D00306FA4 /* ExampleApp.swift */; };
 		8E6389C62A27277D00306FA4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389C52A27277D00306FA4 /* ContentView.swift */; };
@@ -16,7 +19,7 @@
 		8E6389D82A27297500306FA4 /* TPStreamsSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8E6389DD2A27338F00306FA4 /* TPVideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389DC2A27338F00306FA4 /* TPVideoPlayer.swift */; };
 		8E6389DF2A2751C800306FA4 /* TPAVPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389DE2A2751C800306FA4 /* TPAVPlayer.swift */; };
-		8E6389E22A275AA800306FA4 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389E12A275AA800306FA4 /* API.swift */; };
+		8E6389E22A275AA800306FA4 /* StreamsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389E12A275AA800306FA4 /* StreamsAPI.swift */; };
 		8E6389E52A275B2A00306FA4 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 8E6389E42A275B2A00306FA4 /* Alamofire */; };
 		8E6389E92A278D1D00306FA4 /* ContentKeyDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389E82A278D1D00306FA4 /* ContentKeyDelegate.swift */; };
 		8E6C5CB22A28AB94003EC948 /* ContentKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6C5CB12A28AB94003EC948 /* ContentKeyManager.swift */; };
@@ -58,6 +61,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0377C40D2A2B1C7300F7E58F /* BaseAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAPI.swift; sourceTree = "<group>"; };
+		0377C4102A2B1F0700F7E58F /* Asset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Asset.swift; sourceTree = "<group>"; };
+		0377C4122A2B272C00F7E58F /* TestpressAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestpressAPI.swift; sourceTree = "<group>"; };
 		8E6389BB2A2724D000306FA4 /* TPStreamPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayer.swift; sourceTree = "<group>"; };
 		8E6389C12A27277D00306FA4 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E6389C32A27277D00306FA4 /* ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleApp.swift; sourceTree = "<group>"; };
@@ -66,7 +72,7 @@
 		8E6389CA2A27278000306FA4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		8E6389DC2A27338F00306FA4 /* TPVideoPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPVideoPlayer.swift; sourceTree = "<group>"; };
 		8E6389DE2A2751C800306FA4 /* TPAVPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPAVPlayer.swift; sourceTree = "<group>"; };
-		8E6389E12A275AA800306FA4 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		8E6389E12A275AA800306FA4 /* StreamsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamsAPI.swift; sourceTree = "<group>"; };
 		8E6389E82A278D1D00306FA4 /* ContentKeyDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentKeyDelegate.swift; sourceTree = "<group>"; };
 		8E6C5CB12A28AB94003EC948 /* ContentKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentKeyManager.swift; sourceTree = "<group>"; };
 		8E6C5CB42A28BD9A003EC948 /* TPStreamsSDK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsSDK.swift; sourceTree = "<group>"; };
@@ -104,6 +110,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0377C40F2A2B1EEF00F7E58F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				0377C4102A2B1F0700F7E58F /* Asset.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		8E6389B92A2724AA00306FA4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -141,7 +155,10 @@
 		8E6389E02A275A2700306FA4 /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				8E6389E12A275AA800306FA4 /* API.swift */,
+				0377C40F2A2B1EEF00F7E58F /* Models */,
+				8E6389E12A275AA800306FA4 /* StreamsAPI.swift */,
+				0377C40D2A2B1C7300F7E58F /* BaseAPI.swift */,
+				0377C4122A2B272C00F7E58F /* TestpressAPI.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -359,7 +376,10 @@
 				8E6389DD2A27338F00306FA4 /* TPVideoPlayer.swift in Sources */,
 				8E6389BC2A2724D000306FA4 /* TPStreamPlayer.swift in Sources */,
 				8E6C5CB52A28BD9A003EC948 /* TPStreamsSDK.swift in Sources */,
-				8E6389E22A275AA800306FA4 /* API.swift in Sources */,
+				0377C4132A2B272C00F7E58F /* TestpressAPI.swift in Sources */,
+				0377C4112A2B1F0700F7E58F /* Asset.swift in Sources */,
+				8E6389E22A275AA800306FA4 /* StreamsAPI.swift in Sources */,
+				0377C40E2A2B1C7300F7E58F /* BaseAPI.swift in Sources */,
 				8E6389DF2A2751C800306FA4 /* TPAVPlayer.swift in Sources */,
 				8E6C5CB22A28AB94003EC948 /* ContentKeyManager.swift in Sources */,
 			);

@@ -96,7 +96,7 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
     func requestCKC(_ spcData: Data, _ completion: @escaping(Data?, Error?) -> Void) {
         guard let assetID = assetID,
               let accessToken = accessToken else { return }
-        API.getDRMLicense(assetID, accessToken, spcData, contentID!, completion)
+        TPStreamsSDK.provider.API.getDRMLicense(assetID, accessToken, spcData, contentID!, completion)
     }
     
     func setAssetDetails(_ assetID: String, _ accessToken: String) {
