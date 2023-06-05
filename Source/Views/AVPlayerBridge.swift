@@ -21,7 +21,7 @@ class TPVideoPlayerUIView: UIView {
 }
 
 
-struct TPVideoPlayer: UIViewRepresentable {
+struct AVPlayerBridge: UIViewRepresentable {
     var player: TPAVPlayer
 
     func makeUIView(context: Context) -> TPVideoPlayerUIView {

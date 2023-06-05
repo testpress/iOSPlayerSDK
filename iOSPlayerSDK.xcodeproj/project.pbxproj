@@ -17,7 +17,7 @@
 		8E6389CB2A27278000306FA4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E6389CA2A27278000306FA4 /* Preview Assets.xcassets */; };
 		8E6389D72A27297500306FA4 /* TPStreamsSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */; };
 		8E6389D82A27297500306FA4 /* TPStreamsSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		8E6389DD2A27338F00306FA4 /* TPVideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389DC2A27338F00306FA4 /* TPVideoPlayer.swift */; };
+		8E6389DD2A27338F00306FA4 /* AVPlayerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389DC2A27338F00306FA4 /* AVPlayerBridge.swift */; };
 		8E6389DF2A2751C800306FA4 /* TPAVPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389DE2A2751C800306FA4 /* TPAVPlayer.swift */; };
 		8E6389E22A275AA800306FA4 /* StreamsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389E12A275AA800306FA4 /* StreamsAPI.swift */; };
 		8E6389E52A275B2A00306FA4 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 8E6389E42A275B2A00306FA4 /* Alamofire */; };
@@ -70,7 +70,7 @@
 		8E6389C52A27277D00306FA4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8E6389C72A27278000306FA4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8E6389CA2A27278000306FA4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		8E6389DC2A27338F00306FA4 /* TPVideoPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPVideoPlayer.swift; sourceTree = "<group>"; };
+		8E6389DC2A27338F00306FA4 /* AVPlayerBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVPlayerBridge.swift; sourceTree = "<group>"; };
 		8E6389DE2A2751C800306FA4 /* TPAVPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPAVPlayer.swift; sourceTree = "<group>"; };
 		8E6389E12A275AA800306FA4 /* StreamsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamsAPI.swift; sourceTree = "<group>"; };
 		8E6389E82A278D1D00306FA4 /* ContentKeyDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentKeyDelegate.swift; sourceTree = "<group>"; };
@@ -121,7 +121,7 @@
 		8E6389B92A2724AA00306FA4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				8E6389DC2A27338F00306FA4 /* TPVideoPlayer.swift */,
+				8E6389DC2A27338F00306FA4 /* AVPlayerBridge.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -373,7 +373,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E6389E92A278D1D00306FA4 /* ContentKeyDelegate.swift in Sources */,
-				8E6389DD2A27338F00306FA4 /* TPVideoPlayer.swift in Sources */,
+				8E6389DD2A27338F00306FA4 /* AVPlayerBridge.swift in Sources */,
 				8E6389BC2A2724D000306FA4 /* TPStreamPlayer.swift in Sources */,
 				8E6C5CB52A28BD9A003EC948 /* TPStreamsSDK.swift in Sources */,
 				0377C4132A2B272C00F7E58F /* TestpressAPI.swift in Sources */,

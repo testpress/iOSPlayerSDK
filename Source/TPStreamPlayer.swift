@@ -17,7 +17,7 @@ public struct TPStreamPlayer: View {
 
     public var body: some View {
         VStack {
-            TPVideoPlayer(player: player)
+            AVPlayerBridge(player: player)
                 .onAppear(){
                     player.play()
                 }
