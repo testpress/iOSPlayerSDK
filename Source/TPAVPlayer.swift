@@ -29,7 +29,7 @@ public class TPAVPlayer: AVPlayer {
     }
     
     private func fetchAsset() {
-        API.getAsset(assetID, accessToken) { [weak self] asset, error in
+        TPStreamsSDK.provider.API.getAsset(assetID, accessToken) { [weak self] asset, error in
             guard let self = self else { return }
             
             if let asset = asset {
@@ -40,7 +40,7 @@ public class TPAVPlayer: AVPlayer {
         }
     }
     
-    private func setup(withAsset asset: API.Asset) {
+    private func setup(withAsset asset: Asset) {
         guard let url = URL(string: asset.video.playbackURL) else {
             debugPrint("Invalid playback URL received from API: \(asset.video.playbackURL)")
             return
