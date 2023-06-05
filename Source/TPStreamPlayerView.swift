@@ -11,7 +11,7 @@ public struct TPStreamPlayerView: View {
     var player: TPAVPlayer
     
     public init(player: TPAVPlayer) {
-       self.player = player
+        self.player = player
     }
 
     public var body: some View {
