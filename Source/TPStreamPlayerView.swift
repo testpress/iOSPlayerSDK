@@ -8,7 +8,7 @@
 import SwiftUI
 import AVKit
 
-public struct TPStreamPlayer: View {
+public struct TPStreamPlayerView: View {
     var player: TPAVPlayer
     
     public init(player: TPAVPlayer) {
