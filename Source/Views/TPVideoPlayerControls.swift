@@ -36,7 +36,7 @@ struct TPVideoPlayerControls: View {
     
     private func startHideTimer() {
         hideTimer?.invalidate()
-        hideTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
+        hideTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { _ in
             showControls = false
         }
     }
