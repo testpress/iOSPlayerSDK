@@ -18,6 +18,10 @@ struct PlayerControlsView: View {
                 Spacer()
                 MediaControlsView()
                 Spacer()
+                HStack {
+                    TimeIndicatorView()
+                    Spacer()
+                }.padding([.horizontal, .bottom], 10)
             }
         }
         .environmentObject(player)
