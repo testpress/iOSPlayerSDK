@@ -10,7 +10,7 @@ struct PlayerControlsView: View {
     init(player: TPAVPlayer){
         _player = StateObject(wrappedValue: TPStreamPlayer(player: player))
     }
-    
+        
     var body: some View {
         VStack{
             if showControls {
