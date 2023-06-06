@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct TPPlayerSettingsButton: View {
+struct PlayerSettingsButton: View {
     @State private var showOptions = false
     @State private var optionsMenu: OptionsMenu = .main
     
