@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0321F3272A2E0D1800E08AEE /* AVPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0321F3262A2E0D1800E08AEE /* AVPlayer.swift */; };
+		035351A22A2F49E3001E38F3 /* MediaControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035351A12A2F49E3001E38F3 /* MediaControlsView.swift */; };
 		0377C40E2A2B1C7300F7E58F /* BaseAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C40D2A2B1C7300F7E58F /* BaseAPI.swift */; };
 		0377C4112A2B1F0700F7E58F /* Asset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C4102A2B1F0700F7E58F /* Asset.swift */; };
 		0377C4132A2B272C00F7E58F /* TestpressAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C4122A2B272C00F7E58F /* TestpressAPI.swift */; };
@@ -66,6 +67,7 @@
 
 /* Begin PBXFileReference section */
 		0321F3262A2E0D1800E08AEE /* AVPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVPlayer.swift; sourceTree = "<group>"; };
+		035351A12A2F49E3001E38F3 /* MediaControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaControlsView.swift; sourceTree = "<group>"; };
 		0377C40D2A2B1C7300F7E58F /* BaseAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAPI.swift; sourceTree = "<group>"; };
 		0377C4102A2B1F0700F7E58F /* Asset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Asset.swift; sourceTree = "<group>"; };
 		0377C4122A2B272C00F7E58F /* TestpressAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestpressAPI.swift; sourceTree = "<group>"; };
@@ -139,6 +141,7 @@
 			children = (
 				8E6389DC2A27338F00306FA4 /* AVPlayerBridge.swift */,
 				03B8090B2A2DF9A200AB3D03 /* PlayerControlsView.swift */,
+				035351A12A2F49E3001E38F3 /* MediaControlsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -401,10 +404,11 @@
 				0377C4112A2B1F0700F7E58F /* Asset.swift in Sources */,
 				8E6389E22A275AA800306FA4 /* StreamsAPI.swift in Sources */,
 				0377C40E2A2B1C7300F7E58F /* BaseAPI.swift in Sources */,
+				035351A22A2F49E3001E38F3 /* MediaControlsView.swift in Sources */,
 				03B8090C2A2DF9A200AB3D03 /* PlayerControlsView.swift in Sources */,
 				8E6389DF2A2751C800306FA4 /* TPAVPlayer.swift in Sources */,
 				03B8090A2A2DF8A000AB3D03 /* TPStreamPlayer.swift in Sources */,
-				0321F3272A2E0D1800E08AEE /* AVPlayer.swift in Sources */,				0321F3272A2E0D1800E08AEE /* AVPlayer.swift in Sources */,
+				0321F3272A2E0D1800E08AEE /* AVPlayer.swift in Sources */,
 				8E6C5CB22A28AB94003EC948 /* ContentKeyManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
