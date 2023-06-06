@@ -2,7 +2,7 @@ import SwiftUI
 
 struct PlayerSettingsButton: View {
     @State private var showOptions = false
-    @State private var optionsMenu: OptionsMenu = .main
+    @State private var currentMenu: SettingsMenu = .main
     
     @EnvironmentObject var player: TPStreamPlayer
     
@@ -11,7 +11,7 @@ struct PlayerSettingsButton: View {
             Spacer()
             Button(action: {
                 showOptions = true
-                optionsMenu = .main
+                currentMenu = .main
             }) {
                 Image("settings", bundle: bundle)
                     .resizable()
@@ -23,7 +23,7 @@ struct PlayerSettingsButton: View {
     }
     
     private func settingsActionSheet() -> ActionSheet {
-        switch optionsMenu {
+        switch currentMenu {
         case .main:
             return ActionSheet(
                 title: Text("Settings"),
@@ -43,7 +43,7 @@ struct PlayerSettingsButton: View {
         return .default(Text("Playback Speed - \(player.currentPlaybackSpeed.label)")) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.showOptions = true
-                self.optionsMenu = .playbackSpeed
+                self.currentMenu = .playbackSpeed
             }
         }
     }
@@ -58,4 +58,4 @@ struct PlayerSettingsButton: View {
     }
 }
 
-enum OptionsMenu { case main, playbackSpeed }
+enum SettingsMenu { case main, playbackSpeed }

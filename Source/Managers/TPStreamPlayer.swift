@@ -1,5 +1,6 @@
 import Foundation
 import CoreMedia
+import AVKit
 
 class TPStreamPlayer: NSObject, ObservableObject {
     @Published var status: PlayerStatus = .paused
