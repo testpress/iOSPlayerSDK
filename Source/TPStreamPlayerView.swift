@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import AVKit
 
 public struct TPStreamPlayerView: View {
     var player: TPAVPlayer
@@ -16,11 +15,9 @@ public struct TPStreamPlayerView: View {
     }
 
     public var body: some View {
-        VStack {
+        ZStack {
             AVPlayerBridge(player: player)
-                .onAppear(){
-                    player.play()
-                }
+            PlayerControlsView(player: player)
         }.background(Color.black)
     }
 }
