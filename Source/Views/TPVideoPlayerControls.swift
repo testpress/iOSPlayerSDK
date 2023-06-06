@@ -15,11 +15,29 @@ struct TPVideoPlayerControls: View {
         VStack{
             if showControls {
                 Spacer()
-                Button(action: togglePlay) {
-                    Image(player.status == .paused ? "play" : "pause", bundle: bundle)
-                        .resizable()
-                        .frame(width: 48, height: 48)
-                        .brightness(-0.1)
+                HStack() {
+                    Spacer()
+                    Button(action: player.rewind) {
+                        Image("rewind", bundle: bundle)
+                            .resizable()
+                            .frame(width: 40, height: 40)
+                            .brightness(-0.1)
+                    }
+                    Spacer()
+                    Button(action: togglePlay) {
+                        Image(player.status == .paused ? "play" : "pause", bundle: bundle)
+                            .resizable()
+                            .frame(width: 48, height: 48)
+                            .brightness(-0.1)
+                    }
+                    Spacer()
+                    Button(action: player.forward) {
+                        Image("forward", bundle: bundle)
+                            .resizable()
+                            .frame(width: 40, height: 40)
+                            .brightness(-0.1)
+                    }
+                    Spacer()
                 }
                 Spacer()
             }
