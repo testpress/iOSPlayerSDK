@@ -2,10 +2,10 @@ import SwiftUI
 
 let bundle = Bundle(identifier: "com.tpstreams.iOSPlayerSDK")
 
-struct TPVideoPlayerControls: View {
+struct PlayerControlsView: View {
     @StateObject private var player: TPStreamPlayer
     @State private var showControls = false
-    @State private var hideTimer: Timer?
+    @State private var controlsHideTimer: Timer?
     
     init(player: TPAVPlayer){
         _player = StateObject(wrappedValue: TPStreamPlayer(player: player))
@@ -29,7 +29,7 @@ struct TPVideoPlayerControls: View {
         .onTapGesture {
             showControls.toggle()
             if showControls {
-                startHideTimer()
+                scheduleTimerToHideControls()
             }
         }
     }
@@ -42,9 +42,9 @@ struct TPVideoPlayerControls: View {
         }
     }
     
-    private func startHideTimer() {
-        hideTimer?.invalidate()
-        hideTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { _ in
+    private func scheduleTimerToHideControls() {
+        controlsHideTimer?.invalidate()
+        controlsHideTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { _ in
             showControls = false
         }
     }
@@ -52,7 +52,7 @@ struct TPVideoPlayerControls: View {
 
 struct TPVideoPlayerControls_Previews: PreviewProvider {
     static var previews: some View {
-        TPVideoPlayerControls(
+        PlayerControlsView(
             player: TPAVPlayer(
                 assetID: "dummy",
                 accessToken: "dummy"

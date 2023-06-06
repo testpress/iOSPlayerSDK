@@ -17,7 +17,7 @@ public struct TPStreamPlayerView: View {
     public var body: some View {
         ZStack {
             AVPlayerBridge(player: player)
-            TPVideoPlayerControls(player: player)
+            PlayerControlsView(player: player)
         }.background(Color.black)
     }
 }
