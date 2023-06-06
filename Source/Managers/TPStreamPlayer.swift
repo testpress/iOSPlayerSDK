@@ -41,12 +41,12 @@ class TPStreamPlayer: NSObject, ObservableObject {
         }
     }
     
-    public func togglePlay(){
-        if status == .paused {
-            player.play()
-        } else {
-            player.pause()
-        }
+    func play(){
+        player.play()
+    }
+    
+    func pause(){
+        player.pause()
     }
 }
 
