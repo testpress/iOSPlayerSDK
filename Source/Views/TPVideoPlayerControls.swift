@@ -15,7 +15,7 @@ struct TPVideoPlayerControls: View {
         VStack{
             if showControls {
                 Spacer()
-                Button(action: player.togglePlay) {
+                Button(action: togglePlay) {
                     Image(player.status == .paused ? "play" : "pause", bundle: bundle)
                         .resizable()
                         .frame(width: 48, height: 48)
@@ -31,6 +31,14 @@ struct TPVideoPlayerControls: View {
             if showControls {
                 startHideTimer()
             }
+        }
+    }
+    
+    public func togglePlay(){
+        if player.status == .paused {
+            player.play()
+        } else {
+            player.pause()
         }
     }
     
