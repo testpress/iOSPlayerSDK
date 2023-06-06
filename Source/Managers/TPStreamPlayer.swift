@@ -54,7 +54,6 @@ class TPStreamPlayer: NSObject, ObservableObject {
         player.pause()
     }
     
-    
     func forward() {
         var seekTo = self.player.currentTimeInSeconds + 10
         if seekTo > videoDuration {
