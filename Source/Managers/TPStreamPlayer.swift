@@ -11,15 +11,29 @@ class TPStreamPlayer: NSObject, ObservableObject {
         player.durationInSeconds
     }
     var currentPlaybackSpeed = PlaybackSpeed(rawValue: 1)!
+    private var playerCurrentTimeObserver: Any!
     
     init(player: TPAVPlayer){
         self.player = player
         super.init()
+        self.addObservers()
+    }
+    
+    private func addObservers(){
         self.observePlayerStatusChange()
+        self.observePlayerCurrentTimeChange()
     }
     
     private func observePlayerStatusChange(){
         player.addObserver(self, forKeyPath: #keyPath(TPAVPlayer.timeControlStatus), options: .new, context: nil)
+    }
+    
+    private func observePlayerCurrentTimeChange() {
+        let interval = CMTime(value: 1, timescale: CMTimeScale(NSEC_PER_SEC))
+        playerCurrentTimeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) { [weak self] progressTime in
+            guard let self = self else { return }
+            self.currentTime = CMTimeGetSeconds(progressTime)
+        }
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
