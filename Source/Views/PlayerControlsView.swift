@@ -10,7 +10,7 @@ struct PlayerControlsView: View {
     
     init(player: TPAVPlayer, isFullscreen: Binding<Bool>){
         _player = StateObject(wrappedValue: TPStreamPlayer(player: player))
-        self._isFullscreen = isFullscreen
+        _isFullscreen = isFullscreen
     }
         
     var body: some View {
