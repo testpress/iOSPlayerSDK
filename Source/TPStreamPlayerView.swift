@@ -29,7 +29,7 @@ public struct TPStreamPlayerView: View {
                     isFullScreen = UIDevice.current.orientation.isLandscape
                 }
             }
-            .padding(isFullScreen ? EdgeInsets(top: 0, leading: 48, bottom: 0, trailing: 48) : EdgeInsets())
+            .padding(.horizontal, isFullScreen ? 48 : 0)
             .frame(width: isFullScreen ? UIScreen.main.fixedCoordinateSpace.bounds.height : geometry.size.width,
                    height: isFullScreen ? UIScreen.main.fixedCoordinateSpace.bounds.width : geometry.size.height)
             .background(Color.black)
