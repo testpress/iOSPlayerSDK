@@ -27,6 +27,7 @@ struct PlayerControlsView: View {
                 }
                 .padding(.horizontal, 10)
                 PlayerProgressBar()
+                    .padding(.bottom, isFullscreen ? 36 : 0)
             }
         }
         .environmentObject(player)
