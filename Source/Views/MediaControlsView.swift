@@ -20,11 +20,17 @@ struct MediaControlsView: View {
                     .brightness(-0.1)
             }
             Spacer()
-            Button(action: togglePlay) {
-                Image(player.status == .paused ? "play" : "pause", bundle: bundle)
-                    .resizable()
-                    .frame(width: 48, height: 48)
-                    .brightness(-0.1)
+            if player.status == .buffering {
+                ProgressView()
+                    .scaleEffect(1.5)
+                    .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
+            } else {
+                Button(action: togglePlay) {
+                    Image(player.status == .paused ? "play" : "pause", bundle: bundle)
+                        .resizable()
+                        .frame(width: 48, height: 48)
+                        .brightness(-0.1)
+                }
             }
             Spacer()
             Button(action: player.forward) {
