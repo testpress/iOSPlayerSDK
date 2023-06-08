@@ -39,6 +39,9 @@ class TPStreamPlayer: NSObject, ObservableObject {
         let interval = CMTime(value: 1, timescale: CMTimeScale(NSEC_PER_SEC))
         playerCurrentTimeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) { [weak self] progressTime in
             guard let self = self else { return }
+
+           // Prevent updating the currentTime during seeking to avoid a minor glitch in the progress bar 
+           // where the thumb moves back to the previous position from the dragged position for a fraction of a second.
             if !self.isSeeking {
                 self.currentTime = CMTimeGetSeconds(progressTime)
             }
