@@ -10,10 +10,14 @@ class TPStreamPlayer: NSObject, ObservableObject {
     var videoDuration: Float64 {
         player.durationInSeconds
     }
+    var bufferDuration: Float64 {
+        player.bufferedDuration()
+    }
     var currentPlaybackSpeed = PlaybackSpeed(rawValue: 1)!
     private var playerCurrentTimeObserver: Any!
     private var currentItemChangeObservation: NSKeyValueObservation!
     
+    private var isSeeking: Bool = false
     
     init(player: TPAVPlayer){
         self.player = player
@@ -35,7 +39,9 @@ class TPStreamPlayer: NSObject, ObservableObject {
         let interval = CMTime(value: 1, timescale: CMTimeScale(NSEC_PER_SEC))
         playerCurrentTimeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) { [weak self] progressTime in
             guard let self = self else { return }
-            self.currentTime = CMTimeGetSeconds(progressTime)
+            if !self.isSeeking {
+                self.currentTime = CMTimeGetSeconds(progressTime)
+            }
         }
     }
     
@@ -125,7 +131,11 @@ class TPStreamPlayer: NSObject, ObservableObject {
     func goTo(seconds: Float64) {
         currentTime = seconds
         let seekTime = CMTime(value: Int64(seconds), timescale: 1)
-        player?.seek(to: seekTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
+        isSeeking = true
+        player?.seek(to: seekTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero){ [weak self] _ in
+            guard let self = self else { return }
+            self.isSeeking = false
+        }
     }
     
     func changePlaybackSpeed(_ speed: PlaybackSpeed){
