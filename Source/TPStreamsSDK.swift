@@ -7,6 +7,7 @@
 
 import Foundation
 import AVFoundation
+import Sentry
 
 
 public class TPStreamsSDK {
@@ -17,6 +18,7 @@ public class TPStreamsSDK {
         self.orgCode = orgCode
         self.provider = provider
         self.activateAudioSession()
+        self.initializeSentry()
     }
     
     private static func activateAudioSession() {
@@ -24,7 +26,19 @@ public class TPStreamsSDK {
         do {
             try audioSession.setCategory(AVAudioSession.Category.playback)
         } catch {
+            SentrySDK.capture(error: error)
             debugPrint("Setting category to AVAudioSessionCategoryPlayback failed.")
+        }
+    }
+    
+    private static func initializeSentry(){
+        SentrySDK.start { options in
+            options.dsn = "https://d59cb7b8e0f24e2eae1d270cd67559e4@sentry.testpress.in/12"
+            options.debug = true
+            options.tracesSampleRate = 1.0
+            options.enablePreWarmedAppStartTracing = true
+            options.attachScreenshot = true
+            options.attachViewHierarchy = true
         }
     }
 }
