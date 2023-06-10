@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0321F3272A2E0D1800E08AEE /* AVPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0321F3262A2E0D1800E08AEE /* AVPlayer.swift */; };
 		0326BADB2A335911009ABC58 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 0326BADA2A335911009ABC58 /* Sentry */; };
+		0326BADE2A348690009ABC58 /* M3U8Parser in Frameworks */ = {isa = PBXBuildFile; productRef = 0326BADD2A348690009ABC58 /* M3U8Parser */; };
 		035351A02A2EDAFA001E38F3 /* PlayerSettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0353519F2A2EDAFA001E38F3 /* PlayerSettingsButton.swift */; };
 		035351A22A2F49E3001E38F3 /* MediaControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035351A12A2F49E3001E38F3 /* MediaControlsView.swift */; };
 		0377C40E2A2B1C7300F7E58F /* BaseAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C40D2A2B1C7300F7E58F /* BaseAPI.swift */; };
@@ -121,6 +122,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0326BADE2A348690009ABC58 /* M3U8Parser in Frameworks */,
 				8E6389E52A275B2A00306FA4 /* Alamofire in Frameworks */,
 				0326BADB2A335911009ABC58 /* Sentry in Frameworks */,
 			);
@@ -309,6 +311,7 @@
 			packageProductDependencies = (
 				8E6389E42A275B2A00306FA4 /* Alamofire */,
 				0326BADA2A335911009ABC58 /* Sentry */,
+				0326BADD2A348690009ABC58 /* M3U8Parser */,
 			);
 			productName = iOSPlayerSDK;
 			productReference = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */;
@@ -366,6 +369,7 @@
 			packageReferences = (
 				8E6389E32A275B2A00306FA4 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				0326BAD92A335911009ABC58 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
+				0326BADC2A348690009ABC58 /* XCRemoteSwiftPackageReference "M3U8Parser" */,
 			);
 			productRefGroup = 8EDE99A52A2643B000E43EA9 /* Products */;
 			projectDirPath = "";
@@ -788,6 +792,14 @@
 				minimumVersion = 8.0.0;
 			};
 		};
+		0326BADC2A348690009ABC58 /* XCRemoteSwiftPackageReference "M3U8Parser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/M3U8Kit/M3U8Parser";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		8E6389E32A275B2A00306FA4 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire";
@@ -803,6 +815,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0326BAD92A335911009ABC58 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 			productName = Sentry;
+		};
+		0326BADD2A348690009ABC58 /* M3U8Parser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0326BADC2A348690009ABC58 /* XCRemoteSwiftPackageReference "M3U8Parser" */;
+			productName = M3U8Parser;
 		};
 		8E6389E42A275B2A00306FA4 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;

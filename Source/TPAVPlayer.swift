@@ -8,11 +8,14 @@
 import Foundation
 import AVKit
 import Sentry
+import M3U8Parser
 
 
 public class TPAVPlayer: AVPlayer {
     private var accessToken: String
     private var assetID: String
+    
+    var availableVideoQualities: [VideoQuality] = [VideoQuality(resolution:"Auto", bitrate: 0)]
     
     public init(assetID: String, accessToken: String) {
         guard TPStreamsSDK.orgCode != nil else {
@@ -51,6 +54,7 @@ public class TPAVPlayer: AVPlayer {
         let avURLAsset = AVURLAsset(url: url)
         self.setPlaybackURL(avURLAsset)
         self.setupDRM(avURLAsset)
+        self.populateAvailableVideoQualities(url)
     }
     
     private func setPlaybackURL(_ asset: AVURLAsset){
@@ -62,4 +66,42 @@ public class TPAVPlayer: AVPlayer {
         ContentKeyManager.shared.contentKeySession.addContentKeyRecipient(avURLAsset)
         ContentKeyManager.shared.contentKeyDelegate.setAssetDetails(assetID, accessToken)
     }
+    
+    private func populateAvailableVideoQualities(_ url: URL){
+        guard let streamList = getStreamListFromMasterPlaylist(url) else {
+            return
+        }
+        
+        
+        for i in 0 ..< streamList.count {
+            if let extXStreamInf = streamList.xStreamInf(at: i){
+                let resolution = "\(Int(extXStreamInf.resolution.height))p"
+                availableVideoQualities.append(VideoQuality(resolution: resolution, bitrate: Double(extXStreamInf.bandwidth)))
+            }
+        }
+    }
+    
+    private func getStreamListFromMasterPlaylist(_ url: URL) -> M3U8ExtXStreamInfList?{
+        guard let playlistModel = try? M3U8PlaylistModel(url: url),
+              let masterPlaylist = playlistModel.masterPlaylist,
+              let streamList = masterPlaylist.xStreamList else {
+            return nil
+        }
+        
+        streamList.sortByBandwidth(inOrder: .orderedAscending)
+        return streamList
+    }
+    
+    func changeVideoQuality(to videoQuality: VideoQuality) {
+        guard availableVideoQualities.contains(where: { $0.resolution == videoQuality.resolution && $0.bitrate == videoQuality.bitrate }) else {
+            return
+        }
+        
+        self.currentItem?.preferredPeakBitRate = videoQuality.bitrate
+    }
+}
+
+struct VideoQuality {
+    var resolution: String
+    var bitrate: Double
 }
