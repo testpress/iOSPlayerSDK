@@ -28,7 +28,7 @@ struct PlayerSettingsButton: View {
             return ActionSheet(
                 title: Text("Settings"),
                 message: nil,
-                buttons: [playbackSpeedButton(), videoQualitySpeedButton(), .cancel()]
+                buttons: [playbackSpeedButton(), videoQualityButton(), .cancel()]
             )
         case .playbackSpeed:
             return ActionSheet(
