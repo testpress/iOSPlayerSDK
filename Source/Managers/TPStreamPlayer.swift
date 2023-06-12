@@ -10,7 +10,7 @@ class TPStreamPlayer: NSObject, ObservableObject {
     var videoDuration: Float64 {
         player.durationInSeconds
     }
-    var bufferDuration: Float64 {
+    var bufferedDuration: Float64 {
         player.bufferedDuration()
     }
     var currentPlaybackSpeed = PlaybackSpeed(rawValue: 1)!

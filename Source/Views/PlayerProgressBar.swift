@@ -15,7 +15,7 @@ struct PlayerProgressBar: View {
                 Rectangle()
                     .foregroundColor(Color.white.opacity(0.6))
                     .frame(width: CGFloat(
-                        calculateWidthForValue(value: player.bufferDuration, geometry: geometry)), height: 2.5)
+                        calculateWidthForValue(value: player.bufferedDuration, geometry: geometry)), height: 2.5)
                 
                 Rectangle()
                     .foregroundColor(Color.red)
