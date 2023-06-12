@@ -8,6 +8,8 @@
 import SwiftUI
 
 public struct TPStreamPlayerView: View {
+    @State private var isFullScreen = false
+    
     var player: TPAVPlayer
     
     public init(player: TPAVPlayer) {
@@ -15,9 +17,31 @@ public struct TPStreamPlayerView: View {
     }
 
     public var body: some View {
-        ZStack {
-            AVPlayerBridge(player: player)
-            PlayerControlsView(player: player)
-        }.background(Color.black)
+        GeometryReader { geometry in
+            ZStack {
+                AVPlayerBridge(player: player)
+                PlayerControlsView(player: player, isFullscreen: $isFullScreen)
+            }
+            .padding(.horizontal, isFullScreen ? 48 : 0)
+            .frame(width: isFullScreen ? UIScreen.main.fixedCoordinateSpace.bounds.height : geometry.size.width,
+                   height: isFullScreen ? UIScreen.main.fixedCoordinateSpace.bounds.width : geometry.size.height)
+            .background(Color.black)
+            .edgesIgnoringSafeArea(isFullScreen ? .all : [])
+            .statusBarHidden(isFullScreen)
+            .onChange(of: isFullScreen, perform: changeOrientation)
+            .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
+                isFullScreen = UIDevice.current.orientation.isLandscape
+            }
+        }
+    }
+    
+    func changeOrientation(isFullscreen: Bool){
+        let currentOrientation = UIDevice.current.orientation
+        if isFullscreen && currentOrientation.isLandscape || !isFullscreen && currentOrientation.isPortrait  {
+            return
+        }
+        
+        let orientation: UIInterfaceOrientation = isFullscreen ? .landscapeRight : .portrait
+        UIDevice.current.setValue(orientation.rawValue, forKey: "orientation")
     }
 }

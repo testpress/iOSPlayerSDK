@@ -6,9 +6,11 @@ struct PlayerControlsView: View {
     @StateObject private var player: TPStreamPlayer
     @State private var showControls = false
     @State private var controlsHideTimer: Timer?
+    @Binding private var isFullscreen: Bool
     
-    init(player: TPAVPlayer){
+    init(player: TPAVPlayer, isFullscreen: Binding<Bool>){
         _player = StateObject(wrappedValue: TPStreamPlayer(player: player))
+        _isFullscreen = isFullscreen
     }
         
     var body: some View {
@@ -21,6 +23,7 @@ struct PlayerControlsView: View {
                 HStack {
                     TimeIndicatorView()
                     Spacer()
+                    fullscreenButton()
                 }.padding([.horizontal, .bottom], 10)
             }
         }
@@ -41,6 +44,14 @@ struct PlayerControlsView: View {
             showControls = false
         }
     }
+    
+    func fullscreenButton() -> some View{
+        return Button(action: {isFullscreen.toggle()}) {
+            Image(isFullscreen ? "minimize": "maximize", bundle: bundle)
+                .resizable()
+                .frame(width: 16, height: 16)
+        }
+    }
 }
 
 struct TPVideoPlayerControls_Previews: PreviewProvider {
@@ -49,7 +60,8 @@ struct TPVideoPlayerControls_Previews: PreviewProvider {
             player: TPAVPlayer(
                 assetID: "dummy",
                 accessToken: "dummy"
-            )
+            ),
+            isFullscreen: .constant(true)
         ).background(Color.black)
     }
 }
