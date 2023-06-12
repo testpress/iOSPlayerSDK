@@ -12,6 +12,8 @@ class TPStreamPlayer: NSObject, ObservableObject {
     }
     var currentPlaybackSpeed = PlaybackSpeed(rawValue: 1)!
     private var playerCurrentTimeObserver: Any!
+    private var currentItemChangeObservation: NSKeyValueObservation!
+    
     
     init(player: TPAVPlayer){
         self.player = player
@@ -22,6 +24,7 @@ class TPStreamPlayer: NSObject, ObservableObject {
     private func addObservers(){
         self.observePlayerStatusChange()
         self.observePlayerCurrentTimeChange()
+        self.observePlayerBufferingStatusChange()
     }
     
     private func observePlayerStatusChange(){
@@ -36,6 +39,17 @@ class TPStreamPlayer: NSObject, ObservableObject {
         }
     }
     
+    private func observePlayerBufferingStatusChange(){
+        // We're asynchronously setting the `currentItem` in the TPAVPlayer once the asset is fetched via network.
+        // So we adding observers on `currentItem` once it has been set.
+        
+        currentItemChangeObservation = player.observe(\.currentItem, options: [.new]) { [weak self] (_, _) in
+            guard let self = self else { return }
+            self.player.currentItem?.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.isPlaybackLikelyToKeepUp), options: .new, context: nil)
+            self.player.currentItem?.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.isPlaybackBufferEmpty), options: .new, context: nil)
+        }
+    }
+    
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         guard let keyPath = keyPath else { return }
         
@@ -43,6 +57,10 @@ class TPStreamPlayer: NSObject, ObservableObject {
         case #keyPath(TPAVPlayer.timeControlStatus):
             if let player = object as? TPAVPlayer {
                 handlePlayerStatusChange(for: player)
+            }
+        case #keyPath(AVPlayerItem.isPlaybackLikelyToKeepUp), #keyPath(AVPlayerItem.isPlaybackBufferEmpty):
+            if let playerItem = object as? AVPlayerItem {
+                handleBufferStatusChange(of: playerItem, keyPath: keyPath)
             }
         default:
             break
@@ -58,6 +76,21 @@ class TPStreamPlayer: NSObject, ObservableObject {
         case .waitingToPlayAtSpecifiedRate:
             break
         @unknown default:
+            break
+        }
+    }
+    
+    private func handleBufferStatusChange(of playerItem: AVPlayerItem, keyPath: String) {
+        switch keyPath {
+        case #keyPath(AVPlayerItem.isPlaybackBufferEmpty):
+            if playerItem.isPlaybackBufferEmpty {
+                status = .buffering
+            }
+        case #keyPath(AVPlayerItem.isPlaybackLikelyToKeepUp):
+            if playerItem.isPlaybackLikelyToKeepUp {
+                status = self.player.timeControlStatus == .playing ? .playing : .paused
+            }
+        default:
             break
         }
     }
@@ -104,6 +137,7 @@ class TPStreamPlayer: NSObject, ObservableObject {
 enum PlayerStatus {
     case playing
     case paused
+    case buffering
 }
 
 enum PlaybackSpeed: Float, CaseIterable {
