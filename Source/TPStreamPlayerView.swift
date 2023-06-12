@@ -11,7 +11,6 @@ public struct TPStreamPlayerView: View {
     @State private var isFullScreen = false
     
     var player: TPAVPlayer
-    private var autoFullScreenOnRotate: Bool = false
     
     public init(player: TPAVPlayer) {
         self.player = player
@@ -23,21 +22,19 @@ public struct TPStreamPlayerView: View {
                 AVPlayerBridge(player: player)
                 PlayerControlsView(player: player, isFullscreen: $isFullScreen)
             }
-            .onChange(of: isFullScreen, perform: changeOrientation)
-            .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
-                if autoFullScreenOnRotate {
-                    isFullScreen = UIDevice.current.orientation.isLandscape
-                }
-            }
             .padding(.horizontal, isFullScreen ? 48 : 0)
             .frame(width: isFullScreen ? UIScreen.main.fixedCoordinateSpace.bounds.height : geometry.size.width,
                    height: isFullScreen ? UIScreen.main.fixedCoordinateSpace.bounds.width : geometry.size.height)
             .background(Color.black)
             .edgesIgnoringSafeArea(isFullScreen ? .all : [])
             .statusBarHidden(isFullScreen)
+            .onChange(of: isFullScreen, perform: changeOrientation)
+            .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
+                isFullScreen = UIDevice.current.orientation.isLandscape
+            }
         }
     }
- 
+    
     func changeOrientation(isFullscreen: Bool){
         let currentOrientation = UIDevice.current.orientation
         if isFullscreen && currentOrientation.isLandscape || !isFullscreen && currentOrientation.isPortrait  {
@@ -46,11 +43,5 @@ public struct TPStreamPlayerView: View {
         
         let orientation: UIInterfaceOrientation = isFullscreen ? .landscapeRight : .portrait
         UIDevice.current.setValue(orientation.rawValue, forKey: "orientation")
-    }
-    
-    public func autoFullScreenOnRotate(_ enabled: Bool) -> TPStreamPlayerView {
-        var view = self
-        view.autoFullScreenOnRotate = enabled
-        return view
     }
 }
