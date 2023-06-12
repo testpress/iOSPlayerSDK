@@ -24,7 +24,9 @@ struct PlayerControlsView: View {
                     TimeIndicatorView()
                     Spacer()
                     fullscreenButton()
-                }.padding([.horizontal, .bottom], 10)
+                }.padding(.horizontal, 10)
+                PlayerProgressBar()
+                    .padding(.bottom, isFullscreen ? 36 : 0)
             }
         }
         .environmentObject(player)
