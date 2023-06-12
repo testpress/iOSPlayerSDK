@@ -50,12 +50,12 @@ struct PlayerProgressBar: View {
     }
     
     private func seekToDraggedLocation(value: DragGesture.Value, geometry: GeometryProxy){
-        let seconds = getSecondsOnDraggedLocation(geometry)
+        let seconds = getSecondsForDraggedLocation(geometry)
         player.goTo(seconds: seconds)
         isDragging = false
     }
     
-    private func getSecondsOnDraggedLocation(_ geometry: GeometryProxy) -> Float64{
+    private func getSecondsForDraggedLocation(_ geometry: GeometryProxy) -> Float64{
         let totalWidth = Float64(geometry.size.width)
         let percentage = draggedLocation! / totalWidth
         return player.videoDuration * percentage
