@@ -28,13 +28,19 @@ struct PlayerSettingsButton: View {
             return ActionSheet(
                 title: Text("Settings"),
                 message: nil,
-                buttons: [playbackSpeedButton(), .cancel()]
+                buttons: [playbackSpeedButton(), videoQualityButton(), .cancel()]
             )
         case .playbackSpeed:
             return ActionSheet(
                 title: Text("Playback Speed"),
                 message: nil,
                 buttons: playbackSpeedOptions() + [.cancel()]
+            )
+        case .videoQuality:
+            return ActionSheet(
+                title: Text("Video Quality"),
+                message: nil,
+                buttons: videoQualityOptions() + [.cancel()]
             )
         }
     }
@@ -48,6 +54,15 @@ struct PlayerSettingsButton: View {
         }
     }
     
+    private func videoQualityButton() -> ActionSheet.Button {
+        return .default(Text("Video Quality - \(player.currentVideoQuality?.resolution ?? "Auto")")) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.showOptions = true
+                self.currentMenu = .videoQuality
+            }
+        }
+    }
+    
     private func playbackSpeedOptions() -> [ActionSheet.Button] {
         let playbackSpeeds = PlaybackSpeed.allCases
         return playbackSpeeds.map { speed in
@@ -56,6 +71,14 @@ struct PlayerSettingsButton: View {
                 }
         }
     }
+    
+    private func videoQualityOptions() -> [ActionSheet.Button] {
+        return player.availableVideoQualities.map { videoQuality in
+                .default(Text(videoQuality.resolution)) {
+                    player.changeVideoQuality(videoQuality)
+                }
+        }
+    }
 }
 
-enum SettingsMenu { case main, playbackSpeed }
+enum SettingsMenu { case main, playbackSpeed, videoQuality }

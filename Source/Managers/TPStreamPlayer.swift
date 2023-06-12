@@ -19,6 +19,13 @@ class TPStreamPlayer: NSObject, ObservableObject {
     
     private var isSeeking: Bool = false
     
+    var availableVideoQualities: [VideoQuality] {
+        return self.player.availableVideoQualities
+    }
+    var currentVideoQuality: VideoQuality? {
+        return self.player.availableVideoQualities.first( where: {$0.bitrate == self.player.currentItem?.preferredPeakBitRate })
+    }
+    
     init(player: TPAVPlayer){
         self.player = player
         super.init()
@@ -144,6 +151,10 @@ class TPStreamPlayer: NSObject, ObservableObject {
     func changePlaybackSpeed(_ speed: PlaybackSpeed){
         currentPlaybackSpeed = speed
         player.rate = speed.rawValue
+    }
+    
+    func changeVideoQuality(_ videoQuality: VideoQuality){
+        self.player.changeVideoQuality(to: videoQuality)
     }
 }
 
