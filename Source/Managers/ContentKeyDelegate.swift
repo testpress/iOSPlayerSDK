@@ -5,6 +5,7 @@
 //  Created by Bharath on 31/05/23.
 //
 import AVFoundation
+import Sentry
 
 
 class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
@@ -62,6 +63,7 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
                                                           completionHandler:encryptedSPCMessageCallback)
 
         } catch {
+            SentrySDK.capture(error: error)
             keyRequest.processContentKeyResponseError(error)
         }
     }

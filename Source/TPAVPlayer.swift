@@ -7,6 +7,7 @@
 
 import Foundation
 import AVKit
+import Sentry
 
 
 public class TPAVPlayer: AVPlayer {
@@ -35,6 +36,7 @@ public class TPAVPlayer: AVPlayer {
             if let asset = asset {
                 self.setup(withAsset: asset)
             } else if let error = error{
+                SentrySDK.capture(error: error)
                 debugPrint(error.localizedDescription)
             }
         }

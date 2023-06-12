@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0321F3272A2E0D1800E08AEE /* AVPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0321F3262A2E0D1800E08AEE /* AVPlayer.swift */; };
+		0326BADB2A335911009ABC58 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 0326BADA2A335911009ABC58 /* Sentry */; };
 		035351A02A2EDAFA001E38F3 /* PlayerSettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0353519F2A2EDAFA001E38F3 /* PlayerSettingsButton.swift */; };
 		035351A22A2F49E3001E38F3 /* MediaControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035351A12A2F49E3001E38F3 /* MediaControlsView.swift */; };
 		0377C40E2A2B1C7300F7E58F /* BaseAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C40D2A2B1C7300F7E58F /* BaseAPI.swift */; };
@@ -54,6 +55,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		0326BAD82A334EB4009ABC58 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8E6389DB2A27297500306FA4 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -110,6 +120,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E6389E52A275B2A00306FA4 /* Alamofire in Frameworks */,
+				0326BADB2A335911009ABC58 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,6 +296,7 @@
 				8EDE99A02A2643B000E43EA9 /* Sources */,
 				8EDE99A12A2643B000E43EA9 /* Frameworks */,
 				8EDE99A22A2643B000E43EA9 /* Resources */,
+				0326BAD82A334EB4009ABC58 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -293,6 +305,7 @@
 			name = TPStreamsSDK;
 			packageProductDependencies = (
 				8E6389E42A275B2A00306FA4 /* Alamofire */,
+				0326BADA2A335911009ABC58 /* Sentry */,
 			);
 			productName = iOSPlayerSDK;
 			productReference = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */;
@@ -349,6 +362,7 @@
 			mainGroup = 8EDE999A2A2643B000E43EA9;
 			packageReferences = (
 				8E6389E32A275B2A00306FA4 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				0326BAD92A335911009ABC58 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 			);
 			productRefGroup = 8EDE99A52A2643B000E43EA9 /* Products */;
 			projectDirPath = "";
@@ -762,6 +776,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		0326BAD92A335911009ABC58 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getsentry/sentry-cocoa.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
 		8E6389E32A275B2A00306FA4 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire";
@@ -773,6 +795,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		0326BADA2A335911009ABC58 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0326BAD92A335911009ABC58 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
+		};
 		8E6389E42A275B2A00306FA4 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8E6389E32A275B2A00306FA4 /* XCRemoteSwiftPackageReference "Alamofire" */;
