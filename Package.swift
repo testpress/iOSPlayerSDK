@@ -29,7 +29,10 @@ let package = Package(
         "M3U8Parser",
         .product(name: "Sentry", package: "sentry-cocoa"),
       ],
-      path: "Source"
+      path: "Source",
+      resources: [
+        .process("Assets.xcassets")
+      ]
       ),
     .testTarget(
       name: "iOSPlayerSDKTests",
