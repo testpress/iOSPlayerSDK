@@ -31,7 +31,7 @@ let package = Package(
       ],
       path: "Source",
       resources: [
-        .process("Assets.xcassets")
+        .copy("Assets.xcassets")
       ]
       ),
     .testTarget(
