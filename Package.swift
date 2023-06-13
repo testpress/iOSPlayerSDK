@@ -29,11 +29,8 @@ let package = Package(
         "M3U8Parser",
         .product(name: "Sentry", package: "sentry-cocoa"),
       ],
-      path: "Source",
-      resources: [
-        .copy("Assets.xcassets")
-      ]
-      ),
+      path: "Source"
+    ),
     .testTarget(
       name: "iOSPlayerSDKTests",
       dependencies: ["TPStreamsSDK"],

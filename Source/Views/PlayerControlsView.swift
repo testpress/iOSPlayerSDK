@@ -49,7 +49,7 @@ struct PlayerControlsView: View {
     
     func fullscreenButton() -> some View{
         return Button(action: {isFullscreen.toggle()}) {
-            Image(isFullscreen ? "minimize": "maximize", bundle: bundle)
+            Image(isFullscreen ? "minimize": "maximize")
                 .resizable()
                 .frame(width: 16, height: 16)
         }
