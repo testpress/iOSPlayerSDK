@@ -1,9 +1,9 @@
 import SwiftUI
 
-#if !SPM
-extension Bundle {
-  static var module: Bundle { Bundle(identifier: "com.tpstreams.iOSPlayerSDK")! }
-}
+#if SPM
+let bundle = Bundle.module // Access bundle using Bundle.module when using SPM
+#else
+let bundle = Bundle(identifier: "com.tpstreams.iOSPlayerSDK")! // Access bundle using identifier when directly including the framework
 #endif
 
 struct PlayerControlsView: View {
@@ -53,7 +53,7 @@ struct PlayerControlsView: View {
     
     func fullscreenButton() -> some View{
         return Button(action: {isFullscreen.toggle()}) {
-            Image(isFullscreen ? "minimize": "maximize", bundle: Bundle.module)
+            Image(isFullscreen ? "minimize": "maximize", bundle: bundle)
                 .resizable()
                 .frame(width: 16, height: 16)
         }

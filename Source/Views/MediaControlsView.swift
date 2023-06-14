@@ -14,7 +14,7 @@ struct MediaControlsView: View {
         HStack() {
             Spacer()
             Button(action: player.rewind) {
-                Image("rewind", bundle: Bundle.module)
+                Image("rewind", bundle: bundle)
                     .resizable()
                     .frame(width: 40, height: 40)
                     .brightness(-0.1)
@@ -26,7 +26,7 @@ struct MediaControlsView: View {
                     .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
             } else {
                 Button(action: togglePlay) {
-                    Image(player.status == .paused ? "play" : "pause",bundle: Bundle.module)
+                    Image(player.status == .paused ? "play" : "pause",bundle: bundle)
                         .resizable()
                         .frame(width: 48, height: 48)
                         .brightness(-0.1)
@@ -34,7 +34,7 @@ struct MediaControlsView: View {
             }
             Spacer()
             Button(action: player.forward) {
-                Image("forward", bundle: Bundle.module)
+                Image("forward", bundle: bundle)
                     .resizable()
                     .frame(width: 40, height: 40)
                     .brightness(-0.1)
