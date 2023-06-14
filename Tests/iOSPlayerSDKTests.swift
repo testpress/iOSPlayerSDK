@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import iOSPlayerSDK
+@testable import TPStreamsSDK
 
 final class iOSPlayerSDKTests: XCTestCase {
 
