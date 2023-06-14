@@ -26,7 +26,7 @@ struct MediaControlsView: View {
                     .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
             } else {
                 Button(action: togglePlay) {
-                    Image(player.status == .paused ? "play" : "pause",bundle: bundle)
+                    Image(player.status == .paused ? "play" : "pause", bundle: bundle)
                         .resizable()
                         .frame(width: 48, height: 48)
                         .brightness(-0.1)
