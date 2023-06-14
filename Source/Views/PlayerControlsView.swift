@@ -1,6 +1,10 @@
 import SwiftUI
 
-let bundle = Bundle(identifier: "com.tpstreams.iOSPlayerSDK")
+#if !SPM
+extension Bundle {
+  static var module: Bundle { Bundle(identifier: "com.tpstreams.iOSPlayerSDK")! }
+}
+#endif
 
 struct PlayerControlsView: View {
     @StateObject private var player: TPStreamPlayer
@@ -49,7 +53,7 @@ struct PlayerControlsView: View {
     
     func fullscreenButton() -> some View{
         return Button(action: {isFullscreen.toggle()}) {
-            Image(isFullscreen ? "minimize": "maximize", bundle: bundle)
+            Image(isFullscreen ? "minimize": "maximize", bundle: Bundle.module)
                 .resizable()
                 .frame(width: 16, height: 16)
         }

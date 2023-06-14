@@ -13,7 +13,7 @@ struct PlayerSettingsButton: View {
                 showOptions = true
                 currentMenu = .main
             }) {
-                Image("settings", bundle: bundle)
+                Image("settings", bundle: Bundle.module)
                     .resizable()
                     .frame(width: 16, height: 16)
             }
