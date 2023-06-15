@@ -54,6 +54,13 @@
 			remoteGlobalIDString = 8EDE99A32A2643B000E43EA9;
 			remoteInfo = iOSPlayerSDK;
 		};
+		D9A088052A3B1FF100156EE2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8EDE999B2A2643B000E43EA9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8E6389C02A27277D00306FA4;
+			remoteInfo = Example;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -329,6 +336,7 @@
 			);
 			dependencies = (
 				8EDE99B12A2643B000E43EA9 /* PBXTargetDependency */,
+				D9A088062A3B1FF100156EE2 /* PBXTargetDependency */,
 			);
 			name = iOSPlayerSDKTests;
 			productName = iOSPlayerSDKTests;
@@ -354,6 +362,7 @@
 					};
 					8EDE99AD2A2643B000E43EA9 = {
 						CreatedOnToolsVersion = 14.2;
+						TestTargetID = 8E6389C02A27277D00306FA4;
 					};
 				};
 			};
@@ -463,6 +472,11 @@
 			isa = PBXTargetDependency;
 			target = 8EDE99A32A2643B000E43EA9 /* TPStreamsSDK */;
 			targetProxy = 8EDE99B02A2643B000E43EA9 /* PBXContainerItemProxy */;
+		};
+		D9A088062A3B1FF100156EE2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8E6389C02A27277D00306FA4 /* Example */;
+			targetProxy = D9A088052A3B1FF100156EE2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -730,6 +744,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Example";
 			};
 			name = Debug;
 		};
@@ -747,6 +762,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Example";
 			};
 			name = Release;
 		};
