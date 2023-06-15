@@ -8,7 +8,11 @@
 import SwiftUI
 
 public struct TPStreamPlayerView: View {
-    @State private var isFullScreen = false
+    @State private var isFullScreen = false {
+        didSet {
+            NotificationCenter.default.post(name: Notification.Name("FullScreenChangeNotification"), object: isFullScreen)
+        }
+    }
     
     var player: TPAVPlayer
     
