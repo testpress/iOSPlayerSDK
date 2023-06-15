@@ -114,6 +114,7 @@
 		8EDE99A72A2643B000E43EA9 /* iOSPlayerSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = iOSPlayerSDK.h; sourceTree = "<group>"; };
 		8EDE99AE2A2643B000E43EA9 /* iOSPlayerSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSPlayerSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSPlayerSDKTests.swift; sourceTree = "<group>"; };
+		D9A0880E2A3B426700156EE2 /* iOS.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = iOS.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -262,9 +263,18 @@
 		8EDE99B22A2643B000E43EA9 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				D9A0880D2A3B425100156EE2 /* Test Plans */,
 				8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		D9A0880D2A3B425100156EE2 /* Test Plans */ = {
+			isa = PBXGroup;
+			children = (
+				D9A0880E2A3B426700156EE2 /* iOS.xctestplan */,
+			);
+			path = "Test Plans";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

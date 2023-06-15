@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "9E2A7DB4-D55E-4A47-8B6E-50420F29D276",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:iOSPlayerSDK.xcodeproj",
+        "identifier" : "8EDE99AD2A2643B000E43EA9",
+        "name" : "iOSPlayerSDKTests"
+      }
+    }
+  ],
+  "version" : 1
+}
