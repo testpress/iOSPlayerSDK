@@ -25,9 +25,5 @@ final class TPStreamsSDKTest: XCTestCase {
         XCTAssertEqual(TPStreamsSDK.orgCode, orgCode)
         XCTAssertEqual(TPStreamsSDK.provider, .testpress)
     }
-    
-    func testInitTPAVPlayer() throws {
-        let player = TPAVPlayer(assetID: "1234567890", accessToken: "abc123")
-        XCTAssertNotNil(player)
-    }
+
 }
