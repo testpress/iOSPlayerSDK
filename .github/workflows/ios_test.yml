@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    name: Test default scheme using any available iPhone simulator
+    name: Test iOS Player SDK
     runs-on: macos-latest
 
     steps:
