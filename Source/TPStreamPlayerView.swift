@@ -41,7 +41,12 @@ public struct TPStreamPlayerView: View {
             return
         }
         
-        let orientation: UIInterfaceOrientation = isFullscreen ? .landscapeRight : .portrait
-        UIDevice.current.setValue(orientation.rawValue, forKey: "orientation")
+        let orientation: UIInterfaceOrientationMask = isFullscreen ? .landscapeRight : .portrait
+        if #available(iOS 16.0, *) {
+            let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+            windowScene?.requestGeometryUpdate(.iOS(interfaceOrientations: orientation))
+        } else {
+            UIDevice.current.setValue(orientation.rawValue, forKey: "orientation")
+        }
     }
 }
