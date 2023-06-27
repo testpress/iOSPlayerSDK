@@ -43,7 +43,7 @@ class TPStreamPlayer: NSObject, ObservableObject {
     }
     
     private func observePlayerCurrentTimeChange() {
-        let interval = CMTime(value: 1, timescale: CMTimeScale(NSEC_PER_SEC))
+        let interval = CMTime(seconds: 0.5, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
         playerCurrentTimeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) { [weak self] progressTime in
             guard let self = self else { return }
 
