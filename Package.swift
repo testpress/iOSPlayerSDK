@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
   name: "TPStreamsSDK",
   platforms: [
-    .iOS(.v11.4),
+    .iOS(.v11),
   ],
   products: [
     .library(
