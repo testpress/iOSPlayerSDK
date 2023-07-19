@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@available(iOS 13.0, *)
 struct TimeIndicatorView: View {
     @EnvironmentObject var player: TPStreamPlayer
     

@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 13.0, *)
 struct PlayerSettingsButton: View {
     @State private var showOptions = false
     @State private var currentMenu: SettingsMenu = .main
@@ -48,6 +49,7 @@ struct PlayerSettingsButton: View {
     private func playbackSpeedButton() -> ActionSheet.Button {
         return .default(Text("Playback Speed - \(player.currentPlaybackSpeed.label)")) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                print("playbackSpeedButton called")
                 self.showOptions = true
                 self.currentMenu = .playbackSpeed
             }
