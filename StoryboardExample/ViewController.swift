@@ -28,7 +28,6 @@ class ViewController: UIViewController {
         addChild(playerViewController!)
         playerContainer.addSubview(playerViewController!.view)
         playerViewController!.view.frame = playerContainer.bounds
-        playerViewController!.didMove(toParent: self)
         player?.play()
     }
 }
