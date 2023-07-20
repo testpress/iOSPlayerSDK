@@ -6,6 +6,7 @@ let bundle = Bundle.module
 let bundle = Bundle(identifier: "com.tpstreams.iOSPlayerSDK")! // Access bundle using identifier when directly including the framework
 #endif
 
+@available(iOS 14.0, *)
 struct PlayerControlsView: View {
     @StateObject private var player: TPStreamPlayer
     @State private var showControls = false
@@ -60,6 +61,7 @@ struct PlayerControlsView: View {
     }
 }
 
+@available(iOS 14.0.0, *)
 struct TPVideoPlayerControls_Previews: PreviewProvider {
     static var previews: some View {
         PlayerControlsView(

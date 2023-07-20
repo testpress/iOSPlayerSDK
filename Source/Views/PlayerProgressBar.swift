@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 13.0, *)
 struct PlayerProgressBar: View {
     @EnvironmentObject var player: TPStreamPlayer
     @State private var isDragging = false

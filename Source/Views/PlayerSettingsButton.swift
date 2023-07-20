@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 13.0, *)
 struct PlayerSettingsButton: View {
     @State private var showOptions = false
     @State private var currentMenu: SettingsMenu = .main

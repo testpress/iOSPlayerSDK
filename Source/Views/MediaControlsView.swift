@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@available(iOS 14.0, *)
 struct MediaControlsView: View {
     @EnvironmentObject var player: TPStreamPlayer
     
