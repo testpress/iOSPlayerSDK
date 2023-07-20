@@ -2,6 +2,7 @@ import Foundation
 import CoreMedia
 import AVKit
 
+@available(iOS 13.0, *)
 class TPStreamPlayer: NSObject, ObservableObject {
     @Published var status: PlayerStatus = .paused
     @Published var currentTime: Float64?
