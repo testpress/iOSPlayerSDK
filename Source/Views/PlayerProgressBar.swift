@@ -2,7 +2,7 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 struct PlayerProgressBar: View {
-    @EnvironmentObject var player: TPStreamPlayer
+    @EnvironmentObject var player: TPStreamPlayerObservable
     @State private var isDragging = false
     @State private var draggedLocation: Float64?
     
@@ -20,14 +20,14 @@ struct PlayerProgressBar: View {
                 
                 Rectangle()
                     .foregroundColor(Color.red)
-                    .frame(width: CGFloat(calculateWidthForValue(value: player.currentTime ?? 0, geometry: geometry)), height: 2.5)
+                    .frame(width: CGFloat(calculateWidthForValue(value: player.observedCurrentTime ?? 0, geometry: geometry)), height: 2.5)
                 
                 
                 Circle()
                     .fill(Color.red)
                     .frame(width: 12, height: 12)
                     .scaleEffect(isDragging ? 1.8 : 1.0)
-                    .offset(x: isDragging ? draggedLocation! : calculateWidthForValue(value: player.currentTime ?? 0, geometry: geometry))
+                    .offset(x: isDragging ? draggedLocation! : calculateWidthForValue(value: player.observedCurrentTime ?? 0, geometry: geometry))
                     .gesture(DragGesture()
                         .onChanged(handleThumbDrag)
                         .onEnded { value in

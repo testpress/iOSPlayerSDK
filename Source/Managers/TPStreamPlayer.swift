@@ -2,10 +2,9 @@ import Foundation
 import CoreMedia
 import AVKit
 
-@available(iOS 13.0, *)
-class TPStreamPlayer: NSObject, ObservableObject {
-    @Published var status: PlayerStatus = .paused
-    @Published var currentTime: Float64?
+class TPStreamPlayer: NSObject {
+    var status: PlayerStatus = .paused
+    var currentTime: Float64?
 
     var player: TPAVPlayer!
     var videoDuration: Float64 {
@@ -156,6 +155,31 @@ class TPStreamPlayer: NSObject, ObservableObject {
     
     func changeVideoQuality(_ videoQuality: VideoQuality){
         self.player.changeVideoQuality(to: videoQuality)
+    }
+}
+
+
+@available(iOS 13.0, *)
+class TPStreamPlayerObservable: TPStreamPlayer, ObservableObject {
+    @Published var observedStatus: PlayerStatus
+    @Published var observedCurrentTime: Float64?
+    
+    override var status: PlayerStatus {
+        didSet {
+            observedStatus = status
+        }
+    }
+    
+    override var currentTime: Float64? {
+        didSet {
+            observedCurrentTime = currentTime
+        }
+    }
+    
+    override init(player: TPAVPlayer) {
+        observedStatus = .paused
+        observedCurrentTime = nil
+        super.init(player: player)
     }
 }
 

@@ -8,13 +8,13 @@ let bundle = Bundle(identifier: "com.tpstreams.iOSPlayerSDK")! // Access bundle 
 
 @available(iOS 14.0, *)
 struct PlayerControlsView: View {
-    @StateObject private var player: TPStreamPlayer
+    @StateObject private var player: TPStreamPlayerObservable
     @State private var showControls = false
     @State private var controlsHideTimer: Timer?
     @Binding private var isFullscreen: Bool
     
     init(player: TPAVPlayer, isFullscreen: Binding<Bool>){
-        _player = StateObject(wrappedValue: TPStreamPlayer(player: player))
+        _player = StateObject(wrappedValue: TPStreamPlayerObservable(player: player))
         _isFullscreen = isFullscreen
     }
         
