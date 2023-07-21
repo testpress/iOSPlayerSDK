@@ -5,7 +5,7 @@ struct PlayerSettingsButton: View {
     @State private var showOptions = false
     @State private var currentMenu: SettingsMenu = .main
     
-    @EnvironmentObject var player: TPStreamPlayer
+    @EnvironmentObject var player: TPStreamPlayerObservable
     
     var body: some View {
         HStack {

@@ -9,11 +9,11 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 struct TimeIndicatorView: View {
-    @EnvironmentObject var player: TPStreamPlayer
+    @EnvironmentObject var player: TPStreamPlayerObservable
     
     var body: some View {
         HStack {
-            Text(timeStringFromSeconds(player.currentTime ?? 0))
+            Text(timeStringFromSeconds(player.observedCurrentTime ?? 0))
                 .foregroundColor(Color.white)
                 .fontWeight(.bold)
                 .font(.subheadline)

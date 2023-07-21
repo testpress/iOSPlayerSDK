@@ -9,7 +9,7 @@ import SwiftUI
 
 @available(iOS 14.0, *)
 struct MediaControlsView: View {
-    @EnvironmentObject var player: TPStreamPlayer
+    @EnvironmentObject var player: TPStreamPlayerObservable
     
     var body: some View {
         HStack() {
@@ -21,13 +21,13 @@ struct MediaControlsView: View {
                     .brightness(-0.1)
             }
             Spacer()
-            if player.status == .buffering {
+            if player.observedStatus == .buffering {
                 ProgressView()
                     .scaleEffect(1.5)
                     .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
             } else {
                 Button(action: togglePlay) {
-                    Image(player.status == .paused ? "play" : "pause", bundle: bundle)
+                    Image(player.observedStatus == .paused ? "play" : "pause", bundle: bundle)
                         .resizable()
                         .frame(width: 48, height: 48)
                         .brightness(-0.1)
