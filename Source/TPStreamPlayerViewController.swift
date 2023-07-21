@@ -43,6 +43,7 @@ public class TPStreamPlayerViewController: UIViewController {
     }
     
     private func setupViews() {
+        view.backgroundColor = .black
         view.addSubview(videoPlayerView)
         view.addSubview(playerControlsView)
         view.bringSubviewToFront(playerControlsView)
