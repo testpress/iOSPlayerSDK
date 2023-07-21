@@ -13,11 +13,12 @@ class ViewController: UIViewController {
     @IBOutlet weak var playerContainer: UIView!
     
     var playerViewController: AVPlayerViewController?
-    var player: AVPlayer?
+    var player: TPAVPlayer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupPlayer()
+        player?.play()
     }
     
     func setupPlayer(){
@@ -28,7 +29,6 @@ class ViewController: UIViewController {
         addChild(playerViewController!)
         playerContainer.addSubview(playerViewController!.view)
         playerViewController!.view.frame = playerContainer.bounds
-        player?.play()
     }
 }
 
