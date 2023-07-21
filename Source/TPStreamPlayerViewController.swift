@@ -9,14 +9,15 @@ import Foundation
 import UIKit
 
 
-public class TPStreamUIKitPlayerView: UIView {
-    private var player: TPAVPlayer!
+public class TPStreamPlayerViewController: UIViewController {
+    public var player: TPAVPlayer?
     private var controlsVisibilityTimer: Timer?
     
     private lazy var videoPlayerView: TPVideoPlayerUIView = {
-        let view = TPVideoPlayerUIView(frame: bounds)
-        view.player = player
-        return view
+        let playerView = TPVideoPlayerUIView(frame: view.frame)
+        playerView.backgroundColor = .black
+        playerView.player = player
+        return playerView
     }()
     
     private lazy var playerControlsView: PlayerControlsUIKitView = {
@@ -24,35 +25,35 @@ public class TPStreamUIKitPlayerView: UIView {
               let playerControlsView = views.first else {
             fatalError("Could not load PlayerControls view from nib.")
         }
-        playerControlsView.frame = bounds
+        playerControlsView.frame = view.frame
         playerControlsView.isHidden = true
         return playerControlsView
     }()
     
-    public init(frame: CGRect, player: TPAVPlayer) {
-        super.init(frame: frame)
-        
-        self.player = player
+    public override func viewDidLoad() {
+        super.viewDidLoad()
         setupViews()
         setupTapGesture()
     }
     
-    public required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        videoPlayerView.frame = view.bounds
+        playerControlsView.frame = view.bounds
     }
     
     private func setupViews() {
-        addSubview(videoPlayerView)
-        addSubview(playerControlsView)
-        bringSubviewToFront(playerControlsView)
+        view.addSubview(videoPlayerView)
+        view.addSubview(playerControlsView)
+        view.bringSubviewToFront(playerControlsView)
     }
     
     private func setupTapGesture() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(toggleControlsVisiblity))
-        addGestureRecognizer(tapGesture)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(toggleControlsVisibility))
+        view.addGestureRecognizer(tapGesture)
     }
     
-    @objc private func toggleControlsVisiblity() {
+    @objc private func toggleControlsVisibility() {
         playerControlsView.isHidden = !playerControlsView.isHidden
         
         // Hide controls view after 10 seconds
