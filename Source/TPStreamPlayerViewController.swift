@@ -21,11 +21,10 @@ public class TPStreamPlayerViewController: UIViewController {
     }()
     
     private lazy var playerControlsView: PlayerControlsUIKitView = {
-        guard let views = bundle.loadNibNamed("PlayerControls", owner: nil, options: nil) as? [PlayerControlsUIKitView],
-              let playerControlsView = views.first else {
-            fatalError("Could not load PlayerControls view from nib.")
-        }
-        playerControlsView.frame = view.frame
+        guard let playerControlsView = bundle.loadNibNamed("PlayerControls", owner: nil, options: nil)?.first as? PlayerControlsUIKitView else {
+                    fatalError("Could not load PlayerControls view from nib.")
+                }
+        playerControlsView.frame = view.bounds
         playerControlsView.isHidden = true
         return playerControlsView
     }()
