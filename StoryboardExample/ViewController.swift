@@ -12,7 +12,6 @@ import AVKit
 class ViewController: UIViewController {
     @IBOutlet weak var playerContainer: UIView!
     
-    var playerViewController: AVPlayerViewController?
     var player: TPAVPlayer?
     
     override func viewDidLoad() {
@@ -23,12 +22,8 @@ class ViewController: UIViewController {
     
     func setupPlayerView(){
         player = TPAVPlayer(assetID: "8eaHZjXt6km", accessToken: "16b608ba-9979-45a0-94fb-b27c1a86b3c1")
-        playerViewController = AVPlayerViewController()
-        playerViewController?.player = player
-
-        addChild(playerViewController!)
-        playerContainer.addSubview(playerViewController!.view)
-        playerViewController!.view.frame = playerContainer.bounds
+        let playerView = TPStreamUIKitPlayerView(frame: playerContainer.bounds, player: player!)
+        playerContainer.addSubview(playerView)
     }
 }
 

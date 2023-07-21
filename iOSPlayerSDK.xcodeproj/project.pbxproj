@@ -26,6 +26,9 @@
 		03B8FD9C2A690CAD00DAB7AE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03B8FD9A2A690CAD00DAB7AE /* LaunchScreen.storyboard */; };
 		03B8FDA12A69169100DAB7AE /* TPStreamsSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */; };
 		03B8FDA22A69169100DAB7AE /* TPStreamsSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		03B8FDA92A695FED00DAB7AE /* TPStreamUIKitPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B8FDA82A695FED00DAB7AE /* TPStreamUIKitPlayerView.swift */; };
+		03B8FDAB2A696E6D00DAB7AE /* PlayerControls.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03B8FDAA2A696E6D00DAB7AE /* PlayerControls.xib */; };
+		03B8FDAE2A69752800DAB7AE /* PlayerControlsUIKitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B8FDAD2A69752800DAB7AE /* PlayerControlsUIKitView.swift */; };
 		03CA2D312A2F757D00532549 /* TimeIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA2D302A2F757D00532549 /* TimeIndicatorView.swift */; };
 		03CA2D372A30A8E500532549 /* PlayerProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA2D362A30A8E500532549 /* PlayerProgressBar.swift */; };
 		8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */; };
@@ -123,6 +126,9 @@
 		03B8FD982A690CAD00DAB7AE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		03B8FD9B2A690CAD00DAB7AE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		03B8FD9D2A690CAD00DAB7AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		03B8FDA82A695FED00DAB7AE /* TPStreamUIKitPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamUIKitPlayerView.swift; sourceTree = "<group>"; };
+		03B8FDAA2A696E6D00DAB7AE /* PlayerControls.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayerControls.xib; sourceTree = "<group>"; };
+		03B8FDAD2A69752800DAB7AE /* PlayerControlsUIKitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlsUIKitView.swift; sourceTree = "<group>"; };
 		03CA2D302A2F757D00532549 /* TimeIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeIndicatorView.swift; sourceTree = "<group>"; };
 		03CA2D362A30A8E500532549 /* PlayerProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerProgressBar.swift; sourceTree = "<group>"; };
 		8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayerView.swift; sourceTree = "<group>"; };
@@ -211,15 +217,25 @@
 			path = StoryboardExample;
 			sourceTree = "<group>";
 		};
+		03B8FDAC2A69749500DAB7AE /* Xib */ = {
+			isa = PBXGroup;
+			children = (
+				03B8FDAA2A696E6D00DAB7AE /* PlayerControls.xib */,
+			);
+			path = Xib;
+			sourceTree = "<group>";
+		};
 		8E6389B92A2724AA00306FA4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				03B8FDAC2A69749500DAB7AE /* Xib */,
 				8E6389DC2A27338F00306FA4 /* AVPlayerBridge.swift */,
 				03B8090B2A2DF9A200AB3D03 /* PlayerControlsView.swift */,
 				03CA2D362A30A8E500532549 /* PlayerProgressBar.swift */,
 				035351A12A2F49E3001E38F3 /* MediaControlsView.swift */,
 				0353519F2A2EDAFA001E38F3 /* PlayerSettingsButton.swift */,
 				03CA2D302A2F757D00532549 /* TimeIndicatorView.swift */,
+				03B8FDAD2A69752800DAB7AE /* PlayerControlsUIKitView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -306,6 +322,7 @@
 				8E6389DE2A2751C800306FA4 /* TPAVPlayer.swift */,
 				8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */,
 				03B8090D2A2DFC0F00AB3D03 /* Assets.xcassets */,
+				03B8FDA82A695FED00DAB7AE /* TPStreamUIKitPlayerView.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -487,6 +504,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03B8FDAB2A696E6D00DAB7AE /* PlayerControls.xib in Resources */,
 				03B8090E2A2DFC0F00AB3D03 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -524,6 +542,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03B8FDAE2A69752800DAB7AE /* PlayerControlsUIKitView.swift in Sources */,
 				8E6389E92A278D1D00306FA4 /* ContentKeyDelegate.swift in Sources */,
 				8E6389DD2A27338F00306FA4 /* AVPlayerBridge.swift in Sources */,
 				8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */,
@@ -532,6 +551,7 @@
 				0377C4132A2B272C00F7E58F /* TestpressAPI.swift in Sources */,
 				0377C4112A2B1F0700F7E58F /* Asset.swift in Sources */,
 				8E6389E22A275AA800306FA4 /* StreamsAPI.swift in Sources */,
+				03B8FDA92A695FED00DAB7AE /* TPStreamUIKitPlayerView.swift in Sources */,
 				03CA2D372A30A8E500532549 /* PlayerProgressBar.swift in Sources */,
 				0377C40E2A2B1C7300F7E58F /* BaseAPI.swift in Sources */,
 				03CA2D312A2F757D00532549 /* TimeIndicatorView.swift in Sources */,
