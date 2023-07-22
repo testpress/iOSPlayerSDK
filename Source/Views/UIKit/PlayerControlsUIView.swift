@@ -8,4 +8,4 @@
 import Foundation
 import UIKit
 
-class PlayerControlsUIKitView: UIView {}
+class PlayerControlsUIView: UIView {}

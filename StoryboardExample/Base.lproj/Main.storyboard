@@ -22,7 +22,7 @@
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <rect key="contentStretch" x="0.0" y="0.0" width="0.0" height="0.0"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="230" id="7B1-IU-bqI"/>
+                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="240" id="7B1-IU-bqI" userLabel="height ≤ 230"/>
                                 </constraints>
                             </view>
                         </subviews>

@@ -20,8 +20,8 @@ public class TPStreamPlayerViewController: UIViewController {
         return playerView
     }()
     
-    private lazy var playerControlsView: PlayerControlsUIKitView = {
-        guard let playerControlsView = bundle.loadNibNamed("PlayerControls", owner: nil, options: nil)?.first as? PlayerControlsUIKitView else {
+    private lazy var playerControlsView: PlayerControlsUIView = {
+        guard let playerControlsView = bundle.loadNibNamed("PlayerControls", owner: nil, options: nil)?.first as? PlayerControlsUIView else {
                     fatalError("Could not load PlayerControls view from nib.")
                 }
         playerControlsView.frame = view.bounds
