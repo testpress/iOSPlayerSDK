@@ -46,4 +46,13 @@ class PlayerControlsUIView: UIView {
             player.pause()
         }
     }
+    
+    @IBAction func rewind(_ sender: UIButton) {
+        player.rewind()
+    }
+    
+    @IBAction func forward(_ sender: Any) {
+        player.forward()
+    }
+    
 }
