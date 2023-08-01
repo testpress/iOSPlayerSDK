@@ -39,6 +39,7 @@ class PlayerControlsUIView: UIView {
             break
         }
     }
+    
     @IBAction func playOrPauseButton(_ sender: Any) {
         if player.status == "paused" {
             player.play()
