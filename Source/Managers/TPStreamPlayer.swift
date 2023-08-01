@@ -3,8 +3,8 @@ import CoreMedia
 import AVKit
 
 class TPStreamPlayer: NSObject {
-    var status = "paused"
-    var currentTime: NSNumber = 0
+    @objc dynamic var status = "paused"
+    @objc dynamic var currentTime: NSNumber = 0
 
     var player: TPAVPlayer!
     var videoDuration: Float64 {
