@@ -3,8 +3,8 @@ import CoreMedia
 import AVKit
 
 class TPStreamPlayer: NSObject {
-    var status: PlayerStatus = .paused
-    var currentTime: Float64?
+    @objc dynamic var status = "paused"
+    @objc dynamic var currentTime: NSNumber = 0
 
     var player: TPAVPlayer!
     var videoDuration: Float64 {
@@ -50,7 +50,7 @@ class TPStreamPlayer: NSObject {
            // Prevent updating the currentTime during seeking to avoid a minor glitch in the progress bar 
            // where the thumb moves back to the previous position from the dragged position for a fraction of a second.
             if !self.isSeeking {
-                self.currentTime = CMTimeGetSeconds(progressTime)
+                self.currentTime = NSNumber(value: CMTimeGetSeconds(progressTime))
             }
         }
     }
@@ -86,9 +86,9 @@ class TPStreamPlayer: NSObject {
     private func handlePlayerStatusChange(for player: TPAVPlayer) {
         switch player.timeControlStatus {
         case .playing:
-            status = .playing
+            status = "playing"
         case .paused:
-            status = .paused
+            status = "paused"
         case .waitingToPlayAtSpecifiedRate:
             break
         @unknown default:
@@ -100,11 +100,11 @@ class TPStreamPlayer: NSObject {
         switch keyPath {
         case #keyPath(AVPlayerItem.isPlaybackBufferEmpty):
             if playerItem.isPlaybackBufferEmpty {
-                status = .buffering
+                status = "buffering"
             }
         case #keyPath(AVPlayerItem.isPlaybackLikelyToKeepUp):
             if playerItem.isPlaybackLikelyToKeepUp {
-                status = self.player.timeControlStatus == .playing ? .playing : .paused
+                status = self.player.timeControlStatus == .playing ? "playing" : "paused"
             }
         default:
             break
@@ -139,7 +139,7 @@ class TPStreamPlayer: NSObject {
     }
 
     func goTo(seconds: Float64) {
-        currentTime = seconds
+        currentTime = NSNumber(value: seconds)
         let seekTime = CMTime(value: Int64(seconds), timescale: 1)
         isSeeking = true
         player?.seek(to: seekTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero){ [weak self] _ in
@@ -161,32 +161,26 @@ class TPStreamPlayer: NSObject {
 
 @available(iOS 13.0, *)
 class TPStreamPlayerObservable: TPStreamPlayer, ObservableObject {
-    @Published var observedStatus: PlayerStatus
+    @Published var observedStatus: String = "paused"
     @Published var observedCurrentTime: Float64?
     
-    override var status: PlayerStatus {
+    override var status: String {
         didSet {
             observedStatus = status
         }
     }
     
-    override var currentTime: Float64? {
+    override var currentTime: NSNumber {
         didSet {
-            observedCurrentTime = currentTime
+            observedCurrentTime = currentTime.doubleValue
         }
     }
     
     override init(player: TPAVPlayer) {
-        observedStatus = .paused
+        observedStatus = "paused"
         observedCurrentTime = nil
         super.init(player: player)
     }
-}
-
-enum PlayerStatus {
-    case playing
-    case paused
-    case buffering
 }
 
 enum PlaybackSpeed: Float, CaseIterable {
