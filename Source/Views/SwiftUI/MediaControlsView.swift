@@ -21,13 +21,13 @@ struct MediaControlsView: View {
                     .brightness(-0.1)
             }
             Spacer()
-            if player.observedStatus == .buffering {
+            if player.observedStatus == "buffering" {
                 ProgressView()
                     .scaleEffect(1.5)
                     .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
             } else {
                 Button(action: togglePlay) {
-                    Image(player.observedStatus == .paused ? "play" : "pause", bundle: bundle)
+                    Image(player.observedStatus == "paused" ? "play" : "pause", bundle: bundle)
                         .resizable()
                         .frame(width: 48, height: 48)
                         .brightness(-0.1)
@@ -46,7 +46,7 @@ struct MediaControlsView: View {
     
     
     public func togglePlay(){
-        if player.status == .paused {
+        if player.status == "paused" {
             player.play()
         } else {
             player.pause()
