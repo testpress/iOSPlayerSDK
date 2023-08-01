@@ -125,7 +125,9 @@
                 <constraint firstItem="z2i-lj-k69" firstAttribute="centerY" secondItem="w1Z-d2-tRh" secondAttribute="centerY" id="zSL-Ky-tiA"/>
             </constraints>
             <connections>
+                <outlet property="currentTimelabel" destination="rJo-p9-gc7" id="A5I-6V-15l"/>
                 <outlet property="playPauseButton" destination="rWY-7h-2Dd" id="kUX-RG-TOG"/>
+                <outlet property="videoDurationLabel" destination="hAe-VC-JKX" id="83w-zJ-upN"/>
             </connections>
             <point key="canvasLocation" x="262" y="345"/>
         </view>
