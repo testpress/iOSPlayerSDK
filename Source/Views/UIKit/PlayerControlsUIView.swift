@@ -59,8 +59,7 @@ class PlayerControlsUIView: UIView {
     @IBAction func showOptionsMenu(_ sender: Any) {
         let optionsMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         optionsMenu.addAction(UIAlertAction(title: "Playback Speed", style: .default) { _ in self.showPlaybackSpeedMenu()})
-        optionsMenu.addAction(UIAlertAction(title: "Video Quality", style: .default, handler: { action in self.showVideoQualityMenu()
-        }))
+        optionsMenu.addAction(UIAlertAction(title: "Video Quality", style: .default, handler: { action in self.showVideoQualityMenu()}))
         optionsMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         presentActionSheet(menu: optionsMenu)
     }
