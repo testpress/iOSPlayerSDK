@@ -93,6 +93,9 @@
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                     <state key="normal" title="" image="settings"/>
+                    <connections>
+                        <action selector="showOptionsMenu:" destination="Pdx-qm-hxi" eventType="touchUpInside" id="ui5-FT-Sea"/>
+                    </connections>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="/" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Ar-ud-LQI">
                     <rect key="frame" x="58" y="287" width="5" height="21"/>

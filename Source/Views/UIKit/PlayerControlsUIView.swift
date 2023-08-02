@@ -56,4 +56,43 @@ class PlayerControlsUIView: UIView {
         player.forward()
     }
     
+    @IBAction func showOptionsMenu(_ sender: Any) {
+        let optionsMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        optionsMenu.addAction(UIAlertAction(title: "Playback Speed", style: .default) { _ in self.showPlaybackSpeedMenu()})
+        optionsMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        presentActionSheet(menu: optionsMenu)
+    }
+
+    func showPlaybackSpeedMenu(){
+        let playbackSpeedMenu = createPlaybackSpeedMenu()
+        presentActionSheet(menu: playbackSpeedMenu)
+    }
+    
+    func createPlaybackSpeedMenu() -> UIAlertController {
+        let playbackSpeedMenu = UIAlertController(title: "Playback Speed", message: nil, preferredStyle: .actionSheet)
+
+        for playbackSpeed in PlaybackSpeed.allCases {
+            let action = createActionForPlaybackSpeed(playbackSpeed)
+            playbackSpeedMenu.addAction(action)
+        }
+
+        playbackSpeedMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        return playbackSpeedMenu
+    }
+    
+    func createActionForPlaybackSpeed(_ playbackSpeed: PlaybackSpeed) -> UIAlertAction {
+        let action = UIAlertAction(title: playbackSpeed.label, style: .default) { [weak self] _ in
+            self?.player.changePlaybackSpeed(playbackSpeed)
+        }
+
+        if playbackSpeed == .normal && self.player.currentPlaybackSpeed.rawValue == 0.0 || (playbackSpeed.rawValue == self.player.currentPlaybackSpeed.rawValue) {
+            action.setValue(UIImage(named: "checkmark", in: bundle, compatibleWith: nil), forKey: "image")
+        }
+        return action
+    }
+    
+    func presentActionSheet(menu: UIAlertController) {
+        let presentingViewController = self.findRelatedViewController()
+        presentingViewController?.present(menu, animated: true, completion: nil)
+    }
 }
