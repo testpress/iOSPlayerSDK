@@ -32,6 +32,7 @@
 		03CA2D312A2F757D00532549 /* TimeIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA2D302A2F757D00532549 /* TimeIndicatorView.swift */; };
 		03CA2D372A30A8E500532549 /* PlayerProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA2D362A30A8E500532549 /* PlayerProgressBar.swift */; };
 		03CC784D2A6BB6E5005E8F7E /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CC784C2A6BB6E5005E8F7E /* VideoPlayerView.swift */; };
+		03CE75002A7946A800B84304 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CE74FF2A7946A800B84304 /* Time.swift */; };
 		8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */; };
 		8E6389C42A27277D00306FA4 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389C32A27277D00306FA4 /* ExampleApp.swift */; };
 		8E6389C62A27277D00306FA4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389C52A27277D00306FA4 /* ContentView.swift */; };
@@ -133,6 +134,7 @@
 		03CA2D302A2F757D00532549 /* TimeIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeIndicatorView.swift; sourceTree = "<group>"; };
 		03CA2D362A30A8E500532549 /* PlayerProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerProgressBar.swift; sourceTree = "<group>"; };
 		03CC784C2A6BB6E5005E8F7E /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
+		03CE74FF2A7946A800B84304 /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayerView.swift; sourceTree = "<group>"; };
 		8E6389C12A27277D00306FA4 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E6389C32A27277D00306FA4 /* ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleApp.swift; sourceTree = "<group>"; };
@@ -250,6 +252,14 @@
 			path = UIKit;
 			sourceTree = "<group>";
 		};
+		03CE74FE2A79469400B84304 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				03CE74FF2A7946A800B84304 /* Time.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		8E6389B92A2724AA00306FA4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -332,6 +342,7 @@
 		8EDE99A62A2643B000E43EA9 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				03CE74FE2A79469400B84304 /* Utils */,
 				0321F3252A2E0D0300E08AEE /* Extensions */,
 				8E6389E72A278D0400306FA4 /* Managers */,
 				8E6389E02A275A2700306FA4 /* Network */,
@@ -570,6 +581,7 @@
 				0377C4132A2B272C00F7E58F /* TestpressAPI.swift in Sources */,
 				0377C4112A2B1F0700F7E58F /* Asset.swift in Sources */,
 				8E6389E22A275AA800306FA4 /* StreamsAPI.swift in Sources */,
+				03CE75002A7946A800B84304 /* Time.swift in Sources */,
 				03B8FDA92A695FED00DAB7AE /* TPStreamPlayerViewController.swift in Sources */,
 				03CA2D372A30A8E500532549 /* PlayerProgressBar.swift in Sources */,
 				0377C40E2A2B1C7300F7E58F /* BaseAPI.swift in Sources */,
