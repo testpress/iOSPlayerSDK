@@ -12,6 +12,7 @@ class PlayerControlsUIView: UIView {
     @IBOutlet weak var playPauseButton: UIButton!
     @IBOutlet weak var currentTimelabel: UILabel!
     @IBOutlet weak var videoDurationLabel: UILabel!
+    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
     
     var player: TPStreamPlayer! {
         didSet {
@@ -38,9 +39,15 @@ class PlayerControlsUIView: UIView {
         case "paused":
             playPauseButton.setImage(UIImage(named: "play", in: bundle, compatibleWith: nil), for: .normal)
         case "buffering":
-            print("buffering")
+            playPauseButton.isHidden = true
+            loadingIndicator.startAnimating()
         default:
             break
+        }
+        
+        if (player.status != "buffering"){
+            playPauseButton.isHidden = false
+            loadingIndicator.stopAnimating()
         }
     }
     

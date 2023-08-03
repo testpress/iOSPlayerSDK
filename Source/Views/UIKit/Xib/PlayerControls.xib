@@ -10,7 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="Pdx-qm-hxi" customClass="PlayerControlsUIView" customModule="TPStreamsSDK" customModuleProvider="target">
+        <view hidden="YES" contentMode="scaleToFill" id="Pdx-qm-hxi" customClass="PlayerControlsUIView" customModule="TPStreamsSDK" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
@@ -103,6 +103,9 @@
                     <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <activityIndicatorView hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="FGD-AH-xjx">
+                    <rect key="frame" x="266" y="143" width="37" height="37"/>
+                </activityIndicatorView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="w1Z-d2-tRh"/>
             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -116,6 +119,8 @@
                 <constraint firstItem="rWY-7h-2Dd" firstAttribute="leading" secondItem="HpI-yc-TvP" secondAttribute="trailing" constant="90" id="XEP-Xm-Qmq"/>
                 <constraint firstItem="w1Z-d2-tRh" firstAttribute="bottom" secondItem="rJo-p9-gc7" secondAttribute="bottom" constant="12" id="b0m-Gm-bKb"/>
                 <constraint firstItem="w1Z-d2-tRh" firstAttribute="trailing" secondItem="5BF-uG-JOj" secondAttribute="trailing" constant="12" id="e6F-q7-5uK"/>
+                <constraint firstItem="FGD-AH-xjx" firstAttribute="centerY" secondItem="w1Z-d2-tRh" secondAttribute="centerY" id="lov-zD-hDe"/>
+                <constraint firstItem="FGD-AH-xjx" firstAttribute="centerX" secondItem="w1Z-d2-tRh" secondAttribute="centerX" id="oYf-V1-Jlq"/>
                 <constraint firstItem="rWY-7h-2Dd" firstAttribute="centerX" secondItem="w1Z-d2-tRh" secondAttribute="centerX" id="osC-gk-STn"/>
                 <constraint firstItem="rJo-p9-gc7" firstAttribute="leading" secondItem="w1Z-d2-tRh" secondAttribute="leading" constant="12" id="rX2-Wo-0sB"/>
                 <constraint firstItem="w1Z-d2-tRh" firstAttribute="trailing" secondItem="ad7-vR-GCz" secondAttribute="trailing" constant="12" id="v5k-7V-k59"/>
@@ -126,10 +131,11 @@
             </constraints>
             <connections>
                 <outlet property="currentTimelabel" destination="rJo-p9-gc7" id="A5I-6V-15l"/>
+                <outlet property="loadingIndicator" destination="FGD-AH-xjx" id="ptq-06-nG2"/>
                 <outlet property="playPauseButton" destination="rWY-7h-2Dd" id="kUX-RG-TOG"/>
                 <outlet property="videoDurationLabel" destination="hAe-VC-JKX" id="83w-zJ-upN"/>
             </connections>
-            <point key="canvasLocation" x="262" y="345"/>
+            <point key="canvasLocation" x="261.97183098591552" y="345"/>
         </view>
     </objects>
     <resources>
