@@ -59,6 +59,7 @@ class PlayerControlsUIView: UIView {
     @IBAction func showOptionsMenu(_ sender: Any) {
         let optionsMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         optionsMenu.addAction(UIAlertAction(title: "Playback Speed", style: .default) { _ in self.showPlaybackSpeedMenu()})
+        optionsMenu.addAction(UIAlertAction(title: "Video Quality", style: .default, handler: { action in self.showVideoQualityMenu()}))
         optionsMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         presentActionSheet(menu: optionsMenu)
     }
@@ -66,6 +67,11 @@ class PlayerControlsUIView: UIView {
     func showPlaybackSpeedMenu(){
         let playbackSpeedMenu = createPlaybackSpeedMenu()
         presentActionSheet(menu: playbackSpeedMenu)
+    }
+    
+    func showVideoQualityMenu(){
+        let videoQualityMenu = createVideoQualityMenu()
+        presentActionSheet(menu: videoQualityMenu)
     }
     
     func createPlaybackSpeedMenu() -> UIAlertController {
@@ -80,6 +86,16 @@ class PlayerControlsUIView: UIView {
         return playbackSpeedMenu
     }
     
+    func createVideoQualityMenu() -> UIAlertController {
+        let qualityMenu = UIAlertController(title: "Available resolutions", message: nil, preferredStyle: .actionSheet)
+        for quality in self.player.availableVideoQualities {
+            let action = createActionForVideoQuality(quality)
+            qualityMenu.addAction(action)
+        }
+        qualityMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        return qualityMenu
+    }
+    
     func createActionForPlaybackSpeed(_ playbackSpeed: PlaybackSpeed) -> UIAlertAction {
         let action = UIAlertAction(title: playbackSpeed.label, style: .default) { [weak self] _ in
             self?.player.changePlaybackSpeed(playbackSpeed)
@@ -88,6 +104,18 @@ class PlayerControlsUIView: UIView {
         if playbackSpeed == .normal && self.player.currentPlaybackSpeed.rawValue == 0.0 || (playbackSpeed.rawValue == self.player.currentPlaybackSpeed.rawValue) {
             action.setValue(UIImage(named: "checkmark", in: bundle, compatibleWith: nil), forKey: "image")
         }
+        return action
+    }
+    
+    func createActionForVideoQuality(_ quality: VideoQuality) -> UIAlertAction {
+        let action = UIAlertAction(title: quality.resolution, style: .default, handler: { (_) in
+            self.player.changeVideoQuality(quality)
+        })
+        
+        if (quality.bitrate == player.currentVideoQuality?.bitrate) {
+            action.setValue(UIImage(named: "checkmark", in: bundle, compatibleWith: nil), forKey: "image")
+        }
+        
         return action
     }
     
