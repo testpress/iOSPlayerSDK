@@ -5,6 +5,7 @@ import AVKit
 class TPStreamPlayer: NSObject {
     @objc dynamic var status = "paused"
     @objc dynamic var currentTime: NSNumber = 0
+    @objc dynamic var isVideoDurationInitialized = false
 
     var player: TPAVPlayer!
     var videoDuration: Float64 {
@@ -63,6 +64,7 @@ class TPStreamPlayer: NSObject {
             guard let self = self else { return }
             self.player.currentItem?.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.isPlaybackLikelyToKeepUp), options: .new, context: nil)
             self.player.currentItem?.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.isPlaybackBufferEmpty), options: .new, context: nil)
+            self.player.currentItem?.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.duration), options: .new, context: nil)
         }
     }
     
@@ -78,6 +80,8 @@ class TPStreamPlayer: NSObject {
             if let playerItem = object as? AVPlayerItem {
                 handleBufferStatusChange(of: playerItem, keyPath: keyPath)
             }
+        case #keyPath(AVPlayerItem.duration):
+            isVideoDurationInitialized = true
         default:
             break
         }

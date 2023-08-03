@@ -10,20 +10,24 @@ import UIKit
 
 class PlayerControlsUIView: UIView {
     @IBOutlet weak var playPauseButton: UIButton!
+    @IBOutlet weak var currentTimelabel: UILabel!
+    @IBOutlet weak var videoDurationLabel: UILabel!
     
     var player: TPStreamPlayer! {
         didSet {
-            addPlayerStatusChangeObserver()
+            player.addObserver(self, forKeyPath: #keyPath(TPStreamPlayer.status), options: .new, context: nil)
+            player.addObserver(self, forKeyPath: #keyPath(TPStreamPlayer.currentTime), options: .new, context: nil)
+            player.addObserver(self, forKeyPath: #keyPath(TPStreamPlayer.isVideoDurationInitialized), options: .new, context: nil)
         }
-    }
-    
-    private func addPlayerStatusChangeObserver() {
-        player.addObserver(self, forKeyPath: #keyPath(TPStreamPlayer.status), options: .new, context: nil)
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == #keyPath(TPStreamPlayer.status) {
             handlePlayerStatusChange()
+        } else if keyPath == #keyPath(TPStreamPlayer.currentTime) {
+            currentTimelabel.text = timeStringFromSeconds(player.currentTime.doubleValue)
+        } else if keyPath == #keyPath(TPStreamPlayer.isVideoDurationInitialized) && player.isVideoDurationInitialized {
+            videoDurationLabel.text = timeStringFromSeconds(player.videoDuration)
         }
     }
     
