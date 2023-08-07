@@ -13,12 +13,20 @@ class PlayerControlsUIView: UIView {
     @IBOutlet weak var currentTimelabel: UILabel!
     @IBOutlet weak var videoDurationLabel: UILabel!
     @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var fullScreenToggleButton: UIButton!
     
     var player: TPStreamPlayer! {
         didSet {
             player.addObserver(self, forKeyPath: #keyPath(TPStreamPlayer.status), options: .new, context: nil)
             player.addObserver(self, forKeyPath: #keyPath(TPStreamPlayer.currentTime), options: .new, context: nil)
             player.addObserver(self, forKeyPath: #keyPath(TPStreamPlayer.isVideoDurationInitialized), options: .new, context: nil)
+        }
+    }
+    
+    var fullScreenToggleDelegate: FullScreenToggleDelegate?
+    var isFullScreen: Bool = false {
+        didSet {
+           updateFullScreenButtonIcon()
         }
     }
     
@@ -134,4 +142,25 @@ class PlayerControlsUIView: UIView {
         let presentingViewController = self.findRelatedViewController()
         presentingViewController?.present(menu, animated: true, completion: nil)
     }
+    
+    @IBAction func toggleFullScreen(_ sender: Any) {
+        if isFullScreen {
+            fullScreenToggleDelegate?.exitFullScreen()
+        } else {
+            fullScreenToggleDelegate?.enterFullScreen()
+        }
+    }
+    
+    func updateFullScreenButtonIcon(){
+        if isFullScreen {
+            fullScreenToggleButton.setImage(UIImage(named: "minimize", in: bundle, compatibleWith: nil), for: .normal)
+        } else{
+            fullScreenToggleButton.setImage(UIImage(named: "maximize", in: bundle, compatibleWith: nil), for: .normal)
+        }
+    }
+}
+
+protocol FullScreenToggleDelegate {
+    func enterFullScreen()
+    func exitFullScreen()
 }
