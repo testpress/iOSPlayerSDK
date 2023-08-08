@@ -13,14 +13,14 @@ public class TPStreamPlayerViewController: UIViewController {
     public var player: TPAVPlayer?
     private var controlsVisibilityTimer: Timer?
     
-    private lazy var videoPlayerView: TPVideoPlayerUIView = {
+    private lazy var videoView: TPVideoPlayerUIView = {
         let playerView = TPVideoPlayerUIView(frame: view.frame)
         playerView.backgroundColor = .black
         playerView.player = player
         return playerView
     }()
     
-    private lazy var playerControlsView: PlayerControlsUIView = {
+    private lazy var controlsView: PlayerControlsUIView = {
         guard let playerControlsView = bundle.loadNibNamed("PlayerControls", owner: nil, options: nil)?.first as? PlayerControlsUIView else {
                     fatalError("Could not load PlayerControls view from nib.")
                 }
@@ -38,15 +38,15 @@ public class TPStreamPlayerViewController: UIViewController {
     
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        videoPlayerView.frame = view.bounds
-        playerControlsView.frame = view.bounds
+        videoView.frame = view.bounds
+        controlsView.frame = view.bounds
     }
     
     private func setupViews() {
         view.backgroundColor = .black
-        view.addSubview(videoPlayerView)
-        view.addSubview(playerControlsView)
-        view.bringSubviewToFront(playerControlsView)
+        view.addSubview(videoView)
+        view.addSubview(controlsView)
+        view.bringSubviewToFront(controlsView)
     }
     
     private func setupTapGesture() {
@@ -55,13 +55,13 @@ public class TPStreamPlayerViewController: UIViewController {
     }
     
     @objc private func toggleControlsVisibility() {
-        playerControlsView.isHidden = !playerControlsView.isHidden
+        controlsView.isHidden = !controlsView.isHidden
         
         // Hide controls view after 10 seconds
-        if !playerControlsView.isHidden {
+        if !controlsView.isHidden {
             controlsVisibilityTimer?.invalidate()
             controlsVisibilityTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] _ in
-                self?.playerControlsView.isHidden = true
+                self?.controlsView.isHidden = true
             }
         }
     }
