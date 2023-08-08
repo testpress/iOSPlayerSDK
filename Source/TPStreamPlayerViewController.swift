@@ -14,7 +14,7 @@ public class TPStreamPlayerViewController: UIViewController {
     private var controlsVisibilityTimer: Timer?
     private var isFullScreen: Bool = false {
         didSet {
-            playerControlsView.isFullScreen = isFullScreen
+            controlsView.isFullScreen = isFullScreen
             setNeedsStatusBarAppearanceUpdate()
         }
     }
@@ -40,32 +40,32 @@ public class TPStreamPlayerViewController: UIViewController {
         return playerControlsView
     }()
     
-    private lazy var playerDisplayView: UIView = {
+    private lazy var containerView: UIView = {
         let view = UIView(frame: view.bounds)
         view.backgroundColor = .black
-        view.addSubview(videoPlayerView)
-        view.addSubview(playerControlsView)
-        view.bringSubviewToFront(playerControlsView)
+        view.addSubview(videoView)
+        view.addSubview(controlsView)
+        view.bringSubviewToFront(controlsView)
         return view
     }()
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(playerDisplayView)
+        view.addSubview(containerView)
         setupTapGesture()
     }
     
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        playerDisplayView.frame = playerDisplayView.superview!.bounds
-        videoPlayerView.frame = playerDisplayView.bounds
-        playerControlsView.frame = playerDisplayView.bounds
+        containerView.frame = containerView.superview!.bounds
+        videoView.frame = containerView.bounds
+        controlsView.frame = containerView.bounds
     }
     
     public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
-        if playerDisplayView.getCurrentOrientation().isLandscape {
+        if containerView.getCurrentOrientation().isLandscape {
             enterFullScreen()
         } else {
             exitFullScreen()
@@ -74,7 +74,7 @@ public class TPStreamPlayerViewController: UIViewController {
         
     private func setupTapGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(toggleControlsVisibility))
-        playerDisplayView.addGestureRecognizer(tapGesture)
+        containerView.addGestureRecognizer(tapGesture)
     }
     
     @objc private func toggleControlsVisibility() {
@@ -94,24 +94,28 @@ public class TPStreamPlayerViewController: UIViewController {
 extension TPStreamPlayerViewController: FullScreenToggleDelegate {
     func enterFullScreen() {
         changeOrientation(orientation: .landscape)
-        
-        if let window = UIApplication.shared.keyWindow{
-            presentPlayerView(in: window)
-            isFullScreen = true
-        }
+        resizeContainerToWindow()
     }
     
     func exitFullScreen() {
         changeOrientation(orientation: .portrait)
-
-        presentPlayerView(in: view)
-        isFullScreen = false
+        resizeContainerToParentView()
     }
     
-    func presentPlayerView(in: UIView){
-        playerDisplayView.removeFromSuperview()
-        view.addSubview(playerDisplayView)
-        playerDisplayView.frame = view.bounds
+    func resizeContainerToWindow(){
+        if let window = UIApplication.shared.keyWindow{
+            containerView.removeFromSuperview()
+            window.addSubview(containerView)
+            containerView.frame = view.bounds
+            isFullScreen = true
+        }
+    }
+    
+    func resizeContainerToParentView(){
+        containerView.removeFromSuperview()
+        view.addSubview(containerView)
+        containerView.frame = view.bounds
+        isFullScreen = false
     }
         
     func changeOrientation(orientation: UIInterfaceOrientationMask) {
