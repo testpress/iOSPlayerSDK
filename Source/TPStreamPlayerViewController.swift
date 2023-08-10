@@ -23,22 +23,22 @@ public class TPStreamPlayerViewController: UIViewController {
     }
     
     private lazy var videoView: TPVideoPlayerUIView = {
-        let playerView = TPVideoPlayerUIView(frame: view.frame)
-        playerView.backgroundColor = .black
-        playerView.player = player
-        return playerView
+        let view = TPVideoPlayerUIView(frame: view.frame)
+        view.backgroundColor = .black
+        view.player = player
+        return view
     }()
     
     private lazy var controlsView: PlayerControlsUIView = {
-        guard let playerControlsView = bundle.loadNibNamed("PlayerControls", owner: nil, options: nil)?.first as? PlayerControlsUIView else {
-                    fatalError("Could not load PlayerControls view from nib.")
-                }
-        playerControlsView.player = TPStreamPlayer(player: self.player!)
-        playerControlsView.frame = view.bounds
-        playerControlsView.isHidden = true
-        playerControlsView.fullScreenToggleDelegate = self
-        playerControlsView.parentViewController = self
-        return playerControlsView
+        guard let view = bundle.loadNibNamed("PlayerControls", owner: nil, options: nil)?.first as? PlayerControlsUIView else {
+            fatalError("Could not load PlayerControls view from nib.")
+        }
+        view.player = TPStreamPlayer(player: self.player!)
+        view.frame = view.bounds
+        view.isHidden = true
+        view.fullScreenToggleDelegate = self
+        view.parentViewController = self
+        return view
     }()
     
     private lazy var containerView: UIView = {
@@ -72,7 +72,7 @@ public class TPStreamPlayerViewController: UIViewController {
             exitFullScreen()
         }
     }
-        
+    
     private func setupTapGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(toggleControlsVisibility))
         containerView.addGestureRecognizer(tapGesture)
@@ -118,7 +118,7 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate {
         containerView.frame = view.bounds
         isFullScreen = false
     }
-        
+    
     func changeOrientation(orientation: UIInterfaceOrientationMask) {
         if #available(iOS 16.0, *) {
             let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
