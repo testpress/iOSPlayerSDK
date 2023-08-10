@@ -14,9 +14,12 @@ class PlayerControlsUIView: UIView {
     @IBOutlet weak var videoDurationLabel: UILabel!
     @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
     @IBOutlet weak var fullScreenToggleButton: UIButton!
+    @IBOutlet weak var progressBar: ProgressBar!
+    
     
     var player: TPStreamPlayer! {
         didSet {
+            progressBar.player = player
             player.addObserver(self, forKeyPath: #keyPath(TPStreamPlayer.status), options: .new, context: nil)
             player.addObserver(self, forKeyPath: #keyPath(TPStreamPlayer.currentTime), options: .new, context: nil)
             player.addObserver(self, forKeyPath: #keyPath(TPStreamPlayer.isVideoDurationInitialized), options: .new, context: nil)
