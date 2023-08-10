@@ -37,6 +37,7 @@ public class TPStreamPlayerViewController: UIViewController {
         playerControlsView.frame = view.bounds
         playerControlsView.isHidden = true
         playerControlsView.fullScreenToggleDelegate = self
+        playerControlsView.parentViewController = self
         return playerControlsView
     }()
     

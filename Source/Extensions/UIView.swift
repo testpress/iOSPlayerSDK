@@ -9,19 +9,6 @@ import Foundation
 import UIKit
 
 extension UIView {
-    func findRelatedViewController() -> UIViewController? {
-        var responder: UIResponder? = self
-
-        while responder != nil {
-            if let viewController = responder as? UIViewController {
-                return viewController
-            }
-            responder = responder?.next
-        }
-
-        return nil
-    }
-
     func getCurrentOrientation() -> UIInterfaceOrientation {
         if #available(iOS 13.0, *) {
             if let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation {

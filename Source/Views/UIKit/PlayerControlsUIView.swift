@@ -23,6 +23,7 @@ class PlayerControlsUIView: UIView {
         }
     }
     
+    var parentViewController: UIViewController?
     var fullScreenToggleDelegate: FullScreenToggleDelegate?
     var isFullScreen: Bool = false {
         didSet {
@@ -80,17 +81,17 @@ class PlayerControlsUIView: UIView {
         optionsMenu.addAction(UIAlertAction(title: "Playback Speed", style: .default) { _ in self.showPlaybackSpeedMenu()})
         optionsMenu.addAction(UIAlertAction(title: "Video Quality", style: .default, handler: { action in self.showVideoQualityMenu()}))
         optionsMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        presentActionSheet(menu: optionsMenu)
+        parentViewController?.present(optionsMenu, animated: true, completion: nil)
     }
 
     func showPlaybackSpeedMenu(){
         let playbackSpeedMenu = createPlaybackSpeedMenu()
-        presentActionSheet(menu: playbackSpeedMenu)
+        parentViewController?.present(playbackSpeedMenu, animated: true, completion: nil)
     }
     
     func showVideoQualityMenu(){
         let videoQualityMenu = createVideoQualityMenu()
-        presentActionSheet(menu: videoQualityMenu)
+        parentViewController?.present(videoQualityMenu, animated: true, completion: nil)
     }
     
     func createPlaybackSpeedMenu() -> UIAlertController {
@@ -137,12 +138,7 @@ class PlayerControlsUIView: UIView {
         
         return action
     }
-    
-    func presentActionSheet(menu: UIAlertController) {
-        let presentingViewController = self.findRelatedViewController()
-        presentingViewController?.present(menu, animated: true, completion: nil)
-    }
-    
+        
     @IBAction func toggleFullScreen(_ sender: Any) {
         if isFullScreen {
             fullScreenToggleDelegate?.exitFullScreen()
