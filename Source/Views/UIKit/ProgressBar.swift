@@ -33,15 +33,7 @@ class ProgressBar: UIControl {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         addGestureRecognizer(tapGesture)
     }
-    
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
-        if keyPath == #keyPath(TPStreamPlayer.currentTime) {
-            watchedWidth = calculateWidthForValue(value: player.currentTime.doubleValue)
-            bufferedWidth = calculateWidthForValue(value: player.bufferedDuration)
-            setNeedsDisplay()
-        }
-    }
-    
+        
     @objc private func handleTouchDown(_ sender: UIControl, for event: UIEvent) {
         isDragging = true
         updateDraggedLocation(with: event)
@@ -80,14 +72,22 @@ class ProgressBar: UIControl {
         }
     }
     
-    private func calculateWidthForValue(value: Float64) -> CGFloat {
-        let percentage = CGFloat(value / player.videoDuration)
-        return totalWidth * percentage
-    }
-    
     private func getSecondsAtPosition(_ location: CGFloat) -> Float64 {
         let percentage = Double(location / totalWidth)
         return player.videoDuration * percentage
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == #keyPath(TPStreamPlayer.currentTime) {
+            watchedWidth = calculateWidthForValue(value: player.currentTime.doubleValue)
+            bufferedWidth = calculateWidthForValue(value: player.bufferedDuration)
+            setNeedsDisplay()
+        }
+    }
+    
+    private func calculateWidthForValue(value: Float64) -> CGFloat {
+        let percentage = CGFloat(value / player.videoDuration)
+        return totalWidth * percentage
     }
     
     override func draw(_ rect: CGRect) {
