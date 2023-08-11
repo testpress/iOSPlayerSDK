@@ -31,6 +31,7 @@ class PlayerControlsUIView: UIView {
     var isFullScreen: Bool = false {
         didSet {
            updateFullScreenButtonIcon()
+           progressBar.setNeedsDisplay()
         }
     }
     
