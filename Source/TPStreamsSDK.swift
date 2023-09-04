@@ -9,6 +9,12 @@ import Foundation
 import AVFoundation
 import Sentry
 
+#if SPM
+    let bundle = Bundle.module
+#else
+    let bundle = Bundle(identifier: "com.tpstreams.iOSPlayerSDK")! // Access bundle using identifier when directly including the framework
+#endif
+
 
 public class TPStreamsSDK {
     internal static var orgCode: String?

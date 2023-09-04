@@ -1,11 +1,5 @@
 import SwiftUI
 
-#if SPM
-let bundle = Bundle.module
-#else
-let bundle = Bundle(identifier: "com.tpstreams.iOSPlayerSDK")! // Access bundle using identifier when directly including the framework
-#endif
-
 @available(iOS 14.0, *)
 struct PlayerControlsView: View {
     @StateObject private var player: TPStreamPlayerObservable
