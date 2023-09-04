@@ -16,6 +16,9 @@ class PlayerControlsUIView: UIView {
     @IBOutlet weak var fullScreenToggleButton: UIButton!
     @IBOutlet weak var progressBar: ProgressBar!
     
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
     
     var player: TPStreamPlayer! {
         didSet {
