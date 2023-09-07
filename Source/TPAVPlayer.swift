@@ -15,7 +15,7 @@ public class TPAVPlayer: AVPlayer {
     private var accessToken: String
     private var assetID: String
     
-    var availableVideoQualities: [VideoQuality] = [VideoQuality(resolution:"Auto", bitrate: 0)]
+    public var availableVideoQualities: [VideoQuality] = [VideoQuality(resolution:"Auto", bitrate: 0)]
     
     public init(assetID: String, accessToken: String) {
         guard TPStreamsSDK.orgCode != nil else {
@@ -92,7 +92,7 @@ public class TPAVPlayer: AVPlayer {
         return streamList
     }
     
-    func changeVideoQuality(to videoQuality: VideoQuality) {
+    public func changeVideoQuality(to videoQuality: VideoQuality) {
         guard availableVideoQualities.contains(where: { $0.resolution == videoQuality.resolution && $0.bitrate == videoQuality.bitrate }) else {
             return
         }
@@ -101,7 +101,7 @@ public class TPAVPlayer: AVPlayer {
     }
 }
 
-struct VideoQuality {
-    var resolution: String
-    var bitrate: Double
+public struct VideoQuality {
+    public var resolution: String
+    public var bitrate: Double
 }
