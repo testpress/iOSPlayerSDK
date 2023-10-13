@@ -8,7 +8,7 @@ Pod::Spec.new do |spec|
   spec.author             = { "hari-testpress" => "hari@testpress.in" }
   spec.ios.deployment_target = "11.0"
   spec.swift_versions = '5.0'
-  spec.source       = { :git => "https://github.com/testpress/iOSPlayerSDK.git", :tag => "release-in-cocoapods" }
+  spec.source       = { :git => "https://github.com/testpress/iOSPlayerSDK.git", :tag => spec.version }
   spec.source_files  = "Source/**/*.{swift,plist}"
   spec.exclude_files = "Classes/Exclude"
   spec.dependency 'Sentry', '~> 8.0.0'
