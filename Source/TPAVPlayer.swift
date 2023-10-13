@@ -8,8 +8,12 @@
 import Foundation
 import AVKit
 import Sentry
-import M3U8Parser
 
+#if CocoaPods
+    import M3U8Kit
+#else
+    import M3U8Parser
+#endif
 
 public class TPAVPlayer: AVPlayer {
     private var accessToken: String
