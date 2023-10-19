@@ -33,6 +33,7 @@
 		03CA2D312A2F757D00532549 /* TimeIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA2D302A2F757D00532549 /* TimeIndicatorView.swift */; };
 		03CA2D372A30A8E500532549 /* PlayerProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA2D362A30A8E500532549 /* PlayerProgressBar.swift */; };
 		03CC784D2A6BB6E5005E8F7E /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CC784C2A6BB6E5005E8F7E /* VideoPlayerView.swift */; };
+		03CC86682AE142FF002F5D28 /* ResourceLoaderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CC86672AE142FF002F5D28 /* ResourceLoaderDelegate.swift */; };
 		03CE75002A7946A800B84304 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CE74FF2A7946A800B84304 /* Time.swift */; };
 		03CE75022A7A337B00B84304 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CE75012A7A337B00B84304 /* UIView.swift */; };
 		8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */; };
@@ -137,6 +138,7 @@
 		03CA2D302A2F757D00532549 /* TimeIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeIndicatorView.swift; sourceTree = "<group>"; };
 		03CA2D362A30A8E500532549 /* PlayerProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerProgressBar.swift; sourceTree = "<group>"; };
 		03CC784C2A6BB6E5005E8F7E /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
+		03CC86672AE142FF002F5D28 /* ResourceLoaderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceLoaderDelegate.swift; sourceTree = "<group>"; };
 		03CE74FF2A7946A800B84304 /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		03CE75012A7A337B00B84304 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayerView.swift; sourceTree = "<group>"; };
@@ -318,6 +320,7 @@
 				03B809092A2DF8A000AB3D03 /* TPStreamPlayer.swift */,
 				8E6389E82A278D1D00306FA4 /* ContentKeyDelegate.swift */,
 				8E6C5CB12A28AB94003EC948 /* ContentKeyManager.swift */,
+				03CC86672AE142FF002F5D28 /* ResourceLoaderDelegate.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -595,6 +598,7 @@
 				0377C40E2A2B1C7300F7E58F /* BaseAPI.swift in Sources */,
 				03CA2D312A2F757D00532549 /* TimeIndicatorView.swift in Sources */,
 				035351A22A2F49E3001E38F3 /* MediaControlsView.swift in Sources */,
+				03CC86682AE142FF002F5D28 /* ResourceLoaderDelegate.swift in Sources */,
 				03B8090C2A2DF9A200AB3D03 /* PlayerControlsView.swift in Sources */,
 				8E6389DF2A2751C800306FA4 /* TPAVPlayer.swift in Sources */,
 				03B8090A2A2DF8A000AB3D03 /* TPStreamPlayer.swift in Sources */,
