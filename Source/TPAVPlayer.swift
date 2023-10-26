@@ -18,6 +18,7 @@ import Sentry
 public class TPAVPlayer: AVPlayer {
     private var accessToken: String
     private var assetID: String
+    private var resourceLoaderDelegate: ResourceLoaderDelegate
     
     public var availableVideoQualities: [VideoQuality] = [VideoQuality(resolution:"Auto", bitrate: 0)]
     
@@ -31,6 +32,7 @@ public class TPAVPlayer: AVPlayer {
         }
         self.accessToken = accessToken
         self.assetID = assetID
+        self.resourceLoaderDelegate = ResourceLoaderDelegate(accessToken: accessToken)
 
         super.init()
         fetchAsset()
@@ -56,6 +58,7 @@ public class TPAVPlayer: AVPlayer {
         }
         
         let avURLAsset = AVURLAsset(url: url)
+        avURLAsset.resourceLoader.setDelegate(resourceLoaderDelegate, queue: DispatchQueue.main)
         self.setPlaybackURL(avURLAsset)
         self.setupDRM(avURLAsset)
         self.populateAvailableVideoQualities(url)
