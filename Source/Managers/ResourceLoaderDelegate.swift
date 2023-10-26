@@ -19,7 +19,7 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
     func resourceLoader(_ resourceLoader: AVAssetResourceLoader, shouldWaitForLoadingOfRequestedResource loadingRequest: AVAssetResourceLoadingRequest) -> Bool {
         guard let url = loadingRequest.request.url else { return false }
 
-        if isEncryptionKeyUrl(url), let modifiedURL = modifyURLWithAccessToken(url) {
+        if isEncryptionKeyUrl(url), let modifiedURL = appendAccessToken(url) {
             fetchEncryptionKey(from: modifiedURL) { [weak self] data in
                 self?.setEncryptionKeyResponse(for: loadingRequest, data: data)
             }
@@ -32,7 +32,7 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
         return url.path.contains("key")
     }
 
-    func modifyURLWithAccessToken(_ url: URL) -> URL? {
+    func appendAccessToken(_ url: URL) -> URL? {
         if var components = URLComponents(url: url, resolvingAgainstBaseURL: true){
             let accessTokenQueryItem = URLQueryItem(name: "access_token", value: self.accessToken)
             components.queryItems = (components.queryItems ?? []) + [accessTokenQueryItem]
