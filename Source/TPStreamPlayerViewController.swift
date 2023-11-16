@@ -107,7 +107,7 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate {
         if let window = UIApplication.shared.keyWindow{
             containerView.removeFromSuperview()
             window.addSubview(containerView)
-            containerView.frame = view.bounds
+            containerView.frame = window.bounds
             isFullScreen = true
         }
     }
