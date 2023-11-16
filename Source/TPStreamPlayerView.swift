@@ -47,7 +47,7 @@ public struct TPStreamPlayerView: View {
             let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
             windowScene?.requestGeometryUpdate(.iOS(interfaceOrientations: orientation))
         } else {
-            UIDevice.current.setValue(orientation.rawValue, forKey: "orientation")
+            UIDevice.current.setValue(orientation.toUIInterfaceOrientation.rawValue, forKey: "orientation")
         }
     }
 }
