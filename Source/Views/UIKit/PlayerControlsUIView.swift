@@ -51,6 +51,8 @@ class PlayerControlsUIView: UIView {
             playPauseButton.setImage(UIImage(named: "pause", in: bundle, compatibleWith: nil), for: .normal)
         case "paused":
             playPauseButton.setImage(UIImage(named: "play", in: bundle, compatibleWith: nil), for: .normal)
+        case "ended":
+            playPauseButton.setImage(UIImage(named: "reload", in: bundle, compatibleWith: nil), for: .normal)
         case "buffering":
             playPauseButton.isHidden = true
             loadingIndicator.startAnimating()
@@ -66,6 +68,9 @@ class PlayerControlsUIView: UIView {
     
     @IBAction func playOrPauseButton(_ sender: Any) {
         if player.status == "paused" {
+            player.play()
+        } else if player.status == "ended" {
+            player.goTo(seconds: 0.0)
             player.play()
         } else {
             player.pause()
