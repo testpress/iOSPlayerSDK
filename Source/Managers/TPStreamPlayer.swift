@@ -30,13 +30,20 @@ class TPStreamPlayer: NSObject {
     init(player: TPAVPlayer){
         self.player = player
         super.init()
-        self.addObservers()
-    }
-    
-    private func addObservers(){
         self.observePlayerStatusChange()
         self.observePlayerCurrentTimeChange()
-        self.observePlayerBufferingStatusChange()
+        self.observeCurrentItemChanges()
+    }
+    
+    private func observeCurrentItemChanges(){
+        // We're asynchronously setting the `currentItem` in the TPAVPlayer once the asset is fetched via network.
+        // So we adding observers on `currentItem` once it has been set.
+        
+        currentItemChangeObservation = player.observe(\.currentItem, options: [.new]) { [weak self] (_, _) in
+            guard let self = self else { return }
+            self.observePlayerBufferingStatusChange()
+            self.observeVideoEnd()
+        }
     }
     
     private func observePlayerStatusChange(){
@@ -57,15 +64,13 @@ class TPStreamPlayer: NSObject {
     }
     
     private func observePlayerBufferingStatusChange(){
-        // We're asynchronously setting the `currentItem` in the TPAVPlayer once the asset is fetched via network.
-        // So we adding observers on `currentItem` once it has been set.
-        
-        currentItemChangeObservation = player.observe(\.currentItem, options: [.new]) { [weak self] (_, _) in
-            guard let self = self else { return }
-            self.player.currentItem?.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.isPlaybackLikelyToKeepUp), options: .new, context: nil)
-            self.player.currentItem?.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.isPlaybackBufferEmpty), options: .new, context: nil)
-            self.player.currentItem?.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.duration), options: .new, context: nil)
-        }
+        self.player.currentItem?.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.isPlaybackLikelyToKeepUp), options: .new, context: nil)
+        self.player.currentItem?.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.isPlaybackBufferEmpty), options: .new, context: nil)
+        self.player.currentItem?.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.duration), options: .new, context: nil)
+    }
+    
+    private func observeVideoEnd(){
+        NotificationCenter.default.addObserver(self, selector:#selector(self.playerDidFinishPlaying),name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player?.currentItem)
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
@@ -87,11 +92,16 @@ class TPStreamPlayer: NSObject {
         }
     }
     
+    @objc private func playerDidFinishPlaying(){
+        status = "ended"
+    }
+    
     private func handlePlayerStatusChange(for player: TPAVPlayer) {
         switch player.timeControlStatus {
         case .playing:
             status = "playing"
         case .paused:
+            if status == "ended" {return}
             status = "paused"
         case .waitingToPlayAtSpecifiedRate:
             break
