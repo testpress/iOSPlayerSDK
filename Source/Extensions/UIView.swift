@@ -10,7 +10,7 @@ import UIKit
 
 extension UIView {
     func getCurrentOrientation() -> UIInterfaceOrientation {
-        if #available(iOS 13.0, *) {
+        if #available(iOS 16.0, *) {
             if let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation {
                 return orientation
             }
