@@ -30,16 +30,12 @@ class TPStreamPlayer: NSObject {
     init(player: TPAVPlayer){
         self.player = player
         super.init()
-        self.addObserversOnPlayer()
-        self.addObserversOnPlayerCurrentItem()
-    }
-    
-    private func addObserversOnPlayer(){
         self.observePlayerStatusChange()
         self.observePlayerCurrentTimeChange()
+        self.observeCurrentItemChanges()
     }
     
-    private func addObserversOnPlayerCurrentItem(){
+    private func observeCurrentItemChanges(){
         // We're asynchronously setting the `currentItem` in the TPAVPlayer once the asset is fetched via network.
         // So we adding observers on `currentItem` once it has been set.
         
