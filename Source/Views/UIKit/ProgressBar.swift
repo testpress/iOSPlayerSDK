@@ -70,12 +70,12 @@ class ProgressBar: UIControl {
     private func updateDraggedLocation(with event: UIEvent) {
         if let touch = event.touches(for: self)?.first {
             let touchLocation = touch.location(in: self)
-            draggedLocation = touchLocation.x
+            draggedLocation = min(touchLocation.x, totalWidth)
         }
     }
     
     private func getSecondsAtPosition(_ location: CGFloat) -> Float64 {
-        let percentage = Double(location / totalWidth)
+        let percentage = min(Double(location / totalWidth), 100.0)
         return player.videoDuration * percentage
     }
     
@@ -88,7 +88,7 @@ class ProgressBar: UIControl {
     }
     
     private func calculateWidthForValue(value: Float64) -> CGFloat {
-        let percentage = CGFloat(value / player.videoDuration)
+        let percentage = min(CGFloat(value / player.videoDuration), 100.0)
         return totalWidth * percentage
     }
     
