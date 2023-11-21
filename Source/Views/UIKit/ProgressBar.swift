@@ -1,6 +1,8 @@
 import Foundation
 import UIKit
 
+fileprivate let DRAGGABLE_THUMB_SIZE = 12.0
+
 class ProgressBar: UIControl {
     public var player: TPStreamPlayer!{
         didSet {
@@ -8,7 +10,7 @@ class ProgressBar: UIControl {
         }
     }
     private var totalWidth: CGFloat {
-        return frame.width
+        return frame.width - DRAGGABLE_THUMB_SIZE
     }
     private var isDragging = false
     private var draggedLocation: CGFloat = 0
@@ -68,7 +70,7 @@ class ProgressBar: UIControl {
     private func updateDraggedLocation(with event: UIEvent) {
         if let touch = event.touches(for: self)?.first {
             let touchLocation = touch.location(in: self)
-            draggedLocation = touchLocation.x
+            draggedLocation = touchLocation.x, totalWidth
         }
     }
     
@@ -92,7 +94,7 @@ class ProgressBar: UIControl {
     
     override func draw(_ rect: CGRect) {
         guard let context = UIGraphicsGetCurrentContext() else { return }
-        drawBar(context, width: rect.width, color: UIColor.gray.withAlphaComponent(0.7).cgColor) // Gray background bar
+        drawBar(context, width: totalWidth, color: UIColor.gray.withAlphaComponent(0.7).cgColor) // Gray background bar
         drawBar(context, width: bufferedWidth, color: UIColor.white.withAlphaComponent(0.6).cgColor) // Buffered progress bar
         drawBar(context, width: watchedWidth, color: UIColor.red.cgColor) // Watched progress bar
         drawDraggableThumb(context)
@@ -100,13 +102,13 @@ class ProgressBar: UIControl {
     
     private func drawBar(_ context: CGContext, width: CGFloat, color: CGColor){
         context.setFillColor(color)
-        context.fill(CGRect(x: 0, y: 5, width: width, height: 3))
+        context.fill(CGRect(x: DRAGGABLE_THUMB_SIZE / 2, y: 5, width: width, height: 3))
     }
     
     private func drawDraggableThumb(_ context: CGContext){
         context.setFillColor(UIColor.red.cgColor)
-        let circleCenterX = isDragging ? draggedLocation : watchedWidth
-        let size = isDragging ? 16.0 : 14.0
-        context.fillEllipse(in: CGRect(x: circleCenterX - 9, y: frame.height / 2 - 9, width: size, height: size))
+        let circleCenterX = (isDragging ? draggedLocation : watchedWidth)
+        let size = isDragging ? DRAGGABLE_THUMB_SIZE + 2 : DRAGGABLE_THUMB_SIZE
+        context.fillEllipse(in: CGRect(x: max(0, circleCenterX), y: 0, width: size, height: size))
     }
 }
