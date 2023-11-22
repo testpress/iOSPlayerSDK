@@ -8,6 +8,8 @@
 import Foundation
 import UIKit
 
+let ACTION_SHEET_PREFERRED_STYLE: UIAlertController.Style  = UIDevice.current.userInterfaceIdiom == .pad ? .alert : .actionSheet
+
 class PlayerControlsUIView: UIView {
     @IBOutlet weak var playPauseButton: UIButton!
     @IBOutlet weak var currentTimelabel: UILabel!
@@ -86,7 +88,7 @@ class PlayerControlsUIView: UIView {
     }
     
     @IBAction func showOptionsMenu(_ sender: Any) {
-        let optionsMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let optionsMenu = UIAlertController(title: nil, message: nil, preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
         optionsMenu.addAction(UIAlertAction(title: "Playback Speed", style: .default) { _ in self.showPlaybackSpeedMenu()})
         optionsMenu.addAction(UIAlertAction(title: "Video Quality", style: .default, handler: { action in self.showVideoQualityMenu()}))
         optionsMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -104,7 +106,7 @@ class PlayerControlsUIView: UIView {
     }
     
     func createPlaybackSpeedMenu() -> UIAlertController {
-        let playbackSpeedMenu = UIAlertController(title: "Playback Speed", message: nil, preferredStyle: .actionSheet)
+        let playbackSpeedMenu = UIAlertController(title: "Playback Speed", message: nil, preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
 
         for playbackSpeed in PlaybackSpeed.allCases {
             let action = createActionForPlaybackSpeed(playbackSpeed)
@@ -116,7 +118,7 @@ class PlayerControlsUIView: UIView {
     }
     
     func createVideoQualityMenu() -> UIAlertController {
-        let qualityMenu = UIAlertController(title: "Available resolutions", message: nil, preferredStyle: .actionSheet)
+        let qualityMenu = UIAlertController(title: "Available resolutions", message: nil, preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
         for quality in self.player.availableVideoQualities {
             let action = createActionForVideoQuality(quality)
             qualityMenu.addAction(action)
