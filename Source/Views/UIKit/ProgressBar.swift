@@ -75,7 +75,7 @@ class ProgressBar: UIControl {
     }
     
     private func getSecondsAtPosition(_ location: CGFloat) -> Float64 {
-        let percentage = min(Double(location / totalWidth), 100.0)
+        let percentage = min(Double(location / totalWidth), 1.0)
         return player.videoDuration * percentage
     }
     
