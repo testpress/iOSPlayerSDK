@@ -33,7 +33,7 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: TPPlayerViewControllerDelegate {
+extension ViewController: TPStreamPlayerViewControllerDelegate {
     func willEnterFullScreenMode() {
         print("willEnterFullScreenMode")
     }

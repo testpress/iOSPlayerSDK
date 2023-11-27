@@ -11,7 +11,7 @@ import UIKit
 
 public class TPStreamPlayerViewController: UIViewController {
     public var player: TPAVPlayer?
-    public var delegate: TPPlayerViewControllerDelegate?
+    public var delegate: TPStreamPlayerViewControllerDelegate?
     private var controlsVisibilityTimer: Timer?
     private var isFullScreen: Bool = false {
         didSet {
