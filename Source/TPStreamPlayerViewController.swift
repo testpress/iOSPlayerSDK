@@ -11,6 +11,7 @@ import UIKit
 
 public class TPStreamPlayerViewController: UIViewController {
     public var player: TPAVPlayer?
+    public var delegate: TPStreamPlayerViewControllerDelegate?
     private var controlsVisibilityTimer: Timer?
     private var isFullScreen: Bool = false {
         didSet {
@@ -94,13 +95,17 @@ public class TPStreamPlayerViewController: UIViewController {
 
 extension TPStreamPlayerViewController: FullScreenToggleDelegate {
     func enterFullScreen() {
+        delegate?.willEnterFullScreenMode()
         changeOrientation(orientation: .landscape)
         resizeContainerToWindow()
+        delegate?.didEnterFullScreenMode()
     }
     
     func exitFullScreen() {
+        delegate?.willExitFullScreenMode()
         changeOrientation(orientation: .portrait)
         resizeContainerToParentView()
+        delegate?.didExitFullScreenMode()
     }
     
     func resizeContainerToWindow(){
@@ -127,4 +132,11 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate {
             UIDevice.current.setValue(orientation.toUIInterfaceOrientation.rawValue, forKey: "orientation")
         }
     }
+}
+
+public protocol TPStreamPlayerViewControllerDelegate {
+    func willEnterFullScreenMode()
+    func didEnterFullScreenMode()
+    func willExitFullScreenMode()
+    func didExitFullScreenMode()
 }
