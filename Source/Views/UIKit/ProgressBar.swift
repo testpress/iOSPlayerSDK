@@ -14,14 +14,13 @@ class ProgressBar: UIControl {
     }
     private var isDragging = false
     private var draggedLocation: CGFloat = 0
-    private var watchedWidth: CGFloat = 0
-    private var bufferedWidth: CGFloat = 0
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         backgroundColor = .clear
         addTargetEvents()
         setupTapGesture()
+        addObserver(self, forKeyPath: #keyPath(bounds), options: [.old, .new], context: nil)
     }
     
     private func addTargetEvents() {
@@ -80,10 +79,15 @@ class ProgressBar: UIControl {
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
-        if keyPath == #keyPath(TPStreamPlayer.currentTime) {
-            watchedWidth = calculateWidthForValue(value: player.currentTime.doubleValue)
-            bufferedWidth = calculateWidthForValue(value: player.bufferedDuration)
+        switch keyPath {
+        case #keyPath(TPStreamPlayer.currentTime):
             setNeedsDisplay()
+        case #keyPath(bounds):
+            if let newBounds = change?[.newKey] as? CGRect, let oldBounds = change?[.oldKey] as? CGRect, newBounds != oldBounds {
+                setNeedsDisplay()
+            }
+        default:
+            break
         }
     }
     
@@ -94,10 +98,13 @@ class ProgressBar: UIControl {
     
     override func draw(_ rect: CGRect) {
         guard let context = UIGraphicsGetCurrentContext() else { return }
+        let watchedWidth = calculateWidthForValue(value: player.currentTime.doubleValue)
+        let bufferedWidth = calculateWidthForValue(value: player.bufferedDuration)
+        
         drawBar(context, width: totalWidth, color: UIColor.gray.withAlphaComponent(0.7).cgColor) // Gray background bar
         drawBar(context, width: bufferedWidth, color: UIColor.white.withAlphaComponent(0.6).cgColor) // Buffered progress bar
         drawBar(context, width: watchedWidth, color: UIColor.red.cgColor) // Watched progress bar
-        drawDraggableThumb(context)
+        drawDraggableThumb(context, watchedWidth)
     }
     
     private func drawBar(_ context: CGContext, width: CGFloat, color: CGColor){
@@ -105,7 +112,7 @@ class ProgressBar: UIControl {
         context.fill(CGRect(x: DRAGGABLE_THUMB_SIZE / 2, y: 5, width: width, height: 3))
     }
     
-    private func drawDraggableThumb(_ context: CGContext){
+    private func drawDraggableThumb(_ context: CGContext, _ watchedWidth: CGFloat){
         context.setFillColor(UIColor.red.cgColor)
         let circleCenterX = (isDragging ? draggedLocation : watchedWidth)
         let size = isDragging ? DRAGGABLE_THUMB_SIZE + 2 : DRAGGABLE_THUMB_SIZE
