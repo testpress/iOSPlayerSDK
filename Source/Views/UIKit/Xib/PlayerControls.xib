@@ -143,6 +143,7 @@
             </constraints>
             <connections>
                 <outlet property="currentTimelabel" destination="rJo-p9-gc7" id="A5I-6V-15l"/>
+                <outlet property="forwardButton" destination="z2i-lj-k69" id="CDh-Of-PtG"/>
                 <outlet property="fullScreenToggleButton" destination="5BF-uG-JOj" id="xk8-hZ-snW"/>
                 <outlet property="loadingIndicator" destination="FGD-AH-xjx" id="ptq-06-nG2"/>
                 <outlet property="playPauseButton" destination="rWY-7h-2Dd" id="kUX-RG-TOG"/>

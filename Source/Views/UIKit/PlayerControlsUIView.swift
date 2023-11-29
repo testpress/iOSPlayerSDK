@@ -17,6 +17,7 @@ class PlayerControlsUIView: UIView {
     @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
     @IBOutlet weak var fullScreenToggleButton: UIButton!
     @IBOutlet weak var progressBar: ProgressBar!
+    @IBOutlet weak var forwardButton: UIButton!
     
     
     var player: TPStreamPlayer! {
@@ -66,6 +67,7 @@ class PlayerControlsUIView: UIView {
             playPauseButton.isHidden = false
             loadingIndicator.stopAnimating()
         }
+        forwardButton.isEnabled = player.status != "ended"
     }
     
     @IBAction func playOrPauseButton(_ sender: Any) {
