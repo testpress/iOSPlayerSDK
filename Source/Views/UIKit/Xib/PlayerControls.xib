@@ -114,6 +114,27 @@
                     <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" -10s" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e7F-Lb-uzC">
+                    <rect key="frame" x="129.5" y="177" width="48" height="21.5"/>
+                    <accessibility key="accessibilityConfiguration">
+                        <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
+                    </accessibility>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="48" id="N5n-vc-TYR"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" +10s" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vbY-Vi-98f">
+                    <rect key="frame" x="490" y="177" width="48" height="22"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="48" id="Nnw-CQ-ejD"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <viewLayoutGuide key="safeArea" id="w1Z-d2-tRh"/>
             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.29605943329480228" colorSpace="custom" customColorSpace="sRGB"/>
@@ -125,18 +146,22 @@
                 <constraint firstItem="1u3-pU-CDM" firstAttribute="leading" secondItem="w1Z-d2-tRh" secondAttribute="leading" constant="12" id="ELY-JA-h8j"/>
                 <constraint firstItem="w1Z-d2-tRh" firstAttribute="bottom" secondItem="4Ar-ud-LQI" secondAttribute="bottom" constant="14" id="MXT-F8-dm9"/>
                 <constraint firstItem="5BF-uG-JOj" firstAttribute="leading" secondItem="ad7-vR-GCz" secondAttribute="trailing" constant="22" id="Oji-FW-Wf3"/>
+                <constraint firstItem="HpI-yc-TvP" firstAttribute="leading" secondItem="e7F-Lb-uzC" secondAttribute="trailing" constant="1" id="P1e-RC-jmS"/>
                 <constraint firstItem="w1Z-d2-tRh" firstAttribute="bottom" secondItem="5BF-uG-JOj" secondAttribute="bottom" constant="15" id="SfL-uD-E8z"/>
+                <constraint firstItem="vbY-Vi-98f" firstAttribute="leading" secondItem="z2i-lj-k69" secondAttribute="trailing" constant="1" id="StY-WY-bCH"/>
                 <constraint firstItem="HpI-yc-TvP" firstAttribute="centerY" secondItem="w1Z-d2-tRh" secondAttribute="centerY" id="TKW-ez-a0f"/>
                 <constraint firstItem="w1Z-d2-tRh" firstAttribute="bottom" secondItem="hAe-VC-JKX" secondAttribute="bottom" constant="15" id="TwU-0J-h8P"/>
                 <constraint firstItem="4Ar-ud-LQI" firstAttribute="leading" secondItem="rJo-p9-gc7" secondAttribute="trailing" constant="4.5" id="X4T-un-8QS"/>
                 <constraint firstItem="rWY-7h-2Dd" firstAttribute="leading" secondItem="HpI-yc-TvP" secondAttribute="trailing" constant="90" id="XEP-Xm-Qmq"/>
                 <constraint firstItem="w1Z-d2-tRh" firstAttribute="bottom" secondItem="ad7-vR-GCz" secondAttribute="bottom" constant="15" id="ZyW-2f-u8I"/>
                 <constraint firstItem="w1Z-d2-tRh" firstAttribute="trailing" secondItem="5BF-uG-JOj" secondAttribute="trailing" constant="18" id="e6F-q7-5uK"/>
+                <constraint firstItem="vbY-Vi-98f" firstAttribute="centerY" secondItem="w1Z-d2-tRh" secondAttribute="centerY" id="fsn-l3-Tfz"/>
                 <constraint firstItem="rJo-p9-gc7" firstAttribute="top" secondItem="1u3-pU-CDM" secondAttribute="bottom" constant="6" id="hh3-zD-ilZ"/>
                 <constraint firstItem="w1Z-d2-tRh" firstAttribute="trailing" secondItem="1u3-pU-CDM" secondAttribute="trailing" constant="10" id="l0a-Ew-w1u"/>
                 <constraint firstItem="FGD-AH-xjx" firstAttribute="centerY" secondItem="w1Z-d2-tRh" secondAttribute="centerY" id="lov-zD-hDe"/>
                 <constraint firstItem="FGD-AH-xjx" firstAttribute="centerX" secondItem="w1Z-d2-tRh" secondAttribute="centerX" id="oYf-V1-Jlq"/>
                 <constraint firstItem="rWY-7h-2Dd" firstAttribute="centerX" secondItem="w1Z-d2-tRh" secondAttribute="centerX" id="osC-gk-STn"/>
+                <constraint firstItem="e7F-Lb-uzC" firstAttribute="centerY" secondItem="w1Z-d2-tRh" secondAttribute="centerY" id="rNi-VZ-lcu"/>
                 <constraint firstItem="rJo-p9-gc7" firstAttribute="leading" secondItem="w1Z-d2-tRh" secondAttribute="leading" constant="18" id="rX2-Wo-0sB"/>
                 <constraint firstItem="z2i-lj-k69" firstAttribute="centerY" secondItem="w1Z-d2-tRh" secondAttribute="centerY" id="zSL-Ky-tiA"/>
                 <constraint firstItem="w1Z-d2-tRh" firstAttribute="bottom" secondItem="rJo-p9-gc7" secondAttribute="bottom" constant="15" id="zcD-2u-Cfj"/>
@@ -144,20 +169,22 @@
             <connections>
                 <outlet property="currentTimelabel" destination="rJo-p9-gc7" id="A5I-6V-15l"/>
                 <outlet property="forwardButton" destination="z2i-lj-k69" id="CDh-Of-PtG"/>
+                <outlet property="forwardSeekNoticeLabel" destination="vbY-Vi-98f" id="aOV-LF-VXC"/>
                 <outlet property="fullScreenToggleButton" destination="5BF-uG-JOj" id="xk8-hZ-snW"/>
                 <outlet property="loadingIndicator" destination="FGD-AH-xjx" id="ptq-06-nG2"/>
                 <outlet property="playPauseButton" destination="rWY-7h-2Dd" id="kUX-RG-TOG"/>
                 <outlet property="progressBar" destination="1u3-pU-CDM" id="JtU-xe-78i"/>
+                <outlet property="rewindSeekNoticeLabel" destination="e7F-Lb-uzC" id="pk1-Z6-yA9"/>
                 <outlet property="videoDurationLabel" destination="hAe-VC-JKX" id="83w-zJ-upN"/>
             </connections>
             <point key="canvasLocation" x="305.39730134932535" y="360.80000000000001"/>
         </view>
     </objects>
     <resources>
-        <image name="forward" width="90" height="90"/>
+        <image name="forward" width="64" height="64"/>
         <image name="maximize" width="512" height="512"/>
         <image name="play" width="512" height="512"/>
-        <image name="rewind" width="90" height="90"/>
+        <image name="rewind" width="64" height="64"/>
         <image name="settings" width="256" height="256"/>
     </resources>
 </document>

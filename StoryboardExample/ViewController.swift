@@ -27,6 +27,14 @@ class ViewController: UIViewController {
         playerViewController?.player = player
         playerViewController?.delegate = self
 
+        
+        let config = TPStreamPlayerConfigurationBuilder()
+            .setPreferredForwardDuration(15)
+            .setPreferredRewindDuration(5)
+            .build()
+        
+        playerViewController?.config = config
+
         addChild(playerViewController!)
         playerContainer.addSubview(playerViewController!.view)
         playerViewController!.view.frame = playerContainer.bounds
