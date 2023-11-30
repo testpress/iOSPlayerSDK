@@ -40,6 +40,7 @@ class ViewController: UIViewController {
             .setPreferredRewindDuration(5)
             .setprogressBarThumbColor(.systemBlue)
             .setwatchedProgressTrackColor(.systemBlue)
+            .setBrandingImage(UIImage(named: "testpress_logo"))
             .build()
         
         playerViewController?.config = config

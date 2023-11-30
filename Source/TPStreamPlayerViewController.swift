@@ -15,6 +15,7 @@ public class TPStreamPlayerViewController: UIViewController {
     public var config = TPStreamPlayerConfiguration(){
         didSet {
             controlsView.playerConfig = config
+            setupBrandingImage()
         }
     }
     private var controlsVisibilityTimer: Timer?
@@ -35,6 +36,8 @@ public class TPStreamPlayerViewController: UIViewController {
         return view
     }()
     
+    private var brandingImageView = UIImageView()
+    
     private lazy var controlsView: PlayerControlsUIView = {
         guard let view = bundle.loadNibNamed("PlayerControls", owner: nil, options: nil)?.first as? PlayerControlsUIView else {
             fatalError("Could not load PlayerControls view from nib.")
@@ -52,6 +55,7 @@ public class TPStreamPlayerViewController: UIViewController {
         let view = UIView(frame: view.bounds)
         view.backgroundColor = .black
         view.addSubview(videoView)
+        view.addSubview(brandingImageView)
         view.addSubview(controlsView)
         view.bringSubviewToFront(controlsView)
         return view
@@ -94,6 +98,37 @@ public class TPStreamPlayerViewController: UIViewController {
             controlsVisibilityTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] _ in
                 self?.controlsView.isHidden = true
             }
+        }
+    }
+    
+    private func setupBrandingImage(){
+        guard let brandingImage = config.brandingImage else {
+            return
+        }
+        
+        brandingImageView.image = brandingImage
+//        brandingImageView.frame.origin = getBrandingImageOrigin()
+    }
+    
+    private func getBrandingImageOrigin() -> CGPoint {
+        let imageWidth = config.brandingImage!.size.width
+        let imageHeight = config.brandingImage!.size.height
+        let overallWidth = containerView.bounds.width
+        let overallHeight = containerView.bounds.height
+        let marginLeft = config.brandingMargin.left
+        let marginRight = config.brandingMargin.right       
+        let marginTop = config.brandingMargin.top
+        let marginBottom = config.brandingMargin.bottom
+        
+        switch config.brandingPosition {
+        case .topLeft:
+            return CGPoint(x: marginLeft, y: marginTop)
+        case .topRight:
+            return CGPoint(x: overallWidth - imageWidth - marginRight, y: marginTop)
+        case .bottomLeft:
+            return CGPoint(x: marginLeft, y: overallHeight - imageHeight - marginBottom)
+        case .bottomRight:
+            return CGPoint(x: overallWidth - imageWidth - marginRight, y: overallHeight - imageHeight - marginBottom)
         }
     }
 }
