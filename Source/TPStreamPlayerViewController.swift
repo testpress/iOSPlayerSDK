@@ -12,6 +12,11 @@ import UIKit
 public class TPStreamPlayerViewController: UIViewController {
     public var player: TPAVPlayer?
     public var delegate: TPStreamPlayerViewControllerDelegate?
+    public var config = TPStreamPlayerConfiguration(){
+        didSet {
+            controlsView.playerConfig = config
+        }
+    }
     private var controlsVisibilityTimer: Timer?
     private var isFullScreen: Bool = false {
         didSet {
@@ -35,6 +40,7 @@ public class TPStreamPlayerViewController: UIViewController {
             fatalError("Could not load PlayerControls view from nib.")
         }
         view.player = TPStreamPlayer(player: self.player!)
+        view.playerConfig = config
         view.frame = view.bounds
         view.isHidden = true
         view.fullScreenToggleDelegate = self

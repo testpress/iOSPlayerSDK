@@ -18,7 +18,8 @@ class PlayerControlsUIView: UIView {
     @IBOutlet weak var fullScreenToggleButton: UIButton!
     @IBOutlet weak var progressBar: ProgressBar!
     @IBOutlet weak var forwardButton: UIButton!
-    
+    @IBOutlet weak var rewindSeekNoticeLabel: UILabel!
+    @IBOutlet weak var forwardSeekNoticeLabel: UILabel!
     
     var player: TPStreamPlayer! {
         didSet {
@@ -28,6 +29,7 @@ class PlayerControlsUIView: UIView {
             player.addObserver(self, forKeyPath: #keyPath(TPStreamPlayer.isVideoDurationInitialized), options: .new, context: nil)
         }
     }
+    var playerConfig: TPStreamPlayerConfiguration!
     
     var parentViewController: UIViewController?
     var fullScreenToggleDelegate: FullScreenToggleDelegate?
@@ -82,11 +84,29 @@ class PlayerControlsUIView: UIView {
     }
     
     @IBAction func rewind(_ sender: UIButton) {
-        player.rewind()
+        let rewindDuration = playerConfig.preferredRewindDuration
+        player.rewind(rewindDuration)
+        animateSeekNoticeWithDuration(rewindDuration, label: rewindSeekNoticeLabel, isForward: false)
     }
     
     @IBAction func forward(_ sender: Any) {
-        player.forward()
+        let forwardDuration = playerConfig.preferredForwardDuration
+        player.forward(forwardDuration)
+        animateSeekNoticeWithDuration(forwardDuration, label: forwardSeekNoticeLabel, isForward: true)
+    }
+    
+    private func animateSeekNoticeWithDuration(_ duration: TimeInterval, label: UILabel, isForward: Bool) {
+        label.isHidden = false
+        label.text = isForward ? "+\(Int(duration))s" : "-\(Int(duration))s"
+        
+        UIView.animate(withDuration: 0.5, animations: {
+            label.transform = CGAffineTransform(translationX: isForward ? 12 : -12, y: 0)
+            label.alpha = 1.0
+        }, completion: { _ in
+            label.isHidden = true
+            label.transform = .identity
+            label.alpha = 0.0
+        })
     }
     
     @IBAction func showOptionsMenu(_ sender: Any) {

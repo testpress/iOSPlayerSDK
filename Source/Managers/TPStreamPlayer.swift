@@ -136,16 +136,16 @@ class TPStreamPlayer: NSObject {
         player.pause()
     }
     
-    func forward() {
-        var seekTo = self.player.currentTimeInSeconds + 10
+    func forward(_ seconds: Float64 = 10.0) {
+        var seekTo = self.player.currentTimeInSeconds + seconds
         if seekTo > videoDuration {
             seekTo = videoDuration
         }
         goTo(seconds: seekTo)
     }
 
-    func rewind() {
-        var seekTo = self.player.currentTimeInSeconds - 10
+    func rewind(_ seconds: Float64 = 10.0) {
+        var seekTo = self.player.currentTimeInSeconds - seconds
         if seekTo < 0 {
             seekTo = 0
         }

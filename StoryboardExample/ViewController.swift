@@ -22,10 +22,18 @@ class ViewController: UIViewController {
     }
     
     func setupPlayerView(){
-        player = TPAVPlayer(assetID: "8eaHZjXt6km", accessToken: "16b608ba-9979-45a0-94fb-b27c1a86b3c1")
+        player = TPAVPlayer(assetID: "8r65J7EY6NP", accessToken: "c4936043-816a-4404-b165-d7336672e7a7")
         playerViewController = TPStreamPlayerViewController()
         playerViewController?.player = player
         playerViewController?.delegate = self
+
+        
+        let config = TPStreamPlayerConfigurationBuilder()
+            .setPreferredForwardDuration(15)
+            .setPreferredRewindDuration(5)
+            .build()
+        
+        playerViewController?.config = config
 
         addChild(playerViewController!)
         playerContainer.addSubview(playerViewController!.view)

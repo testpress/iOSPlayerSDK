@@ -14,7 +14,7 @@ struct MediaControlsView: View {
     var body: some View {
         HStack() {
             Spacer()
-            Button(action: player.rewind) {
+            Button(action: { player.rewind() }) {
                 Image("rewind", bundle: bundle)
                     .resizable()
                     .frame(width: 40, height: 40)
@@ -34,7 +34,7 @@ struct MediaControlsView: View {
                 }
             }
             Spacer()
-            Button(action: player.forward) {
+            Button(action: {player.forward()}) {
                 Image("forward", bundle: bundle)
                     .resizable()
                     .frame(width: 40, height: 40)
