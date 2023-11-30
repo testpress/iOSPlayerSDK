@@ -59,13 +59,14 @@ public class TPAVPlayer: AVPlayer {
         
         let avURLAsset = AVURLAsset(url: url)
         avURLAsset.resourceLoader.setDelegate(resourceLoaderDelegate, queue: DispatchQueue.main)
-        self.setPlaybackURL(avURLAsset)
+        self.setPlayerItem(avURLAsset)
         self.setupDRM(avURLAsset)
         self.populateAvailableVideoQualities(url)
     }
     
-    private func setPlaybackURL(_ asset: AVURLAsset){
+    private func setPlayerItem(_ asset: AVURLAsset){
         let playerItem = AVPlayerItem(asset: asset)
+        playerItem.preferredForwardBufferDuration = 3
         self.replaceCurrentItem(with: playerItem)
     }
     
