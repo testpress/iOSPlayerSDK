@@ -22,7 +22,14 @@ class ViewController: UIViewController {
     }
     
     func setupPlayerView(){
-        player = TPAVPlayer(assetID: "8r65J7EY6NP", accessToken: "c4936043-816a-4404-b165-d7336672e7a7")
+        player = TPAVPlayer(assetID: "8r65J7EY6NP", accessToken: "c4936043-816a-4404-b165-d7336672e7a7"){ error in
+            guard error == nil else {
+                print("Setup error: \(error!.localizedDescription)")
+                return
+            }
+
+            print("TPAVPlayer setup successfully")
+        }
         playerViewController = TPStreamPlayerViewController()
         playerViewController?.player = player
         playerViewController?.delegate = self

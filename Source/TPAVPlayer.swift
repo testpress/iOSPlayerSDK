@@ -18,11 +18,13 @@ import Sentry
 public class TPAVPlayer: AVPlayer {
     private var accessToken: String
     private var assetID: String
+    public typealias SetupCompletion = (Error?) -> Void
+    private var setupCompletion: SetupCompletion?
     private var resourceLoaderDelegate: ResourceLoaderDelegate
     
     public var availableVideoQualities: [VideoQuality] = [VideoQuality(resolution:"Auto", bitrate: 0)]
     
-    public init(assetID: String, accessToken: String) {
+    public init(assetID: String, accessToken: String, completion: SetupCompletion? = nil) {
         guard TPStreamsSDK.orgCode != nil else {
             fatalError("You must call TPStreamsSDK.initialize")
         }
@@ -32,6 +34,7 @@ public class TPAVPlayer: AVPlayer {
         }
         self.accessToken = accessToken
         self.assetID = assetID
+        self.setupCompletion = completion
         self.resourceLoaderDelegate = ResourceLoaderDelegate(accessToken: accessToken)
 
         super.init()
@@ -44,9 +47,11 @@ public class TPAVPlayer: AVPlayer {
             
             if let asset = asset {
                 self.setup(withAsset: asset)
+                self.setupCompletion?(nil)
             } else if let error = error{
                 SentrySDK.capture(error: error)
                 debugPrint(error.localizedDescription)
+                self.setupCompletion?(error)
             }
         }
     }
