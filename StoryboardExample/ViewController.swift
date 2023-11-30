@@ -31,6 +31,8 @@ class ViewController: UIViewController {
         let config = TPStreamPlayerConfigurationBuilder()
             .setPreferredForwardDuration(15)
             .setPreferredRewindDuration(5)
+            .setprogressBarThumbColor(.systemBlue)
+            .setwatchedProgressTrackColor(.systemBlue)
             .build()
         
         playerViewController?.config = config

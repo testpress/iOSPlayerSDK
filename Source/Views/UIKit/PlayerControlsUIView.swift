@@ -29,7 +29,12 @@ class PlayerControlsUIView: UIView {
             player.addObserver(self, forKeyPath: #keyPath(TPStreamPlayer.isVideoDurationInitialized), options: .new, context: nil)
         }
     }
-    var playerConfig: TPStreamPlayerConfiguration!
+    var playerConfig: TPStreamPlayerConfiguration!{
+        didSet {
+            progressBar.watchedProgressTrackColor = playerConfig.watchedProgressTrackColor
+            progressBar.progressBarThumbColor = playerConfig.progressBarThumbColor
+        }
+    }
     
     var parentViewController: UIViewController?
     var fullScreenToggleDelegate: FullScreenToggleDelegate?
