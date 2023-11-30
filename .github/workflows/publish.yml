@@ -20,6 +20,6 @@ jobs:
         run: pod install
 
       - name: Publish to CocoaPods
-        run: pod trunk push
+        run: pod trunk push TPStreamsSDK.podspec --allow-warnings
         env:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
