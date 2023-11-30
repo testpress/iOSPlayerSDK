@@ -1,0 +1,25 @@
+name: Publish to CocoaPods
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up CocoaPods
+        run: |
+          gem install cocoapods
+          pod setup
+
+      - name: Install dependencies
+        run: pod install
+
+      - name: Publish to CocoaPods
+        run: pod trunk push TPStreamsSDK.podspec --allow-warnings
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
