@@ -9,16 +9,8 @@ import Foundation
 import UIKit
 
 public struct TPStreamPlayerConfiguration {
-    public var preferredForwardDuration: TimeInterval
-    public var preferredRewindDuration: TimeInterval
-    
-    public init(
-        preferredForwardDuration: TimeInterval = 10.0,
-        preferredRewindDuration: TimeInterval = 10.0
-    ) {
-        self.preferredForwardDuration = preferredForwardDuration
-        self.preferredRewindDuration = preferredRewindDuration
-    }
+    public var preferredForwardDuration: TimeInterval = 10.0
+    public var preferredRewindDuration: TimeInterval = 10.0
 }
 
 
