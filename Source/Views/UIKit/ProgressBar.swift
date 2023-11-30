@@ -14,6 +14,8 @@ class ProgressBar: UIControl {
     }
     private var isDragging = false
     private var draggedLocation: CGFloat = 0
+    public var watchedProgressTrackColor: UIColor = .red
+    public var progressBarThumbColor: UIColor = .red
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -103,7 +105,7 @@ class ProgressBar: UIControl {
         
         drawBar(context, width: totalWidth, color: UIColor.gray.withAlphaComponent(0.7).cgColor) // Gray background bar
         drawBar(context, width: bufferedWidth, color: UIColor.white.withAlphaComponent(0.6).cgColor) // Buffered progress bar
-        drawBar(context, width: watchedWidth, color: UIColor.red.cgColor) // Watched progress bar
+        drawBar(context, width: watchedWidth, color: watchedProgressTrackColor.cgColor) // Watched progress bar
         drawDraggableThumb(context, watchedWidth)
     }
     
@@ -113,7 +115,7 @@ class ProgressBar: UIControl {
     }
     
     private func drawDraggableThumb(_ context: CGContext, _ watchedWidth: CGFloat){
-        context.setFillColor(UIColor.red.cgColor)
+        context.setFillColor(progressBarThumbColor.cgColor)
         let circleCenterX = (isDragging ? draggedLocation : watchedWidth)
         let size = isDragging ? DRAGGABLE_THUMB_SIZE + 2 : DRAGGABLE_THUMB_SIZE
         context.fillEllipse(in: CGRect(x: max(0, circleCenterX), y: 0, width: size, height: size))

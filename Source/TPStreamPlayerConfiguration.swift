@@ -11,6 +11,8 @@ import UIKit
 public struct TPStreamPlayerConfiguration {
     public var preferredForwardDuration: TimeInterval = 10.0
     public var preferredRewindDuration: TimeInterval = 10.0
+    public var watchedProgressTrackColor: UIColor = .red
+    public var progressBarThumbColor: UIColor = .red
 }
 
 
@@ -28,6 +30,16 @@ public class TPStreamPlayerConfigurationBuilder {
     
     public func setPreferredRewindDuration(_ duration: TimeInterval) -> Self {
         configuration.preferredRewindDuration = duration
+        return self
+    }
+    
+    public func setwatchedProgressTrackColor(_ color: UIColor) -> Self {
+        configuration.watchedProgressTrackColor = color
+        return self
+    }
+    
+    public func setprogressBarThumbColor(_ color: UIColor) -> Self {
+        configuration.progressBarThumbColor = color
         return self
     }
     
