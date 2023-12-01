@@ -13,6 +13,16 @@ public struct TPStreamPlayerConfiguration {
     public var preferredRewindDuration: TimeInterval = 10.0
     public var watchedProgressTrackColor: UIColor = .red
     public var progressBarThumbColor: UIColor = .red
+    public var brandingImage: UIImage?
+    public var brandingPosition: BrandingPosition = .topRight
+    public var brandingMargin: UIEdgeInsets = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 10)
+}
+
+public enum BrandingPosition {
+    case topLeft
+    case topRight
+    case bottomLeft
+    case bottomRight
 }
 
 
@@ -40,6 +50,21 @@ public class TPStreamPlayerConfigurationBuilder {
     
     public func setprogressBarThumbColor(_ color: UIColor) -> Self {
         configuration.progressBarThumbColor = color
+        return self
+    }
+    
+    public func setBrandingImage(_ image: UIImage?) -> Self {
+        configuration.brandingImage = image
+        return self
+    }
+
+    public func setBrandingPosition(_ position: BrandingPosition) -> Self {
+        configuration.brandingPosition = position
+        return self
+    }
+
+    public func setBrandingMargin(_ margin: UIEdgeInsets) -> Self {
+        configuration.brandingMargin = margin
         return self
     }
     
