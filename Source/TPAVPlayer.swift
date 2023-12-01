@@ -112,6 +112,13 @@ public class TPAVPlayer: AVPlayer {
         
         self.currentItem?.preferredPeakBitRate = videoQuality.bitrate
     }
+    
+    public func limitAvailableVideoQualities(byMaxHeight maxHeight: Int) {
+        // Exclude "Auto" resolution because it is handled by AVPlayer and does not adhere to the height limitation.
+        self.availableVideoQualities = availableVideoQualities.filter { quality in
+            quality.resolution != "Auto" && Int(String(quality.resolution.dropLast()))! <= maxHeight
+        }
+    }
 }
 
 public struct VideoQuality {
