@@ -21,6 +21,8 @@ public class TPAVPlayer: AVPlayer {
     public typealias SetupCompletion = (Error?) -> Void
     private var setupCompletion: SetupCompletion?
     private var resourceLoaderDelegate: ResourceLoaderDelegate
+    public var onError: ((Error) -> Void)?
+    internal var initializationError: Error?
     
     public var availableVideoQualities: [VideoQuality] = [VideoQuality(resolution:"Auto", bitrate: 0)]
     
@@ -50,8 +52,9 @@ public class TPAVPlayer: AVPlayer {
                 self.setupCompletion?(nil)
             } else if let error = error{
                 SentrySDK.capture(error: error)
-                debugPrint(error.localizedDescription)
                 self.setupCompletion?(error)
+                self.onError?(error)
+                self.initializationError = error
             }
         }
     }
@@ -78,6 +81,10 @@ public class TPAVPlayer: AVPlayer {
     private func setupDRM(_ avURLAsset: AVURLAsset) {
         ContentKeyManager.shared.contentKeySession.addContentKeyRecipient(avURLAsset)
         ContentKeyManager.shared.contentKeyDelegate.setAssetDetails(assetID, accessToken)
+        ContentKeyManager.shared.contentKeyDelegate.onError = { error in
+            self.initializationError = error
+            self.onError?(error)
+        }
     }
     
     private func populateAvailableVideoQualities(_ url: URL){
