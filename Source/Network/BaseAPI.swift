@@ -22,7 +22,7 @@ class BaseAPI {
         AF.request(url).responseData { response in
             switch response.result {
             case .success(let data):
-                handleSuccessResponse(response, data, completion)
+                handleResponse(response, data, completion)
             case .failure(let error):
                 handleNetworkFailure(error, completion)
             }
@@ -56,7 +56,7 @@ class BaseAPI {
         }
     }
     
-    static func handleSuccessResponse(_ response: AFDataResponse<Data>, _ data: Data, _ completion: @escaping (Asset?, Error?) -> Void) {
+    static func handleResponse(_ response: AFDataResponse<Data>, _ data: Data, _ completion: @escaping (Asset?, Error?) -> Void) {
         guard let statusCode = response.response?.statusCode else {
             completion(nil, TPStreamPlayerError.unknownError)
             return
