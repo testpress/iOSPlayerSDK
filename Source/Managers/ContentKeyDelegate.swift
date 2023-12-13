@@ -12,6 +12,7 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
     var contentID: String?
     var assetID: String?
     var accessToken: String?
+    public var onError: ((Error) -> Void)?
 
     enum ProgramError: Error {
         case missingApplicationCertificate
@@ -86,6 +87,7 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
 
         self.requestCKC(spcData) { ckcData, error in
             if let error = error {
+                self.onError?(error)
                 keyRequest.processContentKeyResponseError(error)
                 return
             }

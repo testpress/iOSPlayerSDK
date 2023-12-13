@@ -20,17 +20,11 @@ class BaseAPI {
         let url = URL(string: String(format: VIDEO_DETAIL_API, TPStreamsSDK.orgCode!, assetID, accessToken))!
 
         AF.request(url).responseData { response in
-
             switch response.result {
             case .success(let data):
-                do {
-                    let videoDetails = try parseAsset(data: data)
-                    completion(videoDetails, nil)
-                } catch {
-                    completion(nil, error)
-                }
+                handleSuccessResponse(response, data, completion)
             case .failure(let error):
-                completion(nil, error)
+                handleNetworkFailure(error, completion)
             }
         }
     }
@@ -50,13 +44,58 @@ class BaseAPI {
         AF.request(url, method: .post, parameters: parameters, encoder: JSONParameterEncoder.prettyPrinted, headers: headers).responseData { response in
             switch response.result {
             case .success(let data):
-                completion(data, nil)
-            case .failure(let error):
-                completion(nil, error)
+                if response.response?.statusCode == 200 {
+                    completion(data, nil)
+                } else {
+                    completion(nil, TPStreamPlayerError.failedToFetchLicenseKey)
+                }
+            case .failure(_):
+                completion(nil, TPStreamPlayerError.failedToFetchLicenseKey)
             }
+            
         }
     }
-
+    
+    static func handleSuccessResponse(_ response: AFDataResponse<Data>, _ data: Data, _ completion: @escaping (Asset?, Error?) -> Void) {
+        guard let statusCode = response.response?.statusCode else {
+            completion(nil, TPStreamPlayerError.unknownError)
+            return
+        }
+        
+        switch statusCode {
+        case 200:
+            do {
+                let videoDetails = try parseAsset(data: data)
+                completion(videoDetails, nil)
+            } catch {
+                completion(nil, TPStreamPlayerError.unknownError)
+            }
+        case 404:
+            completion(nil, TPStreamPlayerError.resourceNotFound)
+        case 401:
+            completion(nil, TPStreamPlayerError.unauthorizedAccess)
+        case 500:
+            completion(nil, TPStreamPlayerError.serverError)
+        default:
+            completion(nil, TPStreamPlayerError.unknownError)
+        }
+    }
+    
+    static func handleNetworkFailure(_ error: AFError, _ completion: @escaping (Asset?, Error?) -> Void) {
+        if let underlyingError = error.underlyingError as? URLError {
+            switch underlyingError.code {
+            case .timedOut:
+                completion(nil, TPStreamPlayerError.networkTimeout)
+            case .notConnectedToInternet:
+                completion(nil, TPStreamPlayerError.noInternetConnection)
+            default:
+                completion(nil, TPStreamPlayerError.unknownError)
+            }
+        } else {
+            completion(nil, error)
+        }
+    }
+    
     class func parseAsset(data: Data) throws -> Asset {
         fatalError("parseAsset(data:) must be overridden by subclasses.")
     }

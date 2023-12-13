@@ -10,7 +10,16 @@ import UIKit
 
 
 public class TPStreamPlayerViewController: UIViewController {
-    public var player: TPAVPlayer?
+    public var player: TPAVPlayer?{
+        didSet {
+            guard let player = player else { return }
+
+            if let initializationError = player.initializationError {
+                showError(error: initializationError)
+            }
+            player.onError = showError
+        }
+    }
     public var delegate: TPStreamPlayerViewControllerDelegate?
     public var config = TPStreamPlayerConfiguration(){
         didSet {
@@ -48,13 +57,30 @@ public class TPStreamPlayerViewController: UIViewController {
         return view
     }()
     
+    private lazy var errorView: UIView = {
+        let view = UIView(frame: view.frame)
+        view.isHidden = true
+        view.backgroundColor = UIColor.black
+        view.addSubview(errorMessageLabel)
+        return view
+    }()
+    
     private lazy var containerView: UIView = {
         let view = UIView(frame: view.bounds)
         view.backgroundColor = .black
         view.addSubview(videoView)
         view.addSubview(controlsView)
+        view.addSubview(errorView)
         view.bringSubviewToFront(controlsView)
         return view
+    }()
+    
+    private lazy var errorMessageLabel: UILabel = {
+        let messageLabel = UILabel(frame: view.frame)
+        messageLabel.textAlignment = .center
+        messageLabel.textColor = .white
+        messageLabel.numberOfLines = 4
+        return messageLabel
     }()
     
     public override func viewDidLoad() {
@@ -68,6 +94,8 @@ public class TPStreamPlayerViewController: UIViewController {
         containerView.frame = containerView.superview!.bounds
         videoView.frame = containerView.bounds
         controlsView.frame = containerView.bounds
+        errorView.frame = containerView.bounds
+        errorMessageLabel.frame = errorView.bounds
     }
     
     public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -94,6 +122,16 @@ public class TPStreamPlayerViewController: UIViewController {
             controlsVisibilityTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] _ in
                 self?.controlsView.isHidden = true
             }
+        }
+    }
+    
+    private func showError(error: Error){
+        errorView.isHidden = false
+        containerView.bringSubviewToFront(errorView)
+        if let tpStreamPlayerError = error as? TPStreamPlayerError {
+            errorMessageLabel.text = "\(tpStreamPlayerError.message)\nError code: \(tpStreamPlayerError.code)"
+        } else {
+            errorMessageLabel.text = error.localizedDescription
         }
     }
 }

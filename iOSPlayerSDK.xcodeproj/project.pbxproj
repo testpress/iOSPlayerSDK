@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		031099F62B28B22C0034D370 /* TPStreamPlayerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031099F52B28B22C0034D370 /* TPStreamPlayerError.swift */; };
 		0321F3272A2E0D1800E08AEE /* AVPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0321F3262A2E0D1800E08AEE /* AVPlayer.swift */; };
 		0326BADB2A335911009ABC58 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 0326BADA2A335911009ABC58 /* Sentry */; };
 		0326BADE2A348690009ABC58 /* M3U8Parser in Frameworks */ = {isa = PBXBuildFile; productRef = 0326BADD2A348690009ABC58 /* M3U8Parser */; };
@@ -116,6 +117,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		031099F52B28B22C0034D370 /* TPStreamPlayerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayerError.swift; sourceTree = "<group>"; };
 		0321F3262A2E0D1800E08AEE /* AVPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVPlayer.swift; sourceTree = "<group>"; };
 		0353519F2A2EDAFA001E38F3 /* PlayerSettingsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerSettingsButton.swift; sourceTree = "<group>"; };
 		035351A12A2F49E3001E38F3 /* MediaControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaControlsView.swift; sourceTree = "<group>"; };
@@ -368,6 +370,7 @@
 				03B8090D2A2DFC0F00AB3D03 /* Assets.xcassets */,
 				03B8FDA82A695FED00DAB7AE /* TPStreamPlayerViewController.swift */,
 				03BF8C512B173ED10006CBC1 /* TPStreamPlayerConfiguration.swift */,
+				031099F52B28B22C0034D370 /* TPStreamPlayerError.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -607,6 +610,7 @@
 				03CA2D312A2F757D00532549 /* TimeIndicatorView.swift in Sources */,
 				035351A22A2F49E3001E38F3 /* MediaControlsView.swift in Sources */,
 				03CC86682AE142FF002F5D28 /* ResourceLoaderDelegate.swift in Sources */,
+				031099F62B28B22C0034D370 /* TPStreamPlayerError.swift in Sources */,
 				03B8090C2A2DF9A200AB3D03 /* PlayerControlsView.swift in Sources */,
 				8E6389DF2A2751C800306FA4 /* TPAVPlayer.swift in Sources */,
 				03B8090A2A2DF8A000AB3D03 /* TPStreamPlayer.swift in Sources */,
