@@ -48,7 +48,7 @@ class PlayerControlsUIView: UIView {
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == #keyPath(TPStreamPlayer.status) {
             handlePlayerStatusChange()
-        } else if keyPath == #keyPath(TPStreamPlayer.currentTime) {
+        } else if keyPath == #keyPath(TPStreamPlayer.currentTime) && player.isVideoDurationInitialized {
             currentTimelabel.text = timeStringFromSeconds(player.currentTime.doubleValue)
         } else if keyPath == #keyPath(TPStreamPlayer.isVideoDurationInitialized) && player.isVideoDurationInitialized {
             videoDurationLabel.text = timeStringFromSeconds(player.videoDuration)
