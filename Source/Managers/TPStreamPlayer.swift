@@ -153,8 +153,10 @@ class TPStreamPlayer: NSObject {
     }
 
     func goTo(seconds: Float64) {
-        currentTime = NSNumber(value: seconds)
-        let seekTime = CMTime(value: Int64(seconds), timescale: 1)
+        // Here we are validation the second value because if there is no network second will be NaN
+        let validatedSecond = seconds.isNaN ? 0.0 : seconds
+        currentTime = NSNumber(value: validatedSecond)
+        let seekTime = CMTime(value: Int64(validatedSecond), timescale: 1)
         isSeeking = true
         player?.seek(to: seekTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero){ [weak self] _ in
             guard let self = self else { return }
