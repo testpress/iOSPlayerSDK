@@ -21,6 +21,7 @@ public class TPStreamPlayerViewController: UIViewController {
         }
     }
     public var delegate: TPStreamPlayerViewControllerDelegate?
+    public var autoFullScreenOnRotate = true
     public var config = TPStreamPlayerConfiguration(){
         didSet {
             controlsView.playerConfig = config
@@ -101,6 +102,7 @@ public class TPStreamPlayerViewController: UIViewController {
     public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
+        guard autoFullScreenOnRotate else { return }
         if containerView.getCurrentOrientation().isLandscape {
             enterFullScreen()
         } else {
