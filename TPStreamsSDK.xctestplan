@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "B7F8539A-16F0-48B9-9162-D502FFBDB633",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:iOSPlayerSDK.xcodeproj",
+        "identifier" : "8EDE99AD2A2643B000E43EA9",
+        "name" : "iOSPlayerSDKTests"
+      }
+    }
+  ],
+  "version" : 1
+}
