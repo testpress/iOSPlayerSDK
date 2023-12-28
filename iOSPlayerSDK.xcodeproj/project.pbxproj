@@ -163,6 +163,7 @@
 		8EDE99A72A2643B000E43EA9 /* iOSPlayerSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = iOSPlayerSDK.h; sourceTree = "<group>"; };
 		8EDE99AE2A2643B000E43EA9 /* iOSPlayerSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSPlayerSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSPlayerSDKTests.swift; sourceTree = "<group>"; };
+		D904B1DD2B3C5BAC00A7E26C /* TPStreamsSDK.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TPStreamsSDK.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -335,6 +336,7 @@
 		8EDE999A2A2643B000E43EA9 = {
 			isa = PBXGroup;
 			children = (
+				D904B1DD2B3C5BAC00A7E26C /* TPStreamsSDK.xctestplan */,
 				8EDE99A62A2643B000E43EA9 /* Source */,
 				8EDE99B22A2643B000E43EA9 /* Tests */,
 				8E6389C22A27277D00306FA4 /* Example */,
