@@ -23,6 +23,7 @@ public class TPAVPlayer: AVPlayer {
     private var resourceLoaderDelegate: ResourceLoaderDelegate
     public var onError: ((Error) -> Void)?
     internal var initializationError: Error?
+    internal var asset: Asset? = nil
     
     public var availableVideoQualities: [VideoQuality] = [VideoQuality(resolution:"Auto", bitrate: 0)]
     
@@ -49,6 +50,7 @@ public class TPAVPlayer: AVPlayer {
             
             if let asset = asset {
                 self.setup(withAsset: asset)
+                self.asset = asset
                 self.setupCompletion?(nil)
             } else if let error = error{
                 SentrySDK.capture(error: error)
@@ -70,6 +72,14 @@ public class TPAVPlayer: AVPlayer {
         self.setPlayerItem(avURLAsset)
         self.setupDRM(avURLAsset)
         self.populateAvailableVideoQualities(url)
+    }
+    
+    internal func replaceCurrentItem(offlineAsset: OfflineAsset) {
+        let asset = AVURLAsset(url: URL(string: offlineAsset.downloadedPath)!)
+        if let cache = asset.assetCache, cache.isPlayableOffline {
+            let playerItem = AVPlayerItem(asset: asset)
+            replaceCurrentItem(with: playerItem)
+        }
     }
     
     private func setPlayerItem(_ asset: AVURLAsset){

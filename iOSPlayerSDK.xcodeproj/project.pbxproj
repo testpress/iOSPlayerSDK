@@ -11,6 +11,11 @@
 		0321F3272A2E0D1800E08AEE /* AVPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0321F3262A2E0D1800E08AEE /* AVPlayer.swift */; };
 		0326BADB2A335911009ABC58 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 0326BADA2A335911009ABC58 /* Sentry */; };
 		0326BADE2A348690009ABC58 /* M3U8Parser in Frameworks */ = {isa = PBXBuildFile; productRef = 0326BADD2A348690009ABC58 /* M3U8Parser */; };
+		D95265422B452C9B001D6084 /* OfflineAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D95265412B452C9B001D6084 /* OfflineAsset.swift */; };
+		D95265442B452CD1001D6084 /* ObjectManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D95265432B452CD1001D6084 /* ObjectManager.swift */; };
+		D95265462B452CF7001D6084 /* TPStreamsDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D95265452B452CF7001D6084 /* TPStreamsDownloadManager.swift */; };
+		D95265752B457336001D6084 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = D95265742B457336001D6084 /* Realm */; };
+		D95265772B457336001D6084 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D95265762B457336001D6084 /* RealmSwift */; };
 		035351A02A2EDAFA001E38F3 /* PlayerSettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0353519F2A2EDAFA001E38F3 /* PlayerSettingsButton.swift */; };
 		035351A22A2F49E3001E38F3 /* MediaControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035351A12A2F49E3001E38F3 /* MediaControlsView.swift */; };
 		0377C40E2A2B1C7300F7E58F /* BaseAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C40D2A2B1C7300F7E58F /* BaseAPI.swift */; };
@@ -56,7 +61,7 @@
 		8EDE99AF2A2643B000E43EA9 /* TPStreamsSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */; };
 		8EDE99B42A2643B000E43EA9 /* iOSPlayerSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */; };
 		8EDE99B52A2643B000E43EA9 /* iOSPlayerSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 8EDE99A72A2643B000E43EA9 /* iOSPlayerSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
-/* End PBXBuildFile section */
+		/* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		03B8FDA32A69169100DAB7AE /* PBXContainerItemProxy */ = {
@@ -164,6 +169,9 @@
 		8EDE99AE2A2643B000E43EA9 /* iOSPlayerSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSPlayerSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSPlayerSDKTests.swift; sourceTree = "<group>"; };
 		D904B1DD2B3C5BAC00A7E26C /* TPStreamsSDK.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TPStreamsSDK.xctestplan; sourceTree = "<group>"; };
+		D95265412B452C9B001D6084 /* OfflineAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAsset.swift; sourceTree = "<group>"; };
+		D95265432B452CD1001D6084 /* ObjectManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectManager.swift; sourceTree = "<group>"; };
+		D95265452B452CF7001D6084 /* TPStreamsDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsDownloadManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -189,6 +197,8 @@
 			files = (
 				0326BADE2A348690009ABC58 /* M3U8Parser in Frameworks */,
 				8E6389E52A275B2A00306FA4 /* Alamofire in Frameworks */,
+				D95265752B457336001D6084 /* Realm in Frameworks */,
+				D95265772B457336001D6084 /* RealmSwift in Frameworks */,
 				0326BADB2A335911009ABC58 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -360,6 +370,7 @@
 		8EDE99A62A2643B000E43EA9 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				D952653F2B452C76001D6084 /* Offline */,
 				03CE74FE2A79469400B84304 /* Utils */,
 				0321F3252A2E0D0300E08AEE /* Extensions */,
 				8E6389E72A278D0400306FA4 /* Managers */,
@@ -383,6 +394,24 @@
 				8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		D952653F2B452C76001D6084 /* Offline */ = {
+			isa = PBXGroup;
+			children = (
+				D95265402B452C80001D6084 /* Model */,
+				D95265432B452CD1001D6084 /* ObjectManager.swift */,
+				D95265452B452CF7001D6084 /* TPStreamsDownloadManager.swift */,
+			);
+			path = Offline;
+			sourceTree = "<group>";
+		};
+		D95265402B452C80001D6084 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D95265412B452C9B001D6084 /* OfflineAsset.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -456,6 +485,8 @@
 				8E6389E42A275B2A00306FA4 /* Alamofire */,
 				0326BADA2A335911009ABC58 /* Sentry */,
 				0326BADD2A348690009ABC58 /* M3U8Parser */,
+				D95265742B457336001D6084 /* Realm */,
+				D95265762B457336001D6084 /* RealmSwift */,
 			);
 			productName = iOSPlayerSDK;
 			productReference = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */;
@@ -517,6 +548,7 @@
 				8E6389E32A275B2A00306FA4 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				0326BAD92A335911009ABC58 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 				0326BADC2A348690009ABC58 /* XCRemoteSwiftPackageReference "M3U8Parser" */,
+				D95265732B457336001D6084 /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = 8EDE99A52A2643B000E43EA9 /* Products */;
 			projectDirPath = "";
@@ -594,12 +626,15 @@
 			files = (
 				037F3BBF2B05EDD900ECEF57 /* UIInterfaceOrientationMask.swift in Sources */,
 				03B8FDAE2A69752800DAB7AE /* PlayerControlsUIView.swift in Sources */,
+				D95265442B452CD1001D6084 /* ObjectManager.swift in Sources */,
 				8E6389E92A278D1D00306FA4 /* ContentKeyDelegate.swift in Sources */,
 				8E6389DD2A27338F00306FA4 /* AVPlayerBridge.swift in Sources */,
+				D95265462B452CF7001D6084 /* TPStreamsDownloadManager.swift in Sources */,
 				8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */,
 				035351A02A2EDAFA001E38F3 /* PlayerSettingsButton.swift in Sources */,
 				03913C482A850BF9002E7E0C /* ProgressBar.swift in Sources */,
 				8E6C5CB52A28BD9A003EC948 /* TPStreamsSDK.swift in Sources */,
+				D95265422B452C9B001D6084 /* OfflineAsset.swift in Sources */,
 				0377C4132A2B272C00F7E58F /* TestpressAPI.swift in Sources */,
 				0377C4112A2B1F0700F7E58F /* Asset.swift in Sources */,
 				8E6389E22A275AA800306FA4 /* StreamsAPI.swift in Sources */,
@@ -1090,6 +1125,14 @@
 				minimumVersion = 5.0.0;
 			};
 		};
+		D95265732B457336001D6084 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1107,6 +1150,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8E6389E32A275B2A00306FA4 /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
+		};
+		D95265742B457336001D6084 /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D95265732B457336001D6084 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = Realm;
+		};
+		D95265762B457336001D6084 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D95265732B457336001D6084 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

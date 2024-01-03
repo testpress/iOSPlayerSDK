@@ -26,6 +26,9 @@ class TPStreamPlayer: NSObject {
     var currentVideoQuality: VideoQuality? {
         return self.player.availableVideoQualities.first( where: {$0.bitrate == self.player.currentItem?.preferredPeakBitRate })
     }
+    var asset: Asset? {
+        return player.asset
+    }
     
     init(player: TPAVPlayer){
         self.player = player
@@ -33,6 +36,10 @@ class TPStreamPlayer: NSObject {
         self.observePlayerStatusChange()
         self.observePlayerCurrentTimeChange()
         self.observeCurrentItemChanges()
+    }
+    
+    internal func replaceCurrentItem(offlineAsset: OfflineAsset) {
+        player.replaceCurrentItem(offlineAsset: offlineAsset)
     }
     
     private func observeCurrentItemChanges(){

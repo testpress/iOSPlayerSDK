@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVKit
 
 @available(iOS 14.0, *)
 struct MediaControlsView: View {
@@ -48,8 +49,13 @@ struct MediaControlsView: View {
     public func togglePlay(){
         if player.status == "paused" {
             player.play()
+            TPStreamsDownloadManager.shared.startDownload(asset: player.asset!, bitRate: 100_000)
         } else {
-            player.pause()
+            //player.pause()
+            print("hihihi",player.asset!.video.playbackURL)
+            let offlineAsset = TPStreamsDownloadManager.shared.getDownloadedAsset(srcURL: player.asset!.video.playbackURL)
+            player.replaceCurrentItem(offlineAsset: offlineAsset!)
+            player.play()
         }
     }
     
