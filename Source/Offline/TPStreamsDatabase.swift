@@ -4,6 +4,9 @@
 //
 //  Created by Prithuvi on 04/01/24.
 //
+//  This class implements a local database using SQLite.swift library (https://github.com/stephencelis/SQLite.swift).
+//  All operations in this class are based on the documentation of the SQLite.swift library.
+//  Documentation (https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Index.md)
 
 import Foundation
 import SQLite
@@ -13,7 +16,6 @@ internal class TPStreamsDatabase {
     private var offlineAssetDatabasePath: String?
     private var offlineAssetDatabase: Connection?
     private var offlineAssetTable: Table?
-    
     // Columns in Table
     private let id = Expression<String>("id")
     private let created_at = Expression<Date>("created_at")

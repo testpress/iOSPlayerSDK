@@ -30,18 +30,18 @@ extension OfflineAsset {
     
     mutating func updateDownloadPath(downloadedPath: String) {
         self.downloadedPath = downloadedPath
-        self.downloadedAt = Date()
     }
     
     mutating func updateStatus(status: String) {
         self.status = status
-        self.downloadedAt = Date()
     }
     
     mutating func updatePercentageCompleted(percentageCompleted: Double) {
         self.percentageCompleted = percentageCompleted
-        self.downloadedAt = Date()
-        self.status = Status.inProgress.rawValue
+    }
+    
+    mutating func updateDownloadAt(downloadedAt: Date) {
+        self.downloadedAt = downloadedAt
     }
     
 }

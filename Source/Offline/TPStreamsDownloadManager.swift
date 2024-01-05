@@ -49,6 +49,7 @@ public final class TPStreamsDownloadManager: NSObject {
 }
 
 extension TPStreamsDownloadManager: AVAssetDownloadDelegate {
+    
     public func urlSession(_ session: URLSession, assetDownloadTask: AVAssetDownloadTask, didFinishDownloadingTo location: URL) {
         guard var offlineAsset = activeDownloadsMap[assetDownloadTask] else { return }
         offlineAsset.updateDownloadPath(downloadedPath: location.relativePath)
@@ -57,14 +58,18 @@ extension TPStreamsDownloadManager: AVAssetDownloadDelegate {
     }
     
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        guard error != nil else {
-            guard let assetDownloadTask = task as? AVAssetDownloadTask,
-                  var offlineAsset = activeDownloadsMap[assetDownloadTask] else { return }
+        guard let assetDownloadTask = task as? AVAssetDownloadTask,
+              var offlineAsset = activeDownloadsMap[assetDownloadTask] else { return }
+
+        if let error = error {
+            offlineAsset.updateStatus(status: Status.failed.rawValue)
+        } else {
             offlineAsset.updateStatus(status: Status.finished.rawValue)
-            tpStreamsDatabase?.update(offlineAsset)
-            activeDownloadsMap.removeValue(forKey: assetDownloadTask)
-            return
         }
+
+        offlineAsset.updateDownloadAt(downloadedAt: Date())
+        tpStreamsDatabase?.update(offlineAsset)
+        activeDownloadsMap.removeValue(forKey: assetDownloadTask)
     }
     
     public func urlSession(_ session: URLSession, assetDownloadTask: AVAssetDownloadTask, didLoad timeRange: CMTimeRange, totalTimeRangesLoaded loadedTimeRanges: [NSValue], timeRangeExpectedToLoad: CMTimeRange) {
@@ -75,6 +80,7 @@ extension TPStreamsDownloadManager: AVAssetDownloadDelegate {
             percentageComplete += loadedTimeRange.duration.seconds / timeRangeExpectedToLoad.duration.seconds
         }
         offlineAsset.updatePercentageCompleted(percentageCompleted: percentageComplete * 100)
+        offlineAsset.updateStatus(status: Status.inProgress.rawValue)
         activeDownloadsMap[assetDownloadTask] = offlineAsset
         tpStreamsDatabase?.update(offlineAsset)
     }
