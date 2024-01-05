@@ -56,6 +56,10 @@
 		8EDE99AF2A2643B000E43EA9 /* TPStreamsSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */; };
 		8EDE99B42A2643B000E43EA9 /* iOSPlayerSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */; };
 		8EDE99B52A2643B000E43EA9 /* iOSPlayerSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 8EDE99A72A2643B000E43EA9 /* iOSPlayerSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D95265422B452C9B001D6084 /* OfflineAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D95265412B452C9B001D6084 /* OfflineAsset.swift */; };
+		D95265462B452CF7001D6084 /* TPStreamsDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D95265452B452CF7001D6084 /* TPStreamsDownloadManager.swift */; };
+		D9C119192B46E6C800C0C292 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = D9C119182B46E6C800C0C292 /* SQLite */; };
+		D9C1191B2B46EE1100C0C292 /* TPStreamsDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C1191A2B46EE1100C0C292 /* TPStreamsDatabase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -164,6 +168,9 @@
 		8EDE99AE2A2643B000E43EA9 /* iOSPlayerSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSPlayerSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSPlayerSDKTests.swift; sourceTree = "<group>"; };
 		D904B1DD2B3C5BAC00A7E26C /* TPStreamsSDK.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TPStreamsSDK.xctestplan; sourceTree = "<group>"; };
+		D95265412B452C9B001D6084 /* OfflineAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAsset.swift; sourceTree = "<group>"; };
+		D95265452B452CF7001D6084 /* TPStreamsDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsDownloadManager.swift; sourceTree = "<group>"; };
+		D9C1191A2B46EE1100C0C292 /* TPStreamsDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsDatabase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,6 +194,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D9C119192B46E6C800C0C292 /* SQLite in Frameworks */,
 				0326BADE2A348690009ABC58 /* M3U8Parser in Frameworks */,
 				8E6389E52A275B2A00306FA4 /* Alamofire in Frameworks */,
 				0326BADB2A335911009ABC58 /* Sentry in Frameworks */,
@@ -360,6 +368,7 @@
 		8EDE99A62A2643B000E43EA9 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				D952653F2B452C76001D6084 /* Offline */,
 				03CE74FE2A79469400B84304 /* Utils */,
 				0321F3252A2E0D0300E08AEE /* Extensions */,
 				8E6389E72A278D0400306FA4 /* Managers */,
@@ -383,6 +392,24 @@
 				8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		D952653F2B452C76001D6084 /* Offline */ = {
+			isa = PBXGroup;
+			children = (
+				D95265402B452C80001D6084 /* Model */,
+				D95265452B452CF7001D6084 /* TPStreamsDownloadManager.swift */,
+				D9C1191A2B46EE1100C0C292 /* TPStreamsDatabase.swift */,
+			);
+			path = Offline;
+			sourceTree = "<group>";
+		};
+		D95265402B452C80001D6084 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D95265412B452C9B001D6084 /* OfflineAsset.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -456,6 +483,7 @@
 				8E6389E42A275B2A00306FA4 /* Alamofire */,
 				0326BADA2A335911009ABC58 /* Sentry */,
 				0326BADD2A348690009ABC58 /* M3U8Parser */,
+				D9C119182B46E6C800C0C292 /* SQLite */,
 			);
 			productName = iOSPlayerSDK;
 			productReference = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */;
@@ -517,6 +545,7 @@
 				8E6389E32A275B2A00306FA4 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				0326BAD92A335911009ABC58 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 				0326BADC2A348690009ABC58 /* XCRemoteSwiftPackageReference "M3U8Parser" */,
+				D9C119172B46E6C800C0C292 /* XCRemoteSwiftPackageReference "SQLite.swift" */,
 			);
 			productRefGroup = 8EDE99A52A2643B000E43EA9 /* Products */;
 			projectDirPath = "";
@@ -596,10 +625,12 @@
 				03B8FDAE2A69752800DAB7AE /* PlayerControlsUIView.swift in Sources */,
 				8E6389E92A278D1D00306FA4 /* ContentKeyDelegate.swift in Sources */,
 				8E6389DD2A27338F00306FA4 /* AVPlayerBridge.swift in Sources */,
+				D95265462B452CF7001D6084 /* TPStreamsDownloadManager.swift in Sources */,
 				8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */,
 				035351A02A2EDAFA001E38F3 /* PlayerSettingsButton.swift in Sources */,
 				03913C482A850BF9002E7E0C /* ProgressBar.swift in Sources */,
 				8E6C5CB52A28BD9A003EC948 /* TPStreamsSDK.swift in Sources */,
+				D95265422B452C9B001D6084 /* OfflineAsset.swift in Sources */,
 				0377C4132A2B272C00F7E58F /* TestpressAPI.swift in Sources */,
 				0377C4112A2B1F0700F7E58F /* Asset.swift in Sources */,
 				8E6389E22A275AA800306FA4 /* StreamsAPI.swift in Sources */,
@@ -613,6 +644,7 @@
 				035351A22A2F49E3001E38F3 /* MediaControlsView.swift in Sources */,
 				03CC86682AE142FF002F5D28 /* ResourceLoaderDelegate.swift in Sources */,
 				031099F62B28B22C0034D370 /* TPStreamPlayerError.swift in Sources */,
+				D9C1191B2B46EE1100C0C292 /* TPStreamsDatabase.swift in Sources */,
 				03B8090C2A2DF9A200AB3D03 /* PlayerControlsView.swift in Sources */,
 				8E6389DF2A2751C800306FA4 /* TPAVPlayer.swift in Sources */,
 				03B8090A2A2DF8A000AB3D03 /* TPStreamPlayer.swift in Sources */,
@@ -1090,6 +1122,14 @@
 				minimumVersion = 5.0.0;
 			};
 		};
+		D9C119172B46E6C800C0C292 /* XCRemoteSwiftPackageReference "SQLite.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stephencelis/SQLite.swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.14.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1107,6 +1147,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8E6389E32A275B2A00306FA4 /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
+		};
+		D9C119182B46E6C800C0C292 /* SQLite */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D9C119172B46E6C800C0C292 /* XCRemoteSwiftPackageReference "SQLite.swift" */;
+			productName = SQLite;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
