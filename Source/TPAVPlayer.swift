@@ -74,14 +74,6 @@ public class TPAVPlayer: AVPlayer {
         self.populateAvailableVideoQualities(url)
     }
     
-    internal func replaceCurrentItem(offlineAsset: OfflineAsset) {
-        let asset = AVURLAsset(url: URL(string: offlineAsset.downloadedPath)!)
-        if let cache = asset.assetCache, cache.isPlayableOffline {
-            let playerItem = AVPlayerItem(asset: asset)
-            replaceCurrentItem(with: playerItem)
-        }
-    }
-    
     private func setPlayerItem(_ asset: AVURLAsset){
         let playerItem = AVPlayerItem(asset: asset)
         playerItem.preferredForwardBufferDuration = 3

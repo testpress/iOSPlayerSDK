@@ -38,10 +38,6 @@ class TPStreamPlayer: NSObject {
         self.observeCurrentItemChanges()
     }
     
-    internal func replaceCurrentItem(offlineAsset: OfflineAsset) {
-        player.replaceCurrentItem(offlineAsset: offlineAsset)
-    }
-    
     private func observeCurrentItemChanges(){
         // We're asynchronously setting the `currentItem` in the TPAVPlayer once the asset is fetched via network.
         // So we adding observers on `currentItem` once it has been set.

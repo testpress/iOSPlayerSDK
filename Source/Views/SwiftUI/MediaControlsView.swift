@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import AVKit
 
 @available(iOS 14.0, *)
 struct MediaControlsView: View {

@@ -50,7 +50,6 @@ public class TPStreamsSDK {
             options.attachViewHierarchy = true
         }
     }
-
 }
 
 public enum Provider {
