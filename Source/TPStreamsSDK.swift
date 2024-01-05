@@ -8,7 +8,6 @@
 import Foundation
 import AVFoundation
 import Sentry
-import RealmSwift
 
 #if SPM
     let bundle = Bundle.module
@@ -29,7 +28,6 @@ public class TPStreamsSDK {
         self.provider = provider
         self.activateAudioSession()
         self.initializeSentry()
-        self.initializeDatabase()
     }
     
     private static func activateAudioSession() {
@@ -51,11 +49,6 @@ public class TPStreamsSDK {
             options.attachScreenshot = true
             options.attachViewHierarchy = true
         }
-    }
-    
-    private static func initializeDatabase() {
-        let config = Realm.Configuration(schemaVersion: 1)
-        Realm.Configuration.defaultConfiguration = config
     }
 
 }

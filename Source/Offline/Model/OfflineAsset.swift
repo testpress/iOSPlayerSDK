@@ -6,28 +6,16 @@
 //
 
 import Foundation
-import RealmSwift
 
-public class OfflineAsset: Object {
-    @Persisted(primaryKey: true) var id: String
-    @Persisted var created_at = Date()
-    @Persisted var title: String = ""
-    @Persisted var srcURL: String = ""
-    @Persisted var downloadedPath: String = ""
-    @Persisted var downloadedAt = Date()
-    @Persisted var status:String = Status.notStarted.rawValue
-    @Persisted var percentageCompleted: Float = 0.0
-    
-    public static var manager = ObjectManager<OfflineAsset>()
-    
-    func update(_ attributes: [String: Any]) throws {
-        let realm = try! Realm()
-        try realm.write {
-            for (key, value) in attributes {
-                self[key] = value
-            }
-        }
-    }
+public struct OfflineAsset {
+    var id: String
+    var created_at = Date()
+    var title: String = ""
+    var srcURL: String = ""
+    var downloadedPath: String = ""
+    var downloadedAt = Date()
+    var status:String = Status.notStarted.rawValue
+    var percentageCompleted: Double = 0.0
 }
 
 enum Status: String {
@@ -36,4 +24,24 @@ enum Status: String {
     case paused = "paused"
     case finished = "finished"
     case failed = "failed"
+}
+
+extension OfflineAsset {
+    
+    mutating func updateDownloadPath(downloadedPath: String) {
+        self.downloadedPath = downloadedPath
+        self.downloadedAt = Date()
+    }
+    
+    mutating func updateStatus(status: String) {
+        self.status = status
+        self.downloadedAt = Date()
+    }
+    
+    mutating func updatePercentageCompleted(percentageCompleted: Double) {
+        self.percentageCompleted = percentageCompleted
+        self.downloadedAt = Date()
+        self.status = Status.inProgress.rawValue
+    }
+    
 }
