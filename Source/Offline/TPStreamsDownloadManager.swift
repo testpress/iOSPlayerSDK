@@ -14,7 +14,8 @@ public final class TPStreamsDownloadManager: NSObject {
     static public let shared = TPStreamsDownloadManager()
     private var assetDownloadURLSession: AVAssetDownloadURLSession!
     private var activeDownloadsMap = [AVAssetDownloadTask: OfflineAsset]()
-    internal var tpStreamsDatabase: TPStreamsDatabase?
+    private var tpStreamsDatabase: TPStreamsDatabase?
+    private var player: TPAVPlayer?
     
     private override init() {
         super.init()
@@ -26,6 +27,10 @@ public final class TPStreamsDownloadManager: NSObject {
             assetDownloadDelegate: self,
             delegateQueue: OperationQueue.main
         )
+    }
+    
+    public func startDownloadWithPlayer(player: TPAVPlayer) {
+        startDownload(asset: player.asset!, bitRate: 100_000)
     }
     
     internal func startDownload(asset: Asset, bitRate: Int) {

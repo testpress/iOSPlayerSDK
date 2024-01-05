@@ -17,6 +17,16 @@ struct ContentView: View {
             TPStreamPlayerView(player: player)
                 .frame(height: 240)
             Spacer()
+            Button(action: {
+                TPStreamsDownloadManager.shared.startDownloadWithPlayer(player: player)
+                            print("Button tapped!")
+                        }) {
+                            Text("Download")
+                                .padding()
+                                .foregroundColor(.white)
+                                .background(Color.blue)
+                                .cornerRadius(10)
+                        }
         }
     }
 }
