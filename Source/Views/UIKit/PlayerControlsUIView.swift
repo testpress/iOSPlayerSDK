@@ -119,9 +119,12 @@ class PlayerControlsUIView: UIView {
         optionsMenu.addAction(UIAlertAction(title: "Playback Speed", style: .default) { _ in self.showPlaybackSpeedMenu()})
         optionsMenu.addAction(UIAlertAction(title: "Video Quality", style: .default, handler: { action in self.showVideoQualityMenu()}))
         optionsMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        if playerConfig.enableDownload {
+            optionsMenu.addAction(UIAlertAction(title: "Download", style: .default, handler: { action in self.showDownloadQualityMenu()}))
+        }
         parentViewController?.present(optionsMenu, animated: true, completion: nil)
     }
-    
+
     func showPlaybackSpeedMenu(){
         let playbackSpeedMenu = createPlaybackSpeedMenu()
         parentViewController?.present(playbackSpeedMenu, animated: true, completion: nil)
@@ -132,14 +135,19 @@ class PlayerControlsUIView: UIView {
         parentViewController?.present(videoQualityMenu, animated: true, completion: nil)
     }
     
+    func showDownloadQualityMenu(){
+        let downloadQualityMenu = createDownloadQualityMenu()
+        parentViewController?.present(downloadQualityMenu, animated: true, completion: nil)
+    }
+
     func createPlaybackSpeedMenu() -> UIAlertController {
         let playbackSpeedMenu = UIAlertController(title: "Playback Speed", message: nil, preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
-        
+
         for playbackSpeed in PlaybackSpeed.allCases {
             let action = createActionForPlaybackSpeed(playbackSpeed)
             playbackSpeedMenu.addAction(action)
         }
-        
+
         playbackSpeedMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         return playbackSpeedMenu
     }
@@ -153,12 +161,25 @@ class PlayerControlsUIView: UIView {
         qualityMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         return qualityMenu
     }
-    
+
+    func createDownloadQualityMenu() -> UIAlertController {
+        let qualityMenu = UIAlertController(title: "Available resolutions", message: nil, preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
+        var availableVideoQualities = player.availableVideoQualities
+        // Remove Auto Quality from the Array
+        availableVideoQualities.remove(at: 0)
+        for quality in availableVideoQualities {
+            let action = createActionForDownloadQuality(quality)
+            qualityMenu.addAction(action)
+        }
+        qualityMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        return qualityMenu
+    }
+
     func createActionForPlaybackSpeed(_ playbackSpeed: PlaybackSpeed) -> UIAlertAction {
         let action = UIAlertAction(title: playbackSpeed.label, style: .default) { [weak self] _ in
             self?.player.changePlaybackSpeed(playbackSpeed)
         }
-        
+
         if playbackSpeed == .normal && self.player.currentPlaybackSpeed.rawValue == 0.0 || (playbackSpeed.rawValue == self.player.currentPlaybackSpeed.rawValue) {
             action.setValue(UIImage(named: "checkmark", in: bundle, compatibleWith: nil), forKey: "image")
         }
@@ -176,7 +197,15 @@ class PlayerControlsUIView: UIView {
         
         return action
     }
-    
+
+    func createActionForDownloadQuality(_ quality: VideoQuality) -> UIAlertAction {
+        let action = UIAlertAction(title: quality.resolution, style: .default, handler: { (_) in
+            TPStreamsDownloadManager.shared.startDownload(asset: self.player.asset!, bitRate: quality.bitrate)
+        })
+
+        return action
+    }
+
     @IBAction func toggleFullScreen(_ sender: Any) {
         if isFullScreen {
             fullScreenToggleDelegate?.exitFullScreen()

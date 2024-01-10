@@ -13,6 +13,7 @@ public struct TPStreamPlayerConfiguration {
     public var preferredRewindDuration: TimeInterval = 10.0
     public var watchedProgressTrackColor: UIColor = .red
     public var progressBarThumbColor: UIColor = .red
+    public var enableDownload: Bool = false
 }
 
 
@@ -40,6 +41,11 @@ public class TPStreamPlayerConfigurationBuilder {
     
     public func setprogressBarThumbColor(_ color: UIColor) -> Self {
         configuration.progressBarThumbColor = color
+        return self
+    }
+    
+    public func enableDownload(_ enable: Bool) -> Self {
+        configuration.enableDownload = enable
         return self
     }
     
