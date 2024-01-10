@@ -52,7 +52,7 @@ public class TPStreamsSDK {
             options.attachViewHierarchy = true
         }
     }
-    
+
     private static func initializeDatabase() {
         Realm.Configuration.defaultConfiguration = Realm.Configuration(schemaVersion: 1)
     }
