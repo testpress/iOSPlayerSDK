@@ -26,6 +26,9 @@ class TPStreamPlayer: NSObject {
     var currentVideoQuality: VideoQuality? {
         return self.player.availableVideoQualities.first( where: {$0.bitrate == self.player.currentItem?.preferredPeakBitRate })
     }
+    var asset: Asset? {
+        return self.player.asset
+    }
     
     init(player: TPAVPlayer){
         self.player = player

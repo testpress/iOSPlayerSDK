@@ -6,16 +6,18 @@ struct PlayerControlsView: View {
     @State private var showControls = false
     @State private var controlsHideTimer: Timer?
     @Binding private var isFullscreen: Bool
+    private var enableDownload: Bool = false
     
-    init(player: TPAVPlayer, isFullscreen: Binding<Bool>){
+    init(player: TPAVPlayer, isFullscreen: Binding<Bool>, enableDownload: Bool){
         _player = StateObject(wrappedValue: TPStreamPlayerObservable(player: player))
         _isFullscreen = isFullscreen
+        self.enableDownload = enableDownload
     }
         
     var body: some View {
         VStack{
             if showControls {
-                PlayerSettingsButton()
+                PlayerSettingsButton(enableDownload: enableDownload)
                 Spacer()
                 MediaControlsView()
                 Spacer()
@@ -63,7 +65,8 @@ struct TPVideoPlayerControls_Previews: PreviewProvider {
                 assetID: "dummy",
                 accessToken: "dummy"
             ),
-            isFullscreen: .constant(true)
+            isFullscreen: .constant(true),
+            enableDownload: true
         ).background(Color.black)
     }
 }
