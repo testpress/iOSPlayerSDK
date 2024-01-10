@@ -22,7 +22,7 @@ class ViewController: UIViewController {
     }
     
     func setupPlayerView(){
-        player = TPAVPlayer(assetID: "8r65J7EY6NP", accessToken: "c4936043-816a-4404-b165-d7336672e7a7"){ error in
+        player = TPAVPlayer(assetID: "5X3sT3UXyNY", accessToken: "06d4191c-f470-476a-a0ef-58de2c9c2245"){ error in
             guard error == nil else {
                 print("Setup error: \(error!.localizedDescription)")
                 return
@@ -40,6 +40,7 @@ class ViewController: UIViewController {
             .setPreferredRewindDuration(5)
             .setprogressBarThumbColor(.systemBlue)
             .setwatchedProgressTrackColor(.systemBlue)
+            .enableDownload(true)
             .build()
         
         playerViewController?.config = config

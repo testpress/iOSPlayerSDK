@@ -119,6 +119,9 @@ class PlayerControlsUIView: UIView {
         optionsMenu.addAction(UIAlertAction(title: "Playback Speed", style: .default) { _ in self.showPlaybackSpeedMenu()})
         optionsMenu.addAction(UIAlertAction(title: "Video Quality", style: .default, handler: { action in self.showVideoQualityMenu()}))
         optionsMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        if playerConfig.enableDownload {
+            optionsMenu.addAction(UIAlertAction(title: "Download", style: .default, handler: { action in self.showDownloadQualityMenu()}))
+        }
         parentViewController?.present(optionsMenu, animated: true, completion: nil)
     }
 
@@ -130,6 +133,11 @@ class PlayerControlsUIView: UIView {
     func showVideoQualityMenu(){
         let videoQualityMenu = createVideoQualityMenu()
         parentViewController?.present(videoQualityMenu, animated: true, completion: nil)
+    }
+    
+    func showDownloadQualityMenu(){
+        let downloadQualityMenu = createDownloadQualityMenu()
+        parentViewController?.present(downloadQualityMenu, animated: true, completion: nil)
     }
     
     func createPlaybackSpeedMenu() -> UIAlertController {
@@ -148,6 +156,19 @@ class PlayerControlsUIView: UIView {
         let qualityMenu = UIAlertController(title: "Available resolutions", message: nil, preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
         for quality in self.player.availableVideoQualities {
             let action = createActionForVideoQuality(quality)
+            qualityMenu.addAction(action)
+        }
+        qualityMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        return qualityMenu
+    }
+    
+    func createDownloadQualityMenu() -> UIAlertController {
+        let qualityMenu = UIAlertController(title: "Available resolutions", message: nil, preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
+        var availableVideoQualities = player.availableVideoQualities
+        // Remove Auto Quality from the Array
+        availableVideoQualities.remove(at: 0)
+        for quality in availableVideoQualities {
+            let action = createActionForDownloadQuality(quality)
             qualityMenu.addAction(action)
         }
         qualityMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -173,6 +194,14 @@ class PlayerControlsUIView: UIView {
         if (quality.bitrate == player.currentVideoQuality?.bitrate) {
             action.setValue(UIImage(named: "checkmark", in: bundle, compatibleWith: nil), forKey: "image")
         }
+        
+        return action
+    }
+    
+    func createActionForDownloadQuality(_ quality: VideoQuality) -> UIAlertAction {
+        let action = UIAlertAction(title: quality.resolution, style: .default, handler: { (_) in
+            TPStreamsDownloadManager.shared.startDownload(asset: self.player.asset!, bitRate: quality.bitrate)
+        })
         
         return action
     }
