@@ -16,7 +16,8 @@ let package = Package(
   dependencies: [
     .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.0.0")),
     .package(url: "https://github.com/getsentry/sentry-cocoa.git", .upToNextMajor(from: "8.0.0")),
-    .package(url: "https://github.com/M3U8Kit/M3U8Parser", .upToNextMajor(from: "1.0.0"))
+    .package(url: "https://github.com/M3U8Kit/M3U8Parser", .upToNextMajor(from: "1.0.0")),
+    .package(url: "https://github.com/realm/realm-swift", .upToNextMajor(from: "10.45.0"))
   ],
 
   targets: [
@@ -28,6 +29,7 @@ let package = Package(
         "Alamofire",
         "M3U8Parser",
         .product(name: "Sentry", package: "sentry-cocoa"),
+        .product(name: "RealmSwift", package: "realm-swift")
       ],
       path: "Source",
       swiftSettings: [
