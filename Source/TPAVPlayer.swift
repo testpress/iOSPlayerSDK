@@ -50,7 +50,7 @@ public class TPAVPlayer: AVPlayer {
             
             if let asset = asset {
                 self.asset = asset
-                self.setupAsset()
+                self.setup()
                 self.setupCompletion?(nil)
             } else if let error = error{
                 SentrySDK.capture(error: error)
@@ -61,7 +61,7 @@ public class TPAVPlayer: AVPlayer {
         }
     }
     
-    private func setupAsset() {
+    private func setup() {
         guard let url = URL(string: asset!.video.playbackURL) else {
             debugPrint("Invalid playback URL received from API: \(asset!.video.playbackURL)")
             return
