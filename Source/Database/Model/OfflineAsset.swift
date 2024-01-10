@@ -44,6 +44,13 @@ extension OfflineAsset {
         offlineAsset.size = (bitRate * duration)
         return offlineAsset
     }
+    
+    internal static func create(assetId: String, srcURL: String) -> OfflineAsset {
+        let offlineAsset = OfflineAsset()
+        offlineAsset.assetId = assetId
+        offlineAsset.srcURL = srcURL
+        return offlineAsset
+    }
 }
 
 enum Status: String {

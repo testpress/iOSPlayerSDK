@@ -33,4 +33,9 @@ public class ObjectManager<T: Object> {
         let object = realm.object(ofType: T.self, forPrimaryKey: id)
         return object != nil
     }
+    
+    func isExist(assetId: Any) -> Bool {
+        let object = realm.object(ofType: T.self, forPrimaryKey: assetId)
+        return object != nil
+    }
 }
