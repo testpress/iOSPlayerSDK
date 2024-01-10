@@ -10,6 +10,7 @@ import SwiftUI
 @available(iOS 14.0, *)
 public struct TPStreamPlayerView: View {
     @State private var isFullScreen = false
+    private var enableDownload: Bool = false
     
     var player: TPAVPlayer
     
@@ -21,7 +22,7 @@ public struct TPStreamPlayerView: View {
         GeometryReader { geometry in
             ZStack {
                 AVPlayerBridge(player: player)
-                PlayerControlsView(player: player, isFullscreen: $isFullScreen)
+                PlayerControlsView(player: player, isFullscreen: $isFullScreen, enableDownload: enableDownload)
             }
             .padding(.horizontal, isFullScreen ? 48 : 0)
             .frame(width: isFullScreen ? UIScreen.main.fixedCoordinateSpace.bounds.height : geometry.size.width,
@@ -49,5 +50,14 @@ public struct TPStreamPlayerView: View {
         } else {
             UIDevice.current.setValue(orientation.toUIInterfaceOrientation.rawValue, forKey: "orientation")
         }
+    }
+}
+
+@available(iOS 14.0, *)
+extension TPStreamPlayerView {
+    public func enableDownload(_ enable: Bool = false) -> TPStreamPlayerView {
+        var modifiedView = self
+        modifiedView.enableDownload = enable
+        return modifiedView
     }
 }

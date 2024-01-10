@@ -4,8 +4,13 @@ import SwiftUI
 struct PlayerSettingsButton: View {
     @State private var showOptions = false
     @State private var currentMenu: SettingsMenu = .main
+    private var enableDownload: Bool = false
     
     @EnvironmentObject var player: TPStreamPlayerObservable
+    
+    init(enableDownload: Bool) {
+        self.enableDownload = enableDownload
+    }
     
     var body: some View {
         HStack {
@@ -29,7 +34,7 @@ struct PlayerSettingsButton: View {
             return ActionSheet(
                 title: Text("Settings"),
                 message: nil,
-                buttons: [playbackSpeedButton(), videoQualityButton(), .cancel()]
+                buttons: getButtons()
             )
         case .playbackSpeed:
             return ActionSheet(
@@ -43,7 +48,22 @@ struct PlayerSettingsButton: View {
                 message: nil,
                 buttons: videoQualityOptions() + [.cancel()]
             )
+        case .downloadQuality:
+            return ActionSheet(
+                title: Text("Download Quality"),
+                message: nil,
+                buttons: downloadQualityOptions() + [.cancel()]
+            )
         }
+    }
+    
+    private func getButtons() -> [ActionSheet.Button] {
+        var buttons = [playbackSpeedButton(), videoQualityButton()]
+        if enableDownload {
+            buttons.append(downloadQualityButton())
+        }
+        buttons.append(.cancel())
+        return buttons
     }
     
     private func playbackSpeedButton() -> ActionSheet.Button {
@@ -64,6 +84,15 @@ struct PlayerSettingsButton: View {
         }
     }
     
+    private func downloadQualityButton() -> ActionSheet.Button {
+        return .default(Text("Download")) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.showOptions = true
+                self.currentMenu = .downloadQuality
+            }
+        }
+    }
+    
     private func playbackSpeedOptions() -> [ActionSheet.Button] {
         let playbackSpeeds = PlaybackSpeed.allCases
         return playbackSpeeds.map { speed in
@@ -80,6 +109,17 @@ struct PlayerSettingsButton: View {
                 }
         }
     }
+    
+    private func downloadQualityOptions() -> [ActionSheet.Button] {
+            var availableVideoQualities = player.availableVideoQualities
+            // Remove Auto Quality from the Array
+            availableVideoQualities.remove(at: 0)
+            return availableVideoQualities.map { downloadQuality in
+                    .default(Text(downloadQuality.resolution)) {
+                        TPStreamsDownloadManager.shared.startDownload(asset: player.asset!, bitRate: downloadQuality.bitrate)
+                    }
+            }
+        }
 }
 
-enum SettingsMenu { case main, playbackSpeed, videoQuality }
+enum SettingsMenu { case main, playbackSpeed, videoQuality, downloadQuality }
