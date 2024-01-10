@@ -12,8 +12,8 @@ import AVKit
 struct ContentView: View {
     var body: some View {
         VStack {
-            let player = TPAVPlayer(assetID: "peBmzxeQ7Mf",
-                                    accessToken: "d7ebb4b2-8dee-4dff-bb00-e833195b0756")
+            let player = TPAVPlayer(assetID: "5X3sT3UXyNY",
+                                    accessToken: "06d4191c-f470-476a-a0ef-58de2c9c2245")
             TPStreamPlayerView(player: player)
                 .frame(height: 240)
             Spacer()
