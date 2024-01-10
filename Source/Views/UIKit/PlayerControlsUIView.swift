@@ -168,7 +168,7 @@ class PlayerControlsUIView: UIView {
         // Remove Auto Quality from the Array
         availableVideoQualities.remove(at: 0)
         for quality in availableVideoQualities {
-            let action = createActionForDownloadQuality(quality)
+            let action = createActionForDownload(quality)
             qualityMenu.addAction(action)
         }
         qualityMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -198,7 +198,7 @@ class PlayerControlsUIView: UIView {
         return action
     }
     
-    func createActionForDownloadQuality(_ quality: VideoQuality) -> UIAlertAction {
+    func createActionForDownload(_ quality: VideoQuality) -> UIAlertAction {
         let action = UIAlertAction(title: quality.resolution, style: .default, handler: { (_) in
             TPStreamsDownloadManager.shared.startDownload(asset: self.player.asset!, bitRate: quality.bitrate)
         })
