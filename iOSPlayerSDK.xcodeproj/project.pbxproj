@@ -60,6 +60,8 @@
 		D9C1FAA22B4E7E2600B27A3B /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D9C1FAA12B4E7E2600B27A3B /* RealmSwift */; };
 		D9C1FAA82B4E7EE700B27A3B /* OfflineAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C1FAA72B4E7EE700B27A3B /* OfflineAsset.swift */; };
 		D9C1FAB22B4E915C00B27A3B /* ObjectManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C1FAB12B4E915C00B27A3B /* ObjectManager.swift */; };
+		D9C1FAB62B4EA4CF00B27A3B /* TPStreamsDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C1FAB52B4EA4CF00B27A3B /* TPStreamsDownloadManager.swift */; };
+		D9C1FAB82B4EA53200B27A3B /* ObjectManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C1FAB72B4EA53200B27A3B /* ObjectManagerTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -170,6 +172,8 @@
 		D904B1DD2B3C5BAC00A7E26C /* TPStreamsSDK.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TPStreamsSDK.xctestplan; sourceTree = "<group>"; };
 		D9C1FAA72B4E7EE700B27A3B /* OfflineAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAsset.swift; sourceTree = "<group>"; };
 		D9C1FAB12B4E915C00B27A3B /* ObjectManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectManager.swift; sourceTree = "<group>"; };
+		D9C1FAB52B4EA4CF00B27A3B /* TPStreamsDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsDownloadManager.swift; sourceTree = "<group>"; };
+		D9C1FAB72B4EA53200B27A3B /* ObjectManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectManagerTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -390,6 +394,7 @@
 			isa = PBXGroup;
 			children = (
 				8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */,
+				D9C1FAB72B4EA53200B27A3B /* ObjectManagerTest.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -399,6 +404,7 @@
 			children = (
 				D9C1FAB02B4E910800B27A3B /* Model */,
 				D9C1FAB12B4E915C00B27A3B /* ObjectManager.swift */,
+				D9C1FAB52B4EA4CF00B27A3B /* TPStreamsDownloadManager.swift */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -626,6 +632,7 @@
 				8E6389E92A278D1D00306FA4 /* ContentKeyDelegate.swift in Sources */,
 				8E6389DD2A27338F00306FA4 /* AVPlayerBridge.swift in Sources */,
 				8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */,
+				D9C1FAB62B4EA4CF00B27A3B /* TPStreamsDownloadManager.swift in Sources */,
 				035351A02A2EDAFA001E38F3 /* PlayerSettingsButton.swift in Sources */,
 				03913C482A850BF9002E7E0C /* ProgressBar.swift in Sources */,
 				8E6C5CB52A28BD9A003EC948 /* TPStreamsSDK.swift in Sources */,
@@ -657,6 +664,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D9C1FAB82B4EA53200B27A3B /* ObjectManagerTest.swift in Sources */,
 				8EDE99B42A2643B000E43EA9 /* iOSPlayerSDKTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
