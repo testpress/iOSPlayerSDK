@@ -28,7 +28,7 @@ public class ObjectManager<T: Object> {
             }
         }
     }
-    
+
     func exists(id: Any) -> Bool {
         let object = realm.object(ofType: T.self, forPrimaryKey: id)
         return object != nil
