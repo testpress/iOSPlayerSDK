@@ -82,7 +82,7 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
         let percentageComplete = calculateDownloadPercentage(loadedTimeRanges, timeRangeExpectedToLoad)
         OfflineAsset.manager.update(object: offlineAsset, with: ["status": Status.inProgress.rawValue, "percentageCompleted": percentageComplete])
     }
-    
+
     private func updateDownloadCompleteStatus(_ error: Error?,_ offlineAsset: OfflineAsset) {
         let status: Status = (error == nil) ? .finished : .failed
         let updateValues: [String: Any] = ["status": status.rawValue, "downloadedAt": Date()]
