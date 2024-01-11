@@ -25,7 +25,7 @@ public final class TPStreamsDownloadManager {
         )
     }
 
-    internal func startDownload(asset: Asset, bitRate: Double) {
+    internal func startDownload(asset: Asset, videoQuality: VideoQuality) {
 
         if OfflineAsset.manager.isExist(assetId: asset.id) { return }
 
@@ -35,10 +35,17 @@ public final class TPStreamsDownloadManager {
             asset: avUrlAsset,
             assetTitle: asset.title,
             assetArtworkData: nil,
-            options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: bitRate]
+            options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: videoQuality.bitrate]
         ) else { return }
 
-        let offlineAsset = OfflineAsset.create(assetId: asset.id, srcURL: asset.video.playbackURL)
+        let offlineAsset = OfflineAsset.create(
+            assetId: asset.id,
+            srcURL: asset.video.playbackURL,
+            title: asset.title,
+            resolution:videoQuality.resolution,
+            duration: 0,
+            bitRate: videoQuality.bitrate
+        )
         OfflineAsset.manager.add(object: offlineAsset)
         assetDownloadDelegate.activeDownloadsMap[task] = offlineAsset
         task.resume()
