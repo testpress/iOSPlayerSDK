@@ -116,7 +116,7 @@ struct PlayerSettingsButton: View {
             availableVideoQualities.remove(at: 0)
             return availableVideoQualities.map { downloadQuality in
                     .default(Text(downloadQuality.resolution)) {
-                        TPStreamsDownloadManager.shared.startDownload(asset: player.asset!, bitRate: downloadQuality.bitrate)
+                        TPStreamsDownloadManager.shared.startDownload(asset: player.asset!, videoQuality: downloadQuality)
                     }
             }
         }
