@@ -21,10 +21,11 @@ class TestpressAPI: BaseAPI {
               let id = responseDict["id"] as? String,
               let title = responseDict["title"] as? String,
               let playbackURL = responseDict["hls_url"] as? String ?? responseDict["url"] as? String,
+              let duration = responseDict["duration"] as? Double,
               let status = responseDict["transcoding_status"] as? String else {
             throw NSError(domain: "InvalidResponseError", code: 0)
         }
-        let video = Asset.Video(playbackURL: playbackURL, status: status)
+        let video = Asset.Video(playbackURL: playbackURL, status: status, duration: duration)
         return Asset(id: id, title: title, video: video)
     }
 }
