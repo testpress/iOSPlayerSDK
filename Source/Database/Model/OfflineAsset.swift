@@ -18,9 +18,9 @@ public class OfflineAsset: Object {
     @Persisted public var status:String = Status.notStarted.rawValue
     @Persisted public var percentageCompleted: Double = 0.0
     @Persisted public var resolution: String = ""
-    @Persisted public var duration: Double = 0
-    @Persisted public var bitRate: Double = 0
-    @Persisted public var size: Double = 0
+    @Persisted public var duration: Double = 0.0
+    @Persisted public var bitRate: Double = 0.0
+    @Persisted public var size: Double = 0.0
     
     public static var manager = ObjectManager<OfflineAsset>()
 }
