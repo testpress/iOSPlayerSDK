@@ -60,6 +60,7 @@ extension OfflineAsset {
         offlineAsset.resolution = resolution
         offlineAsset.duration = duration
         offlineAsset.bitRate = bitRate
+        offlineAsset.size = (bitRate * duration)
         return offlineAsset
     }
 }
