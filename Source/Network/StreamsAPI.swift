@@ -22,6 +22,7 @@ class StreamsAPI: BaseAPI {
               let id = responseDict["id"] as? String,
               let title = responseDict["title"] as? String,
               let playbackURL = video["playback_url"] as? String,
+              let duration = video["duration"] as? Double,
               let status = video["status"] as? String else {
             throw NSError(domain: "InvalidResponseError", code: 0)
         }
@@ -29,7 +30,7 @@ class StreamsAPI: BaseAPI {
         return Asset(
             id: id,
             title: title,
-            video: Asset.Video(playbackURL: playbackURL, status: status)
+            video: Asset.Video(playbackURL: playbackURL, status: status, duration: duration)
         )
     }
 }
