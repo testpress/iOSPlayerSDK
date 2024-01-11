@@ -9,19 +9,24 @@ import Foundation
 import RealmSwift
 
 public class OfflineAsset: Object {
-    @Persisted(primaryKey: true) var assetId: String = ""
-    @Persisted var createdAt = Date()
+    @Persisted(primaryKey: true) public var assetId: String = ""
+    @Persisted public var createdAt = Date()
     @Persisted var srcURL: String = ""
-    @Persisted var downloadedPath: String = ""
-    @Persisted var downloadedAt = Date()
-    @Persisted var status:String = Status.notStarted.rawValue
-    @Persisted var percentageCompleted: Float = 0.0
+    @Persisted public var title: String = ""
+    @Persisted public var downloadedPath: String = ""
+    @Persisted public var downloadedAt = Date()
+    @Persisted public var status:String = Status.notStarted.rawValue
+    @Persisted public var percentageCompleted: Double = 0.0
+    @Persisted public var resolution: String = ""
+    @Persisted public var duration: Double = 0
+    @Persisted public var bitRate: Double = 0
+    @Persisted public var size: Double = 0
     
     public static var manager = ObjectManager<OfflineAsset>()
 }
 
 extension OfflineAsset {
-    internal func update(_ attributes: [String: Any]) {
+    func update(_ attributes: [String: Any]) {
         let realm = try! Realm()
         try! realm.write {
             for (key, value) in attributes {
