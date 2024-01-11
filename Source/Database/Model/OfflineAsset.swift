@@ -45,10 +45,21 @@ extension OfflineAsset {
         return offlineAsset
     }
     
-    internal static func create(assetId: String, srcURL: String) -> OfflineAsset {
+    static func create(
+        assetId: String,
+        srcURL: String,
+        title: String,
+        resolution: String,
+        duration:Double,
+        bitRate: Double
+    ) -> OfflineAsset {
         let offlineAsset = OfflineAsset()
         offlineAsset.assetId = assetId
         offlineAsset.srcURL = srcURL
+        offlineAsset.title = title
+        offlineAsset.resolution = resolution
+        offlineAsset.duration = duration
+        offlineAsset.bitRate = bitRate
         return offlineAsset
     }
 }
