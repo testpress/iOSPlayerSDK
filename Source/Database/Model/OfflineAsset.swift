@@ -26,7 +26,14 @@ public class OfflineAsset: Object {
 }
 
 extension OfflineAsset {
-    internal static func create(assetId: String, srcURL: String) -> OfflineAsset {
+    static func create(
+        assetId: String,
+        srcURL: String,
+        title: String,
+        resolution: String,
+        duration:Double,
+        bitRate: Double
+    ) -> OfflineAsset {
         let offlineAsset = OfflineAsset()
         offlineAsset.assetId = assetId
         offlineAsset.srcURL = srcURL
