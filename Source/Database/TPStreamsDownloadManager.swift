@@ -43,7 +43,7 @@ public final class TPStreamsDownloadManager {
             srcURL: asset.video.playbackURL,
             title: asset.title,
             resolution:videoQuality.resolution,
-            duration: 0,
+            duration: asset.video.duration,
             bitRate: videoQuality.bitrate
         )
         OfflineAsset.manager.add(object: offlineAsset)
