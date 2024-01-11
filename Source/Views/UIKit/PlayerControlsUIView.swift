@@ -200,7 +200,7 @@ class PlayerControlsUIView: UIView {
 
     func createActionForDownload(_ quality: VideoQuality) -> UIAlertAction {
         let action = UIAlertAction(title: quality.resolution, style: .default, handler: { (_) in
-            TPStreamsDownloadManager.shared.startDownload(asset: self.player.asset!, bitRate: quality.bitrate)
+            TPStreamsDownloadManager.shared.startDownload(asset: self.player.asset!, videoQuality: quality)
         })
 
         return action
