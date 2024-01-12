@@ -15,7 +15,6 @@ struct ContentView: View {
             let player = TPAVPlayer(assetID: "8eaHZjXt6km",
                                     accessToken: "16b608ba-9979-45a0-94fb-b27c1a86b3c1")
             TPStreamPlayerView(player: player)
-                .enableDownload(true)
                 .frame(height: 240)
             Spacer()
         }
