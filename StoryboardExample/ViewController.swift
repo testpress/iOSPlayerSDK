@@ -40,7 +40,7 @@ class ViewController: UIViewController {
             .setPreferredRewindDuration(5)
             .setprogressBarThumbColor(.systemBlue)
             .setwatchedProgressTrackColor(.systemBlue)
-            .enableDownload(true)
+            .showDownloadOption()
             .build()
         
         playerViewController?.config = config
