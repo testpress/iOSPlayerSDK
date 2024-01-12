@@ -4,13 +4,8 @@ import SwiftUI
 struct PlayerSettingsButton: View {
     @State private var showOptions = false
     @State private var currentMenu: SettingsMenu = .main
-    private var enableDownload: Bool = false
     
     @EnvironmentObject var player: TPStreamPlayerObservable
-    
-    init(enableDownload: Bool) {
-        self.enableDownload = enableDownload
-    }
     
     var body: some View {
         HStack {
@@ -34,7 +29,7 @@ struct PlayerSettingsButton: View {
             return ActionSheet(
                 title: Text("Settings"),
                 message: nil,
-                buttons: getButtons()
+                buttons: [playbackSpeedButton(), videoQualityButton(), downloadQualityButton(), .cancel()]
             )
         case .playbackSpeed:
             return ActionSheet(
@@ -55,15 +50,6 @@ struct PlayerSettingsButton: View {
                 buttons: downloadQualityOptions() + [.cancel()]
             )
         }
-    }
-    
-    private func getButtons() -> [ActionSheet.Button] {
-        var buttons = [playbackSpeedButton(), videoQualityButton()]
-        if enableDownload {
-            buttons.append(downloadQualityButton())
-        }
-        buttons.append(.cancel())
-        return buttons
     }
     
     private func playbackSpeedButton() -> ActionSheet.Button {
