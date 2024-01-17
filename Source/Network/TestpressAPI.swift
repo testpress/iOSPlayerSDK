@@ -9,7 +9,7 @@ import Foundation
 
 class TestpressAPI: BaseAPI {
     class override var VIDEO_DETAIL_API: String { 
-        return "https://%@.testpress.in/api/v2.5/video_info/%@" 
+        return "https://%@.testpress.in/api/v2.5/video_info/%@/" 
     }
 
     class override var DRM_LICENSE_API: String { 
