@@ -16,7 +16,6 @@ import Sentry
 #endif
 
 public class TPAVPlayer: AVPlayer {
-    private var accessToken: String
     private var assetID: String
     public typealias SetupCompletion = (Error?) -> Void
     private var setupCompletion: SetupCompletion?
@@ -26,25 +25,24 @@ public class TPAVPlayer: AVPlayer {
     
     public var availableVideoQualities: [VideoQuality] = [VideoQuality(resolution:"Auto", bitrate: 0)]
     
-    public init(assetID: String, accessToken: String, completion: SetupCompletion? = nil) {
+    public init(assetID: String, completion: SetupCompletion? = nil) {
         guard TPStreamsSDK.orgCode != nil else {
             fatalError("You must call TPStreamsSDK.initialize")
         }
         
-        if accessToken.isEmpty || assetID.isEmpty {
-            fatalError("AccessToken/AssetID cannot be empty")
+        if assetID.isEmpty {
+            fatalError("AssetID cannot be empty")
         }
-        self.accessToken = accessToken
         self.assetID = assetID
         self.setupCompletion = completion
-        self.resourceLoaderDelegate = ResourceLoaderDelegate(accessToken: accessToken)
+        self.resourceLoaderDelegate = ResourceLoaderDelegate()
 
         super.init()
         fetchAsset()
     }
     
     private func fetchAsset() {
-        TPStreamsSDK.provider.API.getAsset(assetID, accessToken) { [weak self] asset, error in
+        TPStreamsSDK.provider.API.getAsset(assetID) { [weak self] asset, error in
             guard let self = self else { return }
             
             if let asset = asset {
@@ -80,7 +78,7 @@ public class TPAVPlayer: AVPlayer {
     
     private func setupDRM(_ avURLAsset: AVURLAsset) {
         ContentKeyManager.shared.contentKeySession.addContentKeyRecipient(avURLAsset)
-        ContentKeyManager.shared.contentKeyDelegate.setAssetDetails(assetID, accessToken)
+        ContentKeyManager.shared.contentKeyDelegate.setAssetDetails(assetID)
         ContentKeyManager.shared.contentKeyDelegate.onError = { error in
             self.initializationError = error
             self.onError?(error)

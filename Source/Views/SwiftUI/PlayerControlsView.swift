@@ -60,8 +60,7 @@ struct TPVideoPlayerControls_Previews: PreviewProvider {
     static var previews: some View {
         PlayerControlsView(
             player: TPAVPlayer(
-                assetID: "dummy",
-                accessToken: "dummy"
+                assetID: "dummy"
             ),
             isFullscreen: .constant(true)
         ).background(Color.black)

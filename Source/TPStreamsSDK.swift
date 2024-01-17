@@ -21,11 +21,13 @@ import Sentry
 
 public class TPStreamsSDK {
     internal static var orgCode: String?
+    internal static var authToken: String?
     internal static var provider: Provider = .tpstreams
     
-    public static func initialize(for provider: Provider = .tpstreams, withOrgCode orgCode: String) {
+    public static func initialize(for provider: Provider = .tpstreams, withOrgCode orgCode: String, authToken: String) {
         self.orgCode = orgCode
         self.provider = provider
+        self.authToken = authToken
         self.activateAudioSession()
         self.initializeSentry()
     }

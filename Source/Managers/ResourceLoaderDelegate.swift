@@ -9,18 +9,11 @@ import Foundation
 import AVFoundation
 
 class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
-    let accessToken: String
-
-    init(accessToken: String) {
-        self.accessToken = accessToken
-        super.init()
-    }
-
     func resourceLoader(_ resourceLoader: AVAssetResourceLoader, shouldWaitForLoadingOfRequestedResource loadingRequest: AVAssetResourceLoadingRequest) -> Bool {
         guard let url = loadingRequest.request.url else { return false }
 
-        if isEncryptionKeyUrl(url), let modifiedURL = appendAccessToken(url) {
-            fetchEncryptionKey(from: modifiedURL) { [weak self] data in
+        if isEncryptionKeyUrl(url) {
+            fetchEncryptionKey(from: url) { [weak self] data in
                 self?.setEncryptionKeyResponse(for: loadingRequest, data: data)
             }
             return true
@@ -32,18 +25,11 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
         return url.path.contains("key")
     }
 
-    func appendAccessToken(_ url: URL) -> URL? {
-        if var components = URLComponents(url: url, resolvingAgainstBaseURL: true){
-            let accessTokenQueryItem = URLQueryItem(name: "access_token", value: self.accessToken)
-            components.queryItems = (components.queryItems ?? []) + [accessTokenQueryItem]
-            return components.url
-        }
-
-        return url
-    }
-
     func fetchEncryptionKey(from url: URL, completion: @escaping (Data) -> Void) {
-        let dataTask = URLSession.shared.dataTask(with: url) { data, _, _ in
+        var request = URLRequest(url: url)
+        request.setValue("\(TPStreamsSDK.provider.API.AUTH_TOKEN_PREFIX) \(TPStreamsSDK.authToken!)", forHTTPHeaderField: "Authorization")
+        
+        let dataTask = URLSession.shared.dataTask(with: request) { data, _, _ in
             if let data = data {
                 completion(data)
             }

@@ -9,11 +9,15 @@ import Foundation
 
 class TestpressAPI: BaseAPI {
     class override var VIDEO_DETAIL_API: String { 
-        return "https://%@.testpress.in/api/v2.5/video_info/%@?access_token=%@" 
+        return "https://%@.testpress.in/api/v2.5/video_info/%@" 
     }
 
     class override var DRM_LICENSE_API: String { 
-        return "https://%@.testpress.in/api/v2.5/drm_license_key/%@/?access_token=%@&drm_type=fairplay" 
+        return "https://%@.testpress.in/api/v2.5/drm_license_key/%@/&drm_type=fairplay"
+    }
+    
+    class override var AUTH_TOKEN_PREFIX: String {
+        return "JWT"
     }
 
     override class func parseAsset(data: Data) throws -> Asset {

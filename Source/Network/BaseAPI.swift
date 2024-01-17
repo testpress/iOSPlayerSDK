@@ -15,11 +15,16 @@ class BaseAPI {
     class var DRM_LICENSE_API: String {
         fatalError("DRM_LICENSE_API must be implemented by subclasses.")
     }
+    class var AUTH_TOKEN_PREFIX: String {
+        fatalError("AUTH_TOKEN_PREFIX must be implemented by subclasses.")
+    }
 
-    static func getAsset(_ assetID: String, _ accessToken: String, completion: @escaping (Asset?, Error?) -> Void) {
-        let url = URL(string: String(format: VIDEO_DETAIL_API, TPStreamsSDK.orgCode!, assetID, accessToken))!
+    static func getAsset(_ assetID: String, completion: @escaping (Asset?, Error?) -> Void) {
+        let url = URL(string: String(format: VIDEO_DETAIL_API, TPStreamsSDK.orgCode!, assetID))!
+        let headers: HTTPHeaders = [
+            .authorization("\(self.AUTH_TOKEN_PREFIX) \(TPStreamsSDK.authToken!)")]
 
-        AF.request(url).responseData { response in
+        AF.request(url, headers: headers).responseData { response in
             switch response.result {
             case .success(let data):
                 handleResponse(response, data, completion)
@@ -29,8 +34,8 @@ class BaseAPI {
         }
     }
     
-    static func getDRMLicense(_ assetID: String, _ accessToken: String, _ spcData: Data, _ contentID: String, _ completion:@escaping(Data?, Error?) -> Void) -> Void {
-        let url = URL(string: String(format: DRM_LICENSE_API, TPStreamsSDK.orgCode!, assetID, accessToken))!
+    static func getDRMLicense(_ assetID: String, _ spcData: Data, _ contentID: String, _ completion:@escaping(Data?, Error?) -> Void) -> Void {
+        let url = URL(string: String(format: DRM_LICENSE_API, TPStreamsSDK.orgCode!, assetID))!
         
         let parameters = [
             "spc": spcData.base64EncodedString(),
@@ -38,7 +43,8 @@ class BaseAPI {
         ] as [String : String]
         
         let headers: HTTPHeaders = [
-            .contentType("application/json")
+            .contentType("application/json"),
+            .authorization("\(self.AUTH_TOKEN_PREFIX) \(TPStreamsSDK.authToken!)")
         ]
         
         AF.request(url, method: .post, parameters: parameters, encoder: JSONParameterEncoder.prettyPrinted, headers: headers).responseData { response in

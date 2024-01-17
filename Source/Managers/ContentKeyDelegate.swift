@@ -11,7 +11,6 @@ import Sentry
 class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
     var contentID: String?
     var assetID: String?
-    var accessToken: String?
     public var onError: ((Error) -> Void)?
 
     enum ProgramError: Error {
@@ -98,13 +97,11 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
     }
 
     func requestCKC(_ spcData: Data, _ completion: @escaping(Data?, Error?) -> Void) {
-        guard let assetID = assetID,
-              let accessToken = accessToken else { return }
-        TPStreamsSDK.provider.API.getDRMLicense(assetID, accessToken, spcData, contentID!, completion)
+        guard let assetID = assetID else { return }
+        TPStreamsSDK.provider.API.getDRMLicense(assetID, spcData, contentID!, completion)
     }
     
-    func setAssetDetails(_ assetID: String, _ accessToken: String) {
+    func setAssetDetails(_ assetID: String) {
         self.assetID = assetID
-        self.accessToken = accessToken
     }
 }
