@@ -54,8 +54,7 @@ public class TPStreamsSDK {
     }
     
     private static func initializeDatabase() {
-        let config = Realm.Configuration(schemaVersion: 1)
-        Realm.Configuration.defaultConfiguration = config
+        Realm.Configuration.defaultConfiguration = Realm.Configuration(schemaVersion: 1)
     }
 }
 
