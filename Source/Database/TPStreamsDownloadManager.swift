@@ -59,7 +59,7 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
 
     public func urlSession(_ session: URLSession, assetDownloadTask: AVAssetDownloadTask, didFinishDownloadingTo location: URL) {
         guard let offlineAsset = activeDownloadsMap[assetDownloadTask] else { return }
-        offlineAsset.update(["downloadedPath": location.relativePath])
+        OfflineAsset.manager.update(object: offlineAsset, with: ["downloadedPath": location.relativePath])
     }
 
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
@@ -72,7 +72,7 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
     private func updateDownloadCompleteStatus(_ error: Error?,_ offlineAsset: OfflineAsset) {
         let status: Status = (error == nil) ? .finished : .failed
         let updateValues: [String: Any] = ["status": status.rawValue, "downloadedAt": Date()]
-        offlineAsset.update(updateValues)
+        OfflineAsset.manager.update(object: offlineAsset, with: updateValues)
     }
 
     public func urlSession(_ session: URLSession,
@@ -84,7 +84,7 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
         guard let offlineAsset = activeDownloadsMap[assetDownloadTask] else { return }
 
         let percentageComplete = calculateDownloadPercentage(loadedTimeRanges, timeRangeExpectedToLoad)
-        offlineAsset.update(["status": Status.inProgress.rawValue, "percentageCompleted": percentageComplete])
+        OfflineAsset.manager.update(object: offlineAsset, with: ["status": Status.inProgress.rawValue, "percentageCompleted": percentageComplete])
     }
 
     private func calculateDownloadPercentage(_ loadedTimeRanges: [NSValue], _ timeRangeExpectedToLoad: CMTimeRange) -> Double {
