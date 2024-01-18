@@ -25,17 +25,6 @@ public class OfflineAsset: Object {
     public static var manager = ObjectManager<OfflineAsset>()
 }
 
-extension OfflineAsset {
-    func update(_ attributes: [String: Any]) {
-        let realm = try! Realm()
-        try! realm.write {
-            for (key, value) in attributes {
-                self[key] = value
-            }
-        }
-    }
-}
-
 enum Status: String {
     case notStarted = "notStarted"
     case inProgress = "inProgress"

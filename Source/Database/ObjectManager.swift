@@ -17,7 +17,15 @@ public class ObjectManager<T: Object> {
        }
     }
 
-    func get(assetId: Any) -> T? {
-        return realm.object(ofType: T.self, forPrimaryKey: assetId)
+    func get(id: Any) -> T? {
+        return realm.object(ofType: T.self, forPrimaryKey: id)
+    }
+    
+    func update(object: T, with attributes: [String: Any]) {
+        try! realm.write {
+            for (key, value) in attributes {
+                object[key] = value
+            }
+        }
     }
 }
