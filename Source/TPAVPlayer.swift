@@ -70,7 +70,10 @@ public class TPAVPlayer: AVPlayer {
         let avURLAsset = AVURLAsset(url: url)
         avURLAsset.resourceLoader.setDelegate(resourceLoaderDelegate, queue: DispatchQueue.main)
         self.setPlayerItem(avURLAsset)
-        self.setupDRM(avURLAsset)
+        
+        if asset!.video.drm_encrypted{
+            self.setupDRM(avURLAsset)
+        }
         self.populateAvailableVideoQualities(url)
     }
     

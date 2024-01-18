@@ -16,5 +16,6 @@ struct Asset {
         let playbackURL: String
         let status: String
         let duration: Double
+        let drm_encrypted: Bool
     }
 }

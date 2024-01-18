@@ -23,14 +23,20 @@ class StreamsAPI: BaseAPI {
               let title = responseDict["title"] as? String,
               let playbackURL = video["playback_url"] as? String,
               let duration = video["duration"] as? Double,
-              let status = video["status"] as? String else {
+              let status = video["status"] as? String,
+              let content_protection_type = video["content_protection_type"] as? String else {
             throw NSError(domain: "InvalidResponseError", code: 0)
         }
         
         return Asset(
             id: id,
             title: title,
-            video: Asset.Video(playbackURL: playbackURL, status: status, duration: duration)
+            video: Asset.Video(
+                playbackURL: playbackURL,
+                status: status,
+                duration: duration,
+                drm_encrypted: content_protection_type == "drm"
+            )
         )
     }
 }
