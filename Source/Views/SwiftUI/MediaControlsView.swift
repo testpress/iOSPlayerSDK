@@ -14,7 +14,10 @@ struct MediaControlsView: View {
     var body: some View {
         HStack() {
             Spacer()
-            Button(action: { player.rewind() }) {
+            Button(action: {
+                player.rewind()
+                TPStreamsDownloadManager.shared.pauseDownload(id: player.asset!.id)
+            }) {
                 Image("rewind", bundle: bundle)
                     .resizable()
                     .frame(width: 40, height: 40)
@@ -34,7 +37,10 @@ struct MediaControlsView: View {
                 }
             }
             Spacer()
-            Button(action: {player.forward()}) {
+            Button(action: {
+                player.forward()
+                TPStreamsDownloadManager.shared.resumeDownload(id: player.asset!.id)
+            }) {
                 Image("forward", bundle: bundle)
                     .resizable()
                     .frame(width: 40, height: 40)

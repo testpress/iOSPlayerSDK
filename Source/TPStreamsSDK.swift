@@ -30,6 +30,7 @@ public class TPStreamsSDK {
         self.activateAudioSession()
         self.initializeSentry()
         self.initializeDatabase()
+        TPStreamsDownloadManager.shared
     }
     
     private static func activateAudioSession() {
