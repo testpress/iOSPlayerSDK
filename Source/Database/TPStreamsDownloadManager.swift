@@ -27,7 +27,7 @@ public final class TPStreamsDownloadManager {
 
     internal func startDownload(asset: Asset, videoQuality: VideoQuality) {
 
-        if OfflineAsset.manager.isExist(assetId: asset.id) { return }
+        if OfflineAsset.manager.exists(id: asset.id) { return }
 
         let avUrlAsset = AVURLAsset(url: URL(string: asset.video.playbackURL)!)
 
