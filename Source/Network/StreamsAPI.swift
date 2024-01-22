@@ -15,7 +15,7 @@ class StreamsAPI: BaseAPI {
     class override var DRM_LICENSE_API: String {
         return "https://app.tpstreams.com/api/v1/%@/assets/%@/drm_license/?access_token=%@&drm_type=fairplay"
     }
-
+    
     override class func parseAsset(data: Data) throws -> Asset {
         guard let responseDict = try JSONSerialization.jsonObject(with: data) as? [String: Any],
               let video = responseDict["video"] as? [String: Any],

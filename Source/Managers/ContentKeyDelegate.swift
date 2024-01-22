@@ -13,7 +13,7 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
     var assetID: String?
     var accessToken: String?
     public var onError: ((Error) -> Void)?
-
+    
     enum ProgramError: Error {
         case missingApplicationCertificate
         case noCKCReturnedByKSM
@@ -36,10 +36,10 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
             return false
         }
     }
-
+    
     func handleFPSKeyRequest(_ keyRequest: AVContentKeyRequest){
         guard let contentKeyIdentifierURL = URL(string: keyRequest.identifier as? String ??  ""),
-            let contentID = contentKeyIdentifierURL.host
+              let contentID = contentKeyIdentifierURL.host
         else {
             self.contentID = nil
             debugPrint("Failed to retrieve the assetID from the keyRequest!")
@@ -62,7 +62,7 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
                                                           contentIdentifier: contentID!.data(using: .utf8),
                                                           options: [AVContentKeyRequestProtocolVersionsKey: [1]],
                                                           completionHandler:encryptedSPCMessageCallback)
-
+            
         } catch {
             SentrySDK.capture(error: error)
             keyRequest.processContentKeyResponseError(error)
@@ -84,19 +84,19 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
             return
         }
         guard let spcData = spcData else { return }
-
+        
         self.requestCKC(spcData) { ckcData, error in
             if let error = error {
                 self.onError?(error)
                 keyRequest.processContentKeyResponseError(error)
                 return
             }
-
+            
             let keyResponse = AVContentKeyResponse(fairPlayStreamingKeyResponseData: ckcData!)
             keyRequest.processContentKeyResponse(keyResponse)
         }
     }
-
+    
     func requestCKC(_ spcData: Data, _ completion: @escaping(Data?, Error?) -> Void) {
         guard let assetID = assetID,
               let accessToken = accessToken else { return }

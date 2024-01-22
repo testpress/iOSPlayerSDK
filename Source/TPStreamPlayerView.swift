@@ -16,7 +16,7 @@ public struct TPStreamPlayerView: View {
     public init(player: TPAVPlayer) {
         self.player = player
     }
-
+    
     public var body: some View {
         GeometryReader { geometry in
             ZStack {

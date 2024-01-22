@@ -10,12 +10,12 @@ import AVFoundation
 import Sentry
 
 #if SPM
-    let bundle = Bundle.module
+let bundle = Bundle.module
 #elseif CocoaPods
-    let appBundle = Bundle(for: TPStreamsSDK.self)
-    let bundle = Bundle(url: appBundle.url(forResource: "TPStreamsSDK", withExtension: "bundle")!)!
+let appBundle = Bundle(for: TPStreamsSDK.self)
+let bundle = Bundle(url: appBundle.url(forResource: "TPStreamsSDK", withExtension: "bundle")!)!
 #else
-    let bundle = Bundle(identifier: "com.tpstreams.iOSPlayerSDK")! // Access bundle using identifier when directly including the framework
+let bundle = Bundle(identifier: "com.tpstreams.iOSPlayerSDK")! // Access bundle using identifier when directly including the framework
 #endif
 
 

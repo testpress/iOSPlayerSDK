@@ -36,7 +36,7 @@ class ProgressBar: UIControl {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         addGestureRecognizer(tapGesture)
     }
-        
+    
     @objc private func handleTouchDown(_ sender: UIControl, for event: UIEvent) {
         isDragging = true
         updateDraggedLocation(with: event)

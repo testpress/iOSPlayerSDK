@@ -13,7 +13,7 @@ public class TPStreamPlayerViewController: UIViewController {
     public var player: TPAVPlayer?{
         didSet {
             guard let player = player else { return }
-
+            
             if let initializationError = player.initializationError {
                 showError(error: initializationError)
             }

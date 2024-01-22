@@ -6,7 +6,7 @@ class TPStreamPlayer: NSObject {
     @objc dynamic var status = "paused"
     @objc dynamic var currentTime: NSNumber = 0
     @objc dynamic var isVideoDurationInitialized = false
-
+    
     var player: TPAVPlayer!
     var videoDuration: Float64 {
         player.durationInSeconds
@@ -54,9 +54,9 @@ class TPStreamPlayer: NSObject {
         let interval = CMTime(seconds: 0.5, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
         playerCurrentTimeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) { [weak self] progressTime in
             guard let self = self else { return }
-
-           // Prevent updating the currentTime during seeking to avoid a minor glitch in the progress bar 
-           // where the thumb moves back to the previous position from the dragged position for a fraction of a second.
+            
+            // Prevent updating the currentTime during seeking to avoid a minor glitch in the progress bar
+            // where the thumb moves back to the previous position from the dragged position for a fraction of a second.
             if !self.isSeeking {
                 self.currentTime = NSNumber(value: CMTimeGetSeconds(progressTime))
             }
@@ -127,7 +127,7 @@ class TPStreamPlayer: NSObject {
     
     func play(){
         player.play()
-
+        
         // When resuming playback, AVPlayer resets the rate to 1.0. We need to set it back to the current playback speed.
         player.rate = currentPlaybackSpeed.rawValue
     }
@@ -143,7 +143,7 @@ class TPStreamPlayer: NSObject {
         }
         goTo(seconds: seekTo)
     }
-
+    
     func rewind(_ seconds: Float64 = 10.0) {
         var seekTo = self.player.currentTimeInSeconds - seconds
         if seekTo < 0 {
@@ -151,13 +151,13 @@ class TPStreamPlayer: NSObject {
         }
         goTo(seconds: seekTo)
     }
-
+    
     func goTo(seconds: Float64) {
         // Here we are validation the second if value is NaN wee will return there is no network second will be NaN
         guard !seconds.isNaN else {
-                print("Invalid seconds value: NaN")
-                return
-            }
+            print("Invalid seconds value: NaN")
+            return
+        }
         currentTime = NSNumber(value: seconds)
         let seekTime = CMTime(value: Int64(seconds), timescale: 1)
         isSeeking = true

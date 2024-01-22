@@ -40,8 +40,8 @@ class PlayerControlsUIView: UIView {
     var fullScreenToggleDelegate: FullScreenToggleDelegate?
     var isFullScreen: Bool = false {
         didSet {
-           updateFullScreenButtonIcon()
-           progressBar.setNeedsDisplay()
+            updateFullScreenButtonIcon()
+            progressBar.setNeedsDisplay()
         }
     }
     
@@ -121,7 +121,7 @@ class PlayerControlsUIView: UIView {
         optionsMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         parentViewController?.present(optionsMenu, animated: true, completion: nil)
     }
-
+    
     func showPlaybackSpeedMenu(){
         let playbackSpeedMenu = createPlaybackSpeedMenu()
         parentViewController?.present(playbackSpeedMenu, animated: true, completion: nil)
@@ -134,12 +134,12 @@ class PlayerControlsUIView: UIView {
     
     func createPlaybackSpeedMenu() -> UIAlertController {
         let playbackSpeedMenu = UIAlertController(title: "Playback Speed", message: nil, preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
-
+        
         for playbackSpeed in PlaybackSpeed.allCases {
             let action = createActionForPlaybackSpeed(playbackSpeed)
             playbackSpeedMenu.addAction(action)
         }
-
+        
         playbackSpeedMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         return playbackSpeedMenu
     }
@@ -158,7 +158,7 @@ class PlayerControlsUIView: UIView {
         let action = UIAlertAction(title: playbackSpeed.label, style: .default) { [weak self] _ in
             self?.player.changePlaybackSpeed(playbackSpeed)
         }
-
+        
         if playbackSpeed == .normal && self.player.currentPlaybackSpeed.rawValue == 0.0 || (playbackSpeed.rawValue == self.player.currentPlaybackSpeed.rawValue) {
             action.setValue(UIImage(named: "checkmark", in: bundle, compatibleWith: nil), forKey: "image")
         }
@@ -176,7 +176,7 @@ class PlayerControlsUIView: UIView {
         
         return action
     }
-        
+    
     @IBAction func toggleFullScreen(_ sender: Any) {
         if isFullScreen {
             fullScreenToggleDelegate?.exitFullScreen()

@@ -10,9 +10,9 @@ import AVKit
 import Sentry
 
 #if CocoaPods
-    import M3U8Kit
+import M3U8Kit
 #else
-    import M3U8Parser
+import M3U8Parser
 #endif
 
 public class TPAVPlayer: AVPlayer {
@@ -39,7 +39,7 @@ public class TPAVPlayer: AVPlayer {
         self.assetID = assetID
         self.setupCompletion = completion
         self.resourceLoaderDelegate = ResourceLoaderDelegate(accessToken: accessToken)
-
+        
         super.init()
         fetchAsset()
     }

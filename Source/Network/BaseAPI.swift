@@ -15,10 +15,10 @@ class BaseAPI {
     class var DRM_LICENSE_API: String {
         fatalError("DRM_LICENSE_API must be implemented by subclasses.")
     }
-
+    
     static func getAsset(_ assetID: String, _ accessToken: String, completion: @escaping (Asset?, Error?) -> Void) {
         let url = URL(string: String(format: VIDEO_DETAIL_API, TPStreamsSDK.orgCode!, assetID, accessToken))!
-
+        
         AF.request(url).responseData { response in
             switch response.result {
             case .success(let data):

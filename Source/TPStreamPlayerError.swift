@@ -6,7 +6,7 @@ public enum TPStreamPlayerError: Error {
     case serverError
     case networkTimeout
     case unknownError
-
+    
     public var code: Int {
         switch self {
         case .resourceNotFound: return 5001
@@ -18,7 +18,7 @@ public enum TPStreamPlayerError: Error {
         case .unknownError: return 5100
         }
     }
-        
+    
     public var message: String {
         switch self {
         case .resourceNotFound:

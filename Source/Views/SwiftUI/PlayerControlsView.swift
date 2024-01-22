@@ -11,7 +11,7 @@ struct PlayerControlsView: View {
         _player = StateObject(wrappedValue: TPStreamPlayerObservable(player: player))
         _isFullscreen = isFullscreen
     }
-        
+    
     var body: some View {
         VStack{
             if showControls {
