@@ -44,6 +44,21 @@ extension OfflineAsset {
         offlineAsset.size = (bitRate * duration)
         return offlineAsset
     }
+    
+    static func getWithSrcURL(srcUrl: String) -> OfflineAsset? {
+        manager.getAll().where {
+            $0.srcURL == srcUrl
+        }.first
+    }
+    
+    public var downloadedFileURL: URL? {
+        if !self.downloadedPath.isEmpty{
+            let baseURL = URL(fileURLWithPath: NSHomeDirectory())
+            return baseURL.appendingPathComponent(self.downloadedPath)
+        }
+        
+        return nil
+    }
 }
 
 enum Status: String {

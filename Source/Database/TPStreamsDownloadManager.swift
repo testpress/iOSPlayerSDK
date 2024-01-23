@@ -23,21 +23,6 @@ public final class TPStreamsDownloadManager {
             assetDownloadDelegate: assetDownloadDelegate,
             delegateQueue: OperationQueue.main
         )
-        
-//        assetDownloadURLSession.getAllTasks { tasksArray in
-//            print("hihihi0",tasksArray.count)
-//            for task in tasksArray {
-//                guard let assetDownloadTask = task as? AVAggregateAssetDownloadTask, let assetName = task.taskDescription else { break }
-//                print(assetDownloadTask.state.rawValue)
-//                print(assetDownloadTask.urlAsset.self)
-//                assetDownloadTask.resume()
-////                let urlAsset = assetDownloadTask.urlAsset
-////                print(urlAsset)
-//            }
-//        }
-        
-        //resumeDownload(id: "8eaHZjXt6km")
-        
     }
 
     internal func startDownload(asset: Asset, videoQuality: VideoQuality) {
@@ -80,6 +65,30 @@ public final class TPStreamsDownloadManager {
             }
         }
     }
+    
+    func initiateDownload(_ offlineAsset: OfflineAsset) {
+       
+        let avUrlAsset = AVURLAsset(url: URL(string: offlineAsset.srcURL)!)
+
+        guard let task = assetDownloadURLSession.aggregateAssetDownloadTask(
+            with: avUrlAsset,
+            mediaSelections: [avUrlAsset.preferredMediaSelection],
+            assetTitle: offlineAsset.title,
+            assetArtworkData: nil,
+            options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: offlineAsset.bitRate]
+        ) else { return }
+        task.taskDescription = offlineAsset.srcURL
+        
+        switch (offlineAsset.status) {
+        case Status.paused.rawValue:
+            assetDownloadDelegate.activeDownloadsMap[task] = offlineAsset
+        case Status.inProgress.rawValue:
+            assetDownloadDelegate.activeDownloadsMap[task] = offlineAsset
+            task.resume()
+        default:
+            return
+        }
+    }
 
     func pauseDownload(id: String) {
         guard let offlineAsset = OfflineAsset.manager.get(id: id) else { return }
@@ -97,43 +106,51 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
     var activeDownloadsMap = [AVAggregateAssetDownloadTask: OfflineAsset]()
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-            print("hihihi1",error)
-        if (error != nil) {
+        if (error == nil) {
             guard let assetDownloadTask = task as? AVAggregateAssetDownloadTask else { return }
             guard let offlineAsset = activeDownloadsMap[assetDownloadTask] else { return }
             updateDownloadCompleteStatus(error, offlineAsset)
             activeDownloadsMap.removeValue(forKey: assetDownloadTask)
+        } else {
+            if let error = error as? NSError {
+                if let failingURLString = error.userInfo[NSURLErrorFailingURLStringErrorKey] as? String {
+                    
+                    guard let offlineAsset = OfflineAsset.getWithSrcURL(srcUrl: failingURLString) else { return }
+                    
+                    do {
+                        try FileManager.default.removeItem(at: offlineAsset.downloadedFileURL!)
+                        print("Deleted")
+                        TPStreamsDownloadManager.shared.initiateDownload(offlineAsset)
+                    } catch {
+                        print("An error occured trying to delete the contents on disk for \(error)")
+                    }
+                }
+                
+            }
         }
-        }
-
-        func urlSession(_ session: URLSession, aggregateAssetDownloadTask: AVAggregateAssetDownloadTask, didCompleteFor mediaSelection: AVMediaSelection) {
-            print("hihihi2")
-        }
-
-        func urlSession(_ session: URLSession, aggregateAssetDownloadTask: AVAggregateAssetDownloadTask, willDownloadTo location: URL) {
-            print("hihihi3")
-            guard let offlineAsset = activeDownloadsMap[aggregateAssetDownloadTask] else { return }
-            OfflineAsset.manager.update(object: offlineAsset, with: ["downloadedPath": String(location.absoluteString)])
-        }
-
-        func urlSession(_ session: URLSession,
-                        aggregateAssetDownloadTask: AVAggregateAssetDownloadTask,
-                        didLoad timeRange: CMTimeRange,
-                        totalTimeRangesLoaded loadedTimeRanges: [NSValue],
-                        timeRangeExpectedToLoad: CMTimeRange,
-                        for mediaSelection: AVMediaSelection
-        ) {
-            print("hihihi4")
-            guard let offlineAsset = activeDownloadsMap[aggregateAssetDownloadTask] else { return }
-
-            let percentageComplete = calculateDownloadPercentage(loadedTimeRanges, timeRangeExpectedToLoad)
-            print(percentageComplete)
-            OfflineAsset.manager.update(object: offlineAsset, with: ["status": Status.inProgress.rawValue, "percentageCompleted": percentageComplete])
-        }
+    }
     
     
-    
-    
+
+    func urlSession(_ session: URLSession, aggregateAssetDownloadTask: AVAggregateAssetDownloadTask, willDownloadTo location: URL) {
+        guard let offlineAsset = activeDownloadsMap[aggregateAssetDownloadTask] else { return }
+        OfflineAsset.manager.update(object: offlineAsset, with: ["downloadedPath": String(location.relativePath)])
+    }
+
+    func urlSession(_ session: URLSession,
+                    aggregateAssetDownloadTask: AVAggregateAssetDownloadTask,
+                    didLoad timeRange: CMTimeRange,
+                    totalTimeRangesLoaded loadedTimeRanges: [NSValue],
+                    timeRangeExpectedToLoad: CMTimeRange,
+                    for mediaSelection: AVMediaSelection
+    ) {
+        guard let offlineAsset = activeDownloadsMap[aggregateAssetDownloadTask] else { return }
+        
+        let percentageComplete = calculateDownloadPercentage(loadedTimeRanges, timeRangeExpectedToLoad)
+        print(percentageComplete)
+        OfflineAsset.manager.update(object: offlineAsset, with: ["status": Status.inProgress.rawValue, "percentageCompleted": percentageComplete])
+    }
+
     private func updateDownloadCompleteStatus(_ error: Error?,_ offlineAsset: OfflineAsset) {
         let status: Status = (error == nil) ? .finished : .failed
         let updateValues: [String: Any] = ["status": status.rawValue, "downloadedAt": Date()]

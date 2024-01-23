@@ -57,6 +57,9 @@ struct MediaControlsView: View {
         } else {
             player.pause()
         }
+        
+        TPStreamsDownloadManager.shared.resumeDownload2(id: player.asset!.id)
+        
     }
     
 }
