@@ -31,8 +31,9 @@ public final class TPStreamsDownloadManager {
 
         let avUrlAsset = AVURLAsset(url: URL(string: asset.video.playbackURL)!)
 
-        guard let task = assetDownloadURLSession.makeAssetDownloadTask(
-            asset: avUrlAsset,
+        guard let task = assetDownloadURLSession.aggregateAssetDownloadTask(
+            with: avUrlAsset,
+            mediaSelections: [avUrlAsset.preferredMediaSelection],
             assetTitle: asset.title,
             assetArtworkData: nil,
             options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: videoQuality.bitrate]
@@ -55,36 +56,37 @@ public final class TPStreamsDownloadManager {
 
 internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
 
-    var activeDownloadsMap = [AVAssetDownloadTask: OfflineAsset]()
+    var activeDownloadsMap = [AVAggregateAssetDownloadTask: OfflineAsset]()
 
-    public func urlSession(_ session: URLSession, assetDownloadTask: AVAssetDownloadTask, didFinishDownloadingTo location: URL) {
-        guard let offlineAsset = activeDownloadsMap[assetDownloadTask] else { return }
-        OfflineAsset.manager.update(object: offlineAsset, with: ["downloadedPath": location.relativePath])
-    }
-
-    public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        guard let assetDownloadTask = task as? AVAssetDownloadTask else { return }
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        guard let assetDownloadTask = task as? AVAggregateAssetDownloadTask else { return }
         guard let offlineAsset = activeDownloadsMap[assetDownloadTask] else { return }
         updateDownloadCompleteStatus(error, offlineAsset)
         activeDownloadsMap.removeValue(forKey: assetDownloadTask)
+    }
+    
+    func urlSession(_ session: URLSession, aggregateAssetDownloadTask: AVAggregateAssetDownloadTask, willDownloadTo location: URL) {
+        guard let offlineAsset = activeDownloadsMap[aggregateAssetDownloadTask] else { return }
+        OfflineAsset.manager.update(object: offlineAsset, with: ["downloadedPath": String(location.relativePath)])
+    }
+
+    func urlSession(_ session: URLSession,
+                    aggregateAssetDownloadTask: AVAggregateAssetDownloadTask,
+                    didLoad timeRange: CMTimeRange,
+                    totalTimeRangesLoaded loadedTimeRanges: [NSValue],
+                    timeRangeExpectedToLoad: CMTimeRange,
+                    for mediaSelection: AVMediaSelection
+    ) {
+        guard let offlineAsset = activeDownloadsMap[aggregateAssetDownloadTask] else { return }
+
+        let percentageComplete = calculateDownloadPercentage(loadedTimeRanges, timeRangeExpectedToLoad)
+        OfflineAsset.manager.update(object: offlineAsset, with: ["status": Status.inProgress.rawValue, "percentageCompleted": percentageComplete])
     }
     
     private func updateDownloadCompleteStatus(_ error: Error?,_ offlineAsset: OfflineAsset) {
         let status: Status = (error == nil) ? .finished : .failed
         let updateValues: [String: Any] = ["status": status.rawValue, "downloadedAt": Date()]
         OfflineAsset.manager.update(object: offlineAsset, with: updateValues)
-    }
-
-    public func urlSession(_ session: URLSession,
-                           assetDownloadTask: AVAssetDownloadTask,
-                           didLoad timeRange: CMTimeRange,
-                           totalTimeRangesLoaded loadedTimeRanges: [NSValue],
-                           timeRangeExpectedToLoad: CMTimeRange
-    ) {
-        guard let offlineAsset = activeDownloadsMap[assetDownloadTask] else { return }
-
-        let percentageComplete = calculateDownloadPercentage(loadedTimeRanges, timeRangeExpectedToLoad)
-        OfflineAsset.manager.update(object: offlineAsset, with: ["status": Status.inProgress.rawValue, "percentageCompleted": percentageComplete])
     }
 
     private func calculateDownloadPercentage(_ loadedTimeRanges: [NSValue], _ timeRangeExpectedToLoad: CMTimeRange) -> Double {
