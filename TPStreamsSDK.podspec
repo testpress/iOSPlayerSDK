@@ -14,6 +14,8 @@ Pod::Spec.new do |spec|
   spec.dependency 'Sentry', '~> 8.0.0'
   spec.dependency 'Alamofire', '~> 5.0.0'
   spec.dependency 'M3U8Kit', '~> 1.0.0'
+  spec.dependency 'ReachabilitySwift', '~> 5.0'
+
   spec.pod_target_xcconfig = {
     'OTHER_SWIFT_FLAGS[config=Debug]' => '-DCocoaPods',
     'OTHER_SWIFT_FLAGS[config=Release]' => '-DCocoaPods'
