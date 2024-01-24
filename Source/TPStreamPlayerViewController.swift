@@ -13,13 +13,11 @@ public class TPStreamPlayerViewController: UIViewController {
     public var player: TPAVPlayer?{
         didSet {
             guard let player = player else { return }
-            
-            if let initializationError = player.initializationError {
-                showError(error: initializationError)
-            }
+            setupPlayerStatusObserver(for: player)
             player.onError = showError
         }
     }
+    private var playerStatusObervervation: NSKeyValueObservation?
     public var delegate: TPStreamPlayerViewControllerDelegate?
     public var autoFullScreenOnRotate = true
     public var config = TPStreamPlayerConfiguration(){
@@ -107,6 +105,23 @@ public class TPStreamPlayerViewController: UIViewController {
             enterFullScreen()
         } else {
             exitFullScreen()
+        }
+    }
+    
+    private func setupPlayerStatusObserver(for player: TPAVPlayer) {
+        playerStatusObervervation = player.observe(\.initializationStatus, options: [.new]) { [weak self] (_, change) in
+            guard let self = self else { return }
+
+            if let status = change.newValue {
+                switch status {
+                case "error":
+                    self.showError(error: self.player!.initializationError!)
+                case "ready":
+                    self.errorView.isHidden = true
+                default:
+                    break
+                }
+            }
         }
     }
     
