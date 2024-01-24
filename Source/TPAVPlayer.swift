@@ -61,8 +61,8 @@ public class TPAVPlayer: AVPlayer {
                 self.onError?(error)
                 self.initializationError = error
                 self.initializationStatus = "error"
-                if isNetworkUnavailableError(error){
-                    retryFetchAssetWhenNetworkIsReady()
+                if self.isNetworkUnavailableError(error){
+                    self.retryFetchAssetWhenNetworkIsReady()
                 }
             }
         }
