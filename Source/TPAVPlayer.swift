@@ -8,6 +8,7 @@
 import Foundation
 import AVKit
 import Sentry
+import Reachability
 
 #if CocoaPods
 import M3U8Kit
@@ -22,8 +23,10 @@ public class TPAVPlayer: AVPlayer {
     private var setupCompletion: SetupCompletion?
     private var resourceLoaderDelegate: ResourceLoaderDelegate
     public var onError: ((Error) -> Void)?
+    @objc internal dynamic var initializationStatus = "pending"
     internal var initializationError: Error?
     internal var asset: Asset? = nil
+    private var reachability: Reachability?
     
     public var availableVideoQualities: [VideoQuality] = [VideoQuality(resolution:"Auto", bitrate: 0)]
     
@@ -52,10 +55,15 @@ public class TPAVPlayer: AVPlayer {
                 self.asset = asset
                 self.setup()
                 self.setupCompletion?(nil)
+                self.initializationStatus = "ready"
             } else if let error = error{
                 self.setupCompletion?(error)
                 self.onError?(error)
                 self.initializationError = error
+                self.initializationStatus = "error"
+                if isNetworkUnavailableError(error){
+                    retryFetchAssetWhenNetworkIsReady()
+                }
             }
         }
     }
@@ -74,6 +82,24 @@ public class TPAVPlayer: AVPlayer {
             self.setupDRM(avURLAsset)
         }
         self.populateAvailableVideoQualities(url)
+    }
+    
+    private func isNetworkUnavailableError(_ error: Error) -> Bool {
+        return (error as? TPStreamPlayerError) == .noInternetConnection
+    }
+    
+    private func retryFetchAssetWhenNetworkIsReady() {
+        do {
+            reachability = try Reachability()
+            reachability?.whenReachable = { [weak self] _ in
+                if self?.asset == nil {
+                    self?.fetchAsset()
+                }
+            }
+            try reachability?.startNotifier()
+        } catch {
+            print("Unable to start reachability notifier")
+        }
     }
     
     private func setPlayerItem(_ asset: AVURLAsset){
@@ -129,6 +155,10 @@ public class TPAVPlayer: AVPlayer {
         self.availableVideoQualities = availableVideoQualities.filter { quality in
             quality.resolution != "Auto" && Int(String(quality.resolution.dropLast()))! <= maxHeight
         }
+    }
+    
+    deinit {
+        reachability?.stopNotifier()
     }
 }
 
