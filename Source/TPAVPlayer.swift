@@ -53,7 +53,6 @@ public class TPAVPlayer: AVPlayer {
                 self.setup()
                 self.setupCompletion?(nil)
             } else if let error = error{
-                SentrySDK.capture(error: error)
                 self.setupCompletion?(error)
                 self.onError?(error)
                 self.initializationError = error
