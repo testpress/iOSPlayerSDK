@@ -81,7 +81,7 @@ public class TPAVPlayer: AVPlayer {
             }
         }
     }
-    
+
     private func setup() {
         guard let url = URL(string: asset!.video.playbackURL) else {
             debugPrint("Invalid playback URL received from API: \(asset!.video.playbackURL)")
