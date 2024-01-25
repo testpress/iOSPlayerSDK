@@ -47,6 +47,14 @@ public class TPAVPlayer: AVPlayer {
         fetchAsset()
     }
     
+    public init(offlineAsset: OfflineAsset) {
+        self.accessToken = ""
+        self.assetID = offlineAsset.assetId
+        self.resourceLoaderDelegate = ResourceLoaderDelegate(accessToken: accessToken)
+        super.init()
+        setupOfflinePlayback(offlineAsset)
+    }
+    
     private func fetchAsset() {
         TPStreamsSDK.provider.API.getAsset(assetID, accessToken) { [weak self] asset, error in
             guard let self = self else { return }
@@ -66,6 +74,23 @@ public class TPAVPlayer: AVPlayer {
                 }
             }
         }
+    }
+    
+    private func setupOfflinePlayback(_ offlineAsset: OfflineAsset) {
+        self.asset = createLocalAsset(offlineAsset)
+        setup()
+    }
+    
+    private func createLocalAsset(_ offlineAsset: OfflineAsset) -> Asset {
+        return Asset(
+            id: offlineAsset.assetId,
+            title: offlineAsset.title,
+            video: Asset.Video(
+                playbackURL: offlineAsset.downloadedFileURL!.absoluteString,
+                status: "",
+                duration: offlineAsset.duration, drm_encrypted: false
+            )
+        )
     }
     
     private func setup() {

@@ -15,6 +15,7 @@ struct DownloadListView: View {
         List($appDownloadManager.offlineAssets, id: \.self) { offlineAsset in
             OfflineAssetRow(offlineAsset: offlineAsset)
         }
+        .navigationTitle("Downloads")
         .overlay(
             Group {
                 if appDownloadManager.offlineAssets.isEmpty {

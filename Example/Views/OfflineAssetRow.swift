@@ -12,7 +12,8 @@ import TPStreamsSDK
 struct OfflineAssetRow: View {
     @State private var showActionSheet = false
     @Binding private var offlineAsset: OfflineAsset
-    
+    @State private var showPlayerView = false
+
     init(offlineAsset: Binding<OfflineAsset>) {
         _offlineAsset = offlineAsset
     }
@@ -29,13 +30,19 @@ struct OfflineAssetRow: View {
                     .font(.caption)
             }
         }
+        .padding(10)
         .actionSheet(isPresented: $showActionSheet) {
             ActionSheet(title: Text("Options"), buttons: getButtons(offlineAsset))
         }
         .onTapGesture {
             showActionSheet = true
         }
-        .padding(10)
+        .background(
+            NavigationLink(
+                destination: PlayerView(offlineAsset: offlineAsset),
+                isActive: $showPlayerView
+            ) {}.hidden()
+        )
     }
     
     func getButtons(_ offlineAsset: OfflineAsset) -> [ActionSheet.Button] {
@@ -44,6 +51,8 @@ struct OfflineAssetRow: View {
             return [pauseButton(offlineAsset), .cancel()]
         case Status.paused.rawValue:
             return [resumeButton(offlineAsset), .cancel()]
+        case Status.finished.rawValue:
+            return [playButton(offlineAsset), .cancel()]
         default:
             return [.cancel()]
         }
@@ -58,6 +67,12 @@ struct OfflineAssetRow: View {
     private func resumeButton(_ offlineAsset: OfflineAsset) -> ActionSheet.Button {
         return .default(Text("Resume")) {
             TPStreamsDownloadManager.shared.resumeDownload(offlineAsset)
+        }
+    }
+
+    private func playButton(_ offlineAsset: OfflineAsset) -> ActionSheet.Button {
+        return .default(Text("Play")) {
+            showPlayerView = true
         }
     }
 }
