@@ -44,7 +44,7 @@ struct OfflineAssetRow: View {
             ) {}.hidden()
         )
     }
-    
+
     func getButtons(_ offlineAsset: OfflineAsset) -> [ActionSheet.Button] {
         switch (offlineAsset.status) {
         case Status.inProgress.rawValue:
