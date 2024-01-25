@@ -25,7 +25,7 @@ public final class TPStreamsDownloadManager {
             delegateQueue: OperationQueue.main
         )
     }
-    
+
     public func setTPStreamsDownloadDelegate(tpStreamsDownloadDelegate: TPStreamsDownloadDelegate) {
         self.tpStreamsDownloadDelegate = tpStreamsDownloadDelegate
         assetDownloadDelegate.tpStreamsDownloadDelegate = tpStreamsDownloadDelegate
@@ -58,7 +58,7 @@ public final class TPStreamsDownloadManager {
         task.resume()
         tpStreamsDownloadDelegate?.onStart(offlineAsset: offlineAsset)
     }
-    
+
     public func pauseDownload(_ offlineAsset: OfflineAsset) {
         if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == offlineAsset })?.key {
             task.suspend()
@@ -66,7 +66,7 @@ public final class TPStreamsDownloadManager {
             tpStreamsDownloadDelegate?.onPause(offlineAsset: offlineAsset)
         }
     }
-    
+
     public func resumeDownload(_ offlineAsset: OfflineAsset) {
         if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == offlineAsset })?.key {
             if task.state != .running {
@@ -76,7 +76,7 @@ public final class TPStreamsDownloadManager {
             }
         }
     }
-    
+
     public func getAllOfflineAssets() -> [OfflineAsset]{
         return Array(OfflineAsset.manager.getAll())
     }
