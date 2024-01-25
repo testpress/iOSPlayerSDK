@@ -60,7 +60,7 @@ public class TPAVPlayer: AVPlayer {
             self.initializationStatus = "error"
         }
     }
-    
+
     private func fetchAsset() {
         TPStreamsSDK.provider.API.getAsset(assetID!, accessToken!) { [weak self] asset, error in
             guard let self = self else { return }
