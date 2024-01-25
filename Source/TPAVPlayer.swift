@@ -60,7 +60,7 @@ public class TPAVPlayer: AVPlayer {
         let avURLAsset = AVURLAsset(url: offlineAssetEntity.downloadedFileURL!)
         self.setPlayerItem(avURLAsset)
     }
-    
+
     private func fetchAsset() {
         TPStreamsSDK.provider.API.getAsset(assetID!, accessToken!) { [weak self] asset, error in
             guard let self = self else { return }
