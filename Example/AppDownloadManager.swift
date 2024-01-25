@@ -23,19 +23,19 @@ class AppDownloadManager: TPStreamsDownloadDelegate, ObservableObject {
         offlineAssets = TPStreamsDownloadManager.shared.getAllOfflineAssets()
     }
 
-    func onDownloadComplete(offlineAsset: OfflineAsset) {
-        print("Download Complete", offlineAsset.assetId)
+    func onComplete(offlineAsset: OfflineAsset) {
+        print("Download Complete", offlineAsset)
     }
 
-    func onDownloadStart(offlineAsset: OfflineAsset) {
+    func onStart(offlineAsset: OfflineAsset) {
         print("Download Start", offlineAsset.assetId)
     }
 
-    func onDownloadPause(offlineAsset: OfflineAsset) {
+    func onPause(offlineAsset: OfflineAsset) {
         print("Download Pause", offlineAsset.assetId)
     }
 
-    func onDownloadResume(offlineAsset: OfflineAsset) {
+    func onResume(offlineAsset: OfflineAsset) {
         print("Download Resume", offlineAsset.assetId)
     }
 
@@ -44,7 +44,7 @@ class AppDownloadManager: TPStreamsDownloadDelegate, ObservableObject {
         print("Offline Assets Updated")
     }
 
-    func onDownloadsStateChange() {
+    func onStateChange(offlineAsset: OfflineAsset) {
         print("Downloads State Change")
         getOfflineAssets()
     }
