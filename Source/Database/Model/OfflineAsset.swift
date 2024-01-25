@@ -25,6 +25,27 @@ public class OfflineAsset: Object {
     public static var manager = ObjectManager<OfflineAsset>()
 }
 
+extension OfflineAsset {
+    static func create(
+        assetId: String,
+        srcURL: String,
+        title: String,
+        resolution: String,
+        duration:Double,
+        bitRate: Double
+    ) -> OfflineAsset {
+        let offlineAsset = OfflineAsset()
+        offlineAsset.assetId = assetId
+        offlineAsset.srcURL = srcURL
+        offlineAsset.title = title
+        offlineAsset.resolution = resolution
+        offlineAsset.duration = duration
+        offlineAsset.bitRate = bitRate
+        offlineAsset.size = (bitRate * duration)
+        return offlineAsset
+    }
+}
+
 enum Status: String {
     case notStarted = "notStarted"
     case inProgress = "inProgress"
