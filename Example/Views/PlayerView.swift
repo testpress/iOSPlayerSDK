@@ -20,13 +20,19 @@ struct PlayerView: View {
                 let player = TPAVPlayer(offlineAsset: offlineAsset)
                 TPStreamPlayerView(player: player)
                     .frame(height: 240)
-                    .navigationBarTitle(title ?? offlineAsset.title) // Provide a default value for title
+                    .navigationBarTitle(title ?? offlineAsset.title)
+                    .onDisappear {
+                        player.pause()
+                    }
                 Spacer()
             } else if let assetId = assetId, let accessToken = accessToken {
                 let player = TPAVPlayer(assetID: assetId, accessToken: accessToken)
                 TPStreamPlayerView(player: player)
                     .frame(height: 240)
-                    .navigationBarTitle(title ?? "") // Provide a default value for title
+                    .navigationBarTitle(title ?? "")
+                    .onDisappear {
+                        player.pause()
+                    }
                 Spacer()
             }
         }
