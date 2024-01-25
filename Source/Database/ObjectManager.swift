@@ -33,4 +33,8 @@ public class ObjectManager<T: Object> {
         let object = realm.object(ofType: T.self, forPrimaryKey: id)
         return object != nil
     }
+    
+    func getAll() -> Results<T> {
+        return realm.objects(T.self)
+    }
 }

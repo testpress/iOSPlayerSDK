@@ -44,9 +44,17 @@ extension OfflineAsset {
         offlineAsset.size = (bitRate * duration)
         return offlineAsset
     }
+    
+    public var downloadedFileURL: URL? {
+        if !self.downloadedPath.isEmpty{
+            let baseURL = URL(fileURLWithPath: NSHomeDirectory())
+            return baseURL.appendingPathComponent(self.downloadedPath)
+        }
+        return nil
+    }
 }
 
-enum Status: String {
+public enum Status: String {
     case notStarted = "notStarted"
     case inProgress = "inProgress"
     case paused = "paused"
