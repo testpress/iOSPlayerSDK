@@ -52,7 +52,8 @@ public class TPAVPlayer: AVPlayer {
         self.assetID = offlineAsset.assetId
         self.resourceLoaderDelegate = ResourceLoaderDelegate(accessToken: accessToken)
         super.init()
-        setupOfflinePlayback(offlineAsset)
+        let avURLAsset = AVURLAsset(url: offlineAsset.downloadedFileURL!)
+        self.setPlayerItem(avURLAsset)
     }
     
     private func fetchAsset() {
@@ -74,23 +75,6 @@ public class TPAVPlayer: AVPlayer {
                 }
             }
         }
-    }
-    
-    private func setupOfflinePlayback(_ offlineAsset: OfflineAsset) {
-        self.asset = createLocalAsset(offlineAsset)
-        setup()
-    }
-    
-    private func createLocalAsset(_ offlineAsset: OfflineAsset) -> Asset {
-        return Asset(
-            id: offlineAsset.assetId,
-            title: offlineAsset.title,
-            video: Asset.Video(
-                playbackURL: offlineAsset.downloadedFileURL!.absoluteString,
-                status: "",
-                duration: offlineAsset.duration, drm_encrypted: false
-            )
-        )
     }
     
     private func setup() {
