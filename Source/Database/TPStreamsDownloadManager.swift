@@ -25,7 +25,7 @@ public final class TPStreamsDownloadManager {
             delegateQueue: OperationQueue.main
         )
     }
-
+    
     public func setTPStreamsDownloadDelegate(tpStreamsDownloadDelegate: TPStreamsDownloadDelegate) {
         self.tpStreamsDownloadDelegate = tpStreamsDownloadDelegate
         assetDownloadDelegate.tpStreamsDownloadDelegate = tpStreamsDownloadDelegate
