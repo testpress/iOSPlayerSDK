@@ -57,6 +57,7 @@
 		8EDE99AF2A2643B000E43EA9 /* TPStreamsSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */; };
 		8EDE99B42A2643B000E43EA9 /* iOSPlayerSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */; };
 		8EDE99B52A2643B000E43EA9 /* iOSPlayerSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 8EDE99A72A2643B000E43EA9 /* iOSPlayerSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9820D6D2B68D9B600BB879F /* TPStreamsDownloadManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9820D6C2B68D9B600BB879F /* TPStreamsDownloadManagerTests.swift */; };
 		D9C1FAA02B4E7E2600B27A3B /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = D9C1FA9F2B4E7E2600B27A3B /* Realm */; };
 		D9C1FAA22B4E7E2600B27A3B /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D9C1FAA12B4E7E2600B27A3B /* RealmSwift */; };
 		D9C1FAA82B4E7EE700B27A3B /* OfflineAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C1FAA72B4E7EE700B27A3B /* OfflineAsset.swift */; };
@@ -175,6 +176,7 @@
 		8EDE99AE2A2643B000E43EA9 /* iOSPlayerSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSPlayerSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSPlayerSDKTests.swift; sourceTree = "<group>"; };
 		D904B1DD2B3C5BAC00A7E26C /* TPStreamsSDK.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TPStreamsSDK.xctestplan; sourceTree = "<group>"; };
+		D9820D6C2B68D9B600BB879F /* TPStreamsDownloadManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsDownloadManagerTests.swift; sourceTree = "<group>"; };
 		D9C1FAA72B4E7EE700B27A3B /* OfflineAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAsset.swift; sourceTree = "<group>"; };
 		D9C1FAB12B4E915C00B27A3B /* ObjectManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectManager.swift; sourceTree = "<group>"; };
 		D9C1FAB52B4EA4CF00B27A3B /* TPStreamsDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsDownloadManager.swift; sourceTree = "<group>"; };
@@ -406,6 +408,7 @@
 			children = (
 				8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */,
 				D9C1FAB72B4EA53200B27A3B /* ObjectManagerTest.swift */,
+				D9820D6C2B68D9B600BB879F /* TPStreamsDownloadManagerTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -700,6 +703,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D9820D6D2B68D9B600BB879F /* TPStreamsDownloadManagerTests.swift in Sources */,
 				D9C1FAB82B4EA53200B27A3B /* ObjectManagerTest.swift in Sources */,
 				8EDE99B42A2643B000E43EA9 /* iOSPlayerSDKTests.swift in Sources */,
 			);
