@@ -57,12 +57,17 @@
 		8EDE99AF2A2643B000E43EA9 /* TPStreamsSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */; };
 		8EDE99B42A2643B000E43EA9 /* iOSPlayerSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */; };
 		8EDE99B52A2643B000E43EA9 /* iOSPlayerSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 8EDE99A72A2643B000E43EA9 /* iOSPlayerSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D9820D6D2B68D9B600BB879F /* TPStreamsDownloadManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9820D6C2B68D9B600BB879F /* TPStreamsDownloadManagerTests.swift */; };
 		D9C1FAA02B4E7E2600B27A3B /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = D9C1FA9F2B4E7E2600B27A3B /* Realm */; };
 		D9C1FAA22B4E7E2600B27A3B /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D9C1FAA12B4E7E2600B27A3B /* RealmSwift */; };
 		D9C1FAA82B4E7EE700B27A3B /* OfflineAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C1FAA72B4E7EE700B27A3B /* OfflineAsset.swift */; };
 		D9C1FAB22B4E915C00B27A3B /* ObjectManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C1FAB12B4E915C00B27A3B /* ObjectManager.swift */; };
 		D9C1FAB62B4EA4CF00B27A3B /* TPStreamsDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C1FAB52B4EA4CF00B27A3B /* TPStreamsDownloadManager.swift */; };
 		D9C1FAB82B4EA53200B27A3B /* ObjectManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C1FAB72B4EA53200B27A3B /* ObjectManagerTest.swift */; };
+		D9D6A3AF2B627144005390D7 /* DownloadListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D6A3AE2B627144005390D7 /* DownloadListView.swift */; };
+		D9D6A3B12B62717B005390D7 /* OfflineAssetRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D6A3B02B62717B005390D7 /* OfflineAssetRow.swift */; };
+		D9D6A3B32B6271BB005390D7 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D6A3B22B6271BB005390D7 /* PlayerView.swift */; };
+		D9D6A3B82B628B0F005390D7 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D6A3B72B628B0F005390D7 /* Time.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -171,10 +176,15 @@
 		8EDE99AE2A2643B000E43EA9 /* iOSPlayerSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSPlayerSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSPlayerSDKTests.swift; sourceTree = "<group>"; };
 		D904B1DD2B3C5BAC00A7E26C /* TPStreamsSDK.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TPStreamsSDK.xctestplan; sourceTree = "<group>"; };
+		D9820D6C2B68D9B600BB879F /* TPStreamsDownloadManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsDownloadManagerTests.swift; sourceTree = "<group>"; };
 		D9C1FAA72B4E7EE700B27A3B /* OfflineAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAsset.swift; sourceTree = "<group>"; };
 		D9C1FAB12B4E915C00B27A3B /* ObjectManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectManager.swift; sourceTree = "<group>"; };
 		D9C1FAB52B4EA4CF00B27A3B /* TPStreamsDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsDownloadManager.swift; sourceTree = "<group>"; };
 		D9C1FAB72B4EA53200B27A3B /* ObjectManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectManagerTest.swift; sourceTree = "<group>"; };
+		D9D6A3AE2B627144005390D7 /* DownloadListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadListView.swift; sourceTree = "<group>"; };
+		D9D6A3B02B62717B005390D7 /* OfflineAssetRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAssetRow.swift; sourceTree = "<group>"; };
+		D9D6A3B22B6271BB005390D7 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		D9D6A3B72B628B0F005390D7 /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -302,8 +312,9 @@
 		8E6389C22A27277D00306FA4 /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				D9D6A3B62B628AE2005390D7 /* Utils */,
+				D9D6A3AD2B6270DE005390D7 /* Views */,
 				8E6389C32A27277D00306FA4 /* ExampleApp.swift */,
-				8E6389C52A27277D00306FA4 /* ContentView.swift */,
 				8E6389C72A27278000306FA4 /* Assets.xcassets */,
 				8E6389C92A27278000306FA4 /* Preview Content */,
 			);
@@ -397,6 +408,7 @@
 			children = (
 				8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */,
 				D9C1FAB72B4EA53200B27A3B /* ObjectManagerTest.swift */,
+				D9820D6C2B68D9B600BB879F /* TPStreamsDownloadManagerTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -417,6 +429,25 @@
 				D9C1FAA72B4E7EE700B27A3B /* OfflineAsset.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		D9D6A3AD2B6270DE005390D7 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				8E6389C52A27277D00306FA4 /* ContentView.swift */,
+				D9D6A3AE2B627144005390D7 /* DownloadListView.swift */,
+				D9D6A3B02B62717B005390D7 /* OfflineAssetRow.swift */,
+				D9D6A3B22B6271BB005390D7 /* PlayerView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		D9D6A3B62B628AE2005390D7 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				D9D6A3B72B628B0F005390D7 /* Time.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -622,8 +653,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D9D6A3B82B628B0F005390D7 /* Time.swift in Sources */,
 				8E6389C62A27277D00306FA4 /* ContentView.swift in Sources */,
 				8E6389C42A27277D00306FA4 /* ExampleApp.swift in Sources */,
+				D9D6A3AF2B627144005390D7 /* DownloadListView.swift in Sources */,
+				D9D6A3B32B6271BB005390D7 /* PlayerView.swift in Sources */,
+				D9D6A3B12B62717B005390D7 /* OfflineAssetRow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -668,6 +703,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D9820D6D2B68D9B600BB879F /* TPStreamsDownloadManagerTests.swift in Sources */,
 				D9C1FAB82B4EA53200B27A3B /* ObjectManagerTest.swift in Sources */,
 				8EDE99B42A2643B000E43EA9 /* iOSPlayerSDKTests.swift in Sources */,
 			);
