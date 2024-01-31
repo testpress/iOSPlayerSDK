@@ -38,7 +38,7 @@ public enum TPStreamPlayerError: Error {
         case .unknownError:
             return "Oops! Something went wrong. Please contact support for assistance and provide details about the issue."
         case .incompleteOfflineVideo:
-            return "This video not downloaded completely"
+            return "This video hasn't been downloaded completely. Please try downloading it again."
         }
     }
 }
