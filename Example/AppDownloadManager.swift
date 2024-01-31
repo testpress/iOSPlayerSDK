@@ -24,6 +24,7 @@ class AppDownloadManager: TPStreamsDownloadDelegate, ObservableObject {
     }
 
     func onComplete(offlineAsset: OfflineAsset) {
+        getOfflineAssets()
         print("Download Complete", offlineAsset)
     }
 
