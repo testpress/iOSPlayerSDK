@@ -59,7 +59,7 @@ public final class TPStreamsDownloadManager {
         tpStreamsDownloadDelegate?.onStart(offlineAsset: offlineAssetEntity.asOfflineAsset())
         tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: offlineAssetEntity.asOfflineAsset())
     }
-
+    
     public func pauseDownload(_ offlineAsset: OfflineAsset) {
         guard let offlineAssetEntity = OfflineAssetEntity.manager.get(id: offlineAsset.assetId) else { return }
         if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == offlineAssetEntity })?.key {
@@ -69,7 +69,7 @@ public final class TPStreamsDownloadManager {
             tpStreamsDownloadDelegate?.onStateChange(status: .paused, offlineAsset: offlineAssetEntity.asOfflineAsset())
         }
     }
-
+    
     public func resumeDownload(_ offlineAsset: OfflineAsset) {
         guard let offlineAssetEntity = OfflineAssetEntity.manager.get(id: offlineAsset.assetId) else { return }
         if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == offlineAssetEntity })?.key {
