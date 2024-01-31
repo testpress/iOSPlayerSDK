@@ -86,26 +86,6 @@ public final class TPStreamsDownloadManager {
         return OfflineAssetEntity.manager.getAll().map { $0.asOfflineAsset() }
     }
 
-    public func pauseDownload(_ offlineAsset: OfflineAsset) {
-        if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == offlineAsset })?.key {
-            task.suspend()
-            OfflineAsset.manager.update(object: offlineAsset, with: ["status": Status.paused.rawValue])
-        }
-    }
-
-    public func resumeDownload(_ offlineAsset: OfflineAsset) {
-        if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == offlineAsset })?.key {
-            if task.state != .running {
-                task.resume()
-                OfflineAsset.manager.update(object: offlineAsset, with: ["status": Status.inProgress.rawValue])
-            }
-        }
-    }
-    
-    public func getAllOfflineAssets() -> [OfflineAsset]{
-        return Array(OfflineAsset.manager.getAll())
-    }
-
 }
 
 internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
