@@ -7,6 +7,7 @@ public enum TPStreamPlayerError: Error {
     case networkTimeout
     case incompleteOfflineVideo
     case unknownError
+    case incompleteOfflineVideo
     
     public var code: Int {
         switch self {
@@ -18,6 +19,7 @@ public enum TPStreamPlayerError: Error {
         case .networkTimeout: return 5006
         case .incompleteOfflineVideo: return 5007
         case .unknownError: return 5100
+        case .incompleteOfflineVideo: return 5010
         }
     }
     
@@ -39,6 +41,8 @@ public enum TPStreamPlayerError: Error {
             return "This video hasn't been downloaded completely. Please try downloading it again."
         case .unknownError:
             return "Oops! Something went wrong. Please contact support for assistance and provide details about the issue."
+        case .incompleteOfflineVideo:
+            return "This video not downloaded completely"
         }
     }
 }
