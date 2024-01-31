@@ -14,6 +14,7 @@ public final class TPStreamsDownloadManager {
     static public let shared = TPStreamsDownloadManager()
     private var assetDownloadURLSession: AVAssetDownloadURLSession!
     private var assetDownloadDelegate: AssetDownloadDelegate!
+    private var tpStreamsDownloadDelegate: TPStreamsDownloadDelegate? = nil
 
     private init() {
         let backgroundConfiguration = URLSessionConfiguration.background(withIdentifier: "com.tpstreams.downloadSession")
@@ -23,6 +24,11 @@ public final class TPStreamsDownloadManager {
             assetDownloadDelegate: assetDownloadDelegate,
             delegateQueue: OperationQueue.main
         )
+    }
+    
+    public func setTPStreamsDownloadDelegate(tpStreamsDownloadDelegate: TPStreamsDownloadDelegate) {
+        self.tpStreamsDownloadDelegate = tpStreamsDownloadDelegate
+        assetDownloadDelegate.tpStreamsDownloadDelegate = tpStreamsDownloadDelegate
     }
 
     internal func startDownload(asset: Asset, videoQuality: VideoQuality) {
@@ -50,12 +56,14 @@ public final class TPStreamsDownloadManager {
         OfflineAsset.manager.add(object: offlineAsset)
         assetDownloadDelegate.activeDownloadsMap[task] = offlineAsset
         task.resume()
+        tpStreamsDownloadDelegate?.onStart(offlineAsset: offlineAsset)
     }
     
     public func pauseDownload(_ offlineAsset: OfflineAsset) {
         if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == offlineAsset })?.key {
             task.suspend()
             OfflineAsset.manager.update(object: offlineAsset, with: ["status": Status.paused.rawValue])
+            tpStreamsDownloadDelegate?.onPause(offlineAsset: offlineAsset)
         }
     }
     
@@ -64,6 +72,7 @@ public final class TPStreamsDownloadManager {
             if task.state != .running {
                 task.resume()
                 OfflineAsset.manager.update(object: offlineAsset, with: ["status": Status.inProgress.rawValue])
+                tpStreamsDownloadDelegate?.onResume(offlineAsset: offlineAsset)
             }
         }
     }
@@ -77,17 +86,20 @@ public final class TPStreamsDownloadManager {
 internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
 
     var activeDownloadsMap = [AVAggregateAssetDownloadTask: OfflineAsset]()
+    var tpStreamsDownloadDelegate: TPStreamsDownloadDelegate? = nil
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         guard let assetDownloadTask = task as? AVAggregateAssetDownloadTask else { return }
         guard let offlineAsset = activeDownloadsMap[assetDownloadTask] else { return }
         updateDownloadCompleteStatus(error, offlineAsset)
         activeDownloadsMap.removeValue(forKey: assetDownloadTask)
+        tpStreamsDownloadDelegate?.onComplete(offlineAsset: offlineAsset)
     }
     
     func urlSession(_ session: URLSession, aggregateAssetDownloadTask: AVAggregateAssetDownloadTask, willDownloadTo location: URL) {
         guard let offlineAsset = activeDownloadsMap[aggregateAssetDownloadTask] else { return }
         OfflineAsset.manager.update(object: offlineAsset, with: ["downloadedPath": String(location.relativePath)])
+        tpStreamsDownloadDelegate?.onStateChange(offlineAsset: offlineAsset)
     }
 
     func urlSession(_ session: URLSession,
@@ -101,6 +113,7 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
 
         let percentageComplete = calculateDownloadPercentage(loadedTimeRanges, timeRangeExpectedToLoad)
         OfflineAsset.manager.update(object: offlineAsset, with: ["status": Status.inProgress.rawValue, "percentageCompleted": percentageComplete])
+        tpStreamsDownloadDelegate?.onStateChange(offlineAsset: offlineAsset)
     }
 
     private func updateDownloadCompleteStatus(_ error: Error?,_ offlineAsset: OfflineAsset) {
@@ -117,4 +130,12 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
                 }
         return percentageComplete * 100
     }
+}
+
+public protocol TPStreamsDownloadDelegate {
+    func onComplete(offlineAsset: OfflineAsset)
+    func onStart(offlineAsset: OfflineAsset)
+    func onPause(offlineAsset: OfflineAsset)
+    func onResume(offlineAsset: OfflineAsset)
+    func onStateChange(offlineAsset: OfflineAsset)
 }

@@ -68,6 +68,7 @@
 		D9D6A3B12B62717B005390D7 /* OfflineAssetRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D6A3B02B62717B005390D7 /* OfflineAssetRow.swift */; };
 		D9D6A3B32B6271BB005390D7 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D6A3B22B6271BB005390D7 /* PlayerView.swift */; };
 		D9D6A3B82B628B0F005390D7 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D6A3B72B628B0F005390D7 /* Time.swift */; };
+		D9D6A3B52B6274E4005390D7 /* AppDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D6A3B42B6274E4005390D7 /* AppDownloadManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -185,6 +186,7 @@
 		D9D6A3B02B62717B005390D7 /* OfflineAssetRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAssetRow.swift; sourceTree = "<group>"; };
 		D9D6A3B22B6271BB005390D7 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		D9D6A3B72B628B0F005390D7 /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
+		D9D6A3B42B6274E4005390D7 /* AppDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDownloadManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -317,6 +319,7 @@
 				8E6389C32A27277D00306FA4 /* ExampleApp.swift */,
 				8E6389C72A27278000306FA4 /* Assets.xcassets */,
 				8E6389C92A27278000306FA4 /* Preview Content */,
+				D9D6A3B42B6274E4005390D7 /* AppDownloadManager.swift */,
 			);
 			path = Example;
 			sourceTree = "<group>";
@@ -657,6 +660,7 @@
 				8E6389C62A27277D00306FA4 /* ContentView.swift in Sources */,
 				8E6389C42A27277D00306FA4 /* ExampleApp.swift in Sources */,
 				D9D6A3AF2B627144005390D7 /* DownloadListView.swift in Sources */,
+				D9D6A3B52B6274E4005390D7 /* AppDownloadManager.swift in Sources */,
 				D9D6A3B32B6271BB005390D7 /* PlayerView.swift in Sources */,
 				D9D6A3B12B62717B005390D7 /* OfflineAssetRow.swift in Sources */,
 			);
