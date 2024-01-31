@@ -26,7 +26,7 @@ struct ContentView: View {
             .navigationBarTitle("Sample App")
         }
     }
-
+    
     private func nonDRMNavigationLink(title: String, assetId: String, accessToken: String) -> some View {
         NavigationLink(destination: PlayerView(title: title, assetId: assetId, accessToken: accessToken)) {
             Text(title)
@@ -37,7 +37,7 @@ struct ContentView: View {
                 .cornerRadius(10)
         }
     }
-
+    
     private func downloadListNavigationLink() -> some View {
         NavigationLink(destination: DownloadListView()) {
             Text("Download List")

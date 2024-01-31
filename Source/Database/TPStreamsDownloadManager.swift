@@ -58,7 +58,7 @@ public final class TPStreamsDownloadManager {
         task.resume()
         tpStreamsDownloadDelegate?.onStart(offlineAsset: offlineAsset)
     }
-
+    
     public func pauseDownload(_ offlineAsset: OfflineAsset) {
         if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == offlineAsset })?.key {
             task.suspend()
@@ -66,7 +66,7 @@ public final class TPStreamsDownloadManager {
             tpStreamsDownloadDelegate?.onPause(offlineAsset: offlineAsset)
         }
     }
-
+    
     public func resumeDownload(_ offlineAsset: OfflineAsset) {
         if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == offlineAsset })?.key {
             if task.state != .running {
