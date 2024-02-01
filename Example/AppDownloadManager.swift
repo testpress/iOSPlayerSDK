@@ -20,7 +20,7 @@ class AppDownloadManager: TPStreamsDownloadDelegate, ObservableObject {
     }
 
     func getOfflineAssets() {
-        offlineAssets = TPStreamsDownloadManager.shared.getOfflineAssets()
+        offlineAssets = TPStreamsDownloadManager.shared.getAllOfflineAssets()
     }
 
     func onComplete(offlineAsset: OfflineAsset) {

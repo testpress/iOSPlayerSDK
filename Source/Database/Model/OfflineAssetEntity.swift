@@ -8,7 +8,7 @@
 import Foundation
 import RealmSwift
 
-class DomainOfflineAsset: Object {
+class OfflineAssetEntity: Object {
     @Persisted(primaryKey: true) var assetId: String = ""
     @Persisted var createdAt = Date()
     @Persisted var srcURL: String = ""
@@ -22,10 +22,10 @@ class DomainOfflineAsset: Object {
     @Persisted var bitRate: Double = 0.0
     @Persisted var size: Double = 0.0
     
-    static var manager = ObjectManager<DomainOfflineAsset>()
+    static var manager = ObjectManager<OfflineAssetEntity>()
 }
 
-extension DomainOfflineAsset {
+extension OfflineAssetEntity {
     static func create(
         assetId: String,
         srcURL: String,
@@ -33,16 +33,16 @@ extension DomainOfflineAsset {
         resolution: String,
         duration:Double,
         bitRate: Double
-    ) -> DomainOfflineAsset {
-        let domainOfflineAsset = DomainOfflineAsset()
-        domainOfflineAsset.assetId = assetId
-        domainOfflineAsset.srcURL = srcURL
-        domainOfflineAsset.title = title
-        domainOfflineAsset.resolution = resolution
-        domainOfflineAsset.duration = duration
-        domainOfflineAsset.bitRate = bitRate
-        domainOfflineAsset.size = (bitRate * duration)
-        return domainOfflineAsset
+    ) -> OfflineAssetEntity {
+        let offlineAssetEntity = OfflineAssetEntity()
+        offlineAssetEntity.assetId = assetId
+        offlineAssetEntity.srcURL = srcURL
+        offlineAssetEntity.title = title
+        offlineAssetEntity.resolution = resolution
+        offlineAssetEntity.duration = duration
+        offlineAssetEntity.bitRate = bitRate
+        offlineAssetEntity.size = (bitRate * duration)
+        return offlineAssetEntity
     }
     
     var downloadedFileURL: URL? {

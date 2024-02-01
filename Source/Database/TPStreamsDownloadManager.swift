@@ -33,7 +33,7 @@ public final class TPStreamsDownloadManager {
 
     internal func startDownload(asset: Asset, videoQuality: VideoQuality) {
 
-        if DomainOfflineAsset.manager.exists(id: asset.id) { return }
+        if OfflineAssetEntity.manager.exists(id: asset.id) { return }
 
         let avUrlAsset = AVURLAsset(url: URL(string: asset.video.playbackURL)!)
 
@@ -45,7 +45,7 @@ public final class TPStreamsDownloadManager {
             options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: videoQuality.bitrate]
         ) else { return }
 
-        let domainOfflineAsset = DomainOfflineAsset.create(
+        let offlineAssetEntity = OfflineAssetEntity.create(
             assetId: asset.id,
             srcURL: asset.video.playbackURL,
             title: asset.title,
@@ -53,55 +53,55 @@ public final class TPStreamsDownloadManager {
             duration: asset.video.duration,
             bitRate: videoQuality.bitrate
         )
-        DomainOfflineAsset.manager.add(object: domainOfflineAsset)
-        assetDownloadDelegate.activeDownloadsMap[task] = domainOfflineAsset
+        OfflineAssetEntity.manager.add(object: offlineAssetEntity)
+        assetDownloadDelegate.activeDownloadsMap[task] = offlineAssetEntity
         task.resume()
-        tpStreamsDownloadDelegate?.onStart(offlineAsset: domainOfflineAsset.asOfflineAsset())
+        tpStreamsDownloadDelegate?.onStart(offlineAsset: offlineAssetEntity.asOfflineAsset())
     }
     
     public func pauseDownload(_ offlineAsset: OfflineAsset) {
-        guard let domainOfflineAsset = DomainOfflineAsset.manager.get(id: offlineAsset.assetId) else { return }
-        if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == domainOfflineAsset })?.key {
+        guard let offlineAssetEntity = OfflineAssetEntity.manager.get(id: offlineAsset.assetId) else { return }
+        if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == offlineAssetEntity })?.key {
             task.suspend()
-            DomainOfflineAsset.manager.update(object: domainOfflineAsset, with: ["status": Status.paused.rawValue])
-            tpStreamsDownloadDelegate?.onPause(offlineAsset: domainOfflineAsset.asOfflineAsset())
+            OfflineAssetEntity.manager.update(object: offlineAssetEntity, with: ["status": Status.paused.rawValue])
+            tpStreamsDownloadDelegate?.onPause(offlineAsset: offlineAssetEntity.asOfflineAsset())
         }
     }
     
     public func resumeDownload(_ offlineAsset: OfflineAsset) {
-        guard let domainOfflineAsset = DomainOfflineAsset.manager.get(id: offlineAsset.assetId) else { return }
-        if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == domainOfflineAsset })?.key {
+        guard let offlineAssetEntity = OfflineAssetEntity.manager.get(id: offlineAsset.assetId) else { return }
+        if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == offlineAssetEntity })?.key {
             if task.state != .running {
                 task.resume()
-                DomainOfflineAsset.manager.update(object: domainOfflineAsset, with: ["status": Status.inProgress.rawValue])
-                tpStreamsDownloadDelegate?.onResume(offlineAsset: domainOfflineAsset.asOfflineAsset())
+                OfflineAssetEntity.manager.update(object: offlineAssetEntity, with: ["status": Status.inProgress.rawValue])
+                tpStreamsDownloadDelegate?.onResume(offlineAsset: offlineAssetEntity.asOfflineAsset())
             }
         }
     }
     
-    public func getOfflineAssets() -> [OfflineAsset]{
-        return DomainOfflineAsset.manager.getAll().map { $0.asOfflineAsset() }
+    public func getAllOfflineAssets() -> [OfflineAsset]{
+        return OfflineAssetEntity.manager.getAll().map { $0.asOfflineAsset() }
     }
 
 }
 
 internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
 
-    var activeDownloadsMap = [AVAggregateAssetDownloadTask: DomainOfflineAsset]()
+    var activeDownloadsMap = [AVAggregateAssetDownloadTask: OfflineAssetEntity]()
     var tpStreamsDownloadDelegate: TPStreamsDownloadDelegate? = nil
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         guard let assetDownloadTask = task as? AVAggregateAssetDownloadTask else { return }
-        guard let domainOfflineAsset = activeDownloadsMap[assetDownloadTask] else { return }
-        updateDownloadCompleteStatus(error, domainOfflineAsset)
+        guard let offlineAssetEntity = activeDownloadsMap[assetDownloadTask] else { return }
+        updateDownloadCompleteStatus(error, offlineAssetEntity)
         activeDownloadsMap.removeValue(forKey: assetDownloadTask)
-        tpStreamsDownloadDelegate?.onComplete(offlineAsset: domainOfflineAsset.asOfflineAsset())
+        tpStreamsDownloadDelegate?.onComplete(offlineAsset: offlineAssetEntity.asOfflineAsset())
     }
     
     func urlSession(_ session: URLSession, aggregateAssetDownloadTask: AVAggregateAssetDownloadTask, willDownloadTo location: URL) {
-        guard let domainOfflineAsset = activeDownloadsMap[aggregateAssetDownloadTask] else { return }
-        DomainOfflineAsset.manager.update(object: domainOfflineAsset, with: ["downloadedPath": String(location.relativePath)])
-        tpStreamsDownloadDelegate?.onStateChange(offlineAsset: domainOfflineAsset.asOfflineAsset())
+        guard let offlineAssetEntity = activeDownloadsMap[aggregateAssetDownloadTask] else { return }
+        OfflineAssetEntity.manager.update(object: offlineAssetEntity, with: ["downloadedPath": String(location.relativePath)])
+        tpStreamsDownloadDelegate?.onStateChange(offlineAsset: offlineAssetEntity.asOfflineAsset())
     }
 
     func urlSession(_ session: URLSession,
@@ -111,17 +111,17 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
                     timeRangeExpectedToLoad: CMTimeRange,
                     for mediaSelection: AVMediaSelection
     ) {
-        guard let domainOfflineAsset = activeDownloadsMap[aggregateAssetDownloadTask] else { return }
+        guard let offlineAssetEntity = activeDownloadsMap[aggregateAssetDownloadTask] else { return }
 
         let percentageComplete = calculateDownloadPercentage(loadedTimeRanges, timeRangeExpectedToLoad)
-        DomainOfflineAsset.manager.update(object: domainOfflineAsset, with: ["status": Status.inProgress.rawValue, "percentageCompleted": percentageComplete])
-        tpStreamsDownloadDelegate?.onStateChange(offlineAsset: domainOfflineAsset.asOfflineAsset())
+        OfflineAssetEntity.manager.update(object: offlineAssetEntity, with: ["status": Status.inProgress.rawValue, "percentageCompleted": percentageComplete])
+        tpStreamsDownloadDelegate?.onStateChange(offlineAsset: offlineAssetEntity.asOfflineAsset())
     }
 
-    private func updateDownloadCompleteStatus(_ error: Error?,_ domainOfflineAsset: DomainOfflineAsset) {
+    private func updateDownloadCompleteStatus(_ error: Error?,_ offlineAssetEntity: OfflineAssetEntity) {
         let status: Status = (error == nil) ? .finished : .failed
         let updateValues: [String: Any] = ["status": status.rawValue, "downloadedAt": Date()]
-        DomainOfflineAsset.manager.update(object: domainOfflineAsset, with: updateValues)
+        OfflineAssetEntity.manager.update(object: offlineAssetEntity, with: updateValues)
     }
 
     private func calculateDownloadPercentage(_ loadedTimeRanges: [NSValue], _ timeRangeExpectedToLoad: CMTimeRange) -> Double {
