@@ -5,8 +5,8 @@ public enum TPStreamPlayerError: Error {
     case noInternetConnection
     case serverError
     case networkTimeout
-    case unknownError
     case incompleteOfflineVideo
+    case unknownError
     
     public var code: Int {
         switch self {
@@ -16,8 +16,8 @@ public enum TPStreamPlayerError: Error {
         case .noInternetConnection: return 5004
         case .serverError: return 5005
         case .networkTimeout: return 5006
+        case .incompleteOfflineVideo: return 5007
         case .unknownError: return 5100
-        case .incompleteOfflineVideo: return 5010
         }
     }
     
@@ -35,10 +35,10 @@ public enum TPStreamPlayerError: Error {
             return "We're sorry, but there's an issue on our server. Please try again later."
         case .networkTimeout:
             return "The request took too long to process due to a slow or unstable network connection. Please try again."
-        case .unknownError:
-            return "Oops! Something went wrong. Please contact support for assistance and provide details about the issue."
         case .incompleteOfflineVideo:
             return "This video hasn't been downloaded completely. Please try downloading it again."
+        case .unknownError:
+            return "Oops! Something went wrong. Please contact support for assistance and provide details about the issue."
         }
     }
 }
