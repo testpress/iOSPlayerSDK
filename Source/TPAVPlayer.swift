@@ -60,7 +60,7 @@ public class TPAVPlayer: AVPlayer {
         let avURLAsset = AVURLAsset(url: offlineAssetEntity.downloadedFileURL!)
         self.setPlayerItem(avURLAsset)
     }
-
+    
     private func fetchAsset() {
         TPStreamsSDK.provider.API.getAsset(assetID!, accessToken!) { [weak self] asset, error in
             guard let self = self else { return }
@@ -81,7 +81,7 @@ public class TPAVPlayer: AVPlayer {
             }
         }
     }
-
+    
     private func setup() {
         guard let url = URL(string: asset!.video.playbackURL) else {
             debugPrint("Invalid playback URL received from API: \(asset!.video.playbackURL)")

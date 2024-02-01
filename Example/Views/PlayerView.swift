@@ -13,7 +13,7 @@ struct PlayerView: View {
     var assetId: String?  = nil
     var accessToken: String?  = nil
     var offlineAsset: OfflineAsset? = nil
-
+    
     var body: some View {
         VStack {
             if let offlineAsset = offlineAsset {
