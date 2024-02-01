@@ -404,7 +404,6 @@
 				03B8FDA82A695FED00DAB7AE /* TPStreamPlayerViewController.swift */,
 				03BF8C512B173ED10006CBC1 /* TPStreamPlayerConfiguration.swift */,
 				031099F52B28B22C0034D370 /* TPStreamPlayerError.swift */,
-				D9CBEBA42B6B996300FCC8B9 /* OfflineAsset.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -422,6 +421,7 @@
 		D9C1FAAF2B4E90FC00B27A3B /* Database */ = {
 			isa = PBXGroup;
 			children = (
+				D9CBEBA62B6BB1F500FCC8B9 /* DataClass */,
 				D9C1FAB02B4E910800B27A3B /* Model */,
 				D9C1FAB12B4E915C00B27A3B /* ObjectManager.swift */,
 				D9C1FAB52B4EA4CF00B27A3B /* TPStreamsDownloadManager.swift */,
@@ -435,6 +435,14 @@
 				D9C1FAA72B4E7EE700B27A3B /* OfflineAssetEntity.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		D9CBEBA62B6BB1F500FCC8B9 /* DataClass */ = {
+			isa = PBXGroup;
+			children = (
+				D9CBEBA42B6B996300FCC8B9 /* OfflineAsset.swift */,
+			);
+			path = DataClass;
 			sourceTree = "<group>";
 		};
 		D9D6A3AD2B6270DE005390D7 /* Views */ = {
