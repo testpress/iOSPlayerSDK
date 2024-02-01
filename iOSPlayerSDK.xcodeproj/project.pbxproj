@@ -60,15 +60,16 @@
 		D9820D6D2B68D9B600BB879F /* TPStreamsDownloadManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9820D6C2B68D9B600BB879F /* TPStreamsDownloadManagerTests.swift */; };
 		D9C1FAA02B4E7E2600B27A3B /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = D9C1FA9F2B4E7E2600B27A3B /* Realm */; };
 		D9C1FAA22B4E7E2600B27A3B /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D9C1FAA12B4E7E2600B27A3B /* RealmSwift */; };
-		D9C1FAA82B4E7EE700B27A3B /* OfflineAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C1FAA72B4E7EE700B27A3B /* OfflineAsset.swift */; };
+		D9C1FAA82B4E7EE700B27A3B /* DomainOfflineAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C1FAA72B4E7EE700B27A3B /* DomainOfflineAsset.swift */; };
 		D9C1FAB22B4E915C00B27A3B /* ObjectManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C1FAB12B4E915C00B27A3B /* ObjectManager.swift */; };
 		D9C1FAB62B4EA4CF00B27A3B /* TPStreamsDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C1FAB52B4EA4CF00B27A3B /* TPStreamsDownloadManager.swift */; };
 		D9C1FAB82B4EA53200B27A3B /* ObjectManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C1FAB72B4EA53200B27A3B /* ObjectManagerTest.swift */; };
+		D9CBEBA52B6B996300FCC8B9 /* OfflineAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9CBEBA42B6B996300FCC8B9 /* OfflineAsset.swift */; };
 		D9D6A3AF2B627144005390D7 /* DownloadListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D6A3AE2B627144005390D7 /* DownloadListView.swift */; };
 		D9D6A3B12B62717B005390D7 /* OfflineAssetRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D6A3B02B62717B005390D7 /* OfflineAssetRow.swift */; };
 		D9D6A3B32B6271BB005390D7 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D6A3B22B6271BB005390D7 /* PlayerView.swift */; };
-		D9D6A3B82B628B0F005390D7 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D6A3B72B628B0F005390D7 /* Time.swift */; };
 		D9D6A3B52B6274E4005390D7 /* AppDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D6A3B42B6274E4005390D7 /* AppDownloadManager.swift */; };
+		D9D6A3B82B628B0F005390D7 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D6A3B72B628B0F005390D7 /* Time.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -178,15 +179,16 @@
 		8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSPlayerSDKTests.swift; sourceTree = "<group>"; };
 		D904B1DD2B3C5BAC00A7E26C /* TPStreamsSDK.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TPStreamsSDK.xctestplan; sourceTree = "<group>"; };
 		D9820D6C2B68D9B600BB879F /* TPStreamsDownloadManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsDownloadManagerTests.swift; sourceTree = "<group>"; };
-		D9C1FAA72B4E7EE700B27A3B /* OfflineAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAsset.swift; sourceTree = "<group>"; };
+		D9C1FAA72B4E7EE700B27A3B /* DomainOfflineAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainOfflineAsset.swift; sourceTree = "<group>"; };
 		D9C1FAB12B4E915C00B27A3B /* ObjectManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectManager.swift; sourceTree = "<group>"; };
 		D9C1FAB52B4EA4CF00B27A3B /* TPStreamsDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsDownloadManager.swift; sourceTree = "<group>"; };
 		D9C1FAB72B4EA53200B27A3B /* ObjectManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectManagerTest.swift; sourceTree = "<group>"; };
+		D9CBEBA42B6B996300FCC8B9 /* OfflineAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAsset.swift; sourceTree = "<group>"; };
 		D9D6A3AE2B627144005390D7 /* DownloadListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadListView.swift; sourceTree = "<group>"; };
 		D9D6A3B02B62717B005390D7 /* OfflineAssetRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAssetRow.swift; sourceTree = "<group>"; };
 		D9D6A3B22B6271BB005390D7 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
-		D9D6A3B72B628B0F005390D7 /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		D9D6A3B42B6274E4005390D7 /* AppDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDownloadManager.swift; sourceTree = "<group>"; };
+		D9D6A3B72B628B0F005390D7 /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -402,6 +404,7 @@
 				03B8FDA82A695FED00DAB7AE /* TPStreamPlayerViewController.swift */,
 				03BF8C512B173ED10006CBC1 /* TPStreamPlayerConfiguration.swift */,
 				031099F52B28B22C0034D370 /* TPStreamPlayerError.swift */,
+				D9CBEBA42B6B996300FCC8B9 /* OfflineAsset.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -429,7 +432,7 @@
 		D9C1FAB02B4E910800B27A3B /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				D9C1FAA72B4E7EE700B27A3B /* OfflineAsset.swift */,
+				D9C1FAA72B4E7EE700B27A3B /* DomainOfflineAsset.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -686,10 +689,11 @@
 				03BF8C522B173ED10006CBC1 /* TPStreamPlayerConfiguration.swift in Sources */,
 				03CE75002A7946A800B84304 /* Time.swift in Sources */,
 				03B8FDA92A695FED00DAB7AE /* TPStreamPlayerViewController.swift in Sources */,
+				D9CBEBA52B6B996300FCC8B9 /* OfflineAsset.swift in Sources */,
 				03CE75022A7A337B00B84304 /* UIView.swift in Sources */,
 				03CA2D372A30A8E500532549 /* PlayerProgressBar.swift in Sources */,
 				0377C40E2A2B1C7300F7E58F /* BaseAPI.swift in Sources */,
-				D9C1FAA82B4E7EE700B27A3B /* OfflineAsset.swift in Sources */,
+				D9C1FAA82B4E7EE700B27A3B /* DomainOfflineAsset.swift in Sources */,
 				03CA2D312A2F757D00532549 /* TimeIndicatorView.swift in Sources */,
 				035351A22A2F49E3001E38F3 /* MediaControlsView.swift in Sources */,
 				03CC86682AE142FF002F5D28 /* ResourceLoaderDelegate.swift in Sources */,
