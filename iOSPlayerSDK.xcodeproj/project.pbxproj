@@ -431,18 +431,10 @@
 		D9C1FAB02B4E910800B27A3B /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				D9C1FAA72B4E7EE700B27A3B /* OfflineAssetEntity.swift */,
 				D9CBEBA82B6CB28300FCC8B9 /* Domain */,
-				D9CBEBA72B6CB26800FCC8B9 /* Database */,
 			);
 			path = Model;
-			sourceTree = "<group>";
-		};
-		D9CBEBA72B6CB26800FCC8B9 /* Database */ = {
-			isa = PBXGroup;
-			children = (
-				D9C1FAA72B4E7EE700B27A3B /* OfflineAssetEntity.swift */,
-			);
-			path = Database;
 			sourceTree = "<group>";
 		};
 		D9CBEBA82B6CB28300FCC8B9 /* Domain */ = {
