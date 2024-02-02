@@ -81,7 +81,20 @@ public final class TPStreamsDownloadManager {
             }
         }
     }
-    
+
+    public func deleteDownload(_ offlineAsset: OfflineAsset) {
+        guard let offlineAssetEntity = OfflineAssetEntity.manager.get(id: offlineAsset.assetId),
+              offlineAssetEntity.status == Status.finished.rawValue,
+              offlineAssetEntity.downloadedFileURL != nil else { return }
+        do {
+            try FileManager.default.removeItem(at: offlineAssetEntity.downloadedFileURL!)
+            OfflineAssetEntity.manager.delete(id: offlineAssetEntity.assetId)
+            tpStreamsDownloadDelegate?.onDelete(assetId: offlineAsset.assetId)
+        } catch {
+            print("An error occured trying to delete the contents on disk for \(offlineAssetEntity.assetId): \(error)")
+        }
+    }
+
     public func getAllOfflineAssets() -> [OfflineAsset]{
         return OfflineAssetEntity.manager.getAll().map { $0.asOfflineAsset() }
     }
@@ -143,6 +156,7 @@ public protocol TPStreamsDownloadDelegate {
     func onStart(offlineAsset: OfflineAsset)
     func onPause(offlineAsset: OfflineAsset)
     func onResume(offlineAsset: OfflineAsset)
+    func onDelete(assetId: String)
     func onStateChange(status: Status, offlineAsset: OfflineAsset)
     func onProgressChange(assetId: String, percentage: Double)
 }

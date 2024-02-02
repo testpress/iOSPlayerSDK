@@ -52,7 +52,7 @@ struct OfflineAssetRow: View {
         case Status.paused.rawValue:
             return [resumeButton(offlineAsset), .cancel()]
         case Status.finished.rawValue:
-            return [playButton(offlineAsset), .cancel()]
+            return [playButton(offlineAsset), deleteButton(offlineAsset), .cancel()]
         default:
             return [.cancel()]
         }
@@ -73,6 +73,12 @@ struct OfflineAssetRow: View {
     private func playButton(_ offlineAsset: OfflineAsset) -> ActionSheet.Button {
         return .default(Text("Play")) {
             showPlayerView = true
+        }
+    }
+    
+    private func deleteButton(_ offlineAsset: OfflineAsset) -> ActionSheet.Button {
+        return .default(Text("Delete")) {
+            TPStreamsDownloadManager.shared.deleteDownload(offlineAsset)
         }
     }
 }
