@@ -57,6 +57,7 @@ public final class TPStreamsDownloadManager {
         assetDownloadDelegate.activeDownloadsMap[task] = offlineAssetEntity
         task.resume()
         tpStreamsDownloadDelegate?.onStart(offlineAsset: offlineAssetEntity.asOfflineAsset())
+        tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: offlineAssetEntity.asOfflineAsset())
     }
     
     public func pauseDownload(_ offlineAsset: OfflineAsset) {
