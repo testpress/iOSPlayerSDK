@@ -1,3 +1,5 @@
+import Sentry
+
 public enum TPStreamPlayerError: Error {
     case resourceNotFound
     case unauthorizedAccess
@@ -39,3 +41,12 @@ public enum TPStreamPlayerError: Error {
     }
 }
 
+extension TPStreamPlayerError: CustomNSError {    
+    public var errorCode: Int {
+        return self.code
+    }
+    
+    public var errorUserInfo: [String : Any] {
+        return [NSDebugDescriptionErrorKey: self.message]
+    }
+}

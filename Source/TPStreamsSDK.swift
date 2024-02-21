@@ -46,8 +46,11 @@ public class TPStreamsSDK {
             options.debug = false
             options.tracesSampleRate = 1.0
             options.enablePreWarmedAppStartTracing = true
-            options.attachScreenshot = true
-            options.attachViewHierarchy = true
+            options.attachScreenshot = false
+            options.attachViewHierarchy = false
+        }
+        SentrySDK.configureScope { scope in
+            scope.setTag(value: "orgCode", key: orgCode!)
         }
     }
 }

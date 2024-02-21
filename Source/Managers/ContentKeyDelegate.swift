@@ -64,7 +64,7 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
                                                           completionHandler:encryptedSPCMessageCallback)
             
         } catch {
-            SentrySDK.capture(error: error)
+            captureErrorInSentry(error, assetID, accessToken)
             keyRequest.processContentKeyResponseError(error)
         }
     }
