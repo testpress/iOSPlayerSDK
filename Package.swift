@@ -29,6 +29,7 @@ let package = Package(
         "Alamofire",
         "M3U8Parser",
         .product(name: "Sentry", package: "sentry-cocoa"),
+        "Reachability",
       ],
       path: "Source",
       swiftSettings: [
