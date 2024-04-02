@@ -16,7 +16,8 @@ let package = Package(
   dependencies: [
     .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.0.0")),
     .package(url: "https://github.com/getsentry/sentry-cocoa.git", .upToNextMajor(from: "8.0.0")),
-    .package(url: "https://github.com/M3U8Kit/M3U8Parser", .upToNextMajor(from: "1.0.0"))
+    .package(url: "https://github.com/M3U8Kit/M3U8Parser", .upToNextMajor(from: "1.0.0")),
+    .package(url: "https://github.com/ashleymills/Reachability.swift", .upToNextMajor(from: "5.1.0"))
   ],
 
   targets: [
@@ -28,6 +29,7 @@ let package = Package(
         "Alamofire",
         "M3U8Parser",
         .product(name: "Sentry", package: "sentry-cocoa"),
+        .product(name: "Reachability", package: "Reachability.swift"),
       ],
       path: "Source",
       swiftSettings: [
