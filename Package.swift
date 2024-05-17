@@ -34,7 +34,9 @@ let package = Package(
       path: "Source",
       swiftSettings: [
         .define("SPM")
-      ]
+      ],
+      resources: [
+        .process("PrivacyInfo.xcprivacy")]
       ),
     .testTarget(
       name: "iOSPlayerSDKTests",

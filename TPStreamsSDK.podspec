@@ -22,6 +22,6 @@ Pod::Spec.new do |spec|
 }
   spec.resources = 'Source/**/*.{xib,storyboard,xcassets,json,png}'
   spec.resource_bundles = {
-    'TPStreamsSDK' => 'Source/**/*.{xib,storyboard,xcassets,json,png}',
+    'TPStreamsSDK' => ['Source/**/*.{xib,storyboard,xcassets,json,png}', 'PrivacyInfo.xcprivacy'],
  }
 end
