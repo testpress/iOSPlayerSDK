@@ -32,12 +32,12 @@ let package = Package(
         .product(name: "Reachability", package: "Reachability.swift"),
       ],
       path: "Source",
+      resources: [
+        .process("PrivacyInfo.xcprivacy")],
       swiftSettings: [
         .define("SPM")
-      ],
-      resources: [
-        .process("PrivacyInfo.xcprivacy")]
-      ),
+      ]
+    ),
     .testTarget(
       name: "iOSPlayerSDKTests",
       dependencies: ["TPStreamsSDK"],
