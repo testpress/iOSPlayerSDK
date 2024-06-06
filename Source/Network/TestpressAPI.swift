@@ -25,7 +25,7 @@ class TestpressAPI: BaseAPI {
               let drm_encrypted = responseDict["drm_enabled"] as? Bool else {
             throw NSError(domain: "InvalidResponseError", code: 0)
         }
-        let video = Asset.Video(playbackURL: playbackURL, status: status, drm_encrypted: drm_encrypted)
+        let video = Video(playbackURL: playbackURL, status: status, drm_encrypted: drm_encrypted)
         return Asset(id: id, title: title, video: video)
     }
 }

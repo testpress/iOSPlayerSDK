@@ -30,7 +30,7 @@ class StreamsAPI: BaseAPI {
         return Asset(
             id: id,
             title: title,
-            video: Asset.Video(
+            video: Video(
                 playbackURL: playbackURL,
                 status: status,
                 drm_encrypted: content_protection_type == "drm"

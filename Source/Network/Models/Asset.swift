@@ -11,10 +11,10 @@ struct Asset {
     let id: String
     let title: String
     let video: Video
-    
-    struct Video{
-        let playbackURL: String
-        let status: String
-        let drm_encrypted: Bool
-    }
+}
+
+struct Video{
+    let playbackURL: String
+    let status: String
+    let drm_encrypted: Bool
 }
