@@ -79,7 +79,7 @@ public class TPAVPlayer: AVPlayer {
         avURLAsset.resourceLoader.setDelegate(resourceLoaderDelegate, queue: DispatchQueue.main)
         self.setPlayerItem(avURLAsset)
         
-        if asset!.video.drm_encrypted{
+        if asset!.video.drmEncrypted{
             self.setupDRM(avURLAsset)
         }
         self.populateAvailableVideoQualities(url)

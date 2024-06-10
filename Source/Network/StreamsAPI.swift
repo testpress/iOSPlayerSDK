@@ -33,7 +33,7 @@ class StreamsAPI: BaseAPI {
             video: Video(
                 playbackURL: playbackURL,
                 status: status,
-                drm_encrypted: content_protection_type == "drm"
+                drmEncrypted: content_protection_type == "drm"
             )
         )
     }

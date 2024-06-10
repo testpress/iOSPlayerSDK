@@ -22,10 +22,10 @@ class TestpressAPI: BaseAPI {
               let title = responseDict["title"] as? String,
               let playbackURL = responseDict["hls_url"] as? String ?? responseDict["url"] as? String,
               let status = responseDict["transcoding_status"] as? String,
-              let drm_encrypted = responseDict["drm_enabled"] as? Bool else {
+              let drmEncrypted = responseDict["drm_enabled"] as? Bool else {
             throw NSError(domain: "InvalidResponseError", code: 0)
         }
-        let video = Video(playbackURL: playbackURL, status: status, drm_encrypted: drm_encrypted)
+        let video = Video(playbackURL: playbackURL, status: status, drmEncrypted: drmEncrypted)
         return Asset(id: id, title: title, video: video)
     }
 }
