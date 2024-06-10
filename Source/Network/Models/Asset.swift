@@ -10,11 +10,21 @@ import Foundation
 struct Asset {
     let id: String
     let title: String
-    let video: Video
+    let contentType: String
+    let video: Video?
+    let liveStream: LiveStream?
 }
 
 struct Video{
     let playbackURL: String
     let status: String
     let drmEncrypted: Bool
+}
+
+struct LiveStream{
+    let status: String
+    let hlsUrl: String
+    let transcodeRecordedVideo: Bool
+    let chatEmbedUrl: String
+    let noticeMessage: String?
 }
