@@ -343,7 +343,6 @@
 		8EDE999A2A2643B000E43EA9 = {
 			isa = PBXGroup;
 			children = (
-				03BE54172BF780D1004ED191 /* PrivacyInfo.xcprivacy */,
 				D904B1DD2B3C5BAC00A7E26C /* TPStreamsSDK.xctestplan */,
 				8EDE99A62A2643B000E43EA9 /* Source */,
 				8EDE99B22A2643B000E43EA9 /* Tests */,
@@ -368,6 +367,7 @@
 		8EDE99A62A2643B000E43EA9 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				03BE54172BF780D1004ED191 /* PrivacyInfo.xcprivacy */,
 				03CE74FE2A79469400B84304 /* Utils */,
 				0321F3252A2E0D0300E08AEE /* Extensions */,
 				8E6389E72A278D0400306FA4 /* Managers */,
