@@ -13,6 +13,16 @@ struct Asset {
     let contentType: String
     let video: Video?
     let liveStream: LiveStream?
+    
+    var playbackURL: String? {
+        if let video = video {
+            return video.playbackURL
+        } else if let liveStream = liveStream {
+            return liveStream.hlsUrl
+        } else {
+            return nil
+        }
+    }
 }
 
 struct Video{
@@ -27,4 +37,8 @@ struct LiveStream{
     let transcodeRecordedVideo: Bool
     let chatEmbedUrl: String
     let noticeMessage: String?
+    
+    var isStreaming: Bool {
+        return status == "Streaming"
+    }
 }

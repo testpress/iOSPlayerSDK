@@ -70,8 +70,8 @@ public class TPAVPlayer: AVPlayer {
     }
     
     private func setup() {
-        guard let asset = asset, let urlString = asset.video?.playbackURL, let url = URL(string: urlString) else {
-            debugPrint("Invalid playback URL received from API: \(asset?.video?.playbackURL ?? "nil")")
+        guard let asset = asset, let urlString = asset.playbackURL, let url = URL(string: urlString) else {
+            debugPrint("Invalid playback URL received from API: \(asset?.playbackURL ?? "nil")")
             return
         }
         
