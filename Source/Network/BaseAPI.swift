@@ -15,6 +15,9 @@ class BaseAPI {
     class var DRM_LICENSE_API: String {
         fatalError("DRM_LICENSE_API must be implemented by subclasses.")
     }
+    class var parser: APIParser {
+        fatalError("parser must be implemented by subclasses.")
+    }
     
     static func getAsset(_ assetID: String, _ accessToken: String, completion: @escaping (Asset?, Error?) -> Void) {
         let url = URL(string: String(format: VIDEO_DETAIL_API, TPStreamsSDK.orgCode!, assetID, accessToken))!
@@ -65,7 +68,7 @@ class BaseAPI {
         switch statusCode {
         case 200:
             do {
-                let videoDetails = try parseAsset(data: data)
+                let videoDetails = try parser.parseAsset(data: data)
                 completion(videoDetails, nil)
             } catch {
                 completion(nil, TPStreamPlayerError.unknownError)
@@ -94,9 +97,5 @@ class BaseAPI {
         } else {
             completion(nil, error)
         }
-    }
-    
-    class func parseAsset(data: Data) throws -> Asset {
-        fatalError("parseAsset(data:) must be overridden by subclasses.")
     }
 }

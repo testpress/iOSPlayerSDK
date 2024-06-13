@@ -14,6 +14,9 @@
 		035351A02A2EDAFA001E38F3 /* PlayerSettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0353519F2A2EDAFA001E38F3 /* PlayerSettingsButton.swift */; };
 		035351A22A2F49E3001E38F3 /* MediaControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035351A12A2F49E3001E38F3 /* MediaControlsView.swift */; };
 		0367F6F52B861CFC0000922D /* Sentry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0367F6F42B861CFC0000922D /* Sentry.swift */; };
+		0374E36E2C1AD18400CE9CF2 /* BaseAPIParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0374E36D2C1AD18300CE9CF2 /* BaseAPIParser.swift */; };
+		0374E3702C1AD23100CE9CF2 /* StreamsAPIParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0374E36F2C1AD23100CE9CF2 /* StreamsAPIParser.swift */; };
+		0374E3722C1AD2A200CE9CF2 /* TestpressAPIParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0374E3712C1AD2A200CE9CF2 /* TestpressAPIParser.swift */; };
 		0377C40E2A2B1C7300F7E58F /* BaseAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C40D2A2B1C7300F7E58F /* BaseAPI.swift */; };
 		0377C4112A2B1F0700F7E58F /* Asset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C4102A2B1F0700F7E58F /* Asset.swift */; };
 		0377C4132A2B272C00F7E58F /* TestpressAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C4122A2B272C00F7E58F /* TestpressAPI.swift */; };
@@ -125,6 +128,9 @@
 		0353519F2A2EDAFA001E38F3 /* PlayerSettingsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerSettingsButton.swift; sourceTree = "<group>"; };
 		035351A12A2F49E3001E38F3 /* MediaControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaControlsView.swift; sourceTree = "<group>"; };
 		0367F6F42B861CFC0000922D /* Sentry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sentry.swift; sourceTree = "<group>"; };
+		0374E36D2C1AD18300CE9CF2 /* BaseAPIParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAPIParser.swift; sourceTree = "<group>"; };
+		0374E36F2C1AD23100CE9CF2 /* StreamsAPIParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamsAPIParser.swift; sourceTree = "<group>"; };
+		0374E3712C1AD2A200CE9CF2 /* TestpressAPIParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestpressAPIParser.swift; sourceTree = "<group>"; };
 		0377C40D2A2B1C7300F7E58F /* BaseAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAPI.swift; sourceTree = "<group>"; };
 		0377C4102A2B1F0700F7E58F /* Asset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Asset.swift; sourceTree = "<group>"; };
 		0377C4122A2B272C00F7E58F /* TestpressAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestpressAPI.swift; sourceTree = "<group>"; };
@@ -218,6 +224,16 @@
 				037F3BBE2B05EDD900ECEF57 /* UIInterfaceOrientationMask.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		0374E36C2C1AD14600CE9CF2 /* Parsers */ = {
+			isa = PBXGroup;
+			children = (
+				0374E36D2C1AD18300CE9CF2 /* BaseAPIParser.swift */,
+				0374E36F2C1AD23100CE9CF2 /* StreamsAPIParser.swift */,
+				0374E3712C1AD2A200CE9CF2 /* TestpressAPIParser.swift */,
+			);
+			path = Parsers;
 			sourceTree = "<group>";
 		};
 		0377C40F2A2B1EEF00F7E58F /* Models */ = {
@@ -321,6 +337,7 @@
 		8E6389E02A275A2700306FA4 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				0374E36C2C1AD14600CE9CF2 /* Parsers */,
 				0377C40F2A2B1EEF00F7E58F /* Models */,
 				8E6389E12A275AA800306FA4 /* StreamsAPI.swift */,
 				0377C40D2A2B1C7300F7E58F /* BaseAPI.swift */,
@@ -606,6 +623,7 @@
 				037F3BBF2B05EDD900ECEF57 /* UIInterfaceOrientationMask.swift in Sources */,
 				03B8FDAE2A69752800DAB7AE /* PlayerControlsUIView.swift in Sources */,
 				8E6389E92A278D1D00306FA4 /* ContentKeyDelegate.swift in Sources */,
+				0374E3722C1AD2A200CE9CF2 /* TestpressAPIParser.swift in Sources */,
 				8E6389DD2A27338F00306FA4 /* AVPlayerBridge.swift in Sources */,
 				8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */,
 				035351A02A2EDAFA001E38F3 /* PlayerSettingsButton.swift in Sources */,
@@ -616,6 +634,7 @@
 				0377C4112A2B1F0700F7E58F /* Asset.swift in Sources */,
 				8E6389E22A275AA800306FA4 /* StreamsAPI.swift in Sources */,
 				03BF8C522B173ED10006CBC1 /* TPStreamPlayerConfiguration.swift in Sources */,
+				0374E3702C1AD23100CE9CF2 /* StreamsAPIParser.swift in Sources */,
 				03CE75002A7946A800B84304 /* Time.swift in Sources */,
 				03B8FDA92A695FED00DAB7AE /* TPStreamPlayerViewController.swift in Sources */,
 				03CE75022A7A337B00B84304 /* UIView.swift in Sources */,
@@ -629,6 +648,7 @@
 				8E6389DF2A2751C800306FA4 /* TPAVPlayer.swift in Sources */,
 				03B8090A2A2DF8A000AB3D03 /* TPStreamPlayer.swift in Sources */,
 				0321F3272A2E0D1800E08AEE /* AVPlayer.swift in Sources */,
+				0374E36E2C1AD18400CE9CF2 /* BaseAPIParser.swift in Sources */,
 				8E6C5CB22A28AB94003EC948 /* ContentKeyManager.swift in Sources */,
 				03CC784D2A6BB6E5005E8F7E /* VideoPlayerView.swift in Sources */,
 			);

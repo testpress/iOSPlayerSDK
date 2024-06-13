@@ -16,16 +16,7 @@ class TestpressAPI: BaseAPI {
         return "https://%@.testpress.in/api/v2.5/drm_license_key/%@/?access_token=%@&drm_type=fairplay" 
     }
     
-    override class func parseAsset(data: Data) throws -> Asset {
-        guard let responseDict = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let id = responseDict["id"] as? String,
-              let title = responseDict["title"] as? String,
-              let playbackURL = responseDict["hls_url"] as? String ?? responseDict["url"] as? String,
-              let status = responseDict["transcoding_status"] as? String,
-              let drmEncrypted = responseDict["drm_enabled"] as? Bool else {
-            throw NSError(domain: "InvalidResponseError", code: 0)
-        }
-        let video = Video(playbackURL: playbackURL, status: status, drmEncrypted: drmEncrypted)
-        return Asset(id: id, title: title, video: video)
+    override class var parser: APIParser {
+        return TestpressAPIParser()
     }
 }
