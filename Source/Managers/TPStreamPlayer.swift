@@ -9,7 +9,15 @@ class TPStreamPlayer: NSObject {
     
     var player: TPAVPlayer!
     var videoDuration: Float64 {
-        player.durationInSeconds
+        guard let currentItem = player?.currentItem else {
+            return CMTimeGetSeconds(CMTime.zero)
+        }
+        
+        if let liveStream = player.asset?.liveStream, liveStream.isStreaming {
+            return currentItem.seekableTimeRanges.last?.timeRangeValue.end.seconds ?? CMTimeGetSeconds(CMTime.zero)
+        } else {
+            return player.durationInSeconds
+        }
     }
     var bufferedDuration: Float64 {
         player.bufferedDuration()
