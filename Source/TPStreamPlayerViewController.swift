@@ -56,11 +56,11 @@ public class TPStreamPlayerViewController: UIViewController {
         return view
     }()
     
-    private lazy var errorView: UIView = {
+    private lazy var noticeView: UIView = {
         let view = UIView(frame: view.frame)
         view.isHidden = true
         view.backgroundColor = UIColor.black
-        view.addSubview(errorMessageLabel)
+        view.addSubview(noticeMessageLabel)
         return view
     }()
     
@@ -69,12 +69,12 @@ public class TPStreamPlayerViewController: UIViewController {
         view.backgroundColor = .black
         view.addSubview(videoView)
         view.addSubview(controlsView)
-        view.addSubview(errorView)
+        view.addSubview(noticeView)
         view.bringSubviewToFront(controlsView)
         return view
     }()
     
-    private lazy var errorMessageLabel: UILabel = {
+    private lazy var noticeMessageLabel: UILabel = {
         let messageLabel = UILabel(frame: view.frame)
         messageLabel.textAlignment = .center
         messageLabel.textColor = .white
@@ -93,8 +93,8 @@ public class TPStreamPlayerViewController: UIViewController {
         containerView.frame = containerView.superview!.bounds
         videoView.frame = containerView.bounds
         controlsView.frame = containerView.bounds
-        errorView.frame = containerView.bounds
-        errorMessageLabel.frame = errorView.bounds
+        noticeView.frame = containerView.bounds
+        noticeMessageLabel.frame = noticeView.bounds
     }
     
     public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -117,7 +117,7 @@ public class TPStreamPlayerViewController: UIViewController {
                 case "error":
                     self.showError(error: self.player!.initializationError!)
                 case "ready":
-                    self.errorView.isHidden = true
+                    self.noticeView.isHidden = true
                 default:
                     break
                 }
@@ -142,14 +142,20 @@ public class TPStreamPlayerViewController: UIViewController {
         }
     }
     
-    private func showError(error: Error){
-        errorView.isHidden = false
-        containerView.bringSubviewToFront(errorView)
+    private func showError(error: Error) {
+        var message: String
         if let tpStreamPlayerError = error as? TPStreamPlayerError {
-            errorMessageLabel.text = "\(tpStreamPlayerError.message)\nError code: \(tpStreamPlayerError.code)"
+            message = "\(tpStreamPlayerError.message)\nError code: \(tpStreamPlayerError.code)"
         } else {
-            errorMessageLabel.text = error.localizedDescription
+            message = error.localizedDescription
         }
+        showNotice(withMessage: message)
+    }
+    
+    private func showNotice(withMessage message: String){
+        noticeView.isHidden = false
+        containerView.bringSubviewToFront(noticeView)
+        noticeMessageLabel.text = message
     }
 }
 
