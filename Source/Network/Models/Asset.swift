@@ -24,21 +24,3 @@ struct Asset {
         }
     }
 }
-
-struct Video{
-    let playbackURL: String
-    let status: String
-    let drmEncrypted: Bool
-}
-
-struct LiveStream{
-    let status: String
-    let hlsUrl: String
-    let transcodeRecordedVideo: Bool
-    let chatEmbedUrl: String
-    let noticeMessage: String?
-    
-    var isStreaming: Bool {
-        return status == "Streaming" || status == "Running"
-    }
-}
