@@ -39,6 +39,6 @@ struct LiveStream{
     let noticeMessage: String?
     
     var isStreaming: Bool {
-        return status == "Streaming"
+        return status == "Streaming" || status == "Running"
     }
 }
