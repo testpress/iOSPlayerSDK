@@ -70,8 +70,8 @@ public class TPAVPlayer: AVPlayer {
     }
     
     private func setup() {
-        guard let url = URL(string: asset!.video.playbackURL) else {
-            debugPrint("Invalid playback URL received from API: \(asset!.video.playbackURL)")
+        guard let asset = asset, let urlString = asset.video?.playbackURL, let url = URL(string: urlString) else {
+            debugPrint("Invalid playback URL received from API: \(asset?.video?.playbackURL ?? "nil")")
             return
         }
         
@@ -79,7 +79,7 @@ public class TPAVPlayer: AVPlayer {
         avURLAsset.resourceLoader.setDelegate(resourceLoaderDelegate, queue: DispatchQueue.main)
         self.setPlayerItem(avURLAsset)
         
-        if asset!.video.drmEncrypted{
+        if asset.video?.drmEncrypted == true {
             self.setupDRM(avURLAsset)
         }
         self.populateAvailableVideoQualities(url)

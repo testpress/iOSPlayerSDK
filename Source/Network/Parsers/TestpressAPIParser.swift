@@ -12,12 +12,38 @@ class TestpressAPIParser: APIParser {
         guard let responseDict = try JSONSerialization.jsonObject(with: data) as? [String: Any],
               let id = responseDict["id"] as? String,
               let title = responseDict["title"] as? String,
-              let playbackURL = responseDict["hls_url"] as? String ?? responseDict["url"] as? String,
-              let status = responseDict["transcoding_status"] as? String,
-              let drmEncrypted = responseDict["drm_enabled"] as? Bool else {
-            throw NSError(domain: "InvalidResponseError", code: 0)
+              let contentType = responseDict["content_type"] as? String else {
+            throw NSError(domain: "InvalidResponseError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Missing required fields in response"])
         }
-        let video = Video(playbackURL: playbackURL, status: status, drmEncrypted: drmEncrypted)
-        return Asset(id: id, title: title, video: video)
+        
+        let video = parseVideo(from: responseDict["video"] as? [String: Any])
+        let liveStream = parseLiveStream(from: responseDict["live_stream"] as? [String: Any])
+        
+        return Asset(id: id, title: title, contentType: contentType, video: video, liveStream: liveStream)
+    }
+
+    func parseVideo(from dictionary: [String: Any]?) -> Video? {
+        guard let videoDict = dictionary,
+              let playbackURL = videoDict["hls_url"] as? String ?? videoDict["url"] as? String,
+              let status = videoDict["transcoding_status"] as? String,
+              let drmEncrypted = videoDict["drm_enabled"] as? Bool else {
+            return nil
+        }
+        
+        return Video(playbackURL: playbackURL, status: status, drmEncrypted: drmEncrypted)
+    }
+
+    func parseLiveStream(from dictionary: [String: Any]?) -> LiveStream? {
+        guard let liveStreamDict = dictionary,
+              let status = liveStreamDict["status"] as? String,
+              let hlsUrl = liveStreamDict["stream_url"] as? String,
+              let chatEmbedUrl = liveStreamDict["chat_embed_url"] as? String else {
+            return nil
+        }
+        
+        let noticeMessage = liveStreamDict["notice_message"] as? String
+        let transcodeRecordedVideo = liveStreamDict["show_recorded_video"] as? Bool ?? false
+        
+        return LiveStream(status: status, hlsUrl: hlsUrl, transcodeRecordedVideo: transcodeRecordedVideo, chatEmbedUrl: chatEmbedUrl, noticeMessage: noticeMessage)
     }
 }
