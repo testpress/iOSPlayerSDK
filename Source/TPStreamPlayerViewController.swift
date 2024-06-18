@@ -14,6 +14,7 @@ public class TPStreamPlayerViewController: UIViewController {
         didSet {
             guard let player = player else { return }
             setupPlayerStatusObserver(for: player)
+            showLiveStreamNotice()
             player.onError = showError
         }
     }
@@ -118,11 +119,22 @@ public class TPStreamPlayerViewController: UIViewController {
                     self.showError(error: self.player!.initializationError!)
                 case "ready":
                     self.noticeView.isHidden = true
+                    self.showLiveStreamNotice()
                 default:
                     break
                 }
             }
         }
+    }
+    
+    private func showLiveStreamNotice(){
+        guard let player = player,
+                  let liveStream = player.asset?.liveStream,
+                  let noticeMessage = liveStream.noticeMessage else {
+                return
+            }
+        
+        showNotice(withMessage: noticeMessage)
     }
     
     private func setupTapGesture() {
