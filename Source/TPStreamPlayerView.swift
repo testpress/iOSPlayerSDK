@@ -9,29 +9,31 @@ import SwiftUI
 
 @available(iOS 14.0, *)
 public struct TPStreamPlayerView: View {
-    @State private var isFullScreen = false
-    
-    var player: TPAVPlayer
+    @StateObject private var viewModel: TPStreamPlayerViewModel
     
     public init(player: TPAVPlayer) {
-        self.player = player
+        _viewModel = StateObject(wrappedValue: TPStreamPlayerViewModel(player: player))
     }
     
     public var body: some View {
         GeometryReader { geometry in
             ZStack {
-                AVPlayerBridge(player: player)
-                PlayerControlsView(player: player, isFullscreen: $isFullScreen)
+                if let message = viewModel.noticeMessage {
+                    NoticeView(message: message)
+                } else if viewModel.player.initializationStatus == "ready" {
+                    AVPlayerBridge(player: viewModel.player)
+                    PlayerControlsView(player: viewModel.player, isFullscreen: $viewModel.isFullScreen)
+                }
             }
-            .padding(.horizontal, isFullScreen ? 48 : 0)
-            .frame(width: isFullScreen ? UIScreen.main.fixedCoordinateSpace.bounds.height : geometry.size.width,
-                   height: isFullScreen ? UIScreen.main.fixedCoordinateSpace.bounds.width : geometry.size.height)
+            .padding(.horizontal, viewModel.isFullScreen ? 48 : 0)
+            .frame(width: viewModel.isFullScreen ? UIScreen.main.fixedCoordinateSpace.bounds.height : geometry.size.width,
+                   height: viewModel.isFullScreen ? UIScreen.main.fixedCoordinateSpace.bounds.width : geometry.size.height)
             .background(Color.black)
-            .edgesIgnoringSafeArea(isFullScreen ? .all : [])
-            .statusBarHidden(isFullScreen)
-            .onChange(of: isFullScreen, perform: changeOrientation)
+            .edgesIgnoringSafeArea(viewModel.isFullScreen ? .all : [])
+            .statusBarHidden(viewModel.isFullScreen)
+            .onChange(of: viewModel.isFullScreen, perform: changeOrientation)
             .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
-                isFullScreen = UIDevice.current.orientation.isLandscape
+                viewModel.isFullScreen = UIDevice.current.orientation.isLandscape
             }
         }
     }

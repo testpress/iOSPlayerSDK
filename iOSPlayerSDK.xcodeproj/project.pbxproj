@@ -19,12 +19,14 @@
 		0374E3722C1AD2A200CE9CF2 /* TestpressAPIParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0374E3712C1AD2A200CE9CF2 /* TestpressAPIParser.swift */; };
 		0374E3742C1B159A00CE9CF2 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0374E3732C1B159A00CE9CF2 /* Video.swift */; };
 		0374E3762C1B15C200CE9CF2 /* LiveStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0374E3752C1B15C200CE9CF2 /* LiveStream.swift */; };
+		0374E3782C1B26EC00CE9CF2 /* NoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0374E3772C1B26EC00CE9CF2 /* NoticeView.swift */; };
 		0377C40E2A2B1C7300F7E58F /* BaseAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C40D2A2B1C7300F7E58F /* BaseAPI.swift */; };
 		0377C4112A2B1F0700F7E58F /* Asset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C4102A2B1F0700F7E58F /* Asset.swift */; };
 		0377C4132A2B272C00F7E58F /* TestpressAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C4122A2B272C00F7E58F /* TestpressAPI.swift */; };
 		037F3BBF2B05EDD900ECEF57 /* UIInterfaceOrientationMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037F3BBE2B05EDD900ECEF57 /* UIInterfaceOrientationMask.swift */; };
 		03913C482A850BF9002E7E0C /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03913C472A850BF9002E7E0C /* ProgressBar.swift */; };
 		0394CA312B5E5529006BED3B /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = 0394CA302B5E5529006BED3B /* Reachability */; };
+		0397C4872C1C630600D701AA /* TPStreamPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0397C4862C1C630600D701AA /* TPStreamPlayerViewModel.swift */; };
 		03B8090A2A2DF8A000AB3D03 /* TPStreamPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B809092A2DF8A000AB3D03 /* TPStreamPlayer.swift */; };
 		03B8090C2A2DF9A200AB3D03 /* PlayerControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B8090B2A2DF9A200AB3D03 /* PlayerControlsView.swift */; };
 		03B8090E2A2DFC0F00AB3D03 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B8090D2A2DFC0F00AB3D03 /* Assets.xcassets */; };
@@ -135,11 +137,13 @@
 		0374E3712C1AD2A200CE9CF2 /* TestpressAPIParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestpressAPIParser.swift; sourceTree = "<group>"; };
 		0374E3732C1B159A00CE9CF2 /* Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		0374E3752C1B15C200CE9CF2 /* LiveStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveStream.swift; sourceTree = "<group>"; };
+		0374E3772C1B26EC00CE9CF2 /* NoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeView.swift; sourceTree = "<group>"; };
 		0377C40D2A2B1C7300F7E58F /* BaseAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAPI.swift; sourceTree = "<group>"; };
 		0377C4102A2B1F0700F7E58F /* Asset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Asset.swift; sourceTree = "<group>"; };
 		0377C4122A2B272C00F7E58F /* TestpressAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestpressAPI.swift; sourceTree = "<group>"; };
 		037F3BBE2B05EDD900ECEF57 /* UIInterfaceOrientationMask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIInterfaceOrientationMask.swift; sourceTree = "<group>"; };
 		03913C472A850BF9002E7E0C /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
+		0397C4862C1C630600D701AA /* TPStreamPlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayerViewModel.swift; sourceTree = "<group>"; };
 		03B809092A2DF8A000AB3D03 /* TPStreamPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayer.swift; sourceTree = "<group>"; };
 		03B8090B2A2DF9A200AB3D03 /* PlayerControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlsView.swift; sourceTree = "<group>"; };
 		03B8090D2A2DFC0F00AB3D03 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -250,6 +254,14 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		0397C4852C1C62DA00D701AA /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				0397C4862C1C630600D701AA /* TPStreamPlayerViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
 		03B8FD8E2A690CAA00DAB7AE /* StoryboardExample */ = {
 			isa = PBXGroup;
 			children = (
@@ -281,6 +293,7 @@
 				035351A12A2F49E3001E38F3 /* MediaControlsView.swift */,
 				03CA2D362A30A8E500532549 /* PlayerProgressBar.swift */,
 				03B8090B2A2DF9A200AB3D03 /* PlayerControlsView.swift */,
+				0374E3772C1B26EC00CE9CF2 /* NoticeView.swift */,
 			);
 			path = SwiftUI;
 			sourceTree = "<group>";
@@ -390,6 +403,7 @@
 		8EDE99A62A2643B000E43EA9 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				0397C4852C1C62DA00D701AA /* ViewModels */,
 				03BE54172BF780D1004ED191 /* PrivacyInfo.xcprivacy */,
 				03CE74FE2A79469400B84304 /* Utils */,
 				0321F3252A2E0D0300E08AEE /* Extensions */,
@@ -641,11 +655,13 @@
 				0377C4112A2B1F0700F7E58F /* Asset.swift in Sources */,
 				8E6389E22A275AA800306FA4 /* StreamsAPI.swift in Sources */,
 				03BF8C522B173ED10006CBC1 /* TPStreamPlayerConfiguration.swift in Sources */,
+				0397C4872C1C630600D701AA /* TPStreamPlayerViewModel.swift in Sources */,
 				0374E3702C1AD23100CE9CF2 /* StreamsAPIParser.swift in Sources */,
 				03CE75002A7946A800B84304 /* Time.swift in Sources */,
 				03B8FDA92A695FED00DAB7AE /* TPStreamPlayerViewController.swift in Sources */,
 				03CE75022A7A337B00B84304 /* UIView.swift in Sources */,
 				03CA2D372A30A8E500532549 /* PlayerProgressBar.swift in Sources */,
+				0374E3782C1B26EC00CE9CF2 /* NoticeView.swift in Sources */,
 				0377C40E2A2B1C7300F7E58F /* BaseAPI.swift in Sources */,
 				03CA2D312A2F757D00532549 /* TimeIndicatorView.swift in Sources */,
 				035351A22A2F49E3001E38F3 /* MediaControlsView.swift in Sources */,
