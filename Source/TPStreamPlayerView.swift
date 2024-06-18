@@ -20,7 +20,7 @@ public struct TPStreamPlayerView: View {
             ZStack {
                 if let message = viewModel.noticeMessage {
                     NoticeView(message: message)
-                } else{
+                } else if viewModel.player.initializationStatus == "ready" {
                     AVPlayerBridge(player: viewModel.player)
                     PlayerControlsView(player: viewModel.player, isFullscreen: $viewModel.isFullScreen)
                 }

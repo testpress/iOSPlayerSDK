@@ -14,11 +14,30 @@ class TPStreamPlayerViewModel: ObservableObject {
     @Published var noticeMessage: String? = nil
     
     var player: TPAVPlayer
+    private var playerStatusObservation: NSKeyValueObservation?
     
     init(player: TPAVPlayer) {
         self.player = player
+        setupPlayerStatusObserver(for: player)
         self.player.onError = { [weak self] error in
             self?.showError(error: error)
+        }
+    }
+    
+    private func setupPlayerStatusObserver(for player: TPAVPlayer) {
+        playerStatusObservation = player.observe(\.initializationStatus, options: [.new]) { [weak self] (_, change) in
+            guard let self = self else { return }
+
+            if let status = change.newValue {
+                switch status {
+                case "error":
+                    self.showError(error: self.player.initializationError!)
+                case "ready":
+                    self.noticeMessage = nil
+                default:
+                    break
+                }
+            }
         }
     }
     
@@ -34,5 +53,9 @@ class TPStreamPlayerViewModel: ObservableObject {
     
     private func setNoticeMessage(_ message: String) {
         self.noticeMessage = message
+    }
+    
+    deinit {
+        playerStatusObservation?.invalidate()
     }
 }
