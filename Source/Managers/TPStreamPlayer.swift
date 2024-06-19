@@ -38,7 +38,7 @@ class TPStreamPlayer: NSObject {
     init(player: TPAVPlayer){
         self.player = player
         super.init()
-        self.observePlayerStatusChange()
+        self.observePlaybackStatusChange()
         self.observePlayerCurrentTimeChange()
         self.observeCurrentItemChanges()
     }
@@ -54,7 +54,7 @@ class TPStreamPlayer: NSObject {
         }
     }
     
-    private func observePlayerStatusChange(){
+    private func observePlaybackStatusChange(){
         player.addObserver(self, forKeyPath: #keyPath(TPAVPlayer.timeControlStatus), options: .new, context: nil)
     }
     
@@ -87,7 +87,7 @@ class TPStreamPlayer: NSObject {
         switch keyPath {
         case #keyPath(TPAVPlayer.timeControlStatus):
             if let player = object as? TPAVPlayer {
-                handlePlayerStatusChange(for: player)
+                handlePlaybackStatusChange(for: player)
             }
         case #keyPath(AVPlayerItem.isPlaybackLikelyToKeepUp), #keyPath(AVPlayerItem.isPlaybackBufferEmpty):
             if let playerItem = object as? AVPlayerItem {
@@ -104,7 +104,7 @@ class TPStreamPlayer: NSObject {
         status = "ended"
     }
     
-    private func handlePlayerStatusChange(for player: TPAVPlayer) {
+    private func handlePlaybackStatusChange(for player: TPAVPlayer) {
         switch player.timeControlStatus {
         case .playing:
             status = "playing"
