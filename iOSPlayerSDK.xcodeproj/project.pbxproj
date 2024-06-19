@@ -50,6 +50,7 @@
 		03CE75002A7946A800B84304 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CE74FF2A7946A800B84304 /* Time.swift */; };
 		03CE75022A7A337B00B84304 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CE75012A7A337B00B84304 /* UIView.swift */; };
 		03D7F4282C22C4F900DF3597 /* PlaybackSpeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D7F4272C22C4F900DF3597 /* PlaybackSpeed.swift */; };
+		03D7F4252C21C64D00DF3597 /* LiveIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D7F4242C21C64D00DF3597 /* LiveIndicatorView.swift */; };
 		8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */; };
 		8E6389C42A27277D00306FA4 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389C32A27277D00306FA4 /* ExampleApp.swift */; };
 		8E6389C62A27277D00306FA4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389C52A27277D00306FA4 /* ContentView.swift */; };
@@ -168,6 +169,7 @@
 		03CE74FF2A7946A800B84304 /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		03CE75012A7A337B00B84304 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		03D7F4272C22C4F900DF3597 /* PlaybackSpeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackSpeed.swift; sourceTree = "<group>"; };
+		03D7F4242C21C64D00DF3597 /* LiveIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveIndicatorView.swift; sourceTree = "<group>"; };
 		8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayerView.swift; sourceTree = "<group>"; };
 		8E6389C12A27277D00306FA4 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E6389C32A27277D00306FA4 /* ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleApp.swift; sourceTree = "<group>"; };
@@ -307,6 +309,7 @@
 				03CC784C2A6BB6E5005E8F7E /* VideoPlayerView.swift */,
 				03B8FDAD2A69752800DAB7AE /* PlayerControlsUIView.swift */,
 				03913C472A850BF9002E7E0C /* ProgressBar.swift */,
+				03D7F4242C21C64D00DF3597 /* LiveIndicatorView.swift */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -682,6 +685,7 @@
 				03B8090C2A2DF9A200AB3D03 /* PlayerControlsView.swift in Sources */,
 				8E6389DF2A2751C800306FA4 /* TPAVPlayer.swift in Sources */,
 				03B8090A2A2DF8A000AB3D03 /* TPStreamPlayer.swift in Sources */,
+				03D7F4252C21C64D00DF3597 /* LiveIndicatorView.swift in Sources */,
 				0321F3272A2E0D1800E08AEE /* AVPlayer.swift in Sources */,
 				0374E36E2C1AD18400CE9CF2 /* BaseAPIParser.swift in Sources */,
 				0374E3742C1B159A00CE9CF2 /* Video.swift in Sources */,
