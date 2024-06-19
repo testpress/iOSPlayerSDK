@@ -34,12 +34,12 @@ struct TimeIndicatorView: View {
                         .font(.subheadline)
                         .onTapGesture {
                             if player.isBehindLiveEdge {
-                                player.goTo(seconds: player.videoDuration)
+                                player.goTo(seconds: player.playableDuration)
                             }
                         }
                 }
             } else {
-                Text(timeStringFromSeconds(player.videoDuration))
+                Text(timeStringFromSeconds(player.playableDuration))
                     .foregroundColor(Color.white.opacity(0.6))
                     .fontWeight(.bold)
                     .font(.subheadline)

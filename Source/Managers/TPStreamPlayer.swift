@@ -221,7 +221,7 @@ class TPStreamPlayer: NSObject {
         if isLive {
             let liveTolerance: Float64 = 15.0
             let isPaused = status == "paused"
-            let isBehindLiveThreshold = videoDuration - Double(currentTime) > liveTolerance
+            let isBehindLiveThreshold = playableDuration - Double(currentTime) > liveTolerance
             
             return isPaused || isBehindLiveThreshold
         } else {

@@ -34,10 +34,6 @@ class PlayerControlsUIView: UIView {
             player.addObserver(self, forKeyPath: #keyPath(TPStreamPlayer.status), options: .new, context: nil)
             player.addObserver(self, forKeyPath: #keyPath(TPStreamPlayer.currentTime), options: .new, context: nil)
             player.addObserver(self, forKeyPath: #keyPath(TPStreamPlayer.isVideoDurationInitialized), options: .new, context: nil)
-
-            if player.isLive {
-                setUpLiveIndicator()
-            }
         }
     }
     var playerConfig: TPStreamPlayerConfiguration!{
@@ -71,6 +67,10 @@ class PlayerControlsUIView: UIView {
     
     private func handlePlayerStatusChange(){
         switch player.status {
+        case "ready":
+            if (player.isLive){
+                setUpLiveIndicator()
+            }
         case "playing":
             playPauseButton.setImage(UIImage(named: "pause", in: bundle, compatibleWith: nil), for: .normal)
         case "paused":
@@ -106,7 +106,7 @@ class PlayerControlsUIView: UIView {
     
     @objc private func handleLiveLabelTap() {
         if let player = player, player.isBehindLiveEdge == true {
-            player.goTo(seconds: player.videoDuration)
+            player.goTo(seconds: player.playableDuration)
         }
     }
     
