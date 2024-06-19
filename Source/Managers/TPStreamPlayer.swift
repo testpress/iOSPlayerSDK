@@ -8,7 +8,7 @@ class TPStreamPlayer: NSObject {
     @objc dynamic var isVideoDurationInitialized = false
     
     var player: TPAVPlayer!
-    var videoDuration: Float64 {
+    var playableDuration: Float64 {
         guard let currentItem = player?.currentItem else {
             return CMTimeGetSeconds(CMTime.zero)
         }
@@ -146,8 +146,8 @@ class TPStreamPlayer: NSObject {
     
     func forward(_ seconds: Float64 = 10.0) {
         var seekTo = self.player.currentTimeInSeconds + seconds
-        if seekTo > videoDuration {
-            seekTo = videoDuration
+        if seekTo > playableDuration {
+            seekTo = playableDuration
         }
         goTo(seconds: seekTo)
     }

@@ -51,7 +51,7 @@ class PlayerControlsUIView: UIView {
         } else if keyPath == #keyPath(TPStreamPlayer.currentTime) && player.isVideoDurationInitialized {
             currentTimelabel.text = timeStringFromSeconds(player.currentTime.doubleValue)
         } else if keyPath == #keyPath(TPStreamPlayer.isVideoDurationInitialized) && player.isVideoDurationInitialized {
-            videoDurationLabel.text = timeStringFromSeconds(player.videoDuration)
+            videoDurationLabel.text = timeStringFromSeconds(player.playableDuration)
         }
     }
     

@@ -77,7 +77,7 @@ class ProgressBar: UIControl {
     
     private func getSecondsAtPosition(_ location: CGFloat) -> Float64 {
         let percentage = min(Double(location / totalWidth), 1.0)
-        return player.videoDuration * percentage
+        return player.playableDuration * percentage
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
@@ -94,7 +94,7 @@ class ProgressBar: UIControl {
     }
     
     private func calculateWidthForValue(value: Float64) -> CGFloat {
-        let percentage = min(CGFloat(value / player.videoDuration), 100.0)
+        let percentage = min(CGFloat(value / player.playableDuration), 100.0)
         return totalWidth * percentage
     }
     

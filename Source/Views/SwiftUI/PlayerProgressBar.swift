@@ -41,7 +41,7 @@ struct PlayerProgressBar: View {
     
     private func calculateWidthForValue(value: Float64, geometry: GeometryProxy) -> CGFloat {
         let totalWidth = geometry.size.width
-        let percentage = CGFloat(value / player.videoDuration).isNaN ? 0.001 : CGFloat(value / player.videoDuration)
+        let percentage = CGFloat(value / player.playableDuration).isNaN ? 0.001 : CGFloat(value / player.playableDuration)
         return totalWidth * percentage
     }
     
@@ -59,6 +59,6 @@ struct PlayerProgressBar: View {
     private func getSecondsForDraggedLocation(_ geometry: GeometryProxy) -> Float64{
         let totalWidth = Float64(geometry.size.width)
         let percentage = draggedLocation! / totalWidth
-        return player.videoDuration * percentage
+        return player.playableDuration * percentage
     }
 }

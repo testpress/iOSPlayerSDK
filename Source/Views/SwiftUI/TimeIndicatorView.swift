@@ -22,7 +22,7 @@ struct TimeIndicatorView: View {
                 .foregroundColor(Color.white.opacity(0.6))
                 .fontWeight(.bold)
             
-            Text(timeStringFromSeconds(player.videoDuration))
+            Text(timeStringFromSeconds(player.playableDuration))
                 .foregroundColor(Color.white.opacity(0.6))
                 .fontWeight(.bold)
                 .font(.subheadline)
