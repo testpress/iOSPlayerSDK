@@ -21,6 +21,13 @@ class PlayerControlsUIView: UIView {
     @IBOutlet weak var rewindSeekNoticeLabel: UILabel!
     @IBOutlet weak var forwardSeekNoticeLabel: UILabel!
     
+    @IBOutlet weak var liveIndicatorContainer: UIView!
+
+    private lazy var liveIndicatorView: LiveIndicatorView = {
+        let indicatorView = LiveIndicatorView(frame: liveIndicatorContainer.bounds)
+        return indicatorView
+    }()
+    
     var player: TPStreamPlayer! {
         didSet {
             progressBar.player = player
@@ -50,6 +57,9 @@ class PlayerControlsUIView: UIView {
             handlePlayerStatusChange()
         } else if keyPath == #keyPath(TPStreamPlayer.currentTime) && player.isVideoDurationInitialized {
             currentTimelabel.text = timeStringFromSeconds(player.currentTime.doubleValue)
+            if player.isLive {
+                liveIndicatorView.isBehindLiveEdge = player.isBehindLiveEdge
+            }
         } else if keyPath == #keyPath(TPStreamPlayer.isVideoDurationInitialized) && player.isVideoDurationInitialized {
             videoDurationLabel.text = timeStringFromSeconds(player.playableDuration)
         }
@@ -57,6 +67,10 @@ class PlayerControlsUIView: UIView {
     
     private func handlePlayerStatusChange(){
         switch player.status {
+        case "ready":
+            if (player.isLive){
+                setUpLiveIndicator()
+            }
         case "playing":
             playPauseButton.setImage(UIImage(named: "pause", in: bundle, compatibleWith: nil), for: .normal)
         case "paused":
@@ -75,6 +89,25 @@ class PlayerControlsUIView: UIView {
             loadingIndicator.stopAnimating()
         }
         forwardButton.isEnabled = player.status != "ended"
+    }
+    
+    private func setUpLiveIndicator() {
+        videoDurationLabel.isHidden = true
+        liveIndicatorContainer.isHidden = false
+        
+        liveIndicatorContainer.addSubview(liveIndicatorView)
+        setupLiveIndicatorTapGesture()
+    }
+    
+    private func setupLiveIndicatorTapGesture() {
+        var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleLiveLabelTap))
+        liveIndicatorContainer.addGestureRecognizer(tapGestureRecognizer)
+    }
+    
+    @objc private func handleLiveLabelTap() {
+        if let player = player, player.isBehindLiveEdge == true {
+            player.goTo(seconds: player.playableDuration)
+        }
     }
     
     @IBAction func playOrPauseButton(_ sender: Any) {

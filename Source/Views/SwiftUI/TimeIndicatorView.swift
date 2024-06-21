@@ -22,10 +22,28 @@ struct TimeIndicatorView: View {
                 .foregroundColor(Color.white.opacity(0.6))
                 .fontWeight(.bold)
             
-            Text(timeStringFromSeconds(player.playableDuration))
-                .foregroundColor(Color.white.opacity(0.6))
-                .fontWeight(.bold)
-                .font(.subheadline)
+            if player.isLive {
+                HStack(spacing: 4) {
+                    Text("●")
+                        .font(.system(size: 12))
+                        .foregroundColor(!player.isBehindLiveEdge ? Color.red : Color.gray)
+                    
+                    Text("LIVE")
+                        .foregroundColor(Color.white)
+                        .fontWeight(.bold)
+                        .font(.subheadline)
+                        .onTapGesture {
+                            if player.isBehindLiveEdge {
+                                player.goTo(seconds: player.playableDuration)
+                            }
+                        }
+                }
+            } else {
+                Text(timeStringFromSeconds(player.playableDuration))
+                    .foregroundColor(Color.white.opacity(0.6))
+                    .fontWeight(.bold)
+                    .font(.subheadline)
+            }
         }
     }
 }

@@ -8,12 +8,18 @@ class TPStreamPlayer: NSObject {
     @objc dynamic var isVideoDurationInitialized = false
     
     var player: TPAVPlayer!
+    var isLive: Bool {
+        guard let liveStream = player.asset?.liveStream else {
+            return false
+        }
+        return liveStream.isStreaming
+    }
     var playableDuration: Float64 {
         guard let currentItem = player?.currentItem else {
             return CMTimeGetSeconds(CMTime.zero)
         }
         
-        if let liveStream = player.asset?.liveStream, liveStream.isStreaming {
+        if isLive {
             return currentItem.seekableTimeRanges.last?.timeRangeValue.end.seconds ?? CMTimeGetSeconds(CMTime.zero)
         } else {
             return player.durationInSeconds
@@ -205,6 +211,22 @@ class TPStreamPlayer: NSObject {
     
     func changeVideoQuality(_ videoQuality: VideoQuality){
         self.player.changeVideoQuality(to: videoQuality)
+    }
+    
+    var isBehindLiveEdge: Bool {
+        guard let currentItem = player.currentItem else {
+            return false
+        }
+        
+        if isLive {
+            let liveTolerance: Float64 = 15.0
+            let isPaused = status == "paused"
+            let isBehindLiveThreshold = playableDuration - Double(currentTime) > liveTolerance
+            
+            return isPaused || isBehindLiveThreshold
+        } else {
+            return false
+        }
     }
 }
 
