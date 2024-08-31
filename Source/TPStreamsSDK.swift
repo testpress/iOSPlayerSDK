@@ -50,7 +50,7 @@ public class TPStreamsSDK {
             options.attachViewHierarchy = false
         }
         SentrySDK.configureScope { scope in
-            scope.setTag(value: "orgCode", key: orgCode!)
+            scope.setTag(value: orgCode!, key: "orgCode")
         }
     }
 }
