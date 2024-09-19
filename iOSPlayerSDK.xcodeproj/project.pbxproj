@@ -49,8 +49,8 @@
 		03CC86682AE142FF002F5D28 /* ResourceLoaderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CC86672AE142FF002F5D28 /* ResourceLoaderDelegate.swift */; };
 		03CE75002A7946A800B84304 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CE74FF2A7946A800B84304 /* Time.swift */; };
 		03CE75022A7A337B00B84304 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CE75012A7A337B00B84304 /* UIView.swift */; };
-		03D7F4282C22C4F900DF3597 /* PlaybackSpeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D7F4272C22C4F900DF3597 /* PlaybackSpeed.swift */; };
 		03D7F4252C21C64D00DF3597 /* LiveIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D7F4242C21C64D00DF3597 /* LiveIndicatorView.swift */; };
+		03D7F4282C22C4F900DF3597 /* PlaybackSpeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D7F4272C22C4F900DF3597 /* PlaybackSpeed.swift */; };
 		8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */; };
 		8E6389C42A27277D00306FA4 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389C32A27277D00306FA4 /* ExampleApp.swift */; };
 		8E6389C62A27277D00306FA4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389C52A27277D00306FA4 /* ContentView.swift */; };
@@ -168,8 +168,8 @@
 		03CC86672AE142FF002F5D28 /* ResourceLoaderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceLoaderDelegate.swift; sourceTree = "<group>"; };
 		03CE74FF2A7946A800B84304 /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		03CE75012A7A337B00B84304 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
-		03D7F4272C22C4F900DF3597 /* PlaybackSpeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackSpeed.swift; sourceTree = "<group>"; };
 		03D7F4242C21C64D00DF3597 /* LiveIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveIndicatorView.swift; sourceTree = "<group>"; };
+		03D7F4272C22C4F900DF3597 /* PlaybackSpeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackSpeed.swift; sourceTree = "<group>"; };
 		8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayerView.swift; sourceTree = "<group>"; };
 		8E6389C12A27277D00306FA4 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E6389C32A27277D00306FA4 /* ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleApp.swift; sourceTree = "<group>"; };
@@ -1143,7 +1143,7 @@
 			repositoryURL = "https://github.com/getsentry/sentry-cocoa.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 8.0.0;
+				minimumVersion = 8.36.0;
 			};
 		};
 		0326BADC2A348690009ABC58 /* XCRemoteSwiftPackageReference "M3U8Parser" */ = {
