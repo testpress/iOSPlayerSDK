@@ -57,6 +57,7 @@ public final class TPStreamsDownloadManager {
         assetDownloadDelegate.activeDownloadsMap[task] = offlineAssetEntity
         task.resume()
         tpStreamsDownloadDelegate?.onStart(offlineAsset: offlineAssetEntity.asOfflineAsset())
+        tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: offlineAssetEntity.asOfflineAsset())
     }
     
     public func pauseDownload(_ offlineAsset: OfflineAsset) {
@@ -65,6 +66,7 @@ public final class TPStreamsDownloadManager {
             task.suspend()
             OfflineAssetEntity.manager.update(object: offlineAssetEntity, with: ["status": Status.paused.rawValue])
             tpStreamsDownloadDelegate?.onPause(offlineAsset: offlineAssetEntity.asOfflineAsset())
+            tpStreamsDownloadDelegate?.onStateChange(status: .paused, offlineAsset: offlineAssetEntity.asOfflineAsset())
         }
     }
     
@@ -75,6 +77,7 @@ public final class TPStreamsDownloadManager {
                 task.resume()
                 OfflineAssetEntity.manager.update(object: offlineAssetEntity, with: ["status": Status.inProgress.rawValue])
                 tpStreamsDownloadDelegate?.onResume(offlineAsset: offlineAssetEntity.asOfflineAsset())
+                tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: offlineAssetEntity.asOfflineAsset())
             }
         }
     }
@@ -95,13 +98,11 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
         guard let offlineAssetEntity = activeDownloadsMap[assetDownloadTask] else { return }
         updateDownloadCompleteStatus(error, offlineAssetEntity)
         activeDownloadsMap.removeValue(forKey: assetDownloadTask)
-        tpStreamsDownloadDelegate?.onComplete(offlineAsset: offlineAssetEntity.asOfflineAsset())
     }
     
     func urlSession(_ session: URLSession, aggregateAssetDownloadTask: AVAggregateAssetDownloadTask, willDownloadTo location: URL) {
         guard let offlineAssetEntity = activeDownloadsMap[aggregateAssetDownloadTask] else { return }
         OfflineAssetEntity.manager.update(object: offlineAssetEntity, with: ["downloadedPath": String(location.relativePath)])
-        tpStreamsDownloadDelegate?.onStateChange(offlineAsset: offlineAssetEntity.asOfflineAsset())
     }
 
     func urlSession(_ session: URLSession,
@@ -115,13 +116,16 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
 
         let percentageComplete = calculateDownloadPercentage(loadedTimeRanges, timeRangeExpectedToLoad)
         OfflineAssetEntity.manager.update(object: offlineAssetEntity, with: ["status": Status.inProgress.rawValue, "percentageCompleted": percentageComplete])
-        tpStreamsDownloadDelegate?.onStateChange(offlineAsset: offlineAssetEntity.asOfflineAsset())
+        tpStreamsDownloadDelegate?.onProgressChange(assetId: offlineAssetEntity.assetId, percentage: percentageComplete)
+        tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: offlineAssetEntity.asOfflineAsset())
     }
 
     private func updateDownloadCompleteStatus(_ error: Error?,_ offlineAssetEntity: OfflineAssetEntity) {
         let status: Status = (error == nil) ? .finished : .failed
         let updateValues: [String: Any] = ["status": status.rawValue, "downloadedAt": Date()]
         OfflineAssetEntity.manager.update(object: offlineAssetEntity, with: updateValues)
+        tpStreamsDownloadDelegate?.onComplete(offlineAsset: offlineAssetEntity.asOfflineAsset())
+        tpStreamsDownloadDelegate?.onStateChange(status: status, offlineAsset: offlineAssetEntity.asOfflineAsset())
     }
 
     private func calculateDownloadPercentage(_ loadedTimeRanges: [NSValue], _ timeRangeExpectedToLoad: CMTimeRange) -> Double {
@@ -139,5 +143,6 @@ public protocol TPStreamsDownloadDelegate {
     func onStart(offlineAsset: OfflineAsset)
     func onPause(offlineAsset: OfflineAsset)
     func onResume(offlineAsset: OfflineAsset)
-    func onStateChange(offlineAsset: OfflineAsset)
+    func onStateChange(status: Status, offlineAsset: OfflineAsset)
+    func onProgressChange(assetId: String, percentage: Double)
 }
