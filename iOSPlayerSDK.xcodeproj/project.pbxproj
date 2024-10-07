@@ -73,6 +73,11 @@
 		D92E48D62CAFCD2400B1FAC3 /* OfflineAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92E48D52CAFCD2400B1FAC3 /* OfflineAsset.swift */; };
 		D92E48F12CB0226A00B1FAC3 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = D92E48F02CB0226A00B1FAC3 /* Realm */; };
 		D92E48F32CB0226A00B1FAC3 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D92E48F22CB0226A00B1FAC3 /* RealmSwift */; };
+		D9BCDC1B2CB3EF9D009FF2AB /* DownloadListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9BCDC1A2CB3EF9D009FF2AB /* DownloadListView.swift */; };
+		D9BCDC1E2CB3F02A009FF2AB /* OfflineAssetRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9BCDC1D2CB3F02A009FF2AB /* OfflineAssetRow.swift */; };
+		D9BCDC202CB3F05E009FF2AB /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9BCDC1F2CB3F05E009FF2AB /* PlayerView.swift */; };
+		D9BCDC242CB3F11E009FF2AB /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9BCDC232CB3F11E009FF2AB /* Time.swift */; };
+		D9BCDC262CB3F51E009FF2AB /* TPStreamsDownloadManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9BCDC252CB3F51E009FF2AB /* TPStreamsDownloadManagerTests.swift */; };
 		D9CC9A582CB3BF46008037FE /* TPStreamsDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9CC9A572CB3BF46008037FE /* TPStreamsDownloadManager.swift */; };
 		D9CC9A5A2CB3CF40008037FE /* ObjectManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9CC9A592CB3CF40008037FE /* ObjectManagerTest.swift */; };
 /* End PBXBuildFile section */
@@ -207,6 +212,11 @@
 		D92E48AC2CAFBCFB00B1FAC3 /* OfflineAssetEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAssetEntity.swift; sourceTree = "<group>"; };
 		D92E48B52CAFBD6F00B1FAC3 /* ObjectManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectManager.swift; sourceTree = "<group>"; };
 		D92E48D52CAFCD2400B1FAC3 /* OfflineAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAsset.swift; sourceTree = "<group>"; };
+		D9BCDC1A2CB3EF9D009FF2AB /* DownloadListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadListView.swift; sourceTree = "<group>"; };
+		D9BCDC1D2CB3F02A009FF2AB /* OfflineAssetRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAssetRow.swift; sourceTree = "<group>"; };
+		D9BCDC1F2CB3F05E009FF2AB /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		D9BCDC232CB3F11E009FF2AB /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
+		D9BCDC252CB3F51E009FF2AB /* TPStreamsDownloadManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsDownloadManagerTests.swift; sourceTree = "<group>"; };
 		D9CC9A572CB3BF46008037FE /* TPStreamsDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsDownloadManager.swift; sourceTree = "<group>"; };
 		D9CC9A592CB3CF40008037FE /* ObjectManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectManagerTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -367,8 +377,9 @@
 		8E6389C22A27277D00306FA4 /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				D9BCDC212CB3F0EE009FF2AB /* Utils */,
+				D9BCDC1C2CB3EFE4009FF2AB /* Views */,
 				8E6389C32A27277D00306FA4 /* ExampleApp.swift */,
-				8E6389C52A27277D00306FA4 /* ContentView.swift */,
 				8E6389C72A27278000306FA4 /* Assets.xcassets */,
 				8E6389C92A27278000306FA4 /* Preview Content */,
 			);
@@ -466,6 +477,7 @@
 			children = (
 				8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */,
 				D9CC9A592CB3CF40008037FE /* ObjectManagerTest.swift */,
+				D9BCDC252CB3F51E009FF2AB /* TPStreamsDownloadManagerTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -487,6 +499,25 @@
 				D92E48D52CAFCD2400B1FAC3 /* OfflineAsset.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		D9BCDC1C2CB3EFE4009FF2AB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				D9BCDC1A2CB3EF9D009FF2AB /* DownloadListView.swift */,
+				8E6389C52A27277D00306FA4 /* ContentView.swift */,
+				D9BCDC1D2CB3F02A009FF2AB /* OfflineAssetRow.swift */,
+				D9BCDC1F2CB3F05E009FF2AB /* PlayerView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		D9BCDC212CB3F0EE009FF2AB /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				D9BCDC232CB3F11E009FF2AB /* Time.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -694,8 +725,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D9BCDC242CB3F11E009FF2AB /* Time.swift in Sources */,
 				8E6389C62A27277D00306FA4 /* ContentView.swift in Sources */,
 				8E6389C42A27277D00306FA4 /* ExampleApp.swift in Sources */,
+				D9BCDC1B2CB3EF9D009FF2AB /* DownloadListView.swift in Sources */,
+				D9BCDC202CB3F05E009FF2AB /* PlayerView.swift in Sources */,
+				D9BCDC1E2CB3F02A009FF2AB /* OfflineAssetRow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -751,6 +786,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D9BCDC262CB3F51E009FF2AB /* TPStreamsDownloadManagerTests.swift in Sources */,
 				D9CC9A5A2CB3CF40008037FE /* ObjectManagerTest.swift in Sources */,
 				8EDE99B42A2643B000E43EA9 /* iOSPlayerSDKTests.swift in Sources */,
 			);

@@ -11,4 +11,5 @@ struct Video{
     let playbackURL: String
     let status: String
     let drmEncrypted: Bool
+    let duration: Double
 }

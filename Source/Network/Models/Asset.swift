@@ -13,6 +13,7 @@ struct Asset {
     let contentType: String
     let video: Video?
     let liveStream: LiveStream?
+    let folderTree: String?
     
     var playbackURL: String? {
         if let video = video {
