@@ -73,6 +73,7 @@
 		D92E48D62CAFCD2400B1FAC3 /* OfflineAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92E48D52CAFCD2400B1FAC3 /* OfflineAsset.swift */; };
 		D92E48F12CB0226A00B1FAC3 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = D92E48F02CB0226A00B1FAC3 /* Realm */; };
 		D92E48F32CB0226A00B1FAC3 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D92E48F22CB0226A00B1FAC3 /* RealmSwift */; };
+		D9CC9A582CB3BF46008037FE /* TPStreamsDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9CC9A572CB3BF46008037FE /* TPStreamsDownloadManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -205,6 +206,7 @@
 		D92E48AC2CAFBCFB00B1FAC3 /* OfflineAssetEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAssetEntity.swift; sourceTree = "<group>"; };
 		D92E48B52CAFBD6F00B1FAC3 /* ObjectManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectManager.swift; sourceTree = "<group>"; };
 		D92E48D52CAFCD2400B1FAC3 /* OfflineAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAsset.swift; sourceTree = "<group>"; };
+		D9CC9A572CB3BF46008037FE /* TPStreamsDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsDownloadManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -470,6 +472,7 @@
 			children = (
 				D92E48AB2CAFBCE900B1FAC3 /* Models */,
 				D92E48B52CAFBD6F00B1FAC3 /* ObjectManager.swift */,
+				D9CC9A572CB3BF46008037FE /* TPStreamsDownloadManager.swift */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -727,6 +730,7 @@
 				D92E48B62CAFBD6F00B1FAC3 /* ObjectManager.swift in Sources */,
 				03CC86682AE142FF002F5D28 /* ResourceLoaderDelegate.swift in Sources */,
 				031099F62B28B22C0034D370 /* TPStreamPlayerError.swift in Sources */,
+				D9CC9A582CB3BF46008037FE /* TPStreamsDownloadManager.swift in Sources */,
 				03B8090C2A2DF9A200AB3D03 /* PlayerControlsView.swift in Sources */,
 				8E6389DF2A2751C800306FA4 /* TPAVPlayer.swift in Sources */,
 				D92E48D62CAFCD2400B1FAC3 /* OfflineAsset.swift in Sources */,

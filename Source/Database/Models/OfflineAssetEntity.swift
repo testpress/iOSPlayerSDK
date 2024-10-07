@@ -28,6 +28,27 @@ class LocalOfflineAsset: Object {
 
 extension LocalOfflineAsset {
     
+    static func create(
+        assetId: String,
+        srcURL: String,
+        title: String,
+        resolution: String,
+        duration:Double,
+        bitRate: Double,
+        folderTree: String
+    ) -> LocalOfflineAsset {
+        let localOfflineAsset = LocalOfflineAsset()
+        localOfflineAsset.assetId = assetId
+        localOfflineAsset.srcURL = srcURL
+        localOfflineAsset.title = title
+        localOfflineAsset.resolution = resolution
+        localOfflineAsset.duration = duration
+        localOfflineAsset.bitRate = bitRate
+        localOfflineAsset.size = (bitRate * duration)
+        localOfflineAsset.folderTree = folderTree
+        return localOfflineAsset
+    }
+    
     func asOfflineAsset() -> OfflineAsset {
         return OfflineAsset(
             assetId: self.assetId,

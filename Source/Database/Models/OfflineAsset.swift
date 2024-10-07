@@ -11,6 +11,7 @@ public struct OfflineAsset: Hashable {
     public var assetId: String = ""
     public var createdAt = Date()
     public var title: String = ""
+    public var srcURL: String = ""
     public var downloadedAt = Date()
     public var status:String = Status.notStarted.rawValue
     public var percentageCompleted: Double = 0.0
