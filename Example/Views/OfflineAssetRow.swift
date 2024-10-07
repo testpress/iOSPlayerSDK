@@ -25,8 +25,7 @@ struct OfflineAssetRow: View {
                 
                 ProgressView(value: offlineAsset.percentageCompleted, total: 100)
                 
-                Text("\(formatDate(date: offlineAsset.createdAt)) • \(formatDuration(seconds: offlineAsset.duration)) • \(String(format: "%.2f MB", offlineAsset.size / 8 / 1024 / 1024))")
-                    .font(.caption)
+                Text("\(formatDate(date: offlineAsset.createdAt)) • \(formatDuration(seconds: offlineAsset.duration)) • \(String(format: "%.2f MB", offlineAsset.size / 8 / 1024 / 1024)) • \(offlineAsset.status)")                    .font(.caption)
             }
         }
         .actionSheet(isPresented: $showActionSheet) {

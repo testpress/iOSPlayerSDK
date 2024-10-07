@@ -13,6 +13,7 @@ public final class TPStreamsDownloadManager {
     static public let shared = TPStreamsDownloadManager()
     private var assetDownloadURLSession: AVAssetDownloadURLSession!
     private var assetDownloadDelegate: AssetDownloadDelegate!
+    private var tpStreamsDownloadDelegate: TPStreamsDownloadDelegate? = nil
 
     private init() {
         let backgroundConfiguration = URLSessionConfiguration.background(withIdentifier: "com.tpstreams.downloadSession")
@@ -22,6 +23,11 @@ public final class TPStreamsDownloadManager {
             assetDownloadDelegate: assetDownloadDelegate,
             delegateQueue: OperationQueue.main
         )
+    }
+    
+    public func setTPStreamsDownloadDelegate(tpStreamsDownloadDelegate: TPStreamsDownloadDelegate) {
+        self.tpStreamsDownloadDelegate = tpStreamsDownloadDelegate
+        assetDownloadDelegate.tpStreamsDownloadDelegate = tpStreamsDownloadDelegate
     }
     
     public func startDownload(assetID: String, accessToken: String, resolution: String) {
@@ -65,6 +71,8 @@ public final class TPStreamsDownloadManager {
         LocalOfflineAsset.manager.add(object: localOfflineAsset)
         assetDownloadDelegate.activeDownloadsMap[task] = localOfflineAsset
         task.resume()
+        tpStreamsDownloadDelegate?.onStart(offlineAsset: localOfflineAsset.asOfflineAsset())
+        tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: localOfflineAsset.asOfflineAsset())
     }
     
     public func pauseDownload(_ assetId: String) {
@@ -76,6 +84,8 @@ public final class TPStreamsDownloadManager {
         if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == localOfflineAsset })?.key {
             task.suspend()
             LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.paused.rawValue])
+            tpStreamsDownloadDelegate?.onPause(offlineAsset: localOfflineAsset.asOfflineAsset())
+            tpStreamsDownloadDelegate?.onStateChange(status: .paused, offlineAsset: localOfflineAsset.asOfflineAsset())
         }
     }
     
@@ -89,6 +99,8 @@ public final class TPStreamsDownloadManager {
             if task.state != .running {
                 task.resume()
                 LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.inProgress.rawValue])
+                tpStreamsDownloadDelegate?.onResume(offlineAsset: localOfflineAsset.asOfflineAsset())
+                tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: localOfflineAsset.asOfflineAsset())
             }
         }
     }
@@ -104,6 +116,7 @@ public final class TPStreamsDownloadManager {
 internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
 
     var activeDownloadsMap = [AVAggregateAssetDownloadTask: LocalOfflineAsset]()
+    var tpStreamsDownloadDelegate: TPStreamsDownloadDelegate? = nil
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         guard let assetDownloadTask = task as? AVAggregateAssetDownloadTask else { return }
@@ -128,12 +141,16 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
 
         let percentageComplete = calculateDownloadPercentage(loadedTimeRanges, timeRangeExpectedToLoad)
         LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.inProgress.rawValue, "percentageCompleted": percentageComplete])
+        tpStreamsDownloadDelegate?.onProgressChange(assetId: localOfflineAsset.assetId, percentage: percentageComplete)
+        tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: localOfflineAsset.asOfflineAsset())
     }
 
     private func updateDownloadCompleteStatus(_ error: Error?,_ localOfflineAsset: LocalOfflineAsset) {
         let status: Status = (error == nil) ? .finished : .failed
         let updateValues: [String: Any] = ["status": status.rawValue, "downloadedAt": Date()]
         LocalOfflineAsset.manager.update(object: localOfflineAsset, with: updateValues)
+        tpStreamsDownloadDelegate?.onComplete(offlineAsset: localOfflineAsset.asOfflineAsset())
+        tpStreamsDownloadDelegate?.onStateChange(status: status, offlineAsset: localOfflineAsset.asOfflineAsset())
     }
 
     private func calculateDownloadPercentage(_ loadedTimeRanges: [NSValue], _ timeRangeExpectedToLoad: CMTimeRange) -> Double {
@@ -144,4 +161,13 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
                 }
         return percentageComplete * 100
     }
+}
+
+public protocol TPStreamsDownloadDelegate {
+    func onComplete(offlineAsset: OfflineAsset)
+    func onStart(offlineAsset: OfflineAsset)
+    func onPause(offlineAsset: OfflineAsset)
+    func onResume(offlineAsset: OfflineAsset)
+    func onProgressChange(assetId: String, percentage: Double)
+    func onStateChange(status: Status, offlineAsset: OfflineAsset)
 }

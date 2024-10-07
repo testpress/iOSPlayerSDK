@@ -73,6 +73,7 @@
 		D92E48D62CAFCD2400B1FAC3 /* OfflineAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92E48D52CAFCD2400B1FAC3 /* OfflineAsset.swift */; };
 		D92E48F12CB0226A00B1FAC3 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = D92E48F02CB0226A00B1FAC3 /* Realm */; };
 		D92E48F32CB0226A00B1FAC3 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D92E48F22CB0226A00B1FAC3 /* RealmSwift */; };
+		D9846D552CB406D000BFA875 /* AppDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9846D542CB406D000BFA875 /* AppDownloadManager.swift */; };
 		D9BCDC1B2CB3EF9D009FF2AB /* DownloadListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9BCDC1A2CB3EF9D009FF2AB /* DownloadListView.swift */; };
 		D9BCDC1E2CB3F02A009FF2AB /* OfflineAssetRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9BCDC1D2CB3F02A009FF2AB /* OfflineAssetRow.swift */; };
 		D9BCDC202CB3F05E009FF2AB /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9BCDC1F2CB3F05E009FF2AB /* PlayerView.swift */; };
@@ -212,6 +213,7 @@
 		D92E48AC2CAFBCFB00B1FAC3 /* OfflineAssetEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAssetEntity.swift; sourceTree = "<group>"; };
 		D92E48B52CAFBD6F00B1FAC3 /* ObjectManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectManager.swift; sourceTree = "<group>"; };
 		D92E48D52CAFCD2400B1FAC3 /* OfflineAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAsset.swift; sourceTree = "<group>"; };
+		D9846D542CB406D000BFA875 /* AppDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDownloadManager.swift; sourceTree = "<group>"; };
 		D9BCDC1A2CB3EF9D009FF2AB /* DownloadListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadListView.swift; sourceTree = "<group>"; };
 		D9BCDC1D2CB3F02A009FF2AB /* OfflineAssetRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAssetRow.swift; sourceTree = "<group>"; };
 		D9BCDC1F2CB3F05E009FF2AB /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
@@ -382,6 +384,7 @@
 				8E6389C32A27277D00306FA4 /* ExampleApp.swift */,
 				8E6389C72A27278000306FA4 /* Assets.xcassets */,
 				8E6389C92A27278000306FA4 /* Preview Content */,
+				D9846D542CB406D000BFA875 /* AppDownloadManager.swift */,
 			);
 			path = Example;
 			sourceTree = "<group>";
@@ -726,6 +729,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D9BCDC242CB3F11E009FF2AB /* Time.swift in Sources */,
+				D9846D552CB406D000BFA875 /* AppDownloadManager.swift in Sources */,
 				8E6389C62A27277D00306FA4 /* ContentView.swift in Sources */,
 				8E6389C42A27277D00306FA4 /* ExampleApp.swift in Sources */,
 				D9BCDC1B2CB3EF9D009FF2AB /* DownloadListView.swift in Sources */,
