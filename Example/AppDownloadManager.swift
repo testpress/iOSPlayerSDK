@@ -29,6 +29,7 @@ class AppDownloadManager: TPStreamsDownloadDelegate, ObservableObject {
     }
 
     func onStart(offlineAsset: OfflineAsset) {
+        offlineAssets.append(offlineAsset)
         print("Download Start", offlineAsset.assetId)
     }
 
@@ -45,9 +46,18 @@ class AppDownloadManager: TPStreamsDownloadDelegate, ObservableObject {
         print("Offline Assets Updated")
     }
 
-    func onStateChange(offlineAsset: OfflineAsset) {
-        print("Downloads State Change")
-        getOfflineAssets()
+    func onStateChange(status: Status, offlineAsset: OfflineAsset) {
+        updateOfflineAsset(offlineAsset)
+    }
+    
+    func onProgressChange(assetId: String, percentage: Double) {
+        print("Downloads Progress Change")
+    }
+    
+    func updateOfflineAsset(_ offlineAsset: OfflineAsset) {
+        if let index = offlineAssets.firstIndex(where: { $0.assetId == offlineAsset.assetId }) {
+            offlineAssets[index] = offlineAsset
+        }
     }
 
     deinit {
