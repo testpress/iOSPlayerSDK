@@ -54,6 +54,8 @@ public class TPAVPlayer: AVPlayer {
         if (localOfflineAsset.status == "finished") {
             let avURLAsset = AVURLAsset(url: localOfflineAsset.downloadedFileURL!)
             self.setPlayerItem(avURLAsset)
+            self.setupCompletion?(nil)
+            self.initializationStatus = "ready"
         } else {
             self.setupCompletion?(TPStreamPlayerError.incompleteOfflineVideo)
             self.onError?(TPStreamPlayerError.incompleteOfflineVideo)
