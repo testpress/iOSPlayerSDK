@@ -123,7 +123,6 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
         guard let localOfflineAsset = activeDownloadsMap[assetDownloadTask] else { return }
         updateDownloadCompleteStatus(error, localOfflineAsset)
         activeDownloadsMap.removeValue(forKey: assetDownloadTask)
-        tpStreamsDownloadDelegate?.onComplete(offlineAsset: localOfflineAsset.asOfflineAsset())
     }
 
     func urlSession(_ session: URLSession, aggregateAssetDownloadTask: AVAggregateAssetDownloadTask, willDownloadTo location: URL) {
