@@ -58,13 +58,45 @@ public final class TPStreamsDownloadManager {
             srcURL: asset.video!.playbackURL,
             title: asset.title,
             resolution:videoQuality.resolution,
-            duration: 0,
+            duration: asset.video!.duration,
             bitRate: videoQuality.bitrate,
-            folderTree: ""
+            folderTree: asset.folderTree ?? ""
         )
         LocalOfflineAsset.manager.add(object: localOfflineAsset)
         assetDownloadDelegate.activeDownloadsMap[task] = localOfflineAsset
         task.resume()
+    }
+    
+    public func pauseDownload(_ assetId: String) {
+        guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: assetId) else {
+            print("Asset with ID \(assetId) does not exist.")
+            return
+        }
+
+        if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == localOfflineAsset })?.key {
+            task.suspend()
+            LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.paused.rawValue])
+        }
+    }
+    
+    public func resumeDownload(_ assetId: String) {
+        guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: assetId) else {
+            print("Asset with ID \(assetId) does not exist.")
+            return
+        }
+        
+        if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == localOfflineAsset })?.key {
+            if task.state != .running {
+                task.resume()
+                LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.inProgress.rawValue])
+            }
+        }
+    }
+    
+    public func getAllOfflineAssets() -> [OfflineAsset]{
+        return Array(LocalOfflineAsset.manager.getAll().map({ localOfflineAsset in
+            localOfflineAsset.asOfflineAsset()
+        }))
     }
 
 }

@@ -18,19 +18,21 @@ class StreamsAPIParser: APIParser {
 
         let video = parseVideo(from: responseDict["video"] as? [String: Any])
         let liveStream = parseLiveStream(from: responseDict["live_stream"] as? [String: Any])
+        let folderTree = responseDict["folder_tree"] as? String
 
-        return Asset(id: id, title: title, contentType: contentType, video: video, liveStream: liveStream)
+        return Asset(id: id, title: title, contentType: contentType, video: video, liveStream: liveStream, folderTree: folderTree)
     }
 
     func parseVideo(from dictionary: [String: Any]?) -> Video? {
         guard let videoDict = dictionary,
               let playbackURL = videoDict["playback_url"] as? String,
               let status = videoDict["status"] as? String,
+              let duration = videoDict["duration"] as? Double,
               let contentProtectionType = videoDict["content_protection_type"] as? String else {
             return nil
         }
         
-        return Video(playbackURL: playbackURL, status: status, drmEncrypted: contentProtectionType == "drm")
+        return Video(playbackURL: playbackURL, status: status, drmEncrypted: contentProtectionType == "drm", duration: duration)
     }
 
     func parseLiveStream(from dictionary: [String: Any]?) -> LiveStream? {
