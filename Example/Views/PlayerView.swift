@@ -9,32 +9,45 @@ import SwiftUI
 import TPStreamsSDK
 
 struct PlayerView: View {
-    var title: String
-    var assetId: String
-    var accessToken: String
+    var title: String? = nil
+    var assetId: String?  = nil
+    var accessToken: String?  = nil
+    var offlineAsset: OfflineAsset? = nil
     var body: some View {
         VStack {
-            let player = TPAVPlayer(assetID: assetId,accessToken: accessToken)
-            TPStreamPlayerView(player: player)
-                .frame(height: 240)
-                .navigationBarTitle(title)
-            Button(action: {
-                startOfflineDownload()
-            }) {
-                Text("Start Offline Download")
-                    .font(.headline)
-                    .padding()
-                    .foregroundColor(.white)
-                    .background(Color.blue)
-                    .cornerRadius(10)
+            if let offlineAsset = offlineAsset {
+                let player = TPAVPlayer(offlineAssetId: offlineAsset.assetId)
+                TPStreamPlayerView(player: player)
+                    .frame(height: 240)
+                    .navigationBarTitle(title ?? offlineAsset.title)
+                    .onDisappear {
+                        player.pause()
+                    }
+                Spacer()
+            } else if let assetId = assetId, let accessToken = accessToken {
+                let player = TPAVPlayer(assetID: assetId, accessToken: accessToken)
+                TPStreamPlayerView(player: player)
+                    .frame(height: 240)
+                    .navigationBarTitle(title ?? "")
+                    .onDisappear {
+                        player.pause()
+                    }
+                Button(action: {
+                    startOfflineDownload()
+                }) {
+                    Text("Start Offline Download")
+                        .font(.headline)
+                        .padding()
+                        .foregroundColor(.white)
+                        .background(Color.blue)
+                        .cornerRadius(10)
+                    Spacer()
+                }
             }
-            .padding(.top, 20)
-            Spacer()
         }
     }
     
     func startOfflineDownload() {
-         print("Starting offline download...")
-         TPStreamsDownloadManager.shared.startDownload(assetID: assetId, accessToken: accessToken, resolution: "240p")
-     }
+        TPStreamsDownloadManager.shared.startDownload(assetID: assetId!, accessToken: accessToken!, resolution: "240p")
+    }
 }

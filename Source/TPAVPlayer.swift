@@ -17,11 +17,11 @@ import M3U8Parser
 #endif
 
 public class TPAVPlayer: AVPlayer {
-    private var accessToken: String
-    private var assetID: String
+    private var accessToken: String?
+    private var assetID: String?
     public typealias SetupCompletion = (Error?) -> Void
     private var setupCompletion: SetupCompletion?
-    private var resourceLoaderDelegate: ResourceLoaderDelegate
+    private var resourceLoaderDelegate: ResourceLoaderDelegate?
     public var onError: ((Error) -> Void)?
     @objc internal dynamic var initializationStatus = "pending"
     internal var initializationError: Error?
@@ -47,8 +47,25 @@ public class TPAVPlayer: AVPlayer {
         fetchAsset()
     }
     
+    public init(offlineAssetId: String, completion: SetupCompletion? = nil) {
+        self.setupCompletion = completion
+        super.init()
+        guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: offlineAssetId) else { return }
+        if (localOfflineAsset.status == "finished") {
+            let avURLAsset = AVURLAsset(url: localOfflineAsset.downloadedFileURL!)
+            self.setPlayerItem(avURLAsset)
+            self.setupCompletion?(nil)
+            self.initializationStatus = "ready"
+        } else {
+            self.setupCompletion?(TPStreamPlayerError.incompleteOfflineVideo)
+            self.onError?(TPStreamPlayerError.incompleteOfflineVideo)
+            self.initializationError = TPStreamPlayerError.incompleteOfflineVideo
+            self.initializationStatus = "error"
+        }
+    }
+    
     private func fetchAsset() {
-        TPStreamsSDK.provider.API.getAsset(assetID, accessToken) { [weak self] asset, error in
+        TPStreamsSDK.provider.API.getAsset(assetID!, accessToken!) { [weak self] asset, error in
             guard let self = self else { return }
             
             if let asset = asset {
@@ -111,7 +128,7 @@ public class TPAVPlayer: AVPlayer {
     
     private func setupDRM(_ avURLAsset: AVURLAsset) {
         ContentKeyManager.shared.contentKeySession.addContentKeyRecipient(avURLAsset)
-        ContentKeyManager.shared.contentKeyDelegate.setAssetDetails(assetID, accessToken)
+        ContentKeyManager.shared.contentKeyDelegate.setAssetDetails(assetID!, accessToken!)
         ContentKeyManager.shared.contentKeyDelegate.onError = { error in
             self.initializationError = error
             self.onError?(error)
