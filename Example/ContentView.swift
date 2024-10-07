@@ -32,7 +32,6 @@ struct ContentView: View {
     }
     
     func startOfflineDownload() {
-        print("Starting offline download...")
         // https://app.tpstreams.com/embed/6eafqn/95hBGFAhQYR/?access_token=7d4e2ffb-3492-4cd4-8e5c-41b7af2f3e7f
         TPStreamsDownloadManager.shared.startDownload(assetID: "95hBGFAhQYR", accessToken: "7d4e2ffb-3492-4cd4-8e5c-41b7af2f3e7f", resolution: "240p")
     }
