@@ -9,18 +9,15 @@ import SwiftUI
 import TPStreamsSDK
 
 struct DownloadListView: View {
-    @State private var offlineAssets: [OfflineAsset] = []
+    @ObservedObject private var appDownloadManager = AppDownloadManager()
     
     var body: some View {
-        List($offlineAssets, id: \.self) { offlineAsset in
+        List($appDownloadManager.offlineAssets, id: \.self) { offlineAsset in
             OfflineAssetRow(offlineAsset: offlineAsset)
-        }
-        .onAppear {
-            offlineAssets = TPStreamsDownloadManager.shared.getAllOfflineAssets()
         }
         .overlay(
             Group {
-                if offlineAssets.isEmpty {
+                if appDownloadManager.offlineAssets.isEmpty {
                     Text("No downloads available")
                 }
             }
