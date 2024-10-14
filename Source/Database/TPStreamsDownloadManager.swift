@@ -29,7 +29,7 @@ public final class TPStreamsDownloadManager {
         self.tpStreamsDownloadDelegate = tpStreamsDownloadDelegate
         assetDownloadDelegate.tpStreamsDownloadDelegate = tpStreamsDownloadDelegate
     }
-    
+
     public func startDownload(assetID: String, accessToken: String, resolution: String) {
         TPStreamsSDK.provider.API.getAsset(assetID, accessToken) { [weak self] asset, error in
             guard let self = self else { return }

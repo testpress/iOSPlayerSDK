@@ -64,4 +64,12 @@ extension LocalOfflineAsset {
             folderTree: self.folderTree
         )
     }
+    
+    var downloadedFileURL: URL? {
+        if !self.downloadedPath.isEmpty{
+            let baseURL = URL(fileURLWithPath: NSHomeDirectory())
+            return baseURL.appendingPathComponent(self.downloadedPath)
+        }
+        return nil
+    }
 }
