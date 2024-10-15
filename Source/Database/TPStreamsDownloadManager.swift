@@ -48,7 +48,16 @@ public final class TPStreamsDownloadManager {
         if LocalOfflineAsset.manager.exists(id: asset.id) {
             return
         }
-
+        
+        if (asset.video?.drmEncrypted == true) {
+            
+            // fetch license and start download video
+        } else {
+            startDownloadTask(asset, videoQuality)
+        }
+    }
+    
+    private func startDownloadTask(_ asset: Asset, _ videoQuality: VideoQuality) {
         let avUrlAsset = AVURLAsset(url: URL(string: asset.video!.playbackURL)!)
 
         guard let task = assetDownloadURLSession.aggregateAssetDownloadTask(

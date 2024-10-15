@@ -13,6 +13,24 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
     var assetID: String?
     var accessToken: String?
     public var onError: ((Error) -> Void)?
+    var requestingPersistentKey = false
+    
+    lazy var contentKeyDirectory: URL = {
+        guard let documentURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            fatalError("Unable to determine document directory URL")
+        }
+
+        let contentKeyDirectory = documentURL.appendingPathComponent(".keys", isDirectory: true)
+        if !FileManager.default.fileExists(atPath: contentKeyDirectory.path, isDirectory: nil) {
+            do {
+                try FileManager.default.createDirectory(at: contentKeyDirectory, withIntermediateDirectories: false, attributes: nil)
+            } catch {
+                fatalError("Unable to create directory for content keys at path: \(contentKeyDirectory.path)")
+            }
+        }
+
+        return contentKeyDirectory
+    }()
     
     enum ProgramError: Error {
         case missingApplicationCertificate
@@ -25,6 +43,10 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
     
     func contentKeySession(_ session: AVContentKeySession, didProvideRenewingContentKeyRequest keyRequest: AVContentKeyRequest) {
         handleFPSKeyRequest(keyRequest)
+    }
+    
+    func contentKeySession(_ session: AVContentKeySession, didProvide keyRequest: AVPersistableContentKeyRequest) {
+        handlePersistableFPSKeyRequest(keyRequest: keyRequest)
     }
     
     func contentKeySession(_ session: AVContentKeySession, shouldRetry keyRequest: AVContentKeyRequest,
@@ -52,6 +74,25 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
             strongSelf.encryptedSPCMessageCallback(keyRequest, spcData, error)
         }
         requestEncryptedSPCMessage(keyRequest, encryptedSPCMessageCallback)
+    }
+    
+    func handlePersistableFPSKeyRequest(keyRequest: AVPersistableContentKeyRequest) {
+        guard let contentKeyURL = getPersistentContentKeyURL(),
+              let contentKey = FileManager.default.contents(atPath: contentKeyURL.path) else {
+            requestEncryptedSPCMessage(keyRequest) { [weak self] (spcData, error) in
+                self?.encryptedSPCMessageForPersistentKeyCallback(spcData, error, keyRequest)
+            }
+            return
+        }
+        
+        let keyResponse = AVContentKeyResponse(fairPlayStreamingKeyResponseData: contentKey)
+        keyRequest.processContentKeyResponse(keyResponse)
+    }
+    
+    func getPersistentContentKeyURL() -> URL?{
+        guard let contentID = self.contentID else { return nil }
+        
+        return contentKeyDirectory.appendingPathComponent("\(contentID)-Key")
     }
     
     func requestEncryptedSPCMessage(_ keyRequest: AVContentKeyRequest, _ encryptedSPCMessageCallback: @escaping (_ : Data?, _ : Error?) -> Void) {
@@ -95,6 +136,38 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
             let keyResponse = AVContentKeyResponse(fairPlayStreamingKeyResponseData: ckcData!)
             keyRequest.processContentKeyResponse(keyResponse)
         }
+    }
+    
+    func encryptedSPCMessageForPersistentKeyCallback(_ spcData: Data?, _ error: Error?, _ keyRequest: AVPersistableContentKeyRequest) {
+        guard let spcData = spcData else { return }
+        
+        self.requestCKC(spcData) { ckcData, error in
+            if let error = error {
+                keyRequest.processContentKeyResponseError(error)
+                return
+            }
+            guard let ckcData = ckcData else { return }
+            
+            do {
+                if self.requestingPersistentKey {
+                    let persistentKey = try keyRequest.persistableContentKey(fromKeyVendorResponse: ckcData, options: nil)
+                    try self.writePersistableContentKey(contentKey: persistentKey)
+                }
+                
+                let keyResponse = AVContentKeyResponse(fairPlayStreamingKeyResponseData: ckcData)
+                keyRequest.processContentKeyResponse(keyResponse)
+            } catch {
+                print(error)
+            }
+            
+            self.requestingPersistentKey = false
+        }
+    }
+    
+    func writePersistableContentKey(contentKey: Data) throws {
+        guard let fileURL = getPersistentContentKeyURL() else { return }
+        
+        try contentKey.write(to: fileURL, options: Data.WritingOptions.atomicWrite)
     }
     
     func requestCKC(_ spcData: Data, _ completion: @escaping(Data?, Error?) -> Void) {

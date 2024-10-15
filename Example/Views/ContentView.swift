@@ -16,7 +16,8 @@ struct ContentView: View {
                 Text("Sample videos")
                     .font(.title)
                     .padding()
-                nonDRMNavigationLink(title: "Non-DRM-1", assetId: "95hBGFAhQYR", accessToken: "7d4e2ffb-3492-4cd4-8e5c-41b7af2f3e7f")
+                // https://app.tpstreams.com/embed/6eafqn/7RKQZj4gB2T/?access_token=d4986429-20e2-4b21-93ae-c70630a37e06
+                nonDRMNavigationLink(title: "DRM-1", assetId: "7RKQZj4gB2T", accessToken: "d4986429-20e2-4b21-93ae-c70630a37e06")
                 nonDRMNavigationLink(title: "Non-DRM-2", assetId: "72c9RRHj3M8", accessToken: "47c686d7-a50b-41f9-b2cd-0660960c357f")
                 nonDRMNavigationLink(title: "Non-DRM-3", assetId: "9JRmKJXZSMe", accessToken: "1ae5e10e-fc85-4aa9-9a0a-6c195e9b0034")
                 downloadListNavigationLink()

@@ -23,6 +23,9 @@ struct PlayerView: View {
                     .onDisappear {
                         player.pause()
                     }
+                    .onAppear {
+                        player.play()
+                    }
                 Spacer()
             } else if let assetId = assetId, let accessToken = accessToken {
                 let player = TPAVPlayer(assetID: assetId, accessToken: accessToken)
@@ -31,6 +34,9 @@ struct PlayerView: View {
                     .navigationBarTitle(title ?? "")
                     .onDisappear {
                         player.pause()
+                    }
+                    .onAppear {
+                        player.play()
                     }
                 Button(action: {
                     startOfflineDownload()
