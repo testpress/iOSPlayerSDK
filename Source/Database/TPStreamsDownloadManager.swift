@@ -35,7 +35,7 @@ public final class TPStreamsDownloadManager {
             guard let self = self else { return }
             if let asset = asset {
                 //TODO Create video quality object (dummy for now, can be implemented later)
-                let videoQuality = VideoQuality.init(resolution: resolution, bitrate: 100)
+                let videoQuality = VideoQuality.init(resolution: resolution, bitrate: 4611200)
                 startDownload(asset: asset, videoQuality: videoQuality)
             } else if let error = error{
                 print (error)
@@ -132,13 +132,11 @@ public final class TPStreamsDownloadManager {
         LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.deleted.rawValue])
         tpStreamsDownloadDelegate?.onDelete(assetId: localOfflineAsset.assetId)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-            self.deleteDownloadedFile(localOfflineAsset.downloadedFileURL!) { success, error in
-                if success {
-                    LocalOfflineAsset.manager.delete(id: localOfflineAsset.assetId)
-                } else {
-                    print("An error occurred trying to delete the contents on disk for \(localOfflineAsset.assetId): \(String(describing: error))")
-                }
+        self.deleteDownloadedFile(localOfflineAsset.downloadedFileURL!) { success, error in
+            if success {
+                LocalOfflineAsset.manager.delete(id: localOfflineAsset.assetId)
+            } else {
+                print("An error occurred trying to delete the contents on disk for \(localOfflineAsset.assetId): \(String(describing: error))")
             }
         }
     }
