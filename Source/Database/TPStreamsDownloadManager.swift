@@ -35,7 +35,7 @@ public final class TPStreamsDownloadManager {
             guard let self = self else { return }
             if let asset = asset {
                 //TODO Create video quality object (dummy for now, can be implemented later)
-                let videoQuality = VideoQuality.init(resolution: resolution, bitrate: 519200)
+                let videoQuality = VideoQuality.init(resolution: resolution, bitrate: 4611200)
                 startDownload(asset: asset, videoQuality: videoQuality)
             } else if let error = error{
                 print (error)
@@ -105,6 +105,21 @@ public final class TPStreamsDownloadManager {
         }
     }
     
+    public func deleteDownload(_ offlineAssetId: String) {
+        guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: offlineAssetId),
+              localOfflineAsset.status == Status.finished.rawValue,
+              localOfflineAsset.downloadedFileURL != nil else { return }
+        let localOfflineAssetId = localOfflineAsset.assetId
+        let downloadedFileURL = localOfflineAsset.downloadedFileURL
+        do {
+            LocalOfflineAsset.manager.delete(id: localOfflineAssetId)
+            tpStreamsDownloadDelegate?.onDelete(assetId: localOfflineAssetId)
+            try FileManager.default.removeItem(at: downloadedFileURL!)
+        } catch {
+            print("An error occured trying to delete the contents on disk for \(localOfflineAssetId): \(error)")
+        }
+    }
+    
     public func getAllOfflineAssets() -> [OfflineAsset]{
         return Array(LocalOfflineAsset.manager.getAll().map({ localOfflineAsset in
             localOfflineAsset.asOfflineAsset()
@@ -168,6 +183,7 @@ public protocol TPStreamsDownloadDelegate {
     func onStart(offlineAsset: OfflineAsset)
     func onPause(offlineAsset: OfflineAsset)
     func onResume(offlineAsset: OfflineAsset)
+    func onDelete(assetId: String)
     func onProgressChange(assetId: String, percentage: Double)
     func onStateChange(status: Status, offlineAsset: OfflineAsset)
 }

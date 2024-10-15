@@ -40,6 +40,11 @@ class AppDownloadManager: TPStreamsDownloadDelegate, ObservableObject {
     func onResume(offlineAsset: OfflineAsset) {
         print("Download Resume", offlineAsset.assetId)
     }
+    
+    func onDelete(assetId: String) {
+        getOfflineAssets()
+        print("on Delete", assetId)
+    }
 
     @objc func handleOfflineAssetsUpdated() {
         getOfflineAssets()

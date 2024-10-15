@@ -34,6 +34,13 @@ public class ObjectManager<T: Object> {
         return object != nil
     }
     
+    func delete(id: Any) {
+         try! realm.write {
+             guard let deleteObject = get(id: id) else { return }
+             realm.delete(deleteObject)
+         }
+     }
+    
     func getAll() -> Results<T> {
         return realm.objects(T.self)
     }
