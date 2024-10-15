@@ -35,7 +35,7 @@ public final class TPStreamsDownloadManager {
             guard let self = self else { return }
             if let asset = asset {
                 //TODO Create video quality object (dummy for now, can be implemented later)
-                let videoQuality = VideoQuality.init(resolution: resolution, bitrate: 4611200)
+                let videoQuality = VideoQuality.init(resolution: resolution, bitrate: 100)
                 startDownload(asset: asset, videoQuality: videoQuality)
             } else if let error = error{
                 print (error)
@@ -105,25 +105,66 @@ public final class TPStreamsDownloadManager {
         }
     }
     
+    internal func deletePartiallyDeletedVideos() {
+        LocalOfflineAsset.manager.getAll().filter { localOfflineAsset in
+            localOfflineAsset.status == Status.deleted.rawValue
+        }.forEach { localOfflineAsset in
+            guard let downloadedFileURL = localOfflineAsset.downloadedFileURL else {
+                print("No downloaded file URL for asset \(localOfflineAsset.assetId). Skipping deletion.")
+                return
+            }
+            
+            self.deleteDownloadedFile(downloadedFileURL) { success, error in
+                if success {
+                    LocalOfflineAsset.manager.delete(id: localOfflineAsset.assetId)
+                } else {
+                    print("An error occurred trying to delete the contents on disk for \(localOfflineAsset.assetId): \(String(describing: error))")
+                }
+            }
+        }
+    }
+    
     public func deleteDownload(_ offlineAssetId: String) {
         guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: offlineAssetId),
               localOfflineAsset.status == Status.finished.rawValue,
               localOfflineAsset.downloadedFileURL != nil else { return }
-        let localOfflineAssetId = localOfflineAsset.assetId
-        let downloadedFileURL = localOfflineAsset.downloadedFileURL
-        do {
-            LocalOfflineAsset.manager.delete(id: localOfflineAssetId)
-            tpStreamsDownloadDelegate?.onDelete(assetId: localOfflineAssetId)
-            try FileManager.default.removeItem(at: downloadedFileURL!)
-        } catch {
-            print("An error occured trying to delete the contents on disk for \(localOfflineAssetId): \(error)")
+        
+        LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.deleted.rawValue])
+        tpStreamsDownloadDelegate?.onDelete(assetId: localOfflineAsset.assetId)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+            self.deleteDownloadedFile(localOfflineAsset.downloadedFileURL!) { success, error in
+                if success {
+                    LocalOfflineAsset.manager.delete(id: localOfflineAsset.assetId)
+                } else {
+                    print("An error occurred trying to delete the contents on disk for \(localOfflineAsset.assetId): \(String(describing: error))")
+                }
+            }
         }
     }
     
-    public func getAllOfflineAssets() -> [OfflineAsset]{
-        return Array(LocalOfflineAsset.manager.getAll().map({ localOfflineAsset in
-            localOfflineAsset.asOfflineAsset()
-        }))
+    private func deleteDownloadedFile(_ downloadedFileURL: URL, completion: @escaping (Bool, Error?) -> Void) {
+        DispatchQueue.global(qos: .background).async {
+            do {
+                try FileManager.default.removeItem(at: downloadedFileURL)
+                DispatchQueue.main.async {
+                    completion(true, nil)
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    completion(false, error)
+                }
+            }
+        }
+    }
+    
+    public func getAllOfflineAssets() -> [OfflineAsset] {
+        // This method retrieves all offline assets from the local storage.
+        // It filters out any assets that have a status of 'deleted',
+        // ensuring that only available (non-deleted) video assets are returned.
+        return LocalOfflineAsset.manager.getAll()
+            .filter { $0.status != Status.deleted.rawValue }
+            .map { $0.asOfflineAsset() }
     }
 
 }
