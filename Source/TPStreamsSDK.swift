@@ -30,6 +30,7 @@ public class TPStreamsSDK {
         self.activateAudioSession()
         self.initializeSentry()
         self.initializeDatabase()
+        self.removePartiallyDeletedVideos()
     }
     
     private static func activateAudioSession() {
@@ -59,6 +60,10 @@ public class TPStreamsSDK {
     private static func initializeDatabase() {
         let config = Realm.Configuration(schemaVersion: 1)
         Realm.Configuration.defaultConfiguration = config
+    }
+    
+    private static func removePartiallyDeletedVideos() {
+        TPStreamsDownloadManager.shared.removePartiallyDeletedVideos()
     }
 }
 

@@ -29,4 +29,5 @@ public enum Status: String {
     case paused = "paused"
     case finished = "finished"
     case failed = "failed"
+    case deleted = "deleted"
 }
