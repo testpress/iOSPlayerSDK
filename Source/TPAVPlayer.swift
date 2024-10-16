@@ -35,8 +35,8 @@ public class TPAVPlayer: AVPlayer {
             fatalError("You must call TPStreamsSDK.initialize")
         }
         
-        if accessToken.isEmpty || assetID.isEmpty {
-            fatalError("AccessToken/AssetID cannot be empty")
+        if assetID.isEmpty {
+            fatalError("AssetID cannot be empty")
         }
         self.accessToken = accessToken
         self.assetID = assetID

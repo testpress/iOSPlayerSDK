@@ -43,7 +43,14 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
     }
     
     func fetchEncryptionKey(from url: URL, completion: @escaping (Data) -> Void) {
-        let dataTask = URLSession.shared.dataTask(with: url) { data, _, _ in
+        var request = URLRequest(url: url)
+        
+        // Add Authorization header if authToken is available and non-empty
+        if let authToken = TPStreamsSDK.authToken, !authToken.isEmpty {
+            request.addValue("JWT \(authToken)", forHTTPHeaderField: "Authorization")
+        }
+        
+        let dataTask = URLSession.shared.dataTask(with: request) { data, _, _ in
             if let data = data {
                 completion(data)
             }
