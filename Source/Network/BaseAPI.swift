@@ -22,14 +22,17 @@ class BaseAPI {
     static func getAsset(_ assetID: String, _ accessToken: String, completion: @escaping (Asset?, Error?) -> Void) {
         let url = URL(string: String(format: VIDEO_DETAIL_API, TPStreamsSDK.orgCode!, assetID, accessToken))!
         
-        AF.request(url).responseData { response in
-            switch response.result {
-            case .success(let data):
-                handleResponse(response, data, completion)
-            case .failure(let error):
-                handleNetworkFailure(error, completion)
+        let headers: HTTPHeaders = (TPStreamsSDK.authToken?.isEmpty == false) ? ["Authorization": "JWT \(TPStreamsSDK.authToken!)"] : [:]
+        
+        AF.request(url, headers: headers)
+            .responseData { response in
+                switch response.result {
+                case .success(let data):
+                    handleResponse(response, data, completion)
+                case .failure(let error):
+                    handleNetworkFailure(error, completion)
+                }
             }
-        }
     }
     
     static func getDRMLicense(_ assetID: String, _ accessToken: String, _ spcData: Data, _ contentID: String, _ completion:@escaping(Data?, Error?) -> Void) -> Void {
@@ -40,9 +43,14 @@ class BaseAPI {
             "assetId" : contentID
         ] as [String : String]
         
-        let headers: HTTPHeaders = [
+        var headers: HTTPHeaders = [
             .contentType("application/json")
         ]
+        
+        // Add Authorization header if authToken is available and non-empty
+        if let authToken = TPStreamsSDK.authToken, !authToken.isEmpty {
+            headers["Authorization"] = "JWT \(authToken)"
+        }
         
         AF.request(url, method: .post, parameters: parameters, encoder: JSONParameterEncoder.prettyPrinted, headers: headers).responseData { response in
             switch response.result {
