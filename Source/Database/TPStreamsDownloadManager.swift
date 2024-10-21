@@ -105,6 +105,24 @@ public final class TPStreamsDownloadManager {
         }
     }
     
+    public func cancelDownload(_ assetId: String) {
+        guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: assetId) else {
+            print("Asset with ID \(assetId) does not exist.")
+            return
+        }
+        
+        if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == localOfflineAsset })?.key {
+            task.cancel()
+            self.deleteDownloadedFile(localOfflineAsset.downloadedFileURL!) { success, error in
+                if success {
+                    LocalOfflineAsset.manager.delete(id: localOfflineAsset.assetId)
+                } else {
+                    print("An error occurred trying to delete the contents on disk for \(localOfflineAsset.assetId): \(String(describing: error))")
+                }
+            }
+        }
+    }
+    
     internal func removePartiallyDeletedVideos() {
         LocalOfflineAsset.manager.getAll().filter { localOfflineAsset in
             localOfflineAsset.status == Status.deleted.rawValue
@@ -200,11 +218,24 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
     }
 
     private func updateDownloadCompleteStatus(_ error: Error?,_ localOfflineAsset: LocalOfflineAsset) {
-        let status: Status = (error == nil) ? .finished : .failed
+        let status: Status = {
+            switch error {
+            case nil:
+                return .finished
+            case let nsError as NSError where nsError.code == NSURLErrorCancelled:
+                return .deleted
+            default:
+                return .failed
+            }
+        }()
         let updateValues: [String: Any] = ["status": status.rawValue, "downloadedAt": Date()]
         LocalOfflineAsset.manager.update(object: localOfflineAsset, with: updateValues)
-        tpStreamsDownloadDelegate?.onComplete(offlineAsset: localOfflineAsset.asOfflineAsset())
-        tpStreamsDownloadDelegate?.onStateChange(status: status, offlineAsset: localOfflineAsset.asOfflineAsset())
+        if status == Status.deleted {
+            tpStreamsDownloadDelegate?.onCanceled(assetId: localOfflineAsset.assetId)
+        } else {
+            tpStreamsDownloadDelegate?.onComplete(offlineAsset: localOfflineAsset.asOfflineAsset())
+            tpStreamsDownloadDelegate?.onStateChange(status: status, offlineAsset: localOfflineAsset.asOfflineAsset())
+        }
     }
 
     private func calculateDownloadPercentage(_ loadedTimeRanges: [NSValue], _ timeRangeExpectedToLoad: CMTimeRange) -> Double {
@@ -222,6 +253,7 @@ public protocol TPStreamsDownloadDelegate {
     func onStart(offlineAsset: OfflineAsset)
     func onPause(offlineAsset: OfflineAsset)
     func onResume(offlineAsset: OfflineAsset)
+    func onCanceled(assetId: String)
     func onDelete(assetId: String)
     func onProgressChange(assetId: String, percentage: Double)
     func onStateChange(status: Status, offlineAsset: OfflineAsset)
