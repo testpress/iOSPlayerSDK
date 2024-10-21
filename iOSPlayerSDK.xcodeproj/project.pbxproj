@@ -32,7 +32,7 @@
 		03B8090E2A2DFC0F00AB3D03 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B8090D2A2DFC0F00AB3D03 /* Assets.xcassets */; };
 		03B8FD902A690CAA00DAB7AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B8FD8F2A690CAA00DAB7AE /* AppDelegate.swift */; };
 		03B8FD922A690CAA00DAB7AE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B8FD912A690CAA00DAB7AE /* SceneDelegate.swift */; };
-		03B8FD942A690CAA00DAB7AE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B8FD932A690CAA00DAB7AE /* ViewController.swift */; };
+		03B8FD942A690CAA00DAB7AE /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B8FD932A690CAA00DAB7AE /* PlayerViewController.swift */; };
 		03B8FD972A690CAA00DAB7AE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03B8FD952A690CAA00DAB7AE /* Main.storyboard */; };
 		03B8FD992A690CAD00DAB7AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B8FD982A690CAD00DAB7AE /* Assets.xcassets */; };
 		03B8FD9C2A690CAD00DAB7AE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03B8FD9A2A690CAD00DAB7AE /* LaunchScreen.storyboard */; };
@@ -68,6 +68,7 @@
 		8EDE99AF2A2643B000E43EA9 /* TPStreamsSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */; };
 		8EDE99B42A2643B000E43EA9 /* iOSPlayerSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */; };
 		8EDE99B52A2643B000E43EA9 /* iOSPlayerSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 8EDE99A72A2643B000E43EA9 /* iOSPlayerSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D927AF262CC635F9004600ED /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D927AF252CC635F9004600ED /* MainViewController.swift */; };
 		D92E48AD2CAFBCFB00B1FAC3 /* OfflineAssetEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92E48AC2CAFBCFB00B1FAC3 /* OfflineAssetEntity.swift */; };
 		D92E48B62CAFBD6F00B1FAC3 /* ObjectManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92E48B52CAFBD6F00B1FAC3 /* ObjectManager.swift */; };
 		D92E48D62CAFCD2400B1FAC3 /* OfflineAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92E48D52CAFCD2400B1FAC3 /* OfflineAsset.swift */; };
@@ -175,7 +176,7 @@
 		03B8FD8D2A690CAA00DAB7AE /* StoryboardExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StoryboardExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		03B8FD8F2A690CAA00DAB7AE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		03B8FD912A690CAA00DAB7AE /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		03B8FD932A690CAA00DAB7AE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		03B8FD932A690CAA00DAB7AE /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
 		03B8FD962A690CAA00DAB7AE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		03B8FD982A690CAD00DAB7AE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		03B8FD9B2A690CAD00DAB7AE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -210,6 +211,7 @@
 		8EDE99AE2A2643B000E43EA9 /* iOSPlayerSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSPlayerSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSPlayerSDKTests.swift; sourceTree = "<group>"; };
 		D904B1DD2B3C5BAC00A7E26C /* TPStreamsSDK.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TPStreamsSDK.xctestplan; sourceTree = "<group>"; };
+		D927AF252CC635F9004600ED /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		D92E48AC2CAFBCFB00B1FAC3 /* OfflineAssetEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAssetEntity.swift; sourceTree = "<group>"; };
 		D92E48B52CAFBD6F00B1FAC3 /* ObjectManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectManager.swift; sourceTree = "<group>"; };
 		D92E48D52CAFCD2400B1FAC3 /* OfflineAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAsset.swift; sourceTree = "<group>"; };
@@ -307,11 +309,12 @@
 			children = (
 				03B8FD8F2A690CAA00DAB7AE /* AppDelegate.swift */,
 				03B8FD912A690CAA00DAB7AE /* SceneDelegate.swift */,
-				03B8FD932A690CAA00DAB7AE /* ViewController.swift */,
+				03B8FD932A690CAA00DAB7AE /* PlayerViewController.swift */,
 				03B8FD952A690CAA00DAB7AE /* Main.storyboard */,
 				03B8FD982A690CAD00DAB7AE /* Assets.xcassets */,
 				03B8FD9A2A690CAD00DAB7AE /* LaunchScreen.storyboard */,
 				03B8FD9D2A690CAD00DAB7AE /* Info.plist */,
+				D927AF252CC635F9004600ED /* MainViewController.swift */,
 			);
 			path = StoryboardExample;
 			sourceTree = "<group>";
@@ -718,9 +721,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				03B8FD942A690CAA00DAB7AE /* ViewController.swift in Sources */,
+				03B8FD942A690CAA00DAB7AE /* PlayerViewController.swift in Sources */,
 				03B8FD902A690CAA00DAB7AE /* AppDelegate.swift in Sources */,
 				03B8FD922A690CAA00DAB7AE /* SceneDelegate.swift in Sources */,
+				D927AF262CC635F9004600ED /* MainViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
