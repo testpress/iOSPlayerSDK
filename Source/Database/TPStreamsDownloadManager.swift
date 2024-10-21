@@ -115,7 +115,6 @@ public final class TPStreamsDownloadManager {
             task.cancel()
             self.deleteDownloadedFile(localOfflineAsset.downloadedFileURL!) { success, error in
                 if success {
-                    print("Success")
                     LocalOfflineAsset.manager.delete(id: localOfflineAsset.assetId)
                 } else {
                     print("An error occurred trying to delete the contents on disk for \(localOfflineAsset.assetId): \(String(describing: error))")
