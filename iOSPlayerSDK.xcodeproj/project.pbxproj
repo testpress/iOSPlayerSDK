@@ -68,6 +68,7 @@
 		8EDE99AF2A2643B000E43EA9 /* TPStreamsSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */; };
 		8EDE99B42A2643B000E43EA9 /* iOSPlayerSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */; };
 		8EDE99B52A2643B000E43EA9 /* iOSPlayerSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 8EDE99A72A2643B000E43EA9 /* iOSPlayerSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D91453032CC68A2C009E416C /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = D91453022CC68A2C009E416C /* Time.swift */; };
 		D927AF262CC635F9004600ED /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D927AF252CC635F9004600ED /* MainViewController.swift */; };
 		D92AD0D42CC6665400C15694 /* DownloadListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92AD0D32CC6665400C15694 /* DownloadListViewController.swift */; };
 		D92AD0D62CC66DAC00C15694 /* AppDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92AD0D52CC66DAC00C15694 /* AppDownloadManager.swift */; };
@@ -213,6 +214,7 @@
 		8EDE99AE2A2643B000E43EA9 /* iOSPlayerSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSPlayerSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSPlayerSDKTests.swift; sourceTree = "<group>"; };
 		D904B1DD2B3C5BAC00A7E26C /* TPStreamsSDK.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TPStreamsSDK.xctestplan; sourceTree = "<group>"; };
+		D91453022CC68A2C009E416C /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		D927AF252CC635F9004600ED /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		D92AD0D32CC6665400C15694 /* DownloadListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadListViewController.swift; sourceTree = "<group>"; };
 		D92AD0D52CC66DAC00C15694 /* AppDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDownloadManager.swift; sourceTree = "<group>"; };
@@ -311,6 +313,7 @@
 		03B8FD8E2A690CAA00DAB7AE /* StoryboardExample */ = {
 			isa = PBXGroup;
 			children = (
+				D91453012CC68A18009E416C /* Utils */,
 				03B8FD8F2A690CAA00DAB7AE /* AppDelegate.swift */,
 				03B8FD912A690CAA00DAB7AE /* SceneDelegate.swift */,
 				03B8FD932A690CAA00DAB7AE /* PlayerViewController.swift */,
@@ -492,6 +495,14 @@
 				D9BCDC252CB3F51E009FF2AB /* TPStreamsDownloadManagerTests.swift */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		D91453012CC68A18009E416C /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				D91453022CC68A2C009E416C /* Time.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		D92E48AA2CAFBCDB00B1FAC3 /* Database */ = {
@@ -729,6 +740,7 @@
 			files = (
 				03B8FD942A690CAA00DAB7AE /* PlayerViewController.swift in Sources */,
 				03B8FD902A690CAA00DAB7AE /* AppDelegate.swift in Sources */,
+				D91453032CC68A2C009E416C /* Time.swift in Sources */,
 				D92AD0D42CC6665400C15694 /* DownloadListViewController.swift in Sources */,
 				D92AD0D62CC66DAC00C15694 /* AppDownloadManager.swift in Sources */,
 				03B8FD922A690CAA00DAB7AE /* SceneDelegate.swift in Sources */,

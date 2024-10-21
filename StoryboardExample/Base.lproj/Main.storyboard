@@ -134,43 +134,73 @@
                                 <rect key="frame" x="0.0" y="103" width="393" height="715"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="downloadCell" rowHeight="85" id="gIQ-0r-XYi" customClass="DownloadTableViewCell" customModule="StoryboardExample" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="50" width="393" height="85"/>
-                                        <autoresizingMask key="autoresizingMask"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="downloadCell" translatesAutoresizingMaskIntoConstraints="NO" id="gIQ-0r-XYi" customClass="DownloadTableViewCell" customModule="StoryboardExample" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="50" width="393" height="150.33332824707031"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="gIQ-0r-XYi" id="3dq-S6-NU3">
-                                            <rect key="frame" x="0.0" y="0.0" width="393" height="85"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="150"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                             <subviews>
-                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" id="ji1-qh-1i8">
-                                                    <rect key="frame" x="0.0" y="0.0" width="393" height="77"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <stackView opaque="NO" contentMode="center" axis="vertical" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="ji1-qh-1i8">
+                                                    <rect key="frame" x="0.0" y="0.0" width="393" height="127"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="abd-Gk-wQE">
-                                                            <rect key="frame" x="0.0" y="0.0" width="393" height="20.666666666666668"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="41.333333333333336" height="20.333333333333332"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="nTX-dY-oe7">
-                                                            <rect key="frame" x="0.0" y="36.666666666666664" width="393" height="4"/>
+                                                            <rect key="frame" x="0.0" y="36.333333333333336" width="393" height="4"/>
                                                         </progressView>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4xU-Q2-fMi">
-                                                            <rect key="frame" x="0.0" y="56.666666666666664" width="393" height="20.333333333333336"/>
+                                                            <rect key="frame" x="0.0" y="56.333333333333336" width="41.333333333333336" height="20.333333333333336"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
+                                                        <stackView opaque="NO" contentMode="scaleToFill" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="Qih-oN-Soz">
+                                                            <rect key="frame" x="0.0" y="92.666666666666671" width="393" height="34.333333333333329"/>
+                                                            <subviews>
+                                                                <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y91-Ka-eqm">
+                                                                    <rect key="frame" x="16.000000000000007" y="0.0" width="109.66666666666669" height="34.333333333333336"/>
+                                                                    <state key="normal" title="Button"/>
+                                                                    <buttonConfiguration key="configuration" style="filled" title="Play"/>
+                                                                </button>
+                                                                <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M0p-un-KbZ">
+                                                                    <rect key="frame" x="141.66666666666666" y="0.0" width="109.66666666666666" height="34.333333333333336"/>
+                                                                    <state key="normal" title="Button"/>
+                                                                    <buttonConfiguration key="configuration" style="filled" title="Cancel"/>
+                                                                </button>
+                                                                <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gCX-Fw-Es6">
+                                                                    <rect key="frame" x="267.33333333333331" y="0.0" width="109.66666666666669" height="34.333333333333336"/>
+                                                                    <state key="normal" title="Button"/>
+                                                                    <buttonConfiguration key="configuration" style="filled" title="Delete"/>
+                                                                </button>
+                                                            </subviews>
+                                                            <edgeInsets key="layoutMargins" top="0.0" left="16" bottom="0.0" right="16"/>
+                                                        </stackView>
                                                     </subviews>
+                                                    <constraints>
+                                                        <constraint firstAttribute="trailing" secondItem="nTX-dY-oe7" secondAttribute="trailing" id="2bI-ch-WtF"/>
+                                                        <constraint firstItem="Qih-oN-Soz" firstAttribute="leading" secondItem="ji1-qh-1i8" secondAttribute="leading" id="6DL-fr-JbN"/>
+                                                        <constraint firstItem="nTX-dY-oe7" firstAttribute="leading" secondItem="ji1-qh-1i8" secondAttribute="leading" id="6vs-1E-bwf"/>
+                                                        <constraint firstAttribute="trailing" secondItem="Qih-oN-Soz" secondAttribute="trailing" id="Fe2-p4-B1E"/>
+                                                    </constraints>
                                                 </stackView>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="ji1-qh-1i8" firstAttribute="top" secondItem="3dq-S6-NU3" secondAttribute="top" id="RHf-k0-k9e"/>
-                                                <constraint firstAttribute="trailing" secondItem="ji1-qh-1i8" secondAttribute="trailing" id="lid-UX-ReL"/>
+                                                <constraint firstAttribute="height" constant="150" id="RpG-XT-5kv"/>
+                                                <constraint firstAttribute="trailing" secondItem="ji1-qh-1i8" secondAttribute="trailing" id="fZE-6j-mfy"/>
                                                 <constraint firstItem="ji1-qh-1i8" firstAttribute="leading" secondItem="3dq-S6-NU3" secondAttribute="leading" id="oEs-Hz-v8d"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="cancel" destination="M0p-un-KbZ" id="uS0-k6-49v"/>
+                                            <outlet property="delete" destination="gCX-Fw-Es6" id="Jgr-Vb-AV4"/>
                                             <outlet property="infoLabel" destination="4xU-Q2-fMi" id="dx9-bD-15Y"/>
+                                            <outlet property="play" destination="y91-Ka-eqm" id="xSV-50-cnO"/>
                                             <outlet property="progressView" destination="nTX-dY-oe7" id="zGH-Lx-ElM"/>
                                             <outlet property="titleLabel" destination="abd-Gk-wQE" id="zI9-cz-JUS"/>
                                         </connections>
@@ -180,7 +210,7 @@
                             <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="maO-pQ-SK2">
                                 <rect key="frame" x="0.0" y="59" width="393" height="44"/>
                                 <items>
-                                    <navigationItem title="Title" id="YhD-c9-slC">
+                                    <navigationItem title="Downloads" id="YhD-c9-slC">
                                         <barButtonItem key="leftBarButtonItem" title="Back" id="hu8-ua-IXy">
                                             <connections>
                                                 <action selector="backButtonTapped:" destination="Cxk-Ku-YR9" id="FgH-fN-7kU"/>

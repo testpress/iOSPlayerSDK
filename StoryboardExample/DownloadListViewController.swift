@@ -7,16 +7,15 @@
 
 import UIKit
 import Combine
+import TPStreamsSDK
 
 class DownloadListViewController: UIViewController {
-
+    
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var backButton: UIBarButtonItem!
     var downloadManager: AppDownloadManager?
     var cancellables: Set<AnyCancellable> = []
-
-    var downloads = ["Download 1", "Download 2", "Download 3"]
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         initializeDownloadManager()
@@ -44,35 +43,79 @@ extension DownloadListViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return downloadManager?.offlineAssets.count ?? 0
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "downloadCell", for: indexPath) as? DownloadTableViewCell else {
             return UITableViewCell()
         }
-
+        
         if let offlineAsset = downloadManager?.offlineAssets[indexPath.row] {
             cell.titleLabel.text = offlineAsset.title
-            cell.infoLabel.text = "Download Status: \(offlineAsset.status)"
+            cell.infoLabel.text = "\(formatDate(date: offlineAsset.createdAt)) • \(formatDuration(seconds: offlineAsset.duration)) • \(String(format: "%.2f MB", offlineAsset.size / 8 / 1024 / 1024)) • \(offlineAsset.status)"
             
             let progress = (offlineAsset.percentageCompleted / 100)
             cell.progressView.progress = Float(progress)
+            
+            switch offlineAsset.status {
+            case Status.inProgress.rawValue:
+                cell.cancel.isHidden = false
+                cell.play.isHidden = true
+                cell.delete.isHidden = true
+            case Status.finished.rawValue:
+                cell.cancel.isHidden = true
+                cell.play.isHidden = false
+                cell.delete.isHidden = false
+            default:
+                cell.cancel.isHidden = false
+                cell.play.isHidden = false
+                cell.delete.isHidden = false
+            }
+            
+            cell.cancel.tag = indexPath.row
+            cell.cancel.addTarget(self, action: #selector(cancelDownload(_:)), for: .touchUpInside)
+            
+            cell.delete.tag = indexPath.row
+            cell.delete.addTarget(self, action: #selector(deleteDownload(_:)), for: .touchUpInside)
+            
+            cell.play.tag = indexPath.row
+            cell.play.addTarget(self, action: #selector(playDownload(_:)), for: .touchUpInside)
         }
-
+        
         return cell
     }
+    
+    @objc func cancelDownload(_ sender: UIButton) {
+        let index = sender.tag
+        if let offlineAsset = downloadManager?.offlineAssets[index] {
+            TPStreamsDownloadManager.shared.cancelDownload(offlineAsset.assetId)
+        }
+    }
 
-    // MARK: - UITableViewDelegate
+    @objc func deleteDownload(_ sender: UIButton) {
+        let index = sender.tag
+        if let offlineAsset = downloadManager?.offlineAssets[index] {
+            TPStreamsDownloadManager.shared.deleteDownload(offlineAsset.assetId)
+        }
+    }
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // Handle cell selection if needed
-        tableView.deselectRow(at: indexPath, animated: true)
+    @objc func playDownload(_ sender: UIButton) {
+        let index = sender.tag
+        if let offlineAsset = downloadManager?.offlineAssets[index] {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            if let playerVC = storyboard.instantiateViewController(withIdentifier: "PlayerViewController") as? PlayerViewController {
+                playerVC.assistId = offlineAsset.assetId
+                playerVC.modalPresentationStyle = .fullScreen
+                present(playerVC, animated: true, completion: nil)
+            }
+        }
     }
 }
-
-import UIKit
 
 class DownloadTableViewCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var infoLabel: UILabel!
     @IBOutlet weak var progressView: UIProgressView!
+    @IBOutlet weak var cancel: UIButton!
+    @IBOutlet weak var delete: UIButton!
+    @IBOutlet weak var play: UIButton!
 }
