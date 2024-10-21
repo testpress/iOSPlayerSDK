@@ -9,8 +9,11 @@ import UIKit
 import TPStreamsSDK
 import AVKit
 
-class ViewController: UIViewController {
+class PlayerViewController: UIViewController {
     @IBOutlet weak var playerContainer: UIView!
+    @IBOutlet weak var backButton: UIBarButtonItem!
+    var assistId: String?
+    var accessToken: String?
     
     var player: TPAVPlayer?
     var playerViewController: TPStreamPlayerViewController?
@@ -22,7 +25,7 @@ class ViewController: UIViewController {
     }
     
     func setupPlayerView(){
-        player = TPAVPlayer(assetID: "8r65J7EY6NP", accessToken: "c4936043-816a-4404-b165-d7336672e7a7"){ error in
+        player = TPAVPlayer(assetID: assistId!, accessToken: accessToken!){ error in
             guard error == nil else {
                 print("Setup error: \(error!.localizedDescription)")
                 return
@@ -48,9 +51,13 @@ class ViewController: UIViewController {
         playerContainer.addSubview(playerViewController!.view)
         playerViewController!.view.frame = playerContainer.bounds
     }
+    
+    @IBAction func backButtonTapped(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
+    }
 }
 
-extension ViewController: TPStreamPlayerViewControllerDelegate {
+extension PlayerViewController: TPStreamPlayerViewControllerDelegate {
     func willEnterFullScreenMode() {
         print("willEnterFullScreenMode")
     }
