@@ -25,13 +25,24 @@ class PlayerViewController: UIViewController {
     }
     
     func setupPlayerView(){
-        player = TPAVPlayer(assetID: assistId!, accessToken: accessToken!){ error in
-            guard error == nil else {
-                print("Setup error: \(error!.localizedDescription)")
-                return
-            }
+        if (accessToken == nil){
+            player = TPAVPlayer(offlineAssetId:assistId!){ error in
+                guard error == nil else {
+                    print("Setup error: \(error!.localizedDescription)")
+                    return
+                }
 
-            print("TPAVPlayer setup successfully")
+                print("TPAVPlayer setup successfully")
+            }
+        } else {
+            player = TPAVPlayer(assetID: assistId!, accessToken: accessToken!){ error in
+                guard error == nil else {
+                    print("Setup error: \(error!.localizedDescription)")
+                    return
+                }
+
+                print("TPAVPlayer setup successfully")
+            }
         }
         playerViewController = TPStreamPlayerViewController()
         playerViewController?.player = player
@@ -53,6 +64,7 @@ class PlayerViewController: UIViewController {
     }
     
     @IBAction func backButtonTapped(_ sender: Any) {
+        player?.pause()
         dismiss(animated: true, completion: nil)
     }
 }

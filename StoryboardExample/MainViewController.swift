@@ -28,8 +28,11 @@ class MainViewController: UIViewController {
     }
     
     @IBAction func downloadsTapped(_ sender: UIButton) {
-        // Open Download List view
-        print("Button 4 tapped")
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let downloadListVC = storyboard.instantiateViewController(withIdentifier: "DownloadListViewController") as? DownloadListViewController {
+            downloadListVC.modalPresentationStyle = .fullScreen
+            present(downloadListVC, animated: true, completion: nil)
+        }
     }
     
     private func presentPlayerViewController(assistId: String, accessToken: String) {
