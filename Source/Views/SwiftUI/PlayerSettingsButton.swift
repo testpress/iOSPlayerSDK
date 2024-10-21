@@ -29,7 +29,7 @@ struct PlayerSettingsButton: View {
             return ActionSheet(
                 title: Text("Settings"),
                 message: nil,
-                buttons: [playbackSpeedButton(), videoQualityButton(), .cancel()]
+                buttons: [playbackSpeedButton(), videoQualityButton(), downloadQualityButton(), .cancel()]
             )
         case .playbackSpeed:
             return ActionSheet(
@@ -42,6 +42,12 @@ struct PlayerSettingsButton: View {
                 title: Text("Video Quality"),
                 message: nil,
                 buttons: videoQualityOptions() + [.cancel()]
+            )
+        case .downloadQuality:
+            return ActionSheet(
+                title: Text("Download Quality"),
+                message: nil,
+                buttons: downloadQualityOptions() + [.cancel()]
             )
         }
     }
@@ -64,6 +70,15 @@ struct PlayerSettingsButton: View {
         }
     }
     
+    private func downloadQualityButton() -> ActionSheet.Button {
+        return .default(Text("Download")) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.showOptions = true
+                self.currentMenu = .downloadQuality
+            }
+        }
+    }
+    
     private func playbackSpeedOptions() -> [ActionSheet.Button] {
         let playbackSpeeds = PlaybackSpeed.allCases
         return playbackSpeeds.map { speed in
@@ -80,6 +95,17 @@ struct PlayerSettingsButton: View {
                 }
         }
     }
+    
+    private func downloadQualityOptions() -> [ActionSheet.Button] {
+        var availableVideoQualities = player.availableVideoQualities
+        // Remove Auto Quality from the Array
+        availableVideoQualities.remove(at: 0)
+        return availableVideoQualities.map { downloadQuality in
+                .default(Text(downloadQuality.resolution)) {
+                    TPStreamsDownloadManager.shared.startDownload(asset: player.asset!, videoQuality: downloadQuality)
+                }
+        }
+    }
 }
 
-enum SettingsMenu { case main, playbackSpeed, videoQuality }
+enum SettingsMenu { case main, playbackSpeed, videoQuality, downloadQuality }
