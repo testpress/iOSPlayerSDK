@@ -10,11 +10,16 @@ import SwiftUI
 @available(iOS 14.0, *)
 struct MediaControlsView: View {
     @EnvironmentObject var player: TPStreamPlayerObservable
+    private var playerViewConfig: TPStreamPlayerConfiguration
+    
+    init(playerViewConfig: TPStreamPlayerConfiguration){
+        self.playerViewConfig = playerViewConfig
+    }
     
     var body: some View {
         HStack() {
             Spacer()
-            Button(action: { player.rewind() }) {
+            Button(action: { player.rewind(playerViewConfig.preferredRewindDuration) }) {
                 Image("rewind", bundle: bundle)
                     .resizable()
                     .frame(width: 40, height: 40)
@@ -34,7 +39,7 @@ struct MediaControlsView: View {
                 }
             }
             Spacer()
-            Button(action: {player.forward()}) {
+            Button(action: {player.forward(playerViewConfig.preferredForwardDuration)}) {
                 Image("forward", bundle: bundle)
                     .resizable()
                     .frame(width: 40, height: 40)

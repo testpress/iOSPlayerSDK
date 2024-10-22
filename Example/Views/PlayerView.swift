@@ -17,7 +17,13 @@ struct PlayerView: View {
         VStack {
             if let offlineAsset = offlineAsset {
                 let player = TPAVPlayer(offlineAssetId: offlineAsset.assetId)
-                TPStreamPlayerView(player: player)
+                let playerViewConfig = TPStreamPlayerConfigurationBuilder()
+                    .setPreferredForwardDuration(15)
+                    .setPreferredRewindDuration(5)
+                    .setprogressBarThumbColor(.systemBlue)
+                    .setwatchedProgressTrackColor(.systemBlue)
+                    .build()
+                TPStreamPlayerView(player: player, playerViewConfig: playerViewConfig)
                     .frame(height: 240)
                     .navigationBarTitle(title ?? offlineAsset.title)
                     .onDisappear {
@@ -26,7 +32,13 @@ struct PlayerView: View {
                 Spacer()
             } else if let assetId = assetId, let accessToken = accessToken {
                 let player = TPAVPlayer(assetID: assetId, accessToken: accessToken)
-                TPStreamPlayerView(player: player)
+                let playerViewConfig = TPStreamPlayerConfigurationBuilder()
+                    .setPreferredForwardDuration(15)
+                    .setPreferredRewindDuration(5)
+                    .setprogressBarThumbColor(.systemBlue)
+                    .setwatchedProgressTrackColor(.systemBlue)
+                    .build()
+                TPStreamPlayerView(player: player, playerViewConfig: playerViewConfig)
                     .frame(height: 240)
                     .navigationBarTitle(title ?? "")
                     .onDisappear {

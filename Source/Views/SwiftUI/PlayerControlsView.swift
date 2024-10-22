@@ -6,9 +6,11 @@ struct PlayerControlsView: View {
     @State private var showControls = false
     @State private var controlsHideTimer: Timer?
     @Binding private var isFullscreen: Bool
+    private var playerViewConfig: TPStreamPlayerConfiguration
     
-    init(player: TPAVPlayer, isFullscreen: Binding<Bool>){
+    init(player: TPAVPlayer, isFullscreen: Binding<Bool>, playerViewConfig: TPStreamPlayerConfiguration){
         _player = StateObject(wrappedValue: TPStreamPlayerObservable(player: player))
+        self.playerViewConfig = playerViewConfig
         _isFullscreen = isFullscreen
     }
     
@@ -17,14 +19,14 @@ struct PlayerControlsView: View {
             if showControls {
                 PlayerSettingsButton()
                 Spacer()
-                MediaControlsView()
+                MediaControlsView(playerViewConfig: playerViewConfig)
                 Spacer()
                 HStack {
                     TimeIndicatorView()
                     Spacer()
                     fullscreenButton()
                 }.padding(.horizontal, 10)
-                PlayerProgressBar()
+                PlayerProgressBar(playerViewConfig: playerViewConfig)
                     .padding(.bottom, isFullscreen ? 36 : 0)
             }
         }
@@ -63,7 +65,8 @@ struct TPVideoPlayerControls_Previews: PreviewProvider {
                 assetID: "dummy",
                 accessToken: "dummy"
             ),
-            isFullscreen: .constant(true)
+            isFullscreen: .constant(true),
+            playerViewConfig: TPStreamPlayerConfigurationBuilder().build()
         ).background(Color.black)
     }
 }
