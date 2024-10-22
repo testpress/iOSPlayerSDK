@@ -150,12 +150,23 @@ class PlayerControlsUIView: UIView {
     @IBAction func showOptionsMenu(_ sender: Any) {
         let optionsMenu = UIAlertController(title: nil, message: nil, preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
         optionsMenu.addAction(UIAlertAction(title: "Playback Speed", style: .default) { _ in self.showPlaybackSpeedMenu()})
-        optionsMenu.addAction(UIAlertAction(title: "Video Quality", style: .default, handler: { action in self.showVideoQualityMenu()}))
-        optionsMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        if playerConfig.showDownloadOption {
-            optionsMenu.addAction(UIAlertAction(title: "Download", style: .default, handler: { action in self.showDownloadQualityMenu()}))
+        if !player.player.isPlaybackOffline {
+            addOnlinePlaybackButtons(to: optionsMenu)
         }
+        optionsMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         parentViewController?.present(optionsMenu, animated: true, completion: nil)
+    }
+    
+    private func addOnlinePlaybackButtons(to menu: UIAlertController) {
+        menu.addAction(UIAlertAction(title: "Video Quality", style: .default) { _ in
+            self.showVideoQualityMenu()
+        })
+        
+        if playerConfig.showDownloadOption {
+            menu.addAction(UIAlertAction(title: "Download", style: .default) { _ in
+                self.showDownloadQualityMenu()
+            })
+        }
     }
     
     func showPlaybackSpeedMenu(){

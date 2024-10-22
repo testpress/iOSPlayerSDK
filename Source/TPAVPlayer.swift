@@ -27,6 +27,7 @@ public class TPAVPlayer: AVPlayer {
     internal var initializationError: Error?
     internal var asset: Asset? = nil
     private var reachability: Reachability?
+    internal var isPlaybackOffline: Bool = false
     
     public var availableVideoQualities: [VideoQuality] = [VideoQuality(resolution:"Auto", bitrate: 0)]
     
@@ -45,6 +46,7 @@ public class TPAVPlayer: AVPlayer {
         
         super.init()
         fetchAsset()
+        isPlaybackOffline = false
     }
     
     public init(offlineAssetId: String, completion: SetupCompletion? = nil) {
@@ -62,6 +64,7 @@ public class TPAVPlayer: AVPlayer {
             self.initializationError = TPStreamPlayerError.incompleteOfflineVideo
             self.initializationStatus = "error"
         }
+        isPlaybackOffline = true
     }
     
     private func fetchAsset() {

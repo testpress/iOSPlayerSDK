@@ -58,15 +58,23 @@ struct PlayerSettingsButton: View {
     }
     
     private func getMainActionSheetButtons() -> [ActionSheet.Button] {
-        var actionButtons: [ActionSheet.Button] = [playbackSpeedButton(), videoQualityButton()]
+        var actionButtons: [ActionSheet.Button] = [playbackSpeedButton()]
         
-        if playerConfig.showDownloadOption {
-            actionButtons.append(downloadQualityButton())
+        if !player.player.isPlaybackOffline {
+            addOnlinePlaybackButtons(to: &actionButtons)
         }
         
         actionButtons.append(.cancel())
         
         return actionButtons
+    }
+
+    private func addOnlinePlaybackButtons(to buttons: inout [ActionSheet.Button]) {
+        buttons.append(videoQualityButton())
+        
+        if playerConfig.showDownloadOption {
+            buttons.append(downloadQualityButton())
+        }
     }
     
     private func playbackSpeedButton() -> ActionSheet.Button {
