@@ -5,6 +5,11 @@ struct PlayerProgressBar: View {
     @EnvironmentObject var player: TPStreamPlayerObservable
     @State private var isDragging = false
     @State private var draggedLocation: Float64?
+    private var playerViewConfig: TPStreamPlayerConfiguration
+    
+    init(playerViewConfig: TPStreamPlayerConfiguration){
+        self.playerViewConfig = playerViewConfig
+    }
     
     var body: some View {
         GeometryReader { geometry in
@@ -19,12 +24,12 @@ struct PlayerProgressBar: View {
                         calculateWidthForValue(value: player.bufferedDuration, geometry: geometry)), height: 2.5)
                 
                 Rectangle()
-                    .foregroundColor(Color.red)
+                    .foregroundColor(Color(playerViewConfig.watchedProgressTrackColor))
                     .frame(width: CGFloat(calculateWidthForValue(value: player.observedCurrentTime ?? 0, geometry: geometry)), height: 2.5)
                 
                 
                 Circle()
-                    .fill(Color.red)
+                    .fill(Color(playerViewConfig.progressBarThumbColor))
                     .frame(width: 12, height: 12)
                     .scaleEffect(isDragging ? 1.8 : 1.0)
                     .offset(x: isDragging ? draggedLocation! : calculateWidthForValue(value: player.observedCurrentTime ?? 0, geometry: geometry))

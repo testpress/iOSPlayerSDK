@@ -10,9 +10,11 @@ import SwiftUI
 @available(iOS 14.0, *)
 public struct TPStreamPlayerView: View {
     @StateObject private var viewModel: TPStreamPlayerViewModel
+    private var playerViewConfig: TPStreamPlayerConfiguration
     
-    public init(player: TPAVPlayer) {
+    public init(player: TPAVPlayer, playerViewConfig: TPStreamPlayerConfiguration = TPStreamPlayerConfigurationBuilder().build()) {
         _viewModel = StateObject(wrappedValue: TPStreamPlayerViewModel(player: player))
+        self.playerViewConfig = playerViewConfig
     }
     
     public var body: some View {
@@ -22,7 +24,7 @@ public struct TPStreamPlayerView: View {
                     NoticeView(message: message)
                 } else if viewModel.player.initializationStatus == "ready" {
                     AVPlayerBridge(player: viewModel.player)
-                    PlayerControlsView(player: viewModel.player, isFullscreen: $viewModel.isFullScreen)
+                    PlayerControlsView(player: viewModel.player, isFullscreen: $viewModel.isFullScreen, playerViewConfig: playerViewConfig)
                 }
             }
             .padding(.horizontal, viewModel.isFullScreen ? 48 : 0)
