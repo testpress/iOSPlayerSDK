@@ -37,6 +37,7 @@ struct PlayerView: View {
                     .setPreferredRewindDuration(5)
                     .setprogressBarThumbColor(.systemBlue)
                     .setwatchedProgressTrackColor(.systemBlue)
+                    .showDownloadOption()
                     .build()
                 TPStreamPlayerView(player: player, playerViewConfig: playerViewConfig)
                     .frame(height: 240)
