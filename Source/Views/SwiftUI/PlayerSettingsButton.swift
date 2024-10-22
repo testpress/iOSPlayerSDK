@@ -6,6 +6,11 @@ struct PlayerSettingsButton: View {
     @State private var currentMenu: SettingsMenu = .main
     
     @EnvironmentObject var player: TPStreamPlayerObservable
+    private var playerConfig: TPStreamPlayerConfiguration
+    
+    init(playerConfig: TPStreamPlayerConfiguration){
+        self.playerConfig = playerConfig
+    }
     
     var body: some View {
         HStack {
@@ -29,7 +34,7 @@ struct PlayerSettingsButton: View {
             return ActionSheet(
                 title: Text("Settings"),
                 message: nil,
-                buttons: [playbackSpeedButton(), videoQualityButton(), downloadQualityButton(), .cancel()]
+                buttons: getMainActionSheetButtons()
             )
         case .playbackSpeed:
             return ActionSheet(
@@ -50,6 +55,18 @@ struct PlayerSettingsButton: View {
                 buttons: downloadQualityOptions() + [.cancel()]
             )
         }
+    }
+    
+    private func getMainActionSheetButtons() -> [ActionSheet.Button] {
+        var actionButtons: [ActionSheet.Button] = [playbackSpeedButton(), videoQualityButton()]
+        
+        if playerConfig.showDownloadOption {
+            actionButtons.append(downloadQualityButton())
+        }
+        
+        actionButtons.append(.cancel())
+        
+        return actionButtons
     }
     
     private func playbackSpeedButton() -> ActionSheet.Button {

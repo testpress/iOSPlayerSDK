@@ -17,7 +17,7 @@ struct PlayerControlsView: View {
     var body: some View {
         VStack{
             if showControls {
-                PlayerSettingsButton()
+                PlayerSettingsButton(playerConfig: playerViewConfig)
                 Spacer()
                 MediaControlsView(playerViewConfig: playerViewConfig)
                 Spacer()

@@ -152,7 +152,9 @@ class PlayerControlsUIView: UIView {
         optionsMenu.addAction(UIAlertAction(title: "Playback Speed", style: .default) { _ in self.showPlaybackSpeedMenu()})
         optionsMenu.addAction(UIAlertAction(title: "Video Quality", style: .default, handler: { action in self.showVideoQualityMenu()}))
         optionsMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        optionsMenu.addAction(UIAlertAction(title: "Download", style: .default, handler: { action in self.showDownloadQualityMenu()}))
+        if playerConfig.showDownloadOption {
+            optionsMenu.addAction(UIAlertAction(title: "Download", style: .default, handler: { action in self.showDownloadQualityMenu()}))
+        }
         parentViewController?.present(optionsMenu, animated: true, completion: nil)
     }
     
