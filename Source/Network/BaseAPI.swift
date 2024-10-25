@@ -22,6 +22,8 @@ class BaseAPI {
     static func getAsset(_ assetID: String, _ accessToken: String, completion: @escaping (Asset?, Error?) -> Void) {
         let url = URL(string: String(format: VIDEO_DETAIL_API, TPStreamsSDK.orgCode!, assetID, accessToken))!
         
+        print(url)
+        
         let headers: HTTPHeaders = (TPStreamsSDK.authToken?.isEmpty == false) ? ["Authorization": "JWT \(TPStreamsSDK.authToken!)"] : [:]
         
         AF.request(url, headers: headers)
@@ -37,6 +39,8 @@ class BaseAPI {
     
     static func getDRMLicense(_ assetID: String, _ accessToken: String, _ spcData: Data, _ contentID: String, _ completion:@escaping(Data?, Error?) -> Void) -> Void {
         let url = URL(string: String(format: DRM_LICENSE_API, TPStreamsSDK.orgCode!, assetID, accessToken))!
+        
+        print(url)
         
         let parameters = [
             "spc": spcData.base64EncodedString(),
