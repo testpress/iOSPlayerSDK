@@ -60,7 +60,10 @@ public class TPStreamsSDK {
     }
     
     private static func initializeDatabase() {
-        let config = Realm.Configuration(schemaVersion: 1)
+        var config = Realm.Configuration(schemaVersion: 1)
+        config.fileURL!.deleteLastPathComponent()
+        config.fileURL!.appendPathComponent("TPStreamsPlayerSDK")
+        config.fileURL!.appendPathExtension("realm")
         Realm.Configuration.defaultConfiguration = config
     }
     
