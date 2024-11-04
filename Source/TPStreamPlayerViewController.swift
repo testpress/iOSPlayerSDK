@@ -170,14 +170,14 @@ public class TPStreamPlayerViewController: UIViewController {
         noticeMessageLabel.text = message
     }
     
-    func enterFullScreen() {
+    public func enterFullScreen() {
         delegate?.willEnterFullScreenMode()
         changeOrientation(orientation: .landscape)
         resizeContainerToWindow()
         delegate?.didEnterFullScreenMode()
     }
     
-    func exitFullScreen() {
+    public func exitFullScreen() {
         delegate?.willExitFullScreenMode()
         changeOrientation(orientation: .portrait)
         resizeContainerToParentView()
