@@ -164,30 +164,30 @@ public class TPStreamPlayerViewController: UIViewController {
         showNotice(withMessage: message)
     }
     
-    private func showNotice(withMessage message: String){
+    public func showNotice(withMessage message: String){
         noticeView.isHidden = false
         containerView.bringSubviewToFront(noticeView)
         noticeMessageLabel.text = message
-    }
-    
-    public func enterFullScreen() {
-        delegate?.willEnterFullScreenMode()
-        changeOrientation(orientation: .landscape)
-        resizeContainerToWindow()
-        delegate?.didEnterFullScreenMode()
-    }
-    
-    public func exitFullScreen() {
-        delegate?.willExitFullScreenMode()
-        changeOrientation(orientation: .portrait)
-        resizeContainerToParentView()
-        delegate?.didExitFullScreenMode()
     }
 }
 
 
 extension TPStreamPlayerViewController: FullScreenToggleDelegate {
 
+    func enterFullScreen() {
+        delegate?.willEnterFullScreenMode()
+        changeOrientation(orientation: .landscape)
+        resizeContainerToWindow()
+        delegate?.didEnterFullScreenMode()
+    }
+    
+    func exitFullScreen() {
+        delegate?.willExitFullScreenMode()
+        changeOrientation(orientation: .portrait)
+        resizeContainerToParentView()
+        delegate?.didExitFullScreenMode()
+    }
+    
     func resizeContainerToWindow(){
         if let window = UIApplication.shared.keyWindow{
             containerView.removeFromSuperview()
