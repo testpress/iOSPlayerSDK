@@ -23,7 +23,7 @@ class LocalOfflineAsset: Object {
     @Persisted var size: Double = 0.0
     @Persisted var folderTree: String = ""
     @Persisted var drmContentId: String? = nil
-    
+
     static var manager = ObjectManager<LocalOfflineAsset>()
 }
 
@@ -66,6 +66,35 @@ extension LocalOfflineAsset {
         )
     }
     
+    func asAsset() -> Asset {
+        guard let downloadedFileURL = downloadedFileURL else {
+            fatalError("downloadedFileURL is nil")
+        }
+
+        let isDrmEncrypted = !contentID.isEmpty
+        let playbackURLString = downloadedFileURL.absoluteString
+
+        let video = Video(
+            playbackURL: playbackURLString,
+            status: self.status,
+            drmEncrypted: isDrmEncrypted,
+            duration: self.duration
+        )
+
+        var asset: Asset = Asset(
+            id: self.assetId,
+            title: self.title,
+            contentType: "video",
+            video: video,
+            liveStream: nil,
+            folderTree: self.folderTree
+        )
+
+        asset.playbackURL = playbackURLString
+
+        return asset
+    }
+
     var downloadedFileURL: URL? {
         if !self.downloadedPath.isEmpty{
             let baseURL = URL(fileURLWithPath: NSHomeDirectory())

@@ -35,8 +35,8 @@ class BaseAPI {
             }
     }
     
-    static func getDRMLicense(_ assetID: String, _ accessToken: String, _ spcData: Data, _ contentID: String, _ completion:@escaping(Data?, Error?) -> Void) -> Void {
-        let url = URL(string: String(format: DRM_LICENSE_API, TPStreamsSDK.orgCode!, assetID, accessToken))!
+    static func getDRMLicense(_ assetID: String, _ accessToken: String, _ spcData: Data, _ contentID: String, _ forOfflinePlayback: Bool, _ completion:@escaping(Data?, Error?) -> Void) -> Void {
+        let url = URL(string: String(format: DRM_LICENSE_API, TPStreamsSDK.orgCode!, assetID, accessToken, (forOfflinePlayback == true ? "true" : "false")))!
         
         let parameters = [
             "spc": spcData.base64EncodedString(),

@@ -111,6 +111,10 @@ class PlayerControlsUIView: UIView {
     }
     
     @IBAction func playOrPauseButton(_ sender: Any) {
+        print("currentTimeInSeconds", player.player.currentTimeInSeconds)
+        print("currentTimeInSeconds", player.currentTime)
+        print("currentTimeInSeconds playableDuration", player.playableDuration)
+        
         if player.status == "paused" {
             player.play()
         } else if player.status == "ended" {
@@ -244,7 +248,7 @@ class PlayerControlsUIView: UIView {
     
     func createActionForDownload(_ quality: VideoQuality) -> UIAlertAction {
         let action = UIAlertAction(title: quality.resolution, style: .default, handler: { (_) in
-            TPStreamsDownloadManager.shared.startDownload(asset: self.player.asset!, videoQuality: quality)
+            TPStreamsDownloadManager.shared.startDownload(asset: self.player.asset!, videoQuality: quality, accessToken: self.player.player!.accessToken!)
         })
 
         return action

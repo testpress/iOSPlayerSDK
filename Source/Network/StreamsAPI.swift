@@ -13,7 +13,7 @@ class StreamsAPI: BaseAPI {
     }
     
     class override var DRM_LICENSE_API: String {
-        return "https://app.tpstreams.com/api/v1/%@/assets/%@/drm_license/?access_token=%@&drm_type=fairplay"
+        return "https://app.tpstreams.com/api/v1/%@/assets/%@/drm_license/?access_token=%@&drm_type=fairplay&download=%@"
     }
     
     override class var parser: APIParser {

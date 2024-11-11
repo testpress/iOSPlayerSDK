@@ -16,7 +16,8 @@ class MainViewController: UIViewController {
     @IBOutlet weak var downloads: UIButton!
     
     @IBAction func sample1Tapped(_ sender: UIButton) {
-        presentPlayerViewController(assistId: "95hBGFAhQYR", accessToken: "7d4e2ffb-3492-4cd4-8e5c-41b7af2f3e7f")
+        // https://app.tpstreams.com/embed/g2udjm/7T8MstHRh8u/?access_token=7367f42f-42a8-4058-96e7-844efc8bb596
+        presentPlayerViewController(assistId: "7T8MstHRh8u", accessToken: "7367f42f-42a8-4058-96e7-844efc8bb596")
     }
     
     @IBAction func sample2Tapped(_ sender: UIButton) {

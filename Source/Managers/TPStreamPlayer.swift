@@ -57,9 +57,13 @@ class TPStreamPlayer: NSObject {
     private func observeCurrentItemChanges(){
         // We're asynchronously setting the `currentItem` in the TPAVPlayer once the asset is fetched via network.
         // So we adding observers on `currentItem` once it has been set.
-        
+        if player .currentItem != nil {
+            self.observePlayerBufferingStatusChange()
+            self.observeVideoEnd()
+        }
         currentItemChangeObservation = player.observe(\.currentItem, options: [.new]) { [weak self] (_, _) in
             guard let self = self else { return }
+            print("observeCurrentItemChanges2")
             self.observePlayerBufferingStatusChange()
             self.observeVideoEnd()
         }
@@ -113,6 +117,7 @@ class TPStreamPlayer: NSObject {
                 handleBufferStatusChange(of: playerItem, keyPath: keyPath)
             }
         case #keyPath(AVPlayerItem.duration):
+            print("AVPlayerItem.duration")
             isVideoDurationInitialized = true
         default:
             break
