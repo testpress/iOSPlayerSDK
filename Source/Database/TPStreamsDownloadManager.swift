@@ -78,54 +78,48 @@ public final class TPStreamsDownloadManager {
     }
 
     internal func startDownload(asset: Asset, videoQuality: VideoQuality, accessToken: String) {
+        contentKeyDelegate.setAssetDetails(asset.id, accessToken, true)
         if LocalOfflineAsset.manager.exists(id: asset.id) {
             return
         }
         
-        extractContentIDFromMasterURL(masterURL: URL(string: asset.video!.playbackURL)!) { result in
-            switch result {
-            case .success(let contentID):
-                
-                
-                
-                let avUrlAsset = AVURLAsset(url: URL(string: asset.video!.playbackURL)!)
-                
-                guard let task = self.assetDownloadURLSession.aggregateAssetDownloadTask(
-                    with: avUrlAsset,
-                    mediaSelections: [avUrlAsset.preferredMediaSelection],
-                    assetTitle: asset.title,
-                    assetArtworkData: nil,
-                    options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: videoQuality.bitrate]
-                ) else { return }
-                
-                let localOfflineAsset = LocalOfflineAsset.create(
-                    assetId: asset.id,
-                    srcURL: asset.video!.playbackURL,
-                    title: asset.title,
-                    resolution: videoQuality.resolution,
-                    duration: asset.video!.duration,
-                    bitRate: videoQuality.bitrate,
-                    folderTree: asset.folderTree ?? ""
-                )
-                // Optionally store the content ID
-                localOfflineAsset.contentID = contentID
-                
-                LocalOfflineAsset.manager.add(object: localOfflineAsset)
-                self.assetDownloadDelegate.activeDownloadsMap[task] = localOfflineAsset
-                task.resume()
-                self.tpStreamsDownloadDelegate?.onStart(offlineAsset: localOfflineAsset.asOfflineAsset())
-                self.tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: localOfflineAsset.asOfflineAsset())
-                
-                if (asset.video?.drmEncrypted == true){
+        let avUrlAsset = AVURLAsset(url: URL(string: asset.video!.playbackURL)!)
+        
+        guard let task = self.assetDownloadURLSession.aggregateAssetDownloadTask(
+            with: avUrlAsset,
+            mediaSelections: [avUrlAsset.preferredMediaSelection],
+            assetTitle: asset.title,
+            assetArtworkData: nil,
+            options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: videoQuality.bitrate]
+        ) else { return }
+        
+        let localOfflineAsset = LocalOfflineAsset.create(
+            assetId: asset.id,
+            srcURL: asset.video!.playbackURL,
+            title: asset.title,
+            resolution: videoQuality.resolution,
+            duration: asset.video!.duration,
+            bitRate: videoQuality.bitrate,
+            folderTree: asset.folderTree ?? ""
+        )
+        
+        LocalOfflineAsset.manager.add(object: localOfflineAsset)
+        self.assetDownloadDelegate.activeDownloadsMap[task] = localOfflineAsset
+        task.resume()
+        self.tpStreamsDownloadDelegate?.onStart(offlineAsset: localOfflineAsset.asOfflineAsset())
+        self.tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: localOfflineAsset.asOfflineAsset())
+        
+        if (asset.video?.drmEncrypted == true){
+            extractContentIDFromMasterURL(masterURL: URL(string: asset.video!.playbackURL)!) { result in
+                switch result {
+                case .success(let contentID):
+                    LocalOfflineAsset.manager.update(id: asset.id, with: ["contentID": contentID])
                     self.requestPersistentKey(localOfflineAsset.assetId, accessToken)
+                case .failure(let error):
+                    print("Error extracting content ID: \(error.localizedDescription)")
                 }
-            case .failure(let error):
-                print("Error extracting content ID: \(error.localizedDescription)")
             }
         }
-        
-        
-        
     }
 
     func extractContentIDFromMasterURL(masterURL: URL, completion: @escaping (Result<String, Error>) -> Void) {

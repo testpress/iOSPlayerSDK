@@ -22,7 +22,6 @@ extension ContentKeyDelegate {
             }
             return
         }
-        
         let keyResponse = AVContentKeyResponse(fairPlayStreamingKeyResponseData: contentKey)
         keyRequest.processContentKeyResponse(keyResponse)
     }
