@@ -8,7 +8,7 @@
 import Foundation
 
 struct Video{
-    var playbackURL: String
+    let playbackURL: String
     let status: String
     let drmEncrypted: Bool
     let duration: Double

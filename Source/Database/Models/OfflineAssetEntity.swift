@@ -81,7 +81,7 @@ extension LocalOfflineAsset {
             duration: self.duration
         )
 
-        var asset: Asset = Asset(
+        let asset: Asset = Asset(
             id: self.assetId,
             title: self.title,
             contentType: "video",
@@ -89,8 +89,6 @@ extension LocalOfflineAsset {
             liveStream: nil,
             folderTree: self.folderTree
         )
-
-        asset.playbackURL = playbackURLString
 
         return asset
     }
