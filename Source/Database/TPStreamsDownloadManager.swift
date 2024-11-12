@@ -36,7 +36,7 @@ public final class TPStreamsDownloadManager {
         self.tpStreamsDownloadDelegate = tpStreamsDownloadDelegate
         assetDownloadDelegate.tpStreamsDownloadDelegate = tpStreamsDownloadDelegate
     }
-    
+
     public func isAssetDownloaded(assetID: String) -> Bool {
         if let localOfflineAsset = LocalOfflineAsset.manager.get(id: assetID),
            localOfflineAsset.status == Status.finished.rawValue {
@@ -45,12 +45,12 @@ public final class TPStreamsDownloadManager {
         return false
     }
 
-    internal func startDownload(asset: Asset, videoQuality: VideoQuality) {
-
-        if LocalOfflineAsset.manager.exists(id: asset.id) {
+    internal func startDownload(player: TPAVPlayer, videoQuality: VideoQuality) {
+        contentKeyDelegate.setAssetDetails(player.assetID, player.accessToken, true)
+        if LocalOfflineAsset.manager.exists(id: player.assetID!) {
             return
         }
-
+        let asset = player.asset!
         let avUrlAsset = AVURLAsset(url: URL(string: asset.video!.playbackURL)!)
 
         guard let task = assetDownloadURLSession.aggregateAssetDownloadTask(
@@ -75,110 +75,18 @@ public final class TPStreamsDownloadManager {
         task.resume()
         tpStreamsDownloadDelegate?.onStart(offlineAsset: localOfflineAsset.asOfflineAsset())
         tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: localOfflineAsset.asOfflineAsset())
-    }
-
-    internal func startDownload(asset: Asset, videoQuality: VideoQuality, accessToken: String) {
-        contentKeyDelegate.setAssetDetails(asset.id, accessToken, true)
-        if LocalOfflineAsset.manager.exists(id: asset.id) {
-            return
-        }
-        
-        let avUrlAsset = AVURLAsset(url: URL(string: asset.video!.playbackURL)!)
-        
-        guard let task = self.assetDownloadURLSession.aggregateAssetDownloadTask(
-            with: avUrlAsset,
-            mediaSelections: [avUrlAsset.preferredMediaSelection],
-            assetTitle: asset.title,
-            assetArtworkData: nil,
-            options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: videoQuality.bitrate]
-        ) else { return }
-        
-        let localOfflineAsset = LocalOfflineAsset.create(
-            assetId: asset.id,
-            srcURL: asset.video!.playbackURL,
-            title: asset.title,
-            resolution: videoQuality.resolution,
-            duration: asset.video!.duration,
-            bitRate: videoQuality.bitrate,
-            folderTree: asset.folderTree ?? ""
-        )
-        
-        LocalOfflineAsset.manager.add(object: localOfflineAsset)
-        self.assetDownloadDelegate.activeDownloadsMap[task] = localOfflineAsset
-        task.resume()
-        self.tpStreamsDownloadDelegate?.onStart(offlineAsset: localOfflineAsset.asOfflineAsset())
-        self.tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: localOfflineAsset.asOfflineAsset())
         
         if (asset.video?.drmEncrypted == true){
-            extractContentIDFromMasterURL(masterURL: URL(string: asset.video!.playbackURL)!) { result in
+            M3U8ParseUtil.extractContentIDFromMasterURL(masterURL: URL(string: asset.video!.playbackURL)!) { result in
                 switch result {
                 case .success(let contentID):
                     LocalOfflineAsset.manager.update(id: asset.id, with: ["contentID": contentID])
-                    self.requestPersistentKey(localOfflineAsset.assetId, accessToken)
+                    self.requestPersistentKey(localOfflineAsset.assetId, player.accessToken ?? "")
                 case .failure(let error):
                     print("Error extracting content ID: \(error.localizedDescription)")
                 }
             }
         }
-    }
-
-    func extractContentIDFromMasterURL(masterURL: URL, completion: @escaping (Result<String, Error>) -> Void) {
-        do {
-            // Create a playlist model from the master URL
-            let masterPlaylist = try M3U8PlaylistModel(url: masterURL)
-            
-            // Check if the master playlist contains a valid stream list
-            if let streamList = masterPlaylist.masterPlaylist?.xStreamList, streamList.count != 0 {
-                // Take the first variant's URL from the stream list
-                if let variant = streamList.xStreamInf(at: 0),
-                   let variantURL = variant.m3u8URL() {
-                    parseVariantURL(variantURL) { result in
-                        switch result {
-                        case .success(let contentID):
-                            completion(.success(contentID)) // Pass the contentID back
-                        case .failure(let error):
-                            completion(.failure(error)) // Pass the error back
-                        }
-                    }
-                } else {
-                    completion(.failure(NSError(domain: "M3U8Error", code: -1, userInfo: [NSLocalizedDescriptionKey: "No variant URL found."])))
-                }
-            } else {
-                completion(.failure(NSError(domain: "M3U8Error", code: -1, userInfo: [NSLocalizedDescriptionKey: "No variants found in master playlist."])))
-            }
-        } catch {
-            completion(.failure(error)) // Pass the error back if something went wrong
-        }
-    }
-
-    func parseVariantURL(_ variantURL: URL, completion: @escaping (Result<String, Error>) -> Void) {
-        do {
-            // Parse the variant playlist to retrieve the media playlist model
-            let variantPlaylist = try M3U8PlaylistModel(url: variantURL)
-            
-            // Access the first segment from the variant playlist (segmentList is a list of M3U8SegmentInfo)
-            if let segmentList = variantPlaylist.mainMediaPl?.segmentList, segmentList.count != 0 {
-                if let key = segmentList.segmentInfo(at: 0)?.xKey,
-                   let uri = key.url(),
-                   let contentID = extractIDFromURI(uri: uri) {
-                    completion(.success(contentID)) // Pass the extracted contentID back
-                } else {
-                    completion(.failure(NSError(domain: "M3U8Error", code: -1, userInfo: [NSLocalizedDescriptionKey: "No contentID found in the variant."])))
-                }
-            } else {
-                completion(.failure(NSError(domain: "M3U8Error", code: -1, userInfo: [NSLocalizedDescriptionKey: "No segments found in variant playlist."])))
-            }
-        } catch {
-            completion(.failure(error)) // Pass the error back if something went wrong
-        }
-    }
-
-    // Helper function to extract contentID from URI
-    func extractIDFromURI(uri: String) -> String? {
-        if uri.contains("skd://") {
-            return uri.replacingOccurrences(of: "skd://", with: "")
-        }
-        return nil
     }
     
     private func requestPersistentKey(_ assetID: String,_ accessToken: String) {
