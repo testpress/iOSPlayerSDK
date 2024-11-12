@@ -63,7 +63,6 @@ class TPStreamPlayer: NSObject {
         }
         currentItemChangeObservation = player.observe(\.currentItem, options: [.new]) { [weak self] (_, _) in
             guard let self = self else { return }
-            print("observeCurrentItemChanges2")
             self.observePlayerBufferingStatusChange()
             self.observeVideoEnd()
         }
@@ -117,7 +116,6 @@ class TPStreamPlayer: NSObject {
                 handleBufferStatusChange(of: playerItem, keyPath: keyPath)
             }
         case #keyPath(AVPlayerItem.duration):
-            print("AVPlayerItem.duration")
             isVideoDurationInitialized = true
         default:
             break
