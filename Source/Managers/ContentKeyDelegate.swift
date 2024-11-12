@@ -65,11 +65,6 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
             return
         }
         self.contentID = contentID
-        DispatchQueue.main.async {
-            if self.assetID != nil {
-                LocalOfflineAsset.manager.update(id: self.assetID!, with: ["contentID": contentID])
-            }
-        }
         
         if forOfflinePlayback {
             try! keyRequest.respondByRequestingPersistableContentKeyRequestAndReturnError()
