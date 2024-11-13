@@ -45,12 +45,12 @@ public final class TPStreamsDownloadManager {
         return false
     }
 
-    internal func startDownload(player: TPAVPlayer, videoQuality: VideoQuality) {
-        contentKeyDelegate.setAssetDetails(player.assetID, player.accessToken, true)
-        if LocalOfflineAsset.manager.exists(id: player.assetID!) {
+    internal func startDownload(asset: Asset, accessToken: String, videoQuality: VideoQuality) {
+        contentKeyDelegate.setAssetDetails(asset.id, accessToken, true)
+        if LocalOfflineAsset.manager.exists(id: asset.id) {
             return
         }
-        let asset = player.asset!
+
         let avUrlAsset = AVURLAsset(url: URL(string: asset.video!.playbackURL)!)
 
         guard let task = assetDownloadURLSession.aggregateAssetDownloadTask(
@@ -81,7 +81,7 @@ public final class TPStreamsDownloadManager {
                 switch result {
                 case .success(let contentID):
                     LocalOfflineAsset.manager.update(id: asset.id, with: ["contentID": contentID])
-                    self.requestPersistentKey(localOfflineAsset.assetId, player.accessToken ?? "")
+                    self.requestPersistentKey(localOfflineAsset.assetId, accessToken)
                 case .failure(let error):
                     print("Error extracting content ID: \(error.localizedDescription)")
                 }
