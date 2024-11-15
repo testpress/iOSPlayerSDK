@@ -12,11 +12,10 @@ struct PlayerView: View {
     var title: String? = nil
     var assetId: String?  = nil
     var accessToken: String?  = nil
-    var offlineAsset: OfflineAsset? = nil
     var body: some View {
         VStack {
-            if let offlineAsset = offlineAsset {
-                let player = TPAVPlayer(offlineAssetId: offlineAsset.assetId)
+            if (TPStreamsDownloadManager.shared.isAssetDownloaded(assetID: assetId!)){
+                let player = TPAVPlayer(offlineAssetId: assetId!)
                 let playerViewConfig = TPStreamPlayerConfigurationBuilder()
                     .setPreferredForwardDuration(15)
                     .setPreferredRewindDuration(5)
@@ -25,7 +24,7 @@ struct PlayerView: View {
                     .build()
                 TPStreamPlayerView(player: player, playerViewConfig: playerViewConfig)
                     .frame(height: 240)
-                    .navigationBarTitle(title ?? offlineAsset.title)
+                    .navigationBarTitle(title ?? "")
                     .onDisappear {
                         player.pause()
                     }
