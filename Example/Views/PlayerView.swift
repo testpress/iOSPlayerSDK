@@ -14,7 +14,7 @@ struct PlayerView: View {
     var accessToken: String?  = nil
     var body: some View {
         VStack {
-            if (TPStreamsDownloadManager.shared.isVideoDownloaded(for: assetId!)){
+            if (TPStreamsDownloadManager.shared.isVideoDownloaded(assetID: assetId!)){
                 let player = TPAVPlayer(offlineAssetId: assetId!)
                 let playerViewConfig = TPStreamPlayerConfigurationBuilder()
                     .setPreferredForwardDuration(15)
