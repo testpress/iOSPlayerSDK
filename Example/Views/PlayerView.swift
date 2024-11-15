@@ -45,22 +45,7 @@ struct PlayerView: View {
                     .onDisappear {
                         player.pause()
                     }
-                Button(action: {
-                    startOfflineDownload()
-                }) {
-                    Text("Start Offline Download")
-                        .font(.headline)
-                        .padding()
-                        .foregroundColor(.white)
-                        .background(Color.blue)
-                        .cornerRadius(10)
-                    Spacer()
-                }
             }
         }
-    }
-    
-    func startOfflineDownload() {
-        TPStreamsDownloadManager.shared.startDownload(assetID: assetId!, accessToken: accessToken!, resolution: "240p")
     }
 }
