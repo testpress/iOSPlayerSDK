@@ -25,7 +25,7 @@ class PlayerViewController: UIViewController {
     }
     
     func setupPlayerView(){
-        if (TPStreamsDownloadManager.shared.isVideoDownloaded(assetID: assistId!)){
+        if (TPStreamsDownloadManager.shared.isAssetDownloaded(assetID: assistId!)){
             player = TPAVPlayer(offlineAssetId:assistId!){ error in
                 guard error == nil else {
                     print("Setup error: \(error!.localizedDescription)")
