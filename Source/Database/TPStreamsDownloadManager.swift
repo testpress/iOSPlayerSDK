@@ -30,19 +30,6 @@ public final class TPStreamsDownloadManager {
         assetDownloadDelegate.tpStreamsDownloadDelegate = tpStreamsDownloadDelegate
     }
 
-    public func startDownload(assetID: String, accessToken: String, resolution: String) {
-        TPStreamsSDK.provider.API.getAsset(assetID, accessToken) { [weak self] asset, error in
-            guard let self = self else { return }
-            if let asset = asset {
-                //TODO Create video quality object (dummy for now, can be implemented later)
-                let videoQuality = VideoQuality.init(resolution: resolution, bitrate: 4611200)
-                startDownload(asset: asset, videoQuality: videoQuality)
-            } else if let error = error{
-                print (error)
-            }
-        }
-    }
-
     internal func startDownload(asset: Asset, videoQuality: VideoQuality) {
 
         if LocalOfflineAsset.manager.exists(id: asset.id) {
