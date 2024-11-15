@@ -38,7 +38,7 @@ struct OfflineAssetRow: View {
         }
         .background(
             NavigationLink(
-                destination: PlayerView(offlineAsset: offlineAsset),
+                destination: PlayerView(title: offlineAsset.title, assetId: offlineAsset.assetId),
                 isActive: $showPlayerView
             ) {}.hidden()
         )

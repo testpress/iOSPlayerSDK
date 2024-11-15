@@ -29,6 +29,14 @@ public final class TPStreamsDownloadManager {
         self.tpStreamsDownloadDelegate = tpStreamsDownloadDelegate
         assetDownloadDelegate.tpStreamsDownloadDelegate = tpStreamsDownloadDelegate
     }
+    
+    public func isVideoDownloaded(for assetID: String) -> Bool {
+        if let localOfflineAsset = LocalOfflineAsset.manager.get(id: assetID),
+           localOfflineAsset.status == Status.finished.rawValue {
+            return true
+        }
+        return false
+    }
 
     internal func startDownload(asset: Asset, videoQuality: VideoQuality) {
 
