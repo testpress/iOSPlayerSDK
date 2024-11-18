@@ -68,7 +68,8 @@ public final class TPStreamsDownloadManager {
             resolution:videoQuality.resolution,
             duration: asset.video!.duration,
             bitRate: videoQuality.bitrate,
-            folderTree: asset.folderTree ?? ""
+            folderTree: asset.folderTree ?? "",
+            drmContentId: asset.drmContentId
         )
         LocalOfflineAsset.manager.add(object: localOfflineAsset)
         assetDownloadDelegate.activeDownloadsMap[task] = localOfflineAsset
@@ -77,15 +78,7 @@ public final class TPStreamsDownloadManager {
         tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: localOfflineAsset.asOfflineAsset())
         
         if (asset.video?.drmEncrypted == true){
-            M3U8ParseUtil.extractContentIDFromMasterURL(masterURL: URL(string: asset.video!.playbackURL)!) { result in
-                switch result {
-                case .success(let contentID):
-                    LocalOfflineAsset.manager.update(id: asset.id, with: ["contentID": contentID])
-                    self.requestPersistentKey(localOfflineAsset.assetId, accessToken)
-                case .failure(let error):
-                    print("Error extracting content ID: \(error.localizedDescription)")
-                }
-            }
+            self.requestPersistentKey(localOfflineAsset.assetId, accessToken)
         }
     }
     
@@ -95,7 +88,7 @@ public final class TPStreamsDownloadManager {
             return
         }
         contentKeySession.processContentKeyRequest(
-            withIdentifier: "skd://\(localOfflineAsset.contentID)",
+            withIdentifier: localOfflineAsset.drmContentId,
             initializationData: nil,
             options: nil
         )

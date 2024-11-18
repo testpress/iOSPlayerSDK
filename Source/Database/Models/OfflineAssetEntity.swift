@@ -36,7 +36,8 @@ extension LocalOfflineAsset {
         resolution: String,
         duration:Double,
         bitRate: Double,
-        folderTree: String
+        folderTree: String,
+        drmContentId: String? = nil
     ) -> LocalOfflineAsset {
         let localOfflineAsset = LocalOfflineAsset()
         localOfflineAsset.assetId = assetId
@@ -47,6 +48,7 @@ extension LocalOfflineAsset {
         localOfflineAsset.bitRate = bitRate
         localOfflineAsset.size = (bitRate * duration)
         localOfflineAsset.folderTree = folderTree
+        localOfflineAsset.drmContentId = drmContentId
         return localOfflineAsset
     }
     
@@ -71,7 +73,7 @@ extension LocalOfflineAsset {
             fatalError("downloadedFileURL is nil")
         }
 
-        let isDrmEncrypted = !contentID.isEmpty
+        let isDrmEncrypted = drmContentId != nil && !drmContentId!.isEmpty
         let playbackURLString = downloadedFileURL.absoluteString
 
         let video = Video(
@@ -87,7 +89,8 @@ extension LocalOfflineAsset {
             contentType: "video",
             video: video,
             liveStream: nil,
-            folderTree: self.folderTree
+            folderTree: self.folderTree,
+            drmContentId: self.drmContentId
         )
 
         return asset
