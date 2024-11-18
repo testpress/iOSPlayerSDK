@@ -15,18 +15,30 @@ extension ContentKeyDelegate {
     }
     
     func handlePersistableContentKeyRequest(_ session: AVContentKeySession, keyRequest: AVPersistableContentKeyRequest) {
-        guard let contentKeyURL = getPersistentContentKeyURL(),
-              let contentKey = FileManager.default.contents(atPath: contentKeyURL.path) else {
-            requestEncryptedSPCMessage(keyRequest) { [weak self] (spcData, error) in
-                self?.encryptedSPCMessageForPersistentKeyCallback(session, spcData, error, keyRequest)
-            }
-            return
+        if let offlineKey = loadOfflineContentKey() {
+            assignOfflineKey(keyRequest, contentKey: offlineKey)
+        } else {
+            fetchContentKeyFromNetwork(session, keyRequest)
         }
+    }
+    
+    private func loadOfflineContentKey() -> Data? {
+        guard let contentKeyURL = getPersistentContentKeyURL() else { return nil }
+        return getPersistentContentKey(contentKeyURL)
+    }
+    
+    private func assignOfflineKey(_ keyRequest: AVPersistableContentKeyRequest, contentKey: Data) {
         let keyResponse = AVContentKeyResponse(fairPlayStreamingKeyResponseData: contentKey)
         keyRequest.processContentKeyResponse(keyResponse)
     }
     
-    func encryptedSPCMessageForPersistentKeyCallback(_ session: AVContentKeySession, _ spcData: Data?, _ error: Error?, _ keyRequest: AVPersistableContentKeyRequest) {
+    private func fetchContentKeyFromNetwork(_ session: AVContentKeySession, _ keyRequest: AVPersistableContentKeyRequest) {
+        requestEncryptedSPCMessage(keyRequest) { [weak self] (spcData, error) in
+            self?.retrieveAndStoreContentKey(session, spcData, error, keyRequest)
+        }
+    }
+    
+    func retrieveAndStoreContentKey(_ session: AVContentKeySession, _ spcData: Data?, _ error: Error?, _ keyRequest: AVPersistableContentKeyRequest) {
         guard let spcData = spcData else { return }
         
         self.requestCKC(spcData) { ckcData, error in
@@ -39,7 +51,7 @@ extension ContentKeyDelegate {
             do {
                 if self.requestingPersistentKey {
                     let persistentKey = try keyRequest.persistableContentKey(fromKeyVendorResponse: ckcData, options: nil)
-                    try self.writePersistableContentKey(contentKey: persistentKey)
+                    try self.storePersistentContentKey(contentKey: persistentKey)
                 }
                 
                 let keyResponse = AVContentKeyResponse(fairPlayStreamingKeyResponseData: ckcData)
@@ -58,7 +70,11 @@ extension ContentKeyDelegate {
         return FileManager.default.fileExists(atPath: url.path)
     }
     
-    func writePersistableContentKey(contentKey: Data) throws {
+    func getPersistentContentKey(_ contentKeyURL: URL) -> Data? {
+        return FileManager.default.contents(atPath: contentKeyURL.path)
+    }
+    
+    func storePersistentContentKey(contentKey: Data) throws {
         guard let fileURL = getPersistentContentKeyURL() else { return }
         
         try contentKey.write(to: fileURL, options: Data.WritingOptions.atomicWrite)
