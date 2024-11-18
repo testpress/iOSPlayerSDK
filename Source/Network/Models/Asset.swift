@@ -14,6 +14,7 @@ struct Asset {
     let video: Video?
     let liveStream: LiveStream?
     let folderTree: String?
+    let drmContentId: String?
     
     var playbackURL: String? {
         if let video = video {

@@ -19,8 +19,9 @@ class TestpressAPIParser: APIParser {
         let video = parseVideo(from: responseDict["video"] as? [String: Any])
         let liveStream = parseLiveStream(from: responseDict["live_stream"] as? [String: Any])
         let folderTree = responseDict["folder_tree"] as? String
+        let drmContentId = responseDict["drm_content_id"] as? String
         
-        return Asset(id: id, title: title, contentType: contentType, video: video, liveStream: liveStream, folderTree: folderTree)
+        return Asset(id: id, title: title, contentType: contentType, video: video, liveStream: liveStream, folderTree: folderTree, drmContentId: drmContentId)
     }
 
     func parseVideo(from dictionary: [String: Any]?) -> Video? {
@@ -28,12 +29,11 @@ class TestpressAPIParser: APIParser {
               let playbackURL = videoDict["hls_url"] as? String ?? videoDict["url"] as? String,
               let status = videoDict["transcoding_status"] as? String,
               let duration = videoDict["duration"] as? Double,
-              let drmContentId = videoDict["drm_content_id"] as? String,
               let drmEncrypted = videoDict["drm_enabled"] as? Bool else {
             return nil
         }
         
-        return Video(playbackURL: playbackURL, status: status, drmEncrypted: drmEncrypted, duration: duration, drmContentId: drmContentId)
+        return Video(playbackURL: playbackURL, status: status, drmEncrypted: drmEncrypted, duration: duration)
     }
 
     func parseLiveStream(from dictionary: [String: Any]?) -> LiveStream? {
