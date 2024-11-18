@@ -28,11 +28,12 @@ class TestpressAPIParser: APIParser {
               let playbackURL = videoDict["hls_url"] as? String ?? videoDict["url"] as? String,
               let status = videoDict["transcoding_status"] as? String,
               let duration = videoDict["duration"] as? Double,
+              let drmContentId = videoDict["drm_content_id"] as? String,
               let drmEncrypted = videoDict["drm_enabled"] as? Bool else {
             return nil
         }
         
-        return Video(playbackURL: playbackURL, status: status, drmEncrypted: drmEncrypted, duration: duration)
+        return Video(playbackURL: playbackURL, status: status, drmEncrypted: drmEncrypted, duration: duration, drmContentId: drmContentId)
     }
 
     func parseLiveStream(from dictionary: [String: Any]?) -> LiveStream? {
