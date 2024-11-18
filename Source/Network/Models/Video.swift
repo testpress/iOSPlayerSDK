@@ -12,5 +12,5 @@ struct Video{
     let status: String
     let drmEncrypted: Bool
     let duration: Double
-    let contentId: String?
+    let drmContentId: String?
 }
