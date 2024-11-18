@@ -7,7 +7,6 @@
 
 import Foundation
 import AVFoundation
-import M3U8Parser
 
 public final class TPStreamsDownloadManager {
 
