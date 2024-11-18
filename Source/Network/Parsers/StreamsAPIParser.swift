@@ -28,11 +28,12 @@ class StreamsAPIParser: APIParser {
               let playbackURL = videoDict["playback_url"] as? String,
               let status = videoDict["status"] as? String,
               let duration = videoDict["duration"] as? Double,
+              let contentId = videoDict["content_id"] as? String,
               let contentProtectionType = videoDict["content_protection_type"] as? String else {
             return nil
         }
         
-        return Video(playbackURL: playbackURL, status: status, drmEncrypted: contentProtectionType == "drm", duration: duration)
+        return Video(playbackURL: playbackURL, status: status, drmEncrypted: contentProtectionType == "drm", duration: duration, contentId: contentId)
     }
 
     func parseLiveStream(from dictionary: [String: Any]?) -> LiveStream? {

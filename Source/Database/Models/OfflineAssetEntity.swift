@@ -22,6 +22,7 @@ class LocalOfflineAsset: Object {
     @Persisted var bitRate: Double = 0.0
     @Persisted var size: Double = 0.0
     @Persisted var folderTree: String = ""
+    @Persisted var contentId: String? = nil
     
     static var manager = ObjectManager<LocalOfflineAsset>()
 }
