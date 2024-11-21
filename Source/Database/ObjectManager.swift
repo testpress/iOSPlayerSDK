@@ -21,7 +21,35 @@ public class ObjectManager<T: Object> {
         return realm.object(ofType: T.self, forPrimaryKey: id)
     }
     
+    func get(where attributeKey: String, isEqualTo attributeValue: String) throws -> T? {
+        let predicate = NSPredicate(format: "%K == %@", attributeKey, attributeValue)
+        let matchingObjects = realm.objects(T.self).filter(predicate)
+        
+        guard let object = matchingObjects.first else {
+            return nil
+        }
+        
+        if matchingObjects.count > 1 {
+            return nil
+        }
+        
+        return object
+    }
+    
     func update(object: T, with attributes: [String: Any]) {
+        try! realm.write {
+            for (key, value) in attributes {
+                object[key] = value
+            }
+        }
+    }
+    
+    func update(id: Any, with attributes: [String: Any]) {
+        guard let object = get(id: id) else {
+            print("Object with id \(id) not found.")
+            return
+        }
+        
         try! realm.write {
             for (key, value) in attributes {
                 object[key] = value

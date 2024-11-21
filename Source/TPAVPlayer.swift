@@ -17,8 +17,8 @@ import M3U8Parser
 #endif
 
 public class TPAVPlayer: AVPlayer {
-    private var accessToken: String?
-    private var assetID: String?
+    internal var accessToken: String?
+    internal var assetID: String?
     public typealias SetupCompletion = (Error?) -> Void
     private var setupCompletion: SetupCompletion?
     private var resourceLoaderDelegate: ResourceLoaderDelegate?
@@ -52,10 +52,11 @@ public class TPAVPlayer: AVPlayer {
     public init(offlineAssetId: String, completion: SetupCompletion? = nil) {
         self.setupCompletion = completion
         super.init()
+        isPlaybackOffline = true
         guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: offlineAssetId) else { return }
         if (localOfflineAsset.status == "finished") {
-            let avURLAsset = AVURLAsset(url: localOfflineAsset.downloadedFileURL!)
-            self.setPlayerItem(avURLAsset)
+            self.asset = localOfflineAsset.asAsset()
+            self.setup()
             self.setupCompletion?(nil)
             self.initializationStatus = "ready"
         } else {
@@ -64,7 +65,6 @@ public class TPAVPlayer: AVPlayer {
             self.initializationError = TPStreamPlayerError.incompleteOfflineVideo
             self.initializationStatus = "error"
         }
-        isPlaybackOffline = true
     }
     
     private func fetchAsset() {
@@ -131,7 +131,7 @@ public class TPAVPlayer: AVPlayer {
     
     private func setupDRM(_ avURLAsset: AVURLAsset) {
         ContentKeyManager.shared.contentKeySession.addContentKeyRecipient(avURLAsset)
-        ContentKeyManager.shared.contentKeyDelegate.setAssetDetails(assetID!, accessToken!)
+        ContentKeyManager.shared.contentKeyDelegate.setAssetDetails(assetID, accessToken, isPlaybackOffline)
         ContentKeyManager.shared.contentKeyDelegate.onError = { error in
             self.initializationError = error
             self.onError?(error)

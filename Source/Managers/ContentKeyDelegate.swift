@@ -13,11 +13,30 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
     var assetID: String?
     var accessToken: String?
     public var onError: ((Error) -> Void)?
+    var requestingPersistentKey = false
+    var forOfflinePlayback = false
     
     enum ProgramError: Error {
         case missingApplicationCertificate
         case noCKCReturnedByKSM
     }
+    
+    lazy var contentKeyDirectory: URL = {
+        guard let documentURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            fatalError("Unable to determine document directory URL")
+        }
+
+        let contentKeyDirectory = documentURL.appendingPathComponent(".keys", isDirectory: true)
+        if !FileManager.default.fileExists(atPath: contentKeyDirectory.path, isDirectory: nil) {
+            do {
+                try FileManager.default.createDirectory(at: contentKeyDirectory, withIntermediateDirectories: false, attributes: nil)
+            } catch {
+                fatalError("Unable to create directory for content keys at path: \(contentKeyDirectory.path)")
+            }
+        }
+
+        return contentKeyDirectory
+    }()
     
     func contentKeySession(_ session: AVContentKeySession, didProvide keyRequest: AVContentKeyRequest) {
         handleFPSKeyRequest(keyRequest)
@@ -47,11 +66,17 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
         }
         self.contentID = contentID
         
-        let encryptedSPCMessageCallback = { [weak self] (spcData: Data?, error: Error?) in
+        if forOfflinePlayback {
+            try! keyRequest.respondByRequestingPersistableContentKeyRequestAndReturnError()
+            self.requestingPersistentKey = true
+            return
+        } else {
+            let encryptedSPCMessageCallback = { [weak self] (spcData: Data?, error: Error?) in
             guard let strongSelf = self else { return }
-            strongSelf.encryptedSPCMessageCallback(keyRequest, spcData, error)
+                strongSelf.encryptedSPCMessageCallback(keyRequest, spcData, error)
+            }
+            requestEncryptedSPCMessage(keyRequest, encryptedSPCMessageCallback)
         }
-        requestEncryptedSPCMessage(keyRequest, encryptedSPCMessageCallback)
     }
     
     func requestEncryptedSPCMessage(_ keyRequest: AVContentKeyRequest, _ encryptedSPCMessageCallback: @escaping (_ : Data?, _ : Error?) -> Void) {
@@ -100,11 +125,12 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
     func requestCKC(_ spcData: Data, _ completion: @escaping(Data?, Error?) -> Void) {
         guard let assetID = assetID,
               let accessToken = accessToken else { return }
-        TPStreamsSDK.provider.API.getDRMLicense(assetID, accessToken, spcData, contentID!, completion)
+        TPStreamsSDK.provider.API.getDRMLicense(assetID, accessToken, spcData, contentID!, forOfflinePlayback, completion)
     }
     
-    func setAssetDetails(_ assetID: String, _ accessToken: String) {
+    func setAssetDetails(_ assetID: String?, _ accessToken: String?, _ forOfflinePlayback: Bool = false) {
         self.assetID = assetID
         self.accessToken = accessToken
+        self.forOfflinePlayback = forOfflinePlayback
     }
 }

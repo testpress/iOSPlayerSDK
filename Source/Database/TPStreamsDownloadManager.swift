@@ -14,6 +14,9 @@ public final class TPStreamsDownloadManager {
     private var assetDownloadURLSession: AVAssetDownloadURLSession!
     private var assetDownloadDelegate: AssetDownloadDelegate!
     private var tpStreamsDownloadDelegate: TPStreamsDownloadDelegate? = nil
+    private var contentKeySession: AVContentKeySession!
+    private var contentKeyDelegate: ContentKeyDelegate!
+    private let contentKeyDelegateQueue = DispatchQueue(label: "com.tpstreams.iOSPlayerSDK.ContentKeyDelegateQueueOffline")
 
     private init() {
         let backgroundConfiguration = URLSessionConfiguration.background(withIdentifier: "com.tpstreams.downloadSession")
@@ -23,6 +26,9 @@ public final class TPStreamsDownloadManager {
             assetDownloadDelegate: assetDownloadDelegate,
             delegateQueue: OperationQueue.main
         )
+        contentKeySession = AVContentKeySession(keySystem: .fairPlayStreaming)
+        contentKeyDelegate = ContentKeyDelegate()
+        contentKeySession.setDelegate(contentKeyDelegate, queue: contentKeyDelegateQueue)
     }
     
     public func setTPStreamsDownloadDelegate(tpStreamsDownloadDelegate: TPStreamsDownloadDelegate) {
@@ -38,8 +44,8 @@ public final class TPStreamsDownloadManager {
         return false
     }
 
-    internal func startDownload(asset: Asset, videoQuality: VideoQuality) {
-
+    internal func startDownload(asset: Asset, accessToken: String, videoQuality: VideoQuality) {
+        contentKeyDelegate.setAssetDetails(asset.id, accessToken, true)
         if LocalOfflineAsset.manager.exists(id: asset.id) {
             return
         }
@@ -61,13 +67,41 @@ public final class TPStreamsDownloadManager {
             resolution:videoQuality.resolution,
             duration: asset.video!.duration,
             bitRate: videoQuality.bitrate,
-            folderTree: asset.folderTree ?? ""
+            folderTree: asset.folderTree ?? "",
+            drmContentId: asset.drmContentId
         )
         LocalOfflineAsset.manager.add(object: localOfflineAsset)
         assetDownloadDelegate.activeDownloadsMap[task] = localOfflineAsset
         task.resume()
         tpStreamsDownloadDelegate?.onStart(offlineAsset: localOfflineAsset.asOfflineAsset())
         tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: localOfflineAsset.asOfflineAsset())
+        
+        if (asset.video?.drmEncrypted == true){
+            M3U8Parser.extractContentID(url: URL(string: asset.video!.playbackURL)!) { result in
+                switch result {
+                case .success(let drmContentId):
+                    print("Extracted DRM content ID: \(drmContentId)")
+                    DispatchQueue.main.async {
+                        LocalOfflineAsset.manager.update(id: asset.id, with: ["drmContentId": drmContentId])
+                        self.requestPersistentKey(localOfflineAsset.assetId, accessToken)
+                    }
+                case .failure(let error):
+                    print("Error extracting content ID: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    private func requestPersistentKey(_ assetID: String,_ accessToken: String) {
+        guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: assetID) else {
+            print("Asset with ID \(assetID) does not exist.")
+            return
+        }
+        contentKeySession.processContentKeyRequest(
+            withIdentifier: localOfflineAsset.drmContentId,
+            initializationData: nil,
+            options: nil
+        )
     }
     
     public func pauseDownload(_ assetId: String) {

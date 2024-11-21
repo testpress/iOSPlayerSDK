@@ -36,7 +36,8 @@ extension LocalOfflineAsset {
         resolution: String,
         duration:Double,
         bitRate: Double,
-        folderTree: String
+        folderTree: String,
+        drmContentId: String? = nil
     ) -> LocalOfflineAsset {
         let localOfflineAsset = LocalOfflineAsset()
         localOfflineAsset.assetId = assetId
@@ -47,6 +48,7 @@ extension LocalOfflineAsset {
         localOfflineAsset.bitRate = bitRate
         localOfflineAsset.size = (bitRate * duration)
         localOfflineAsset.folderTree = folderTree
+        localOfflineAsset.drmContentId = drmContentId
         return localOfflineAsset
     }
     
@@ -66,6 +68,34 @@ extension LocalOfflineAsset {
         )
     }
     
+    func asAsset() -> Asset {
+        guard let downloadedFileURL = downloadedFileURL else {
+            fatalError("downloadedFileURL is nil")
+        }
+
+        let isDrmEncrypted = drmContentId != nil && !drmContentId!.isEmpty
+        let playbackURLString = downloadedFileURL.absoluteString
+
+        let video = Video(
+            playbackURL: playbackURLString,
+            status: self.status,
+            drmEncrypted: isDrmEncrypted,
+            duration: self.duration
+        )
+
+        let asset: Asset = Asset(
+            id: self.assetId,
+            title: self.title,
+            contentType: "video",
+            video: video,
+            liveStream: nil,
+            folderTree: self.folderTree,
+            drmContentId: self.drmContentId
+        )
+
+        return asset
+    }
+
     var downloadedFileURL: URL? {
         if !self.downloadedPath.isEmpty{
             let baseURL = URL(fileURLWithPath: NSHomeDirectory())

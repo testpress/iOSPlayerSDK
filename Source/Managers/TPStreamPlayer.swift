@@ -54,10 +54,17 @@ class TPStreamPlayer: NSObject {
         self.observePlayerStatusChange()
     }
     
-    private func observeCurrentItemChanges(){
-        // We're asynchronously setting the `currentItem` in the TPAVPlayer once the asset is fetched via network.
-        // So we adding observers on `currentItem` once it has been set.
+    private func observeCurrentItemChanges() {
+        // For offline videos, `currentItem` is immediately available, so we check if `currentItem` is not nil
+        // and update the player state accordingly.
+        if player.currentItem != nil {
+            self.observePlayerBufferingStatusChange()
+            self.observeVideoEnd()
+            return
+        }
         
+        // For online videos, the `currentItem` is set asynchronously in `TPAVPlayer` after the asset is fetched over the network.
+        // We add observers to `currentItem` once it has been set.
         currentItemChangeObservation = player.observe(\.currentItem, options: [.new]) { [weak self] (_, _) in
             guard let self = self else { return }
             self.observePlayerBufferingStatusChange()
