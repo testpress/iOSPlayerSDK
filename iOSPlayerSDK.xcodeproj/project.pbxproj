@@ -77,7 +77,7 @@
 		D92E48D62CAFCD2400B1FAC3 /* OfflineAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92E48D52CAFCD2400B1FAC3 /* OfflineAsset.swift */; };
 		D92E48F12CB0226A00B1FAC3 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = D92E48F02CB0226A00B1FAC3 /* Realm */; };
 		D92E48F32CB0226A00B1FAC3 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D92E48F22CB0226A00B1FAC3 /* RealmSwift */; };
-		D960A8FB2CEDEE7C003B0B04 /* M3U8Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = D960A8FA2CEDEE7C003B0B04 /* M3U8Util.swift */; };
+		D960A8FB2CEDEE7C003B0B04 /* M3U8Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D960A8FA2CEDEE7C003B0B04 /* M3U8Parser.swift */; };
 		D9846D552CB406D000BFA875 /* AppDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9846D542CB406D000BFA875 /* AppDownloadManager.swift */; };
 		D9A2F2AE2CE2102E0052802D /* ContentKeyDelegate+Persistable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9A2F2AD2CE2102E0052802D /* ContentKeyDelegate+Persistable.swift */; };
 		D9BCDC1B2CB3EF9D009FF2AB /* DownloadListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9BCDC1A2CB3EF9D009FF2AB /* DownloadListView.swift */; };
@@ -223,7 +223,7 @@
 		D92E48AC2CAFBCFB00B1FAC3 /* OfflineAssetEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAssetEntity.swift; sourceTree = "<group>"; };
 		D92E48B52CAFBD6F00B1FAC3 /* ObjectManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectManager.swift; sourceTree = "<group>"; };
 		D92E48D52CAFCD2400B1FAC3 /* OfflineAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAsset.swift; sourceTree = "<group>"; };
-		D960A8FA2CEDEE7C003B0B04 /* M3U8Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = M3U8Util.swift; sourceTree = "<group>"; };
+		D960A8FA2CEDEE7C003B0B04 /* M3U8Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = M3U8Parser.swift; sourceTree = "<group>"; };
 		D9846D542CB406D000BFA875 /* AppDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDownloadManager.swift; sourceTree = "<group>"; };
 		D9A2F2AD2CE2102E0052802D /* ContentKeyDelegate+Persistable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContentKeyDelegate+Persistable.swift"; sourceTree = "<group>"; };
 		D9BCDC1A2CB3EF9D009FF2AB /* DownloadListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadListView.swift; sourceTree = "<group>"; };
@@ -371,7 +371,7 @@
 			children = (
 				03CE74FF2A7946A800B84304 /* Time.swift */,
 				0367F6F42B861CFC0000922D /* Sentry.swift */,
-				D960A8FA2CEDEE7C003B0B04 /* M3U8Util.swift */,
+				D960A8FA2CEDEE7C003B0B04 /* M3U8Parser.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -806,7 +806,7 @@
 				03B8090C2A2DF9A200AB3D03 /* PlayerControlsView.swift in Sources */,
 				8E6389DF2A2751C800306FA4 /* TPAVPlayer.swift in Sources */,
 				D92E48D62CAFCD2400B1FAC3 /* OfflineAsset.swift in Sources */,
-				D960A8FB2CEDEE7C003B0B04 /* M3U8Util.swift in Sources */,
+				D960A8FB2CEDEE7C003B0B04 /* M3U8Parser.swift in Sources */,
 				03B8090A2A2DF8A000AB3D03 /* TPStreamPlayer.swift in Sources */,
 				03D7F4252C21C64D00DF3597 /* LiveIndicatorView.swift in Sources */,
 				0321F3272A2E0D1800E08AEE /* AVPlayer.swift in Sources */,
