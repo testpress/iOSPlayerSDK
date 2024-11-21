@@ -77,7 +77,20 @@ public final class TPStreamsDownloadManager {
         tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: localOfflineAsset.asOfflineAsset())
         
         if (asset.video?.drmEncrypted == true){
-            self.requestPersistentKey(localOfflineAsset.assetId, accessToken)
+            if TPStreamsSDK.provider == Provider.tpstreams {
+                self.requestPersistentKey(localOfflineAsset.assetId, accessToken)
+            } else {
+                M3U8ParseUtil.extractContentIDFromMasterURL(masterURL: URL(string: asset.video!.playbackURL)!) { result in
+                    switch result {
+                    case .success(let drmContentId):
+                        print("Extracted DRM content ID: \(drmContentId)")
+                        LocalOfflineAsset.manager.update(id: asset.id, with: ["drmContentId": drmContentId])
+                        self.requestPersistentKey(localOfflineAsset.assetId, accessToken)
+                    case .failure(let error):
+                        print("Error extracting content ID: \(error.localizedDescription)")
+                    }
+                }
+            }
         }
     }
     
