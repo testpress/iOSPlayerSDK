@@ -19,6 +19,9 @@ class TPStreamPlayerViewModel: ObservableObject {
     init(player: TPAVPlayer) {
         self.player = player
         self.showLiveStreamNotice()
+        if let initializationError = player.initializationError {
+            showError(error: initializationError)
+        }
         setupPlayerStatusObserver(for: player)
         self.player.onError = { [weak self] error in
             self?.showError(error: error)

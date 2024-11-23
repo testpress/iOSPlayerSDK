@@ -13,6 +13,9 @@ public class TPStreamPlayerViewController: UIViewController {
     public var player: TPAVPlayer?{
         didSet {
             guard let player = player else { return }
+            if isViewLoaded {
+                handlePlayerInitializationError()
+            }
             setupPlayerStatusObserver(for: player)
             showLiveStreamNotice()
             player.onError = showError
@@ -86,7 +89,9 @@ public class TPStreamPlayerViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(containerView)
+        
         setupTapGesture()
+        handlePlayerInitializationError()
     }
     
     public override func viewDidLayoutSubviews() {
@@ -152,6 +157,12 @@ public class TPStreamPlayerViewController: UIViewController {
                 self?.controlsView.isHidden = true
             }
         }
+    }
+    
+    private func handlePlayerInitializationError() {
+        guard let player = player, let initializationError = player.initializationError else { return }
+        
+        showError(error: initializationError)
     }
     
     private func showError(error: Error) {
