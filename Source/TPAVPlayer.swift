@@ -17,15 +17,19 @@ import M3U8Parser
 #endif
 
 public typealias SetupCompletion = (Error?) -> Void
+public struct InitializationErrorContext {
+    var error: Error
+    var sentryIssueId: UUID?
+}
 
 public class TPAVPlayer: AVPlayer {
     internal var accessToken: String?
     internal var assetID: String?
     private var setupCompletion: SetupCompletion?
     private var resourceLoaderDelegate: ResourceLoaderDelegate?
-    public var onError: ((Error) -> Void)?
+    public var onError: ((Error, UUID?) -> Void)?
     @objc internal dynamic var initializationStatus = "pending"
-    internal var initializationError: Error?
+    internal var initializationErrorContext: InitializationErrorContext?
     internal var asset: Asset? = nil
     private var reachability: Reachability?
     internal var isPlaybackOffline: Bool = false
@@ -62,8 +66,8 @@ public class TPAVPlayer: AVPlayer {
             self.initializationStatus = "ready"
         } else {
             self.setupCompletion?(TPStreamPlayerError.incompleteOfflineVideo)
-            self.onError?(TPStreamPlayerError.incompleteOfflineVideo)
-            self.initializationError = TPStreamPlayerError.incompleteOfflineVideo
+            self.onError?(TPStreamPlayerError.incompleteOfflineVideo, nil)
+            self.initializationErrorContext = InitializationErrorContext(error: TPStreamPlayerError.incompleteOfflineVideo, sentryIssueId: nil)
             self.initializationStatus = "error"
         }
     }
@@ -79,10 +83,10 @@ public class TPAVPlayer: AVPlayer {
                 self.initializationStatus = "ready"
             } else if let error = error{
                 self.setupCompletion?(error)
-                self.onError?(error)
-                self.initializationError = error
+                let sentryIssueId = captureErrorInSentry(error, self.assetID, self.accessToken)
+                self.initializationErrorContext = InitializationErrorContext(error: error, sentryIssueId: sentryIssueId)
+                self.onError?(error, sentryIssueId)
                 self.initializationStatus = "error"
-                captureErrorInSentry(error, self.assetID, self.accessToken)
                 if self.isNetworkUnavailableError(error){
                     self.retryFetchAssetWhenNetworkIsReady()
                 }
@@ -134,8 +138,9 @@ public class TPAVPlayer: AVPlayer {
         ContentKeyManager.shared.contentKeySession.addContentKeyRecipient(avURLAsset)
         ContentKeyManager.shared.contentKeyDelegate.setAssetDetails(assetID, accessToken, isPlaybackOffline)
         ContentKeyManager.shared.contentKeyDelegate.onError = { error in
-            self.initializationError = error
-            self.onError?(error)
+            let sentryIssueId = captureErrorInSentry(error, self.assetID, self.accessToken)
+            self.initializationErrorContext = InitializationErrorContext(error: error, sentryIssueId: sentryIssueId)
+            self.onError?(error, sentryIssueId)
         }
     }
     
