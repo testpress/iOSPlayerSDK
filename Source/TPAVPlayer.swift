@@ -16,10 +16,11 @@ import M3U8Kit
 import M3U8Parser
 #endif
 
+public typealias SetupCompletion = (Error?) -> Void
+
 public class TPAVPlayer: AVPlayer {
     internal var accessToken: String?
     internal var assetID: String?
-    public typealias SetupCompletion = (Error?) -> Void
     private var setupCompletion: SetupCompletion?
     private var resourceLoaderDelegate: ResourceLoaderDelegate?
     public var onError: ((Error) -> Void)?
