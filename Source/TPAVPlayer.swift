@@ -19,7 +19,7 @@ import M3U8Parser
 public typealias SetupCompletion = (Error?) -> Void
 public struct InitializationErrorContext {
     var error: Error
-    var sentryIssueId: UUID?
+    var sentryIssueId: String?
 }
 
 public class TPAVPlayer: AVPlayer {
@@ -27,7 +27,7 @@ public class TPAVPlayer: AVPlayer {
     internal var assetID: String?
     private var setupCompletion: SetupCompletion?
     private var resourceLoaderDelegate: ResourceLoaderDelegate?
-    public var onError: ((Error, UUID?) -> Void)?
+    public var onError: ((Error, String?) -> Void)?
     @objc internal dynamic var initializationStatus = "pending"
     internal var initializationErrorContext: InitializationErrorContext?
     internal var asset: Asset? = nil

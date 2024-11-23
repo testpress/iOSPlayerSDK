@@ -55,7 +55,7 @@ class TPStreamPlayerViewModel: ObservableObject {
         self.setNoticeMessage(noticeMessage)
     }
     
-    func showError(error: Error, sentryIssueId: UUID?) {
+    func showError(error: Error, sentryIssueId: String?) {
         var message: String
         if let tpStreamPlayerError = error as? TPStreamPlayerError {
             message = "\(tpStreamPlayerError.message)\nError code: \(tpStreamPlayerError.code)"
@@ -64,7 +64,7 @@ class TPStreamPlayerViewModel: ObservableObject {
         }
         
         if let sentryIssueId = sentryIssueId {
-            message += "\nPlayerId: \(sentryIssueId.uuidString)"
+            message += "\nPlayerId: \(sentryIssueId)"
         }
     
         setNoticeMessage(message)

@@ -166,7 +166,7 @@ public class TPStreamPlayerViewController: UIViewController {
         showError(error: errorContext.error, sentryIssueId: errorContext.sentryIssueId)
     }
     
-    private func showError(error: Error, sentryIssueId: UUID?) {
+    private func showError(error: Error, sentryIssueId: String?) {
         var message: String
         if let tpStreamPlayerError = error as? TPStreamPlayerError {
             message = "\(tpStreamPlayerError.message)\nError code: \(tpStreamPlayerError.code)"
@@ -175,7 +175,7 @@ public class TPStreamPlayerViewController: UIViewController {
         }
         
         if let sentryIssueId = sentryIssueId {
-            message += "\nPlayerId: \(sentryIssueId.uuidString)"
+            message += "\nPlayerId: \(sentryIssueId)"
         }
         
         showNotice(withMessage: message)
