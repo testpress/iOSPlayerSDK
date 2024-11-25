@@ -9,9 +9,9 @@ import Foundation
 import AVFoundation
 
 class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
-    let accessToken: String
+    let accessToken: String?
     
-    init(accessToken: String) {
+    init(accessToken: String?) {
         self.accessToken = accessToken
         super.init()
     }
