@@ -29,10 +29,17 @@ public class TPStreamsSDK {
         self.orgCode = orgCode
         self.provider = provider
         self.authToken = authToken
+        self.validateAuthToken()
         self.activateAudioSession()
         self.initializeSentry()
         self.initializeDatabase()
         self.removePartiallyDeletedVideos()
+    }
+    
+    private static func validateAuthToken() {
+        guard provider != .tpstreams || authToken == nil else {
+            fatalError("If the provider is .tpstreams, authToken must be nil.")
+        }
     }
     
     private static func activateAudioSession() {
