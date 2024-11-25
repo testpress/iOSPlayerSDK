@@ -41,11 +41,6 @@ public class TPAVPlayer: AVPlayer {
             fatalError("AssetID cannot be empty")
         }
 
-        if let authToken = TPStreamsSDK.authToken, !authToken.isEmpty,
-           let accessToken = accessToken, !accessToken.isEmpty {
-            fatalError("Can't use both the Access token and Auth token.")
-        }
-
         if (TPStreamsSDK.authToken?.isEmpty ?? true) && (accessToken?.isEmpty ?? true) {
             fatalError("AccessToken cannot be empty")
         }
