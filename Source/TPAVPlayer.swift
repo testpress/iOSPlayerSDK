@@ -36,13 +36,17 @@ public class TPAVPlayer: AVPlayer {
     
     public var availableVideoQualities: [VideoQuality] = [VideoQuality(resolution:"Auto", bitrate: 0)]
     
-    public init(assetID: String, accessToken: String, completion: SetupCompletion? = nil) {
+    public init(assetID: String, accessToken: String? = nil, completion: SetupCompletion? = nil) {
         guard TPStreamsSDK.orgCode != nil else {
             fatalError("You must call TPStreamsSDK.initialize")
         }
         
         if assetID.isEmpty {
             fatalError("AssetID cannot be empty")
+        }
+        
+        if (TPStreamsSDK.authToken?.isEmpty ?? true) && (accessToken?.isEmpty ?? true) {
+            fatalError("AccessToken cannot be empty")
         }
         self.accessToken = accessToken
         self.assetID = assetID
@@ -73,7 +77,7 @@ public class TPAVPlayer: AVPlayer {
     }
     
     private func fetchAsset() {
-        TPStreamsSDK.provider.API.getAsset(assetID!, accessToken!) { [weak self] asset, error in
+        TPStreamsSDK.provider.API.getAsset(assetID!, accessToken) { [weak self] asset, error in
             guard let self = self else { return }
             
             if let asset = asset {
