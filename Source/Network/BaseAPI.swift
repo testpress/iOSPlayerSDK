@@ -19,8 +19,8 @@ class BaseAPI {
         fatalError("parser must be implemented by subclasses.")
     }
     
-    static func getAsset(_ assetID: String, _ accessToken: String, completion: @escaping (Asset?, Error?) -> Void) {
-        let url = URL(string: String(format: VIDEO_DETAIL_API, TPStreamsSDK.orgCode!, assetID, accessToken))!
+    static func getAsset(_ assetID: String, _ accessToken: String?, completion: @escaping (Asset?, Error?) -> Void) {
+        let url = URL(string: String(format: VIDEO_DETAIL_API, TPStreamsSDK.orgCode!, assetID, accessToken ?? ""))!
         
         let headers: HTTPHeaders = (TPStreamsSDK.authToken?.isEmpty == false) ? ["Authorization": "JWT \(TPStreamsSDK.authToken!)"] : [:]
         
@@ -35,8 +35,8 @@ class BaseAPI {
             }
     }
     
-    static func getDRMLicense(_ assetID: String, _ accessToken: String, _ spcData: Data, _ contentID: String, _ forOfflinePlayback: Bool, _ completion:@escaping(Data?, Error?) -> Void) -> Void {
-        let url = URL(string: String(format: DRM_LICENSE_API, TPStreamsSDK.orgCode!, assetID, accessToken, (forOfflinePlayback == true ? "true" : "false")))!
+    static func getDRMLicense(_ assetID: String, _ accessToken: String?, _ spcData: Data, _ contentID: String, _ forOfflinePlayback: Bool, _ completion:@escaping(Data?, Error?) -> Void) -> Void {
+        let url = URL(string: String(format: DRM_LICENSE_API, TPStreamsSDK.orgCode!, assetID, accessToken ?? "", (forOfflinePlayback == true ? "true" : "false")))!
         
         let parameters = [
             "spc": spcData.base64EncodedString(),

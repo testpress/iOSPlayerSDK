@@ -44,7 +44,7 @@ public final class TPStreamsDownloadManager {
         return false
     }
 
-    internal func startDownload(asset: Asset, accessToken: String, videoQuality: VideoQuality) {
+    internal func startDownload(asset: Asset, accessToken: String?, videoQuality: VideoQuality) {
         contentKeyDelegate.setAssetDetails(asset.id, accessToken, true)
         if LocalOfflineAsset.manager.exists(id: asset.id) {
             return

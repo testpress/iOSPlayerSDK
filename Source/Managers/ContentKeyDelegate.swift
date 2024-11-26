@@ -123,8 +123,7 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
     }
     
     func requestCKC(_ spcData: Data, _ completion: @escaping(Data?, Error?) -> Void) {
-        guard let assetID = assetID,
-              let accessToken = accessToken else { return }
+        guard let assetID = assetID else { return }
         TPStreamsSDK.provider.API.getDRMLicense(assetID, accessToken, spcData, contentID!, forOfflinePlayback, completion)
     }
     
