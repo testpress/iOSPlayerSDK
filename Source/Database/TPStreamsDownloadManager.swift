@@ -83,7 +83,7 @@ public final class TPStreamsDownloadManager {
                     print("Extracted DRM content ID: \(drmContentId)")
                     DispatchQueue.main.async {
                         LocalOfflineAsset.manager.update(id: asset.id, with: ["drmContentId": drmContentId])
-                        self.requestPersistentKey(localOfflineAsset.assetId, accessToken)
+                        self.requestPersistentKey(localOfflineAsset.assetId)
                     }
                 case .failure(let error):
                     print("Error extracting content ID: \(error.localizedDescription)")
@@ -92,7 +92,7 @@ public final class TPStreamsDownloadManager {
         }
     }
     
-    private func requestPersistentKey(_ assetID: String,_ accessToken: String) {
+    private func requestPersistentKey(_ assetID: String) {
         guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: assetID) else {
             print("Asset with ID \(assetID) does not exist.")
             return
