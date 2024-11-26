@@ -32,7 +32,7 @@ public class TPAVPlayer: AVPlayer {
     
     public var availableVideoQualities: [VideoQuality] = [VideoQuality(resolution:"Auto", bitrate: 0)]
     
-    public init(assetID: String, accessToken: String? = nil, completion: SetupCompletion? = nil) {
+    public init(assetID: String, accessToken: String, completion: SetupCompletion? = nil) {
         guard TPStreamsSDK.orgCode != nil else {
             fatalError("You must call TPStreamsSDK.initialize")
         }
@@ -40,11 +40,6 @@ public class TPAVPlayer: AVPlayer {
         if assetID.isEmpty {
             fatalError("AssetID cannot be empty")
         }
-
-        if (TPStreamsSDK.authToken?.isEmpty ?? true) && (accessToken?.isEmpty ?? true) {
-            fatalError("AccessToken cannot be empty")
-        }
-
         self.accessToken = accessToken
         self.assetID = assetID
         self.setupCompletion = completion
