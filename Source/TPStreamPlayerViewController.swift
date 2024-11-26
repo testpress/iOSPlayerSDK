@@ -121,7 +121,8 @@ public class TPStreamPlayerViewController: UIViewController {
             if let status = change.newValue {
                 switch status {
                 case "error":
-                    self.showError(error: self.player!.initializationError!)
+                    let errorInfo = self.player!.initializationErrorContext!
+                    self.showError(error: errorInfo.error, sentryIssueId: errorInfo.sentryIssueId)
                 case "ready":
                     self.noticeView.isHidden = true
                     self.showLiveStreamNotice()
@@ -160,18 +161,23 @@ public class TPStreamPlayerViewController: UIViewController {
     }
     
     private func handlePlayerInitializationError() {
-        guard let player = player, let initializationError = player.initializationError else { return }
+        guard let player = player, let errorContext = player.initializationErrorContext else { return }
         
-        showError(error: initializationError)
+        showError(error: errorContext.error, sentryIssueId: errorContext.sentryIssueId)
     }
     
-    private func showError(error: Error) {
+    private func showError(error: Error, sentryIssueId: String?) {
         var message: String
         if let tpStreamPlayerError = error as? TPStreamPlayerError {
             message = "\(tpStreamPlayerError.message)\nError code: \(tpStreamPlayerError.code)"
         } else {
             message = error.localizedDescription
         }
+        
+        if let sentryIssueId = sentryIssueId {
+            message += "\nPlayerId: \(sentryIssueId)"
+        }
+        
         showNotice(withMessage: message)
     }
     

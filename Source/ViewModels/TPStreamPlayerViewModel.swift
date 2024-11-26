@@ -19,12 +19,12 @@ class TPStreamPlayerViewModel: ObservableObject {
     init(player: TPAVPlayer) {
         self.player = player
         self.showLiveStreamNotice()
-        if let initializationError = player.initializationError {
-            showError(error: initializationError)
+        if let errorContext = player.initializationErrorContext {
+            showError(error: errorContext.error, sentryIssueId: errorContext.sentryIssueId)
         }
         setupPlayerStatusObserver(for: player)
-        self.player.onError = { [weak self] error in
-            self?.showError(error: error)
+        self.player.onError = { [weak self] error, sentryIssueId in
+            self?.showError(error: error, sentryIssueId: sentryIssueId)
         }
     }
     
@@ -35,7 +35,8 @@ class TPStreamPlayerViewModel: ObservableObject {
             if let status = change.newValue {
                 switch status {
                 case "error":
-                    self.showError(error: self.player.initializationError!)
+                    let errorContext = self.player.initializationErrorContext!
+                    self.showError(error: errorContext.error, sentryIssueId: errorContext.sentryIssueId)
                 case "ready":
                     self.noticeMessage = nil
                     self.showLiveStreamNotice()
@@ -54,13 +55,18 @@ class TPStreamPlayerViewModel: ObservableObject {
         self.setNoticeMessage(noticeMessage)
     }
     
-    func showError(error: Error) {
+    func showError(error: Error, sentryIssueId: String?) {
         var message: String
         if let tpStreamPlayerError = error as? TPStreamPlayerError {
             message = "\(tpStreamPlayerError.message)\nError code: \(tpStreamPlayerError.code)"
         } else {
             message = error.localizedDescription
         }
+        
+        if let sentryIssueId = sentryIssueId {
+            message += "\nPlayerId: \(sentryIssueId)"
+        }
+    
         setNoticeMessage(message)
     }
     
