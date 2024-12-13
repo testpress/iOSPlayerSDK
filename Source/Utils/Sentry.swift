@@ -6,20 +6,20 @@
 //
 
 import Foundation
-import Sentry
+//import Sentry
 
 func captureErrorInSentry(_ error: Error, _ assetID: String?, _ accessToken: String?) -> String {
     let uuid = generateRandomString()
     
-    SentrySDK.capture(error: error) { scope in
-        scope.setTag(value: assetID ?? "", key: "assetID")
-        scope.setTag(value: uuid, key: "playerId")
-        
-        let additionalInfo = [
-            "accessToken": accessToken
-        ]
-        scope.setContext(value: additionalInfo, key: "Additional Info")
-    }
+//    SentrySDK.capture(error: error) { scope in
+//        scope.setTag(value: assetID ?? "", key: "assetID")
+//        scope.setTag(value: uuid, key: "playerId")
+//        
+//        let additionalInfo = [
+//            "accessToken": accessToken
+//        ]
+//        scope.setContext(value: additionalInfo, key: "Additional Info")
+//    }
     
     return uuid
 }
