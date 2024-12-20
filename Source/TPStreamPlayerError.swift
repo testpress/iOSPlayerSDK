@@ -1,4 +1,6 @@
-import Sentry
+//import Sentry
+
+import Foundation
 
 public enum TPStreamPlayerError: Error {
     case resourceNotFound
