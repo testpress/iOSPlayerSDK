@@ -6,7 +6,12 @@
 //
 
 import Foundation
+
+#if CocoaPods
+import M3U8Kit
+#else
 import M3U8Parser
+#endif
 
 public class M3U8Parser {
     
