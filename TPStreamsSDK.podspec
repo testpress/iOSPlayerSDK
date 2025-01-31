@@ -15,7 +15,7 @@ Pod::Spec.new do |spec|
   spec.dependency 'Alamofire', '~> 5.9.0'
   spec.dependency 'M3U8Kit', '~> 1.1.0'
   spec.dependency 'ReachabilitySwift', '~> 5.2.2'
-  spec.dependency 'RealmSwift', '~> 10.45.0'
+  spec.dependency 'RealmSwift', '~> 10.54.2'
 
   spec.pod_target_xcconfig = {
     'OTHER_SWIFT_FLAGS[config=Debug]' => '-DCocoaPods',
