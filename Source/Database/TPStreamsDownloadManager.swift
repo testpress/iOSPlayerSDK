@@ -26,9 +26,12 @@ public final class TPStreamsDownloadManager {
             assetDownloadDelegate: assetDownloadDelegate,
             delegateQueue: OperationQueue.main
         )
+        
+        #if !targetEnvironment(simulator)
         contentKeySession = AVContentKeySession(keySystem: .fairPlayStreaming)
         contentKeyDelegate = ContentKeyDelegate()
         contentKeySession.setDelegate(contentKeyDelegate, queue: contentKeyDelegateQueue)
+        #endif
     }
     
     public func setTPStreamsDownloadDelegate(tpStreamsDownloadDelegate: TPStreamsDownloadDelegate) {
@@ -44,12 +47,20 @@ public final class TPStreamsDownloadManager {
         return false
     }
 
-    internal func startDownload(asset: Asset, accessToken: String?, videoQuality: VideoQuality) {
-        contentKeyDelegate.setAssetDetails(asset.id, accessToken, true)
+    internal func startDownload(asset: Asset, accessToken: String?, videoQuality: VideoQuality) throws {
+        #if targetEnvironment(simulator)
+            if (asset.video?.drmEncrypted == true){
+                print("Downloading DRM content is not supported in simulator")
+                throw NSError(domain: "TPStreamsSDK", code: -1, userInfo: [NSLocalizedDescriptionKey: "DRM content downloading is not supported in simulator"])
+            }
+        #else
+            contentKeyDelegate.setAssetDetails(asset.id, accessToken, true)
+        #endif
+
         if LocalOfflineAsset.manager.exists(id: asset.id) {
             return
         }
-
+        
         let avUrlAsset = AVURLAsset(url: URL(string: asset.video!.playbackURL)!)
 
         guard let task = assetDownloadURLSession.aggregateAssetDownloadTask(
