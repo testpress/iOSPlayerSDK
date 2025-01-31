@@ -9,6 +9,7 @@ public enum TPStreamPlayerError: Error {
     case networkTimeout
     case incompleteOfflineVideo
     case unknownError
+    case drmSimulatorError
     
     public var code: Int {
         switch self {
@@ -19,6 +20,7 @@ public enum TPStreamPlayerError: Error {
         case .serverError: return 5005
         case .networkTimeout: return 5006
         case .incompleteOfflineVideo: return 5007
+        case .drmSimulatorError: return 5008
         case .unknownError: return 5100
         }
     }
@@ -39,6 +41,8 @@ public enum TPStreamPlayerError: Error {
             return "The request took too long to process due to a slow or unstable network connection. Please try again."
         case .incompleteOfflineVideo:
             return "This video hasn't been downloaded completely. Please try downloading it again."
+        case .drmSimulatorError:
+            return "DRM protected content cannot be played in simulator. Please use a physical device."
         case .unknownError:
             return "Oops! Something went wrong. Please contact support for assistance and provide details about the issue."
         }
@@ -46,7 +50,7 @@ public enum TPStreamPlayerError: Error {
     
     public var shouldLogToSentry: Bool {
         switch self {
-        case .noInternetConnection, .incompleteOfflineVideo:
+        case .noInternetConnection, .incompleteOfflineVideo, .drmSimulatorError:
             return false
         default:
             return true

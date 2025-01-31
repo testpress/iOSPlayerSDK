@@ -81,6 +81,13 @@ public class TPAVPlayer: AVPlayer {
                 self.processInitializationFailure(error)
                 return
             }
+
+            #if targetEnvironment(simulator)
+            if asset?.video?.drmEncrypted == true {
+                self.processInitializationFailure(TPStreamPlayerError.drmSimulatorError)
+                return
+            }
+            #endif
             
             guard let asset = asset else { return }
             self.initializePlayerWithFetchedAsset(asset)
