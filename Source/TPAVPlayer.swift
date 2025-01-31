@@ -89,7 +89,10 @@ public class TPAVPlayer: AVPlayer {
     
     private func processInitializationFailure(_ error: Error) {
         setupCompletion?(error)
-        let sentryIssueId = captureErrorInSentry(error, assetID, accessToken)  
+        var sentryIssueId: String? = nil
+        if (error as? TPStreamPlayerError)?.shouldLogToSentry ?? true {
+            sentryIssueId = captureErrorInSentry(error, assetID, accessToken)
+        }
         initializationErrorContext = InitializationErrorContext(error: error, sentryIssueId: sentryIssueId)
         onError?(error, sentryIssueId)
         initializationStatus = "error"

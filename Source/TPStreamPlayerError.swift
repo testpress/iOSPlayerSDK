@@ -43,6 +43,15 @@ public enum TPStreamPlayerError: Error {
             return "Oops! Something went wrong. Please contact support for assistance and provide details about the issue."
         }
     }
+    
+    public var shouldLogToSentry: Bool {
+        switch self {
+        case .noInternetConnection, .incompleteOfflineVideo:
+            return false
+        default:
+            return true
+        }
+    }
 }
 
 extension TPStreamPlayerError: CustomNSError {    
