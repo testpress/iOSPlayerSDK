@@ -24,7 +24,7 @@ class MainViewController: UIViewController {
     }
     
     @IBAction func sample3Tapped(_ sender: UIButton) {
-        presentPlayerViewController(assistId: "9JRmKJXZSMe", accessToken: "1ae5e10e-fc85-4aa9-9a0a-6c195e9b0034")
+        presentPlayerViewController(assistId: "AgAFNEJn3kt", accessToken: "f9b11692-78c5-4d14-9385-5f1efb0b8f4e")
     }
     
     @IBAction func downloadsTapped(_ sender: UIButton) {
