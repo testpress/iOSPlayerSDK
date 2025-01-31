@@ -65,14 +65,11 @@ public class TPAVPlayer: AVPlayer {
         guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: offlineAssetId) else { return }
         if (localOfflineAsset.status == "finished") {
             self.asset = localOfflineAsset.asAsset()
-            self.setup()
+            self.initializePlayer()
             self.setupCompletion?(nil)
             self.initializationStatus = "ready"
         } else {
-            self.setupCompletion?(TPStreamPlayerError.incompleteOfflineVideo)
-            self.onError?(TPStreamPlayerError.incompleteOfflineVideo, nil)
-            self.initializationErrorContext = InitializationErrorContext(error: TPStreamPlayerError.incompleteOfflineVideo, sentryIssueId: nil)
-            self.initializationStatus = "error"
+            self.processInitializationFailure(TPStreamPlayerError.incompleteOfflineVideo)
         }
     }
     
@@ -80,25 +77,36 @@ public class TPAVPlayer: AVPlayer {
         TPStreamsSDK.provider.API.getAsset(assetID!, accessToken) { [weak self] asset, error in
             guard let self = self else { return }
             
-            if let asset = asset {
-                self.asset = asset
-                self.setup()
-                self.setupCompletion?(nil)
-                self.initializationStatus = "ready"
-            } else if let error = error{
-                self.setupCompletion?(error)
-                let sentryIssueId = captureErrorInSentry(error, self.assetID, self.accessToken)
-                self.initializationErrorContext = InitializationErrorContext(error: error, sentryIssueId: sentryIssueId)
-                self.onError?(error, sentryIssueId)
-                self.initializationStatus = "error"
-                if self.isNetworkUnavailableError(error){
-                    self.retryFetchAssetWhenNetworkIsReady()
-                }
+            if let error = error {
+                self.processInitializationFailure(error)
+                return
             }
+            
+            guard let asset = asset else { return }
+            self.initializePlayerWithFetchedAsset(asset)
         }
     }
     
-    private func setup() {
+    private func processInitializationFailure(_ error: Error) {
+        setupCompletion?(error)
+        let sentryIssueId = captureErrorInSentry(error, assetID, accessToken)  
+        initializationErrorContext = InitializationErrorContext(error: error, sentryIssueId: sentryIssueId)
+        onError?(error, sentryIssueId)
+        initializationStatus = "error"
+        
+        if isNetworkUnavailableError(error) {
+            retryFetchAssetWhenNetworkIsReady()
+        }
+    }
+    
+    private func initializePlayerWithFetchedAsset(_ asset: Asset) {
+        self.asset = asset
+        initializePlayer()
+        setupCompletion?(nil)
+        initializationStatus = "ready"
+    }
+    
+    private func initializePlayer() {
         guard let asset = asset, let urlString = asset.playbackURL, let url = URL(string: urlString) else {
             debugPrint("Invalid playback URL received from API: \(asset?.playbackURL ?? "nil")")
             return
