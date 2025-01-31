@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = "TPStreamsSDK"
-  spec.version      = "1.2.0"
+  spec.version      = "1.2.1"
   spec.summary      = "Integrate TPStreams video playback seamlessly into your iOS app with our powerful iOS player SDK."
   spec.description  = "TPStreamsSDK is a versatile iOS native SDK with support for both DRM (FairPlay) and non-DRM content."
   spec.homepage     = "https://developer.tpstreams.com/docs/mobile-sdk/ios-native-sdk/getting-started"
