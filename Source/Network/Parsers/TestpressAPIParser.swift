@@ -28,10 +28,10 @@ class TestpressAPIParser: APIParser {
         guard let videoDict = dictionary,
               let playbackURL = videoDict["hls_url"] as? String ?? videoDict["url"] as? String,
               let status = videoDict["transcoding_status"] as? String,
-              let duration = videoDict["duration"] as? Double,
               let drmEncrypted = videoDict["drm_enabled"] as? Bool else {
             return nil
         }
+        let duration: Double = videoDict["duration"] as? Double ?? 0.0
         
         return Video(playbackURL: playbackURL, status: status, drmEncrypted: drmEncrypted, duration: duration)
     }

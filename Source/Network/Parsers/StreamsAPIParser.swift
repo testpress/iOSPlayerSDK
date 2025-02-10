@@ -28,10 +28,11 @@ class StreamsAPIParser: APIParser {
         guard let videoDict = dictionary,
               let playbackURL = videoDict["playback_url"] as? String,
               let status = videoDict["status"] as? String,
-              let duration = videoDict["duration"] as? Double,
               let contentProtectionType = videoDict["content_protection_type"] as? String else {
             return nil
         }
+        
+        let duration: Double = videoDict["duration"] as? Double ?? 0.0
         
         return Video(playbackURL: playbackURL, status: status, drmEncrypted: contentProtectionType == "drm", duration: duration)
     }
