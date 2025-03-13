@@ -54,7 +54,7 @@ public class TPStreamsSDK {
     
     private static func initializeSentry(){
         SentrySDK.start { options in
-            options.dsn = "https://044aaee46f1d40f48e5c4046ad3926d2@sentry.testpress.in/12"
+            options.dsn = "https://8ac303d4635e4f3ab06a2b7d77b3c0c1@sentry.testpress.in/9"
             options.debug = false
             options.tracesSampleRate = 1.0
             options.enablePreWarmedAppStartTracing = true
