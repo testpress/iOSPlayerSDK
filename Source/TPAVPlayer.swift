@@ -166,29 +166,32 @@ public class TPAVPlayer: AVPlayer {
         }
     }
     
-    private func populateAvailableVideoQualities(_ url: URL){
-        guard let streamList = getStreamListFromMasterPlaylist(url) else {
-            return
-        }
-        
-        
-        for i in 0 ..< streamList.count {
-            if let extXStreamInf = streamList.xStreamInf(at: i){
-                let resolution = "\(Int(extXStreamInf.resolution.height))p"
-                availableVideoQualities.append(VideoQuality(resolution: resolution, bitrate: Double(extXStreamInf.bandwidth)))
+    private func populateAvailableVideoQualities(_ url: URL) {
+        fetchStreamList(from: url) { [weak self] streamList in
+            guard let self = self, let streamList = streamList else {
+                print("Failed to load stream list")
+                return
+            }
+            
+            for i in 0 ..< streamList.count {
+                if let extXStreamInf = streamList.xStreamInf(at: i){
+                    let resolution = "\(Int(extXStreamInf.resolution.height))p"
+                    availableVideoQualities.append(VideoQuality(resolution: resolution, bitrate: Double(extXStreamInf.bandwidth)))
+                }
             }
         }
     }
-    
-    private func getStreamListFromMasterPlaylist(_ url: URL) -> M3U8ExtXStreamInfList?{
-        guard let playlistModel = try? M3U8PlaylistModel(url: url),
-              let masterPlaylist = playlistModel.masterPlaylist,
-              let streamList = masterPlaylist.xStreamList else {
-            return nil
+
+    private func fetchStreamList(from url: URL, completion: @escaping (M3U8ExtXStreamInfList?) -> Void) {
+        DispatchQueue.global(qos: .utility).async {
+            let playlistModel = try? M3U8PlaylistModel(url: url)
+            let streamList = playlistModel?.masterPlaylist?.xStreamList
+            streamList?.sortByBandwidth(inOrder: .orderedAscending)
+
+            DispatchQueue.main.async {
+                completion(streamList)
+            }
         }
-        
-        streamList.sortByBandwidth(inOrder: .orderedAscending)
-        return streamList
     }
     
     public func changeVideoQuality(to videoQuality: VideoQuality) {
