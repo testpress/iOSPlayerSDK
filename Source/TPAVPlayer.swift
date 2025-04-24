@@ -169,7 +169,7 @@ public class TPAVPlayer: AVPlayer {
     private func populateAvailableVideoQualities(_ url: URL) {
         fetchStreamList(from: url) { [weak self] streamList in
             guard let self = self, let streamList = streamList else {
-                print("Failed to load stream list")
+                print("Failed to load stream list from: \(url)")
                 return
             }
             
@@ -184,12 +184,19 @@ public class TPAVPlayer: AVPlayer {
 
     private func fetchStreamList(from url: URL, completion: @escaping (M3U8ExtXStreamInfList?) -> Void) {
         DispatchQueue.global(qos: .utility).async {
-            let playlistModel = try? M3U8PlaylistModel(url: url)
-            let streamList = playlistModel?.masterPlaylist?.xStreamList
+        do {
+            let playlistModel = try M3U8PlaylistModel(url: url)
+            let streamList = playlistModel.masterPlaylist?.xStreamList
             streamList?.sortByBandwidth(inOrder: .orderedAscending)
 
             DispatchQueue.main.async {
                 completion(streamList)
+            }
+         } catch {
+            print("Error loading playlist: \(error.localizedDescription)")
+            DispatchQueue.main.async {
+                completion(nil)
+                }
             }
         }
     }
