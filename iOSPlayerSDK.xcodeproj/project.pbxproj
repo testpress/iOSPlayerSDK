@@ -29,7 +29,7 @@
 		0397C4872C1C630600D701AA /* TPStreamPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0397C4862C1C630600D701AA /* TPStreamPlayerViewModel.swift */; };
 		03B8090A2A2DF8A000AB3D03 /* TPStreamPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B809092A2DF8A000AB3D03 /* TPStreamPlayer.swift */; };
 		03B8090C2A2DF9A200AB3D03 /* PlayerControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B8090B2A2DF9A200AB3D03 /* PlayerControlsView.swift */; };
-		03B8090E2A2DFC0F00AB3D03 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B8090D2A2DFC0F00AB3D03 /* Assets.xcassets */; };
+		03B8090E2A2DFC0F00AB3D03 /* TPStreamsSDKAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B8090D2A2DFC0F00AB3D03 /* TPStreamsSDKAssets.xcassets */; };
 		03B8FD902A690CAA00DAB7AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B8FD8F2A690CAA00DAB7AE /* AppDelegate.swift */; };
 		03B8FD922A690CAA00DAB7AE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B8FD912A690CAA00DAB7AE /* SceneDelegate.swift */; };
 		03B8FD942A690CAA00DAB7AE /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B8FD932A690CAA00DAB7AE /* PlayerViewController.swift */; };
@@ -178,7 +178,7 @@
 		0397C4862C1C630600D701AA /* TPStreamPlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayerViewModel.swift; sourceTree = "<group>"; };
 		03B809092A2DF8A000AB3D03 /* TPStreamPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayer.swift; sourceTree = "<group>"; };
 		03B8090B2A2DF9A200AB3D03 /* PlayerControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlsView.swift; sourceTree = "<group>"; };
-		03B8090D2A2DFC0F00AB3D03 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		03B8090D2A2DFC0F00AB3D03 /* TPStreamsSDKAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TPStreamsSDKAssets.xcassets; sourceTree = "<group>"; };
 		03B8FD8D2A690CAA00DAB7AE /* StoryboardExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StoryboardExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		03B8FD8F2A690CAA00DAB7AE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		03B8FD912A690CAA00DAB7AE /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -485,7 +485,7 @@
 				8E6C5CB42A28BD9A003EC948 /* TPStreamsSDK.swift */,
 				8E6389DE2A2751C800306FA4 /* TPAVPlayer.swift */,
 				8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */,
-				03B8090D2A2DFC0F00AB3D03 /* Assets.xcassets */,
+				03B8090D2A2DFC0F00AB3D03 /* TPStreamsSDKAssets.xcassets */,
 				03B8FDA82A695FED00DAB7AE /* TPStreamPlayerViewController.swift */,
 				03BF8C512B173ED10006CBC1 /* TPStreamPlayerConfiguration.swift */,
 				031099F52B28B22C0034D370 /* TPStreamPlayerError.swift */,
@@ -725,7 +725,7 @@
 			files = (
 				03BE54182BF780D1004ED191 /* PrivacyInfo.xcprivacy in Resources */,
 				03B8FDAB2A696E6D00DAB7AE /* PlayerControls.xib in Resources */,
-				03B8090E2A2DFC0F00AB3D03 /* Assets.xcassets in Resources */,
+				03B8090E2A2DFC0F00AB3D03 /* TPStreamsSDKAssets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
