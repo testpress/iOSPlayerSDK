@@ -24,6 +24,7 @@ public struct InitializationErrorContext {
 
 public class TPAVPlayer: AVPlayer {
     internal var accessToken: String?
+    internal var orgCode123: String?
     internal var assetID: String?
     private var setupCompletion: SetupCompletion?
     private var resourceLoaderDelegate: ResourceLoaderDelegate?
