@@ -31,7 +31,7 @@ let package = Package(
         "M3U8Parser",
         .product(name: "Sentry", package: "sentry-cocoa"),
         .product(name: "Reachability", package: "Reachability.swift"),
-        .product(name: "RealmSwift", package: "realm-swift")
+        .product(name: "RealmSwift", package: "realm-swift", type: .static)
       ],
       path: "Source",
       resources: [
