@@ -34,7 +34,7 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
     
     func appendAccessToken(_ url: URL) -> URL? {
         if var components = URLComponents(url: url, resolvingAgainstBaseURL: true){
-            if TPStreamsSDK.provider == .testpress, let orgCode = TPStreamsSDK.orgCode {
+            if TPStreamsSDK.provider == .testpress, let orgCode = TPStreamsSDK.orgCode, !orgCode.isEmpty {
                 components.host = "\(orgCode).testpress.in"
             }
             let accessTokenQueryItem = URLQueryItem(name: "access_token", value: self.accessToken)
