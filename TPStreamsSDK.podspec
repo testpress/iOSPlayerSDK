@@ -13,8 +13,9 @@ Pod::Spec.new do |spec|
   spec.exclude_files = "Classes/Exclude"
   spec.dependency 'Sentry', '~> 8.50.0'
   spec.dependency 'Alamofire', '~> 5.9.0'
-  spec.dependency 'M3U8Kit', '~> 1.1.0'
+  spec.dependency 'M3U8Kit', '~> 1.1.0', :modular_headers => true
   spec.dependency 'ReachabilitySwift', '~> 5.2.2'
+  spec.dependency 'Realm', '~> 10.54.2', :modular_headers => true
   spec.dependency 'RealmSwift', '~> 10.54.2'
 
   spec.pod_target_xcconfig = {
