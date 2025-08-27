@@ -14,12 +14,12 @@ public struct OfflineAsset: Hashable {
     public var srcURL: String = ""
     public var downloadedAt = Date()
     public var status:String = Status.notStarted.rawValue
-    public var thumbnailURL: String? = nil
     public var percentageCompleted: Double = 0.0
     public var resolution: String = ""
     public var duration: Double = 0.0
     public var bitRate: Double = 0.0
     public var size: Double = 0.0
+    public var thumbnailURL: String? = nil
     public var folderTree: String = ""
 }
 

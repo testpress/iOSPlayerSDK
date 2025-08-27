@@ -37,6 +37,7 @@ extension LocalOfflineAsset {
         resolution: String,
         duration:Double,
         bitRate: Double,
+        thumbnailURL: String? = nil,
         folderTree: String,
         drmContentId: String? = nil
     ) -> LocalOfflineAsset {
@@ -48,6 +49,7 @@ extension LocalOfflineAsset {
         localOfflineAsset.duration = duration
         localOfflineAsset.bitRate = bitRate
         localOfflineAsset.size = (bitRate * duration)
+        localOfflineAsset.thumbnailURL = thumbnailURL
         localOfflineAsset.folderTree = folderTree
         localOfflineAsset.drmContentId = drmContentId
         return localOfflineAsset
@@ -60,12 +62,12 @@ extension LocalOfflineAsset {
             title: self.title,
             downloadedAt: self.downloadedAt,
             status: self.status,
-            thumbnailURL: self.thumbnailURL,
             percentageCompleted: self.percentageCompleted,
             resolution: self.resolution,
             duration: self.duration,
             bitRate: self.bitRate,
             size: self.size,
+            thumbnailURL: self.thumbnailURL,
             folderTree: self.folderTree
         )
     }
