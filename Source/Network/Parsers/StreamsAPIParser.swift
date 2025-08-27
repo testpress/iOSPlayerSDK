@@ -33,8 +33,9 @@ class StreamsAPIParser: APIParser {
         }
         
         let duration: Double = videoDict["duration"] as? Double ?? 0.0
+        let thumbnailURL: String? = videoDict["cover_thumbnail_url"] as? String
         
-        return Video(playbackURL: playbackURL, status: status, drmEncrypted: contentProtectionType == "drm", duration: duration)
+        return Video(playbackURL: playbackURL, status: status, drmEncrypted: contentProtectionType == "drm", duration: duration, thumbnailURL: thumbnailURL)
     }
 
     func parseLiveStream(from dictionary: [String: Any]?) -> LiveStream? {
