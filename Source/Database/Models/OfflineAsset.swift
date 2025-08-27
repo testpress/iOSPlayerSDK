@@ -21,6 +21,7 @@ public struct OfflineAsset: Hashable {
     public var size: Double = 0.0
     public var thumbnailURL: String? = nil
     public var folderTree: String = ""
+    public var metadataJSON: String? = nil
 }
 
 

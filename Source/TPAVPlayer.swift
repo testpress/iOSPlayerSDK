@@ -33,10 +33,11 @@ public class TPAVPlayer: AVPlayer {
     internal var asset: Asset? = nil
     private var reachability: Reachability?
     internal var isPlaybackOffline: Bool = false
+    internal var metadata: String? = nil
     
     public var availableVideoQualities: [VideoQuality] = [VideoQuality(resolution:"Auto", bitrate: 0)]
     
-    public init(assetID: String, accessToken: String? = nil, completion: SetupCompletion? = nil) {
+    public init(assetID: String, accessToken: String? = nil, metadata: String? = nil, completion: SetupCompletion? = nil) {
         guard TPStreamsSDK.orgCode != nil else {
             fatalError("You must call TPStreamsSDK.initialize")
         }
@@ -52,19 +53,21 @@ public class TPAVPlayer: AVPlayer {
         self.assetID = assetID
         self.setupCompletion = completion
         self.resourceLoaderDelegate = ResourceLoaderDelegate(accessToken: accessToken)
+        self.metadata = metadata
         
         super.init()
         fetchAsset()
         isPlaybackOffline = false
     }
     
-    public init(offlineAssetId: String, completion: SetupCompletion? = nil) {
+    public init(offlineAssetId: String, metadata: String? = nil, completion: SetupCompletion? = nil) {
         self.setupCompletion = completion
         super.init()
         isPlaybackOffline = true
         guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: offlineAssetId) else { return }
         if (localOfflineAsset.status == "finished") {
             self.asset = localOfflineAsset.asAsset()
+            self.metadata = metadata ?? localOfflineAsset.metadataJSON
             self.initializePlayer()
             self.setupCompletion?(nil)
             self.initializationStatus = "ready"

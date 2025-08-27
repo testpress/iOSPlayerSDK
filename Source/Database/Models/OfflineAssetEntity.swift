@@ -24,6 +24,7 @@ class LocalOfflineAsset: Object {
     @Persisted var size: Double = 0.0
     @Persisted var folderTree: String = ""
     @Persisted var drmContentId: String? = nil
+    @Persisted var metadataJSON: String? = nil
     
     static var manager = ObjectManager<LocalOfflineAsset>()
 }
@@ -39,7 +40,8 @@ extension LocalOfflineAsset {
         bitRate: Double,
         thumbnailURL: String? = nil,
         folderTree: String,
-        drmContentId: String? = nil
+        drmContentId: String? = nil,
+        metadata: String? = nil
     ) -> LocalOfflineAsset {
         let localOfflineAsset = LocalOfflineAsset()
         localOfflineAsset.assetId = assetId
@@ -52,6 +54,7 @@ extension LocalOfflineAsset {
         localOfflineAsset.thumbnailURL = thumbnailURL
         localOfflineAsset.folderTree = folderTree
         localOfflineAsset.drmContentId = drmContentId
+        localOfflineAsset.metadataJSON = metadata
         return localOfflineAsset
     }
     
@@ -68,7 +71,8 @@ extension LocalOfflineAsset {
             bitRate: self.bitRate,
             size: self.size,
             thumbnailURL: self.thumbnailURL,
-            folderTree: self.folderTree
+            folderTree: self.folderTree,
+            metadataJSON: self.metadataJSON
         )
     }
     
