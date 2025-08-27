@@ -61,9 +61,6 @@ public final class TPStreamsDownloadManager {
             return
         }
         
-        print("TPStreamsDownloadManager: Starting download for asset \(asset.id)")
-        print("TPStreamsDownloadManager: Asset thumbnail URL: \(asset.video?.thumbnailURL ?? "nil")")
-        
         let avUrlAsset = AVURLAsset(url: URL(string: asset.video!.playbackURL)!)
 
         guard let task = assetDownloadURLSession.aggregateAssetDownloadTask(
