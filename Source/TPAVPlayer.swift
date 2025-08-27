@@ -67,7 +67,7 @@ public class TPAVPlayer: AVPlayer {
         guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: offlineAssetId) else { return }
         if (localOfflineAsset.status == "finished") {
             self.asset = localOfflineAsset.asAsset()
-            self.metadata = metadata ?? localOfflineAsset.metadataJSON
+            self.metadata = localOfflineAsset.metadataJSON
             self.initializePlayer()
             self.setupCompletion?(nil)
             self.initializationStatus = "ready"
