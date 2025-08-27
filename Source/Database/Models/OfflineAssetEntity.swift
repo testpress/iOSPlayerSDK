@@ -60,6 +60,7 @@ extension LocalOfflineAsset {
             title: self.title,
             downloadedAt: self.downloadedAt,
             status: self.status,
+            thumbnailURL: self.thumbnailURL,
             percentageCompleted: self.percentageCompleted,
             resolution: self.resolution,
             duration: self.duration,
