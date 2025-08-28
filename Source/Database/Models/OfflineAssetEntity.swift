@@ -24,9 +24,13 @@ class LocalOfflineAsset: Object {
     @Persisted var size: Double = 0.0
     @Persisted var folderTree: String = ""
     @Persisted var drmContentId: String? = nil
-    @Persisted var metadataJSON: String? = nil
+    @Persisted var metadataMap = Map<String, String>()
     
     static var manager = ObjectManager<LocalOfflineAsset>()
+    
+    var metadata: [String: String] {
+        Dictionary(uniqueKeysWithValues: metadataMap.map { ($0.key, $0.value) })
+    }
 }
 
 extension LocalOfflineAsset {
@@ -41,7 +45,7 @@ extension LocalOfflineAsset {
         thumbnailURL: String? = nil,
         folderTree: String,
         drmContentId: String? = nil,
-        metadata: String? = nil
+        metadata: [String: String]? = nil
     ) -> LocalOfflineAsset {
         let localOfflineAsset = LocalOfflineAsset()
         localOfflineAsset.assetId = assetId
@@ -54,7 +58,9 @@ extension LocalOfflineAsset {
         localOfflineAsset.thumbnailURL = thumbnailURL
         localOfflineAsset.folderTree = folderTree
         localOfflineAsset.drmContentId = drmContentId
-        localOfflineAsset.metadataJSON = metadata
+        metadata?.forEach { key, value in
+            localOfflineAsset.metadataMap[key] = value
+        }
         return localOfflineAsset
     }
     
@@ -72,7 +78,7 @@ extension LocalOfflineAsset {
             size: self.size,
             thumbnailURL: self.thumbnailURL,
             folderTree: self.folderTree,
-            metadataJSON: self.metadataJSON
+            metadata: self.metadata
         )
     }
     

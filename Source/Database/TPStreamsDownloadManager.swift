@@ -47,7 +47,7 @@ public final class TPStreamsDownloadManager {
         return false
     }
 
-    internal func startDownload(asset: Asset, accessToken: String?, videoQuality: VideoQuality, metadata: String? = nil) throws {
+    internal func startDownload(asset: Asset, accessToken: String?, videoQuality: VideoQuality, metadata: [String: String]? = nil) throws {
         #if targetEnvironment(simulator)
             if (asset.video?.drmEncrypted == true){
                 print("Downloading DRM content is not supported in simulator")
