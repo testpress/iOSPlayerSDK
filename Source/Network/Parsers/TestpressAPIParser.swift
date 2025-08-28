@@ -33,7 +33,7 @@ class TestpressAPIParser: APIParser {
         }
         let duration: Double = videoDict["duration"] as? Double ?? 0.0
         
-        return Video(playbackURL: playbackURL, status: status, drmEncrypted: drmEncrypted, duration: duration)
+        return Video(playbackURL: playbackURL, status: status, drmEncrypted: drmEncrypted, duration: duration, thumbnailURL: nil)
     }
 
     func parseLiveStream(from dictionary: [String: Any]?) -> LiveStream? {

@@ -16,6 +16,7 @@ class LocalOfflineAsset: Object {
     @Persisted var downloadedPath: String = ""
     @Persisted var downloadedAt = Date()
     @Persisted var status:String = Status.notStarted.rawValue
+    @Persisted var thumbnailURL: String? = nil
     @Persisted var percentageCompleted: Double = 0.0
     @Persisted var resolution: String = ""
     @Persisted var duration: Double = 0.0
@@ -36,6 +37,7 @@ extension LocalOfflineAsset {
         resolution: String,
         duration:Double,
         bitRate: Double,
+        thumbnailURL: String? = nil,
         folderTree: String,
         drmContentId: String? = nil
     ) -> LocalOfflineAsset {
@@ -47,6 +49,7 @@ extension LocalOfflineAsset {
         localOfflineAsset.duration = duration
         localOfflineAsset.bitRate = bitRate
         localOfflineAsset.size = (bitRate * duration)
+        localOfflineAsset.thumbnailURL = thumbnailURL
         localOfflineAsset.folderTree = folderTree
         localOfflineAsset.drmContentId = drmContentId
         return localOfflineAsset
@@ -64,6 +67,7 @@ extension LocalOfflineAsset {
             duration: self.duration,
             bitRate: self.bitRate,
             size: self.size,
+            thumbnailURL: self.thumbnailURL,
             folderTree: self.folderTree
         )
     }
@@ -80,7 +84,8 @@ extension LocalOfflineAsset {
             playbackURL: playbackURLString,
             status: self.status,
             drmEncrypted: isDrmEncrypted,
-            duration: self.duration
+            duration: self.duration,
+            thumbnailURL: self.thumbnailURL
         )
 
         let asset: Asset = Asset(

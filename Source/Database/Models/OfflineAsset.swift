@@ -19,6 +19,7 @@ public struct OfflineAsset: Hashable {
     public var duration: Double = 0.0
     public var bitRate: Double = 0.0
     public var size: Double = 0.0
+    public var thumbnailURL: String? = nil
     public var folderTree: String = ""
 }
 

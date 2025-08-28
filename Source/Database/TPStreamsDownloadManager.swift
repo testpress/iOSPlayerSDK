@@ -78,6 +78,7 @@ public final class TPStreamsDownloadManager {
             resolution:videoQuality.resolution,
             duration: asset.video!.duration,
             bitRate: videoQuality.bitrate,
+            thumbnailURL: asset.video!.thumbnailURL ?? "",
             folderTree: asset.folderTree ?? "",
             drmContentId: asset.drmContentId
         )
