@@ -21,9 +21,17 @@ public struct OfflineAsset: Hashable {
     public var size: Double = 0.0
     public var thumbnailURL: String? = nil
     public var folderTree: String = ""
-    public var metadata: [String: String]? = nil
-}
+    public var metadata: [String: Any]? = nil
 
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(assetId)
+    }
+
+    public static func == (lhs: OfflineAsset, rhs: OfflineAsset) -> Bool {
+        return lhs.assetId == rhs.assetId
+    }
+
+}
 
 public enum Status: String {
     case notStarted = "notStarted"

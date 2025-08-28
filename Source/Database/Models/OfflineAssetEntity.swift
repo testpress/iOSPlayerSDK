@@ -24,12 +24,21 @@ class LocalOfflineAsset: Object {
     @Persisted var size: Double = 0.0
     @Persisted var folderTree: String = ""
     @Persisted var drmContentId: String? = nil
-    @Persisted var metadataMap = Map<String, String>()
+    @Persisted var metadataMap = Map<String, AnyRealmValue>()
     
     static var manager = ObjectManager<LocalOfflineAsset>()
     
-    var metadata: [String: String] {
-        Dictionary(uniqueKeysWithValues: metadataMap.map { ($0.key, $0.value) })
+    var metadata: [String: Any]? {
+        get {
+            if metadataMap.count == 0 { return nil }
+            return Dictionary(uniqueKeysWithValues: metadataMap.map { ($0.key, $0.value.toAny) })
+        }
+        set {
+            metadataMap.removeAll()
+            newValue?.forEach { key, value in
+                metadataMap[key] = AnyRealmValue(fromAny: value)
+            }
+        }
     }
 }
 
@@ -45,7 +54,7 @@ extension LocalOfflineAsset {
         thumbnailURL: String? = nil,
         folderTree: String,
         drmContentId: String? = nil,
-        metadata: [String: String]? = nil
+        metadata: [String: Any]? = nil
     ) -> LocalOfflineAsset {
         let localOfflineAsset = LocalOfflineAsset()
         localOfflineAsset.assetId = assetId
@@ -58,9 +67,7 @@ extension LocalOfflineAsset {
         localOfflineAsset.thumbnailURL = thumbnailURL
         localOfflineAsset.folderTree = folderTree
         localOfflineAsset.drmContentId = drmContentId
-        metadata?.forEach { key, value in
-            localOfflineAsset.metadataMap[key] = value
-        }
+        localOfflineAsset.metadata = metadata
         return localOfflineAsset
     }
     
@@ -117,5 +124,37 @@ extension LocalOfflineAsset {
             return baseURL.appendingPathComponent(self.downloadedPath)
         }
         return nil
+    }
+}
+
+
+extension AnyRealmValue {
+    init(fromAny value: Any) {
+        switch value {
+        case let v as String: self = .string(v)
+        case let v as Int: self = .int(v)
+        case let v as Double: self = .double(v)
+        case let v as Float: self = .float(v)
+        case let v as Bool: self = .bool(v)
+        case let v as Date: self = .date(v)
+        case let v as Data: self = .data(v)
+        case is NSNull: self = .none
+        default:
+            self = .string(String(describing: value))
+        }
+    }
+
+    var toAny: Any {
+        switch self {
+        case .string(let v): return v
+        case .int(let v): return v
+        case .double(let v): return v
+        case .float(let v): return v
+        case .bool(let v): return v
+        case .date(let v): return v
+        case .data(let v): return v
+        case .none: return NSNull()
+        @unknown default: return NSNull()
+        }
     }
 }
