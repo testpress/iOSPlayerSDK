@@ -24,8 +24,22 @@ class LocalOfflineAsset: Object {
     @Persisted var size: Double = 0.0
     @Persisted var folderTree: String = ""
     @Persisted var drmContentId: String? = nil
+    @Persisted var metadataMap = Map<String, AnyRealmValue>()
     
     static var manager = ObjectManager<LocalOfflineAsset>()
+    
+    var metadata: [String: Any]? {
+        get {
+            if metadataMap.count == 0 { return nil }
+            return Dictionary(uniqueKeysWithValues: metadataMap.map { ($0.key, $0.value.toAny) })
+        }
+        set {
+            metadataMap.removeAll()
+            newValue?.forEach { key, value in
+                metadataMap[key] = AnyRealmValue(fromAny: value)
+            }
+        }
+    }
 }
 
 extension LocalOfflineAsset {
@@ -39,7 +53,8 @@ extension LocalOfflineAsset {
         bitRate: Double,
         thumbnailURL: String? = nil,
         folderTree: String,
-        drmContentId: String? = nil
+        drmContentId: String? = nil,
+        metadata: [String: Any]? = nil
     ) -> LocalOfflineAsset {
         let localOfflineAsset = LocalOfflineAsset()
         localOfflineAsset.assetId = assetId
@@ -52,6 +67,7 @@ extension LocalOfflineAsset {
         localOfflineAsset.thumbnailURL = thumbnailURL
         localOfflineAsset.folderTree = folderTree
         localOfflineAsset.drmContentId = drmContentId
+        localOfflineAsset.metadata = metadata
         return localOfflineAsset
     }
     
@@ -68,7 +84,8 @@ extension LocalOfflineAsset {
             bitRate: self.bitRate,
             size: self.size,
             thumbnailURL: self.thumbnailURL,
-            folderTree: self.folderTree
+            folderTree: self.folderTree,
+            metadata: self.metadata
         )
     }
     

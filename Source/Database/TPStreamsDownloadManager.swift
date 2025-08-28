@@ -47,7 +47,7 @@ public final class TPStreamsDownloadManager {
         return false
     }
 
-    internal func startDownload(asset: Asset, accessToken: String?, videoQuality: VideoQuality) throws {
+    internal func startDownload(asset: Asset, accessToken: String?, videoQuality: VideoQuality, metadata: [String: Any]? = nil) throws {
         #if targetEnvironment(simulator)
             if (asset.video?.drmEncrypted == true){
                 print("Downloading DRM content is not supported in simulator")
@@ -80,7 +80,8 @@ public final class TPStreamsDownloadManager {
             bitRate: videoQuality.bitrate,
             thumbnailURL: asset.video!.thumbnailURL ?? "",
             folderTree: asset.folderTree ?? "",
-            drmContentId: asset.drmContentId
+            drmContentId: asset.drmContentId,
+            metadata: metadata
         )
         LocalOfflineAsset.manager.add(object: localOfflineAsset)
         assetDownloadDelegate.activeDownloadsMap[task] = localOfflineAsset

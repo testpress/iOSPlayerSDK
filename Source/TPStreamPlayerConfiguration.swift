@@ -14,6 +14,7 @@ public struct TPStreamPlayerConfiguration {
     public var watchedProgressTrackColor: UIColor = .red
     public var progressBarThumbColor: UIColor = .red
     public var showDownloadOption: Bool = false
+    public var downloadMetadata: [String: Any]? = nil
 }
 
 
@@ -46,6 +47,11 @@ public class TPStreamPlayerConfigurationBuilder {
     
     public func showDownloadOption() -> Self {
         configuration.showDownloadOption = true
+        return self
+    }
+    
+    public func setDownloadMetadata(_ metadata: [String: Any]?) -> Self {
+        configuration.downloadMetadata = metadata
         return self
     }
     

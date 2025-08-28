@@ -52,6 +52,7 @@
 		03D7F4252C21C64D00DF3597 /* LiveIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D7F4242C21C64D00DF3597 /* LiveIndicatorView.swift */; };
 		03D7F4282C22C4F900DF3597 /* PlaybackSpeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D7F4272C22C4F900DF3597 /* PlaybackSpeed.swift */; };
 		2DD12A212D4CF75400272433 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D92E48F22CB0226A00B1FAC3 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		70D42E0B2E6075F3002AC32C /* AnyRealmValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D42E0A2E6075F3002AC32C /* AnyRealmValue.swift */; };
 		8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */; };
 		8E6389C42A27277D00306FA4 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389C32A27277D00306FA4 /* ExampleApp.swift */; };
 		8E6389C62A27277D00306FA4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389C52A27277D00306FA4 /* ContentView.swift */; };
@@ -200,6 +201,7 @@
 		03CE75012A7A337B00B84304 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		03D7F4242C21C64D00DF3597 /* LiveIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveIndicatorView.swift; sourceTree = "<group>"; };
 		03D7F4272C22C4F900DF3597 /* PlaybackSpeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackSpeed.swift; sourceTree = "<group>"; };
+		70D42E0A2E6075F3002AC32C /* AnyRealmValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyRealmValue.swift; sourceTree = "<group>"; };
 		8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayerView.swift; sourceTree = "<group>"; };
 		8E6389C12A27277D00306FA4 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E6389C32A27277D00306FA4 /* ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleApp.swift; sourceTree = "<group>"; };
@@ -279,6 +281,7 @@
 		0321F3252A2E0D0300E08AEE /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				70D42E0A2E6075F3002AC32C /* AnyRealmValue.swift */,
 				0321F3262A2E0D1800E08AEE /* AVPlayer.swift */,
 				03CE75012A7A337B00B84304 /* UIView.swift */,
 				037F3BBE2B05EDD900ECEF57 /* UIInterfaceOrientationMask.swift */,
@@ -807,6 +810,7 @@
 				D92E48D62CAFCD2400B1FAC3 /* OfflineAsset.swift in Sources */,
 				D960A8FB2CEDEE7C003B0B04 /* M3U8Parser.swift in Sources */,
 				03B8090A2A2DF8A000AB3D03 /* TPStreamPlayer.swift in Sources */,
+				70D42E0B2E6075F3002AC32C /* AnyRealmValue.swift in Sources */,
 				03D7F4252C21C64D00DF3597 /* LiveIndicatorView.swift in Sources */,
 				0321F3272A2E0D1800E08AEE /* AVPlayer.swift in Sources */,
 				D9A2F2AE2CE2102E0052802D /* ContentKeyDelegate+Persistable.swift in Sources */,

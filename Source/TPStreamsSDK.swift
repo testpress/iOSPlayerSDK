@@ -68,9 +68,9 @@ public class TPStreamsSDK {
     
     private static func initializeDatabase() {
         var config = Realm.Configuration(
-            schemaVersion: 2,
+            schemaVersion: 3,
             migrationBlock: { migration, oldSchemaVersion in
-                if oldSchemaVersion < 2 {
+                if oldSchemaVersion < 3 {
                         // No manual migration needed.
                         // Realm automatically handles newly added optional properties.
                 }

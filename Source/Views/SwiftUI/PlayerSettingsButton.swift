@@ -128,7 +128,12 @@ struct PlayerSettingsButton: View {
         return availableVideoQualities.map { downloadQuality in
                 .default(Text(downloadQuality.resolution)) {
                     do {
-                        try TPStreamsDownloadManager.shared.startDownload(asset: player.asset!, accessToken: player.player.accessToken, videoQuality: downloadQuality)
+                        try TPStreamsDownloadManager.shared.startDownload(
+                            asset: player.asset!, 
+                            accessToken: player.player.accessToken, 
+                            videoQuality: downloadQuality,
+                            metadata: playerConfig.downloadMetadata
+                        )
                     } catch {
                         print("Error downloading video: \(error)")
                     }
