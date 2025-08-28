@@ -60,14 +60,13 @@ public class TPAVPlayer: AVPlayer {
         isPlaybackOffline = false
     }
     
-    public init(offlineAssetId: String, metadata: [String: String]? = nil, completion: SetupCompletion? = nil) {
+    public init(offlineAssetId: String, completion: SetupCompletion? = nil) {
         self.setupCompletion = completion
         super.init()
         isPlaybackOffline = true
         guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: offlineAssetId) else { return }
         if (localOfflineAsset.status == "finished") {
             self.asset = localOfflineAsset.asAsset()
-            self.metadata = localOfflineAsset.metadata
             self.initializePlayer()
             self.setupCompletion?(nil)
             self.initializationStatus = "ready"
