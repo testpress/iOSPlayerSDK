@@ -249,7 +249,7 @@ class PlayerControlsUIView: UIView {
                     asset: self.player.asset!, 
                     accessToken: self.player.player.accessToken, 
                     videoQuality: quality,
-                    metadata: self.player.player.metadata
+                    metadata: self.playerConfig.downloadMetadata
                 )
             } catch {
                 print("Error downloading video: \(error)")
