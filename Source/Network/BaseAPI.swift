@@ -57,6 +57,8 @@ class BaseAPI {
             case .success(let data):
                 if response.response?.statusCode == 200 {
                     completion(data, nil)
+                } else if response.response?.statusCode == 401 {
+                    completion(nil, TPStreamPlayerError.unauthorizedAccess)
                 } else {
                     completion(nil, TPStreamPlayerError.failedToFetchLicenseKey)
                 }
