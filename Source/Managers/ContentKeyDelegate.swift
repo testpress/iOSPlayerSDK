@@ -135,7 +135,6 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
             
             if let error = error as? TPStreamPlayerError,
                error == .unauthorizedAccess && forOfflinePlayback{
-                print("TPStreamsSDK: Access token expired found for assetID: \(assetID)")
                 TPStreamsDownloadManager.shared.notifyAccessTokenExpired(assetID: assetID) { newToken in 
                     if let newToken = newToken {
                         self.accessToken = newToken

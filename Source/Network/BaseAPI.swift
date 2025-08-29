@@ -56,17 +56,13 @@ class BaseAPI {
             switch response.result {
             case .success(let data):
                 if response.response?.statusCode == 200 {
-                    print("TPStreamsSDK: License key fetched successfully")
                     completion(data, nil)
                 } else if response.response?.statusCode == 401 {
-                    print("TPStreamsSDK: Unauthorized access")
                     completion(nil, TPStreamPlayerError.unauthorizedAccess)
                 } else {
-                    print("TPStreamsSDK: Failed to fetch license key with status code: \(response.response?.statusCode ?? 0)")
                     completion(nil, TPStreamPlayerError.failedToFetchLicenseKey)
                 }
             case .failure(_):
-                print("TPStreamsSDK: Failed to fetch license key")
                 completion(nil, TPStreamPlayerError.failedToFetchLicenseKey)
             }
             
