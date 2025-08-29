@@ -122,31 +122,33 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
         }
     }
     
-    func requestCKC(_ spcData: Data, _ completion: @escaping(Data?, Error?) -> Void) {
+    func requestCKC(_ spcData: Data, _ completion: @escaping (Data?, Error?) -> Void) {
         guard let assetID = assetID else { return }
-        TPStreamsSDK.provider.API.getDRMLicense(
-            assetID, 
-            accessToken, 
-            spcData, 
-            contentID!, 
-            forOfflinePlayback
-        ) { [weak self] data, error in
+        
+        let doFetchLicense = { (token: String, completion: @escaping (Data?, Error?) -> Void) in
+            guard let contentID = self.contentID else {
+                let error = NSError(domain: "TPStreamsSDK", code: -1, userInfo: [NSLocalizedDescriptionKey: "ContentID is missing."])
+                completion(nil, error)
+                return
+            }
+            TPStreamsSDK.provider.API.getDRMLicense(
+                assetID,
+                token,
+                spcData,
+                contentID,
+                self.forOfflinePlayback,
+                completion
+            )
+        }
+
+        doFetchLicense(accessToken ?? "") { [weak self] (data: Data?, error: Error?) in
             guard let self = self else { return }
-            
             if let error = error as? TPStreamPlayerError,
-               error == .unauthorizedAccess && forOfflinePlayback{
-                TPStreamsDownloadManager.shared.notifyAccessTokenExpired(assetID: assetID) { newToken in 
+               error == .unauthorizedAccess && self.forOfflinePlayback {
+                TPStreamsDownloadManager.shared.notifyAccessTokenExpired(assetID: assetID) { newToken in
                     if let newToken = newToken {
                         self.accessToken = newToken
-                        TPStreamsSDK.provider.API.getDRMLicense(
-                            assetID, 
-                            newToken, 
-                            spcData, 
-                            self.contentID!, 
-                            self.forOfflinePlayback
-                        ) { data, error in
-                            completion(data, error)
-                        }
+                        doFetchLicense(newToken, completion)
                     } else {
                         completion(nil, error)
                     }
