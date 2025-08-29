@@ -124,7 +124,38 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
     
     func requestCKC(_ spcData: Data, _ completion: @escaping(Data?, Error?) -> Void) {
         guard let assetID = assetID else { return }
-        TPStreamsSDK.provider.API.getDRMLicense(assetID, accessToken, spcData, contentID!, forOfflinePlayback, completion)
+        TPStreamsSDK.provider.API.getDRMLicense(
+            assetID, 
+            accessToken, 
+            spcData, 
+            contentID!, 
+            forOfflinePlayback
+        ) { [weak self] data, error in
+            guard let self = self else { return }
+            
+            if let error = error as? TPStreamPlayerError,
+               error == .unauthorizedAccess && forOfflinePlayback{
+                print("TPStreamsSDK: Access token expired found for assetID: \(assetID)")
+                TPStreamsDownloadManager.shared.notifyAccessTokenExpired(assetID: assetID) { newToken in 
+                    if let newToken = newToken {
+                        self.accessToken = newToken
+                        TPStreamsSDK.provider.API.getDRMLicense(
+                            assetID, 
+                            newToken, 
+                            spcData, 
+                            self.contentID!, 
+                            self.forOfflinePlayback
+                        ) { data, error in
+                            completion(data, error)
+                        }
+                    } else {
+                        completion(nil, error)
+                    }
+                }
+                return
+            }
+            completion(data, error)
+        }
     }
     
     func setAssetDetails(_ assetID: String?, _ accessToken: String?, _ forOfflinePlayback: Bool = false) {

@@ -17,6 +17,7 @@ public final class TPStreamsDownloadManager {
     private var contentKeySession: AVContentKeySession!
     private var contentKeyDelegate: ContentKeyDelegate!
     private let contentKeyDelegateQueue = DispatchQueue(label: "com.tpstreams.iOSPlayerSDK.ContentKeyDelegateQueueOffline")
+    public var onAccessTokenExpired: ((String, @escaping (String?) -> Void) -> Void)?
 
     private init() {
         let backgroundConfiguration = URLSessionConfiguration.background(withIdentifier: "com.tpstreams.downloadSession")
@@ -224,7 +225,14 @@ public final class TPStreamsDownloadManager {
             .filter { $0.status != Status.deleted.rawValue }
             .map { $0.asOfflineAsset() }
     }
-
+    
+    public func notifyAccessTokenExpired(assetID: String, completion: @escaping (String?) -> Void) {
+        if let handler = onAccessTokenExpired {
+            handler(assetID, completion)
+        } else {
+            completion(nil)
+        }
+    }
 }
 
 internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
