@@ -33,7 +33,7 @@ public final class TPStreamsDownloadManager {
         contentKeySession.setDelegate(contentKeyDelegate, queue: contentKeyDelegateQueue)
         contentKeyDelegate.onError = { error in
             if error as? TPStreamPlayerError == .unauthorizedAccess {
-                self.handleAccessTokenExpiry()
+                self.obtainNewAccessTokenAndRequestKey()
             }
         }
         #endif
