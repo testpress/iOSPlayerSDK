@@ -33,7 +33,7 @@ public final class TPStreamsDownloadManager {
         contentKeySession.setDelegate(contentKeyDelegate, queue: contentKeyDelegateQueue)
         contentKeyDelegate.onError = { error in
             if error as? TPStreamPlayerError == .unauthorizedAccess {
-                self.obtainNewAccessTokenAndRequestKey()
+                self.requestPersistentKeyWithNewAccessToken()
             }
         }
         #endif
@@ -230,7 +230,7 @@ public final class TPStreamsDownloadManager {
             .map { $0.asOfflineAsset() }
     }
 
-    private func obtainNewAccessTokenAndRequestKey() {
+    private func requestPersistentKeyWithNewAccessToken() {
         guard let assetId = contentKeyDelegate.assetID else { return }
         guard let delegate = tpStreamsDownloadDelegate else { return }
         
@@ -324,7 +324,7 @@ public protocol TPStreamsDownloadDelegate {
 
 public extension TPStreamsDownloadDelegate {
     func onRequestNewAccessToken(assetId: String, completion: @escaping (String?) -> Void) {
-        print("Executing default implementation of onAccessTokenExpired")
+        debugPrint("Default onRequestNewAccessToken called - no token returned for assetId: \(assetId)")
         completion(nil) 
     }
 }
