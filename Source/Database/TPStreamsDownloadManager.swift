@@ -32,7 +32,9 @@ public final class TPStreamsDownloadManager {
         contentKeyDelegate = ContentKeyDelegate()
         contentKeySession.setDelegate(contentKeyDelegate, queue: contentKeyDelegateQueue)
         contentKeyDelegate.onError = { error in
-            self.handleContentKeyError(error)
+            if error as? TPStreamPlayerError == .unauthorizedAccess {
+                self.handleAccessTokenExpiry()
+            }
         }
         #endif
     }
@@ -228,18 +230,11 @@ public final class TPStreamsDownloadManager {
             .map { $0.asOfflineAsset() }
     }
 
-    private func handleContentKeyError(_ error: Error) {
-        if error as? TPStreamPlayerError == .unauthorizedAccess {
-            guard let assetId = contentKeyDelegate.assetID else { return }
-            handleAccessTokenExpiry()
-        }
-    }
-
-    private func handleAccessTokenExpiry() {
+    private func obtainNewAccessTokenAndRequestKey() {
         guard let assetId = contentKeyDelegate.assetID else { return }
         guard let delegate = tpStreamsDownloadDelegate else { return }
         
-        delegate.onAccessTokenExpired(assetId: assetId) { [weak self] newToken in
+        delegate.onRequestNewAccessToken(assetId: assetId) { [weak self] newToken in
             guard let self = self else { return }
             
             if let newToken = newToken {
@@ -324,11 +319,11 @@ public protocol TPStreamsDownloadDelegate {
     func onDelete(assetId: String)
     func onProgressChange(assetId: String, percentage: Double)
     func onStateChange(status: Status, offlineAsset: OfflineAsset)
-    func onAccessTokenExpired(assetId: String, completion: @escaping (String?) -> Void)
+    func onRequestNewAccessToken(assetId: String, completion: @escaping (String?) -> Void)
 }
 
 public extension TPStreamsDownloadDelegate {
-    func onAccessTokenExpired(assetId: String, completion: @escaping (String?) -> Void) {
+    func onRequestNewAccessToken(assetId: String, completion: @escaping (String?) -> Void) {
         print("Executing default implementation of onAccessTokenExpired")
         completion(nil) 
     }
