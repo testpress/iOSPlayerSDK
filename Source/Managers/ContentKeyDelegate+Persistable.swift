@@ -43,6 +43,7 @@ extension ContentKeyDelegate {
         
         self.requestCKC(spcData) { ckcData, error in
             if let error = error {
+                self.onError?(error)
                 keyRequest.processContentKeyResponseError(error)
                 return
             }
