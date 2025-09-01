@@ -31,6 +31,11 @@ public final class TPStreamsDownloadManager {
         contentKeySession = AVContentKeySession(keySystem: .fairPlayStreaming)
         contentKeyDelegate = ContentKeyDelegate()
         contentKeySession.setDelegate(contentKeyDelegate, queue: contentKeyDelegateQueue)
+        contentKeyDelegate.onError = { error in
+            if error as? TPStreamPlayerError == .unauthorizedAccess {
+                self.requestPersistentKeyWithNewAccessToken()
+            }
+        }
         #endif
     }
     
@@ -225,6 +230,21 @@ public final class TPStreamsDownloadManager {
             .map { $0.asOfflineAsset() }
     }
 
+    private func requestPersistentKeyWithNewAccessToken() {
+        guard let assetId = contentKeyDelegate.assetID else { return }
+        guard let delegate = tpStreamsDownloadDelegate else { return }
+        
+        delegate.onRequestNewAccessToken(assetId: assetId) { [weak self] newToken in
+            guard let self = self else { return }
+            
+            if let newToken = newToken {
+                self.contentKeyDelegate.setAssetDetails(assetId, newToken, true)
+                DispatchQueue.main.async {
+                    self.requestPersistentKey(assetId)
+                }
+            }
+        }
+    }
 }
 
 internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
@@ -299,4 +319,12 @@ public protocol TPStreamsDownloadDelegate {
     func onDelete(assetId: String)
     func onProgressChange(assetId: String, percentage: Double)
     func onStateChange(status: Status, offlineAsset: OfflineAsset)
+    func onRequestNewAccessToken(assetId: String, completion: @escaping (String?) -> Void)
+}
+
+public extension TPStreamsDownloadDelegate {
+    func onRequestNewAccessToken(assetId: String, completion: @escaping (String?) -> Void) {
+        debugPrint("Default onRequestNewAccessToken called - no token returned for assetId: \(assetId)")
+        completion(nil) 
+    }
 }
