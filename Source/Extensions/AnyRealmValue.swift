@@ -28,7 +28,7 @@ extension AnyRealmValue {
         case .date(let v): return v
         case .data(let v): return v
         case .none: return NSNull()
-        case .dictionary(let dict): return Self.convertToDictionary(dict)
+        case .dictionary(let dict): return Dictionary(uniqueKeysWithValues: dict.map { ($0.key, $0.value.toAny) })
         @unknown default: return NSNull()
         }
     }
@@ -39,15 +39,5 @@ extension AnyRealmValue {
             map[key] = AnyRealmValue(fromAny: value)
         }
         return map
-    }
-
-    private static func convertToDictionary(_ map: Map<String, AnyRealmValue>) -> [String: Any] {
-        var result: [String: Any] = [:]
-        for key in map.keys {
-            if let value = map[key] {
-                result[key] = value.toAny
-            }
-        }
-        return result
     }
 }
