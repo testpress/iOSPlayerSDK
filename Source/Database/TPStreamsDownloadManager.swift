@@ -108,7 +108,7 @@ public final class TPStreamsDownloadManager {
                 }
             }
         }
-        ToastHelper.show(message: "Download Started")
+        ToastHelper.show(message: DownloadMessages.started)
     }
     
     private func requestPersistentKey(_ assetID: String) {
@@ -134,7 +134,7 @@ public final class TPStreamsDownloadManager {
             LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.paused.rawValue])
             tpStreamsDownloadDelegate?.onPause(offlineAsset: localOfflineAsset.asOfflineAsset())
             tpStreamsDownloadDelegate?.onStateChange(status: .paused, offlineAsset: localOfflineAsset.asOfflineAsset())
-            ToastHelper.show(message: "Download Paused")
+            ToastHelper.show(message: DownloadMessages.paused)
         }
     }
     
@@ -150,7 +150,7 @@ public final class TPStreamsDownloadManager {
                 LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.inProgress.rawValue])
                 tpStreamsDownloadDelegate?.onResume(offlineAsset: localOfflineAsset.asOfflineAsset())
                 tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: localOfflineAsset.asOfflineAsset())
-                ToastHelper.show(message: "Download Resumed")
+                ToastHelper.show(message: DownloadMessages.resumed)
             }
         }
     }
@@ -300,7 +300,7 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
         } else {
             tpStreamsDownloadDelegate?.onComplete(offlineAsset: localOfflineAsset.asOfflineAsset())
             tpStreamsDownloadDelegate?.onStateChange(status: status, offlineAsset: localOfflineAsset.asOfflineAsset())
-            ToastHelper.show(message: "Download Completed")
+            ToastHelper.show(message: DownloadMessages.completed)
         }
     }
 

@@ -52,6 +52,9 @@
 		03D7F4252C21C64D00DF3597 /* LiveIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D7F4242C21C64D00DF3597 /* LiveIndicatorView.swift */; };
 		03D7F4282C22C4F900DF3597 /* PlaybackSpeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D7F4272C22C4F900DF3597 /* PlaybackSpeed.swift */; };
 		2DD12A212D4CF75400272433 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D92E48F22CB0226A00B1FAC3 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		7077275E2E87AA9100EF7D3F /* DownloadMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7077275D2E87AA9100EF7D3F /* DownloadMessages.swift */; };
+		70A0497C2E86959500533162 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A0497B2E86959500533162 /* Toast.swift */; };
+		70A0497F2E869E7500533162 /* Toast in Frameworks */ = {isa = PBXBuildFile; productRef = 70A0497E2E869E7500533162 /* Toast */; };
 		70D42E0B2E6075F3002AC32C /* AnyRealmValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D42E0A2E6075F3002AC32C /* AnyRealmValue.swift */; };
 		8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */; };
 		8E6389C42A27277D00306FA4 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389C32A27277D00306FA4 /* ExampleApp.swift */; };
@@ -201,6 +204,8 @@
 		03CE75012A7A337B00B84304 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		03D7F4242C21C64D00DF3597 /* LiveIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveIndicatorView.swift; sourceTree = "<group>"; };
 		03D7F4272C22C4F900DF3597 /* PlaybackSpeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackSpeed.swift; sourceTree = "<group>"; };
+		7077275D2E87AA9100EF7D3F /* DownloadMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadMessages.swift; sourceTree = "<group>"; };
+		70A0497B2E86959500533162 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		70D42E0A2E6075F3002AC32C /* AnyRealmValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyRealmValue.swift; sourceTree = "<group>"; };
 		8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayerView.swift; sourceTree = "<group>"; };
 		8E6389C12A27277D00306FA4 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -259,6 +264,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				70A0497F2E869E7500533162 /* Toast in Frameworks */,
 				D92E48F32CB0226A00B1FAC3 /* RealmSwift in Frameworks */,
 				0326BADE2A348690009ABC58 /* M3U8Parser in Frameworks */,
 				0394CA312B5E5529006BED3B /* Reachability in Frameworks */,
@@ -372,6 +378,7 @@
 		03CE74FE2A79469400B84304 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				70A0497B2E86959500533162 /* Toast.swift */,
 				03CE74FF2A7946A800B84304 /* Time.swift */,
 				0367F6F42B861CFC0000922D /* Sentry.swift */,
 				D960A8FA2CEDEE7C003B0B04 /* M3U8Parser.swift */,
@@ -382,6 +389,7 @@
 		03D7F4262C22C4D900DF3597 /* Constants */ = {
 			isa = PBXGroup;
 			children = (
+				7077275D2E87AA9100EF7D3F /* DownloadMessages.swift */,
 				03D7F4272C22C4F900DF3597 /* PlaybackSpeed.swift */,
 			);
 			path = Constants;
@@ -626,6 +634,7 @@
 				0326BADD2A348690009ABC58 /* M3U8Parser */,
 				0394CA302B5E5529006BED3B /* Reachability */,
 				D92E48F22CB0226A00B1FAC3 /* RealmSwift */,
+				70A0497E2E869E7500533162 /* Toast */,
 			);
 			productName = iOSPlayerSDK;
 			productReference = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */;
@@ -689,6 +698,7 @@
 				0326BADC2A348690009ABC58 /* XCRemoteSwiftPackageReference "M3U8Parser" */,
 				0394CA2F2B5E5528006BED3B /* XCRemoteSwiftPackageReference "Reachability" */,
 				D92E48EF2CB0226A00B1FAC3 /* XCRemoteSwiftPackageReference "realm-swift" */,
+				70A0497D2E8696DB00533162 /* XCRemoteSwiftPackageReference "Toast-Swift" */,
 			);
 			productRefGroup = 8EDE99A52A2643B000E43EA9 /* Products */;
 			projectDirPath = "";
@@ -777,10 +787,12 @@
 				037F3BBF2B05EDD900ECEF57 /* UIInterfaceOrientationMask.swift in Sources */,
 				03B8FDAE2A69752800DAB7AE /* PlayerControlsUIView.swift in Sources */,
 				0374E3762C1B15C200CE9CF2 /* LiveStream.swift in Sources */,
+				7077275E2E87AA9100EF7D3F /* DownloadMessages.swift in Sources */,
 				D92E48AD2CAFBCFB00B1FAC3 /* OfflineAssetEntity.swift in Sources */,
 				8E6389E92A278D1D00306FA4 /* ContentKeyDelegate.swift in Sources */,
 				0374E3722C1AD2A200CE9CF2 /* TestpressAPIParser.swift in Sources */,
 				8E6389DD2A27338F00306FA4 /* AVPlayerBridge.swift in Sources */,
+				70A0497C2E86959500533162 /* Toast.swift in Sources */,
 				8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */,
 				035351A02A2EDAFA001E38F3 /* PlayerSettingsButton.swift in Sources */,
 				03913C482A850BF9002E7E0C /* ProgressBar.swift in Sources */,
@@ -1296,6 +1308,14 @@
 				minimumVersion = 5.2.2;
 			};
 		};
+		70A0497D2E8696DB00533162 /* XCRemoteSwiftPackageReference "Toast-Swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/scalessec/Toast-Swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.1.1;
+			};
+		};
 		8E6389E32A275B2A00306FA4 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire";
@@ -1329,6 +1349,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0394CA2F2B5E5528006BED3B /* XCRemoteSwiftPackageReference "Reachability" */;
 			productName = Reachability;
+		};
+		70A0497E2E869E7500533162 /* Toast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 70A0497D2E8696DB00533162 /* XCRemoteSwiftPackageReference "Toast-Swift" */;
+			productName = Toast;
 		};
 		8E6389E42A275B2A00306FA4 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
