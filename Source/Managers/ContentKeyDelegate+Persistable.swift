@@ -80,6 +80,12 @@ extension ContentKeyDelegate {
         
         try contentKey.write(to: fileURL, options: Data.WritingOptions.atomicWrite)
     }
+
+    func cleanupPersistentContentKey(for contentID: String) {
+        if let keyURL = getPersistentContentKeyURL() {
+            try? FileManager.default.removeItem(at: keyURL)
+        }
+    }
     
     func getPersistentContentKeyURL() -> URL?{
         guard let contentID = self.contentID else { return nil }
