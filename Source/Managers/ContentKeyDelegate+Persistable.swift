@@ -82,9 +82,8 @@ extension ContentKeyDelegate {
     }
 
     func cleanupPersistentContentKey(for contentID: String) {
-        if let keyURL = getPersistentContentKeyURL() {
-            try? FileManager.default.removeItem(at: keyURL)
-        }
+        let keyURL = contentKeyDirectory.appendingPathComponent("\(contentID)-Key")
+        try? FileManager.default.removeItem(at: keyURL)
     }
     
     func getPersistentContentKeyURL() -> URL?{

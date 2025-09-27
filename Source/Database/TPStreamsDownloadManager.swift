@@ -218,9 +218,7 @@ public final class TPStreamsDownloadManager {
                     if let drmContentId = localOfflineAsset.drmContentId {
                         self.contentKeyDelegate.cleanupPersistentContentKey(for: drmContentId)
                     }
-                }
-                
-                DispatchQueue.main.async {
+                    
                     completion(true, nil)
                 }
             } catch {
