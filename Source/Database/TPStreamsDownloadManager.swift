@@ -215,8 +215,8 @@ public final class TPStreamsDownloadManager {
                 try FileManager.default.removeItem(at: downloadedFileURL)
                 
                 DispatchQueue.main.async {
-                    if let drmContentId = localOfflineAsset.drmContentId {
-                        self.contentKeyDelegate.cleanupPersistentContentKey(for: drmContentId)
+                    if localOfflineAsset.drmContentId != nil {
+                        self.contentKeyDelegate.cleanupPersistentContentKey()
                     }
                     
                     completion(true, nil)
