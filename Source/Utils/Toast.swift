@@ -1,15 +1,29 @@
 import UIKit
-#if canImport(Toast_Swift)
+
+#if CocoaPods
 import Toast_Swift
-#elseif canImport(Toast)
+#else
 import Toast
 #endif
 
-public class ToastHelper {
-    public static func show(message: String) {
-        if let window = UIApplication.shared.keyWindow {
-            window.hideToast()
-            window.makeToast(message)
+internal class ToastHelper {
+    internal static func show(message: String) {
+        DispatchQueue.main.async {
+            let window: UIWindow?
+            if #available(iOS 13.0, *) {
+                window = UIApplication.shared.connectedScenes
+                    .filter({ $0.activationState == .foregroundActive })
+                    .compactMap({ $0 as? UIWindowScene })
+                    .first?.windows
+                    .first(where: { $0.isKeyWindow })
+            } else {
+                window = UIApplication.shared.keyWindow
+            }
+            
+            if let window = window {
+                window.hideToast()
+                window.makeToast(message)
+            }
         }
     }
 }
