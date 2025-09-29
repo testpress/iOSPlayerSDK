@@ -22,9 +22,6 @@ extension ContentKeyDelegate {
                 assignOfflineKey(keyRequest, contentKey: offlineKey)
             } else {
                 cleanupPersistentContentKey()
-                DispatchQueue.main.async {
-                    self.onError?(TPStreamPlayerError.drmLicenseExpired)
-                }
                 fetchContentKeyFromNetwork(session, keyRequest)
             }
         } else {
