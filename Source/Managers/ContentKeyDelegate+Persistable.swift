@@ -104,7 +104,7 @@ extension ContentKeyDelegate {
     func storePersistentContentKey(contentKey: Data, expiryDate: Date) throws {
         guard let fileURL = getPersistentContentKeyURL() else { return }
         
-        try contentKey.write(to: fileURL, options: .atomic)
+        try contentKey.write(to: fileURL, options: Data.WritingOptions.atomicWrite)
         if let assetID = self.assetID {
             DispatchQueue.main.async {
                 LocalOfflineAsset.manager.update(id: assetID, with: ["contentKeyExpiryDate": expiryDate])
