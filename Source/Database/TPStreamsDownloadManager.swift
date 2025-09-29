@@ -52,14 +52,14 @@ public final class TPStreamsDownloadManager {
         return false
     }
 
-    internal func startDownload(asset: Asset, accessToken: String?, videoQuality: VideoQuality, metadata: [String: Any]? = nil) throws {
+    internal func startDownload(asset: Asset, accessToken: String?, videoQuality: VideoQuality, metadata: [String: Any]? = nil, offlineLicenseExpirySeconds: Double? = nil) throws {
         #if targetEnvironment(simulator)
             if (asset.video?.drmEncrypted == true){
                 print("Downloading DRM content is not supported in simulator")
                 throw NSError(domain: "TPStreamsSDK", code: -1, userInfo: [NSLocalizedDescriptionKey: "DRM content downloading is not supported in simulator"])
             }
         #else
-            contentKeyDelegate.setAssetDetails(asset.id, accessToken, true)
+            contentKeyDelegate.setAssetDetails(asset.id, accessToken, true, offlineLicenseExpirySeconds)
         #endif
 
         if LocalOfflineAsset.manager.exists(id: asset.id) {
@@ -86,6 +86,7 @@ public final class TPStreamsDownloadManager {
             thumbnailURL: asset.video!.thumbnailURL ?? "",
             folderTree: asset.folderTree ?? "",
             drmContentId: asset.drmContentId,
+            licenseExpirySeconds: offlineLicenseExpirySeconds,
             metadata: metadata
         )
         LocalOfflineAsset.manager.add(object: localOfflineAsset)

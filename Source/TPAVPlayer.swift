@@ -58,10 +58,12 @@ public class TPAVPlayer: AVPlayer {
         isPlaybackOffline = false
     }
     
-    public init(offlineAssetId: String, completion: SetupCompletion? = nil) {
+    public init(offlineAssetId: String, accessToken: String? = nil, completion: SetupCompletion? = nil) {
         self.setupCompletion = completion
         super.init()
         isPlaybackOffline = true
+        self.assetID = offlineAssetId
+        self.accessToken = accessToken
         guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: offlineAssetId) else { return }
         if (localOfflineAsset.status == "finished") {
             self.asset = localOfflineAsset.asAsset()
@@ -157,8 +159,12 @@ public class TPAVPlayer: AVPlayer {
     }
     
     private func setupDRM(_ avURLAsset: AVURLAsset) {
+        var expirySeconds: Double? = nil
+        if let localOfflineAsset = LocalOfflineAsset.manager.get(id: assetID ?? "") {
+            expirySeconds = localOfflineAsset.licenseExpirySeconds
+        }
         ContentKeyManager.shared.contentKeySession.addContentKeyRecipient(avURLAsset)
-        ContentKeyManager.shared.contentKeyDelegate.setAssetDetails(assetID, accessToken, isPlaybackOffline)
+        ContentKeyManager.shared.contentKeyDelegate.setAssetDetails(assetID, accessToken, isPlaybackOffline, expirySeconds)
         ContentKeyManager.shared.contentKeyDelegate.onError = { error in
             let sentryIssueId = captureErrorInSentry(error, self.assetID, self.accessToken)
             self.initializationErrorContext = InitializationErrorContext(error: error, sentryIssueId: sentryIssueId)

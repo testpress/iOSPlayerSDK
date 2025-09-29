@@ -25,6 +25,7 @@ class LocalOfflineAsset: Object {
     @Persisted var folderTree: String = ""
     @Persisted var drmContentId: String? = nil
     @Persisted var metadataMap = Map<String, AnyRealmValue>()
+    @Persisted var licenseExpirySeconds: Double? = nil
     
     static var manager = ObjectManager<LocalOfflineAsset>()
     
@@ -54,6 +55,7 @@ extension LocalOfflineAsset {
         thumbnailURL: String? = nil,
         folderTree: String,
         drmContentId: String? = nil,
+        licenseExpirySeconds: Double? = nil,
         metadata: [String: Any]? = nil
     ) -> LocalOfflineAsset {
         let localOfflineAsset = LocalOfflineAsset()
@@ -67,6 +69,7 @@ extension LocalOfflineAsset {
         localOfflineAsset.thumbnailURL = thumbnailURL
         localOfflineAsset.folderTree = folderTree
         localOfflineAsset.drmContentId = drmContentId
+        localOfflineAsset.licenseExpirySeconds = licenseExpirySeconds
         localOfflineAsset.metadata = metadata
         return localOfflineAsset
     }

@@ -16,7 +16,13 @@ extension ContentKeyDelegate {
     
     func handlePersistableContentKeyRequest(_ session: AVContentKeySession, keyRequest: AVPersistableContentKeyRequest) {
         if let offlineKey = loadOfflineContentKey() {
-            assignOfflineKey(keyRequest, contentKey: offlineKey)
+            if !isOfflineKeyExpired() {
+                assignOfflineKey(keyRequest, contentKey: offlineKey)
+            } else {
+                cleanupPersistentContentKey()
+                onError?(TPStreamPlayerError.drmLicenseExpired)
+                fetchContentKeyFromNetwork(session, keyRequest)
+            }
         } else {
             fetchContentKeyFromNetwork(session, keyRequest)
         }
@@ -25,6 +31,19 @@ extension ContentKeyDelegate {
     private func loadOfflineContentKey() -> Data? {
         guard let contentKeyURL = getPersistentContentKeyURL() else { return nil }
         return getPersistentContentKey(contentKeyURL)
+    }
+
+    private func isOfflineKeyExpired() -> Bool {
+        if let expiryDate = loadOfflineKeyExpiryDate() {
+            let remainingTime = expiryDate.timeIntervalSince(Date())
+            return remainingTime <= 0
+        }
+        return false
+    }
+
+    func loadOfflineKeyExpiryDate() -> Date? {
+        guard let contentID = self.contentID else { return nil }
+        return UserDefaults.standard.object(forKey: "\(contentID)-KeyExpiry") as? Date
     }
     
     private func assignOfflineKey(_ keyRequest: AVPersistableContentKeyRequest, contentKey: Data) {
@@ -52,7 +71,8 @@ extension ContentKeyDelegate {
             do {
                 if self.requestingPersistentKey {
                     let persistentKey = try keyRequest.persistableContentKey(fromKeyVendorResponse: ckcData, options: nil)
-                    try self.storePersistentContentKey(contentKey: persistentKey)
+                    let expiryDate = Date().addingTimeInterval(self.licenseExpirySeconds ?? 0)
+                    try self.storePersistentContentKey(contentKey: persistentKey, expiryDate: expiryDate)
                 }
                 
                 let keyResponse = AVContentKeyResponse(fairPlayStreamingKeyResponseData: ckcData)
@@ -75,15 +95,21 @@ extension ContentKeyDelegate {
         return FileManager.default.contents(atPath: contentKeyURL.path)
     }
     
-    func storePersistentContentKey(contentKey: Data) throws {
+    func storePersistentContentKey(contentKey: Data, expiryDate: Date) throws {
         guard let fileURL = getPersistentContentKeyURL() else { return }
         
-        try contentKey.write(to: fileURL, options: Data.WritingOptions.atomicWrite)
+        try contentKey.write(to: fileURL, options: .atomic)
+        if let contentID = self.contentID {
+            UserDefaults.standard.set(expiryDate, forKey: "\(contentID)-KeyExpiry")
+        }
     }
 
     func cleanupPersistentContentKey() {
         if let keyURL = getPersistentContentKeyURL() {
             try? FileManager.default.removeItem(at: keyURL)
+        }
+        if let contentID = self.contentID {
+            UserDefaults.standard.removeObject(forKey: "\(contentID)-KeyExpiry")
         }
     }
     

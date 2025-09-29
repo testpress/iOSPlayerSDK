@@ -26,7 +26,7 @@ class PlayerViewController: UIViewController {
     
     func setupPlayerView(){
         if (TPStreamsDownloadManager.shared.isAssetDownloaded(assetID: assistId!)){
-            player = TPAVPlayer(offlineAssetId:assistId!){ error in
+            player = TPAVPlayer(offlineAssetId:assistId!, accessToken: accessToken ?? ""){ error in
                 guard error == nil else {
                     print("Setup error: \(error!.localizedDescription)")
                     return

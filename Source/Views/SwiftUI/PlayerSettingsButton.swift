@@ -132,7 +132,8 @@ struct PlayerSettingsButton: View {
                             asset: player.asset!, 
                             accessToken: player.player.accessToken, 
                             videoQuality: downloadQuality,
-                            metadata: playerConfig.downloadMetadata
+                            metadata: playerConfig.downloadMetadata,
+                            offlineLicenseExpirySeconds: playerConfig.offlineLicenseExpirySeconds
                         )
                     } catch {
                         print("Error downloading video: \(error)")
