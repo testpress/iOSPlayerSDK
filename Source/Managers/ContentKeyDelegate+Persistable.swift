@@ -8,6 +8,8 @@
 import Foundation
 import AVFoundation
 
+let DEFAULT_LICENSE_EXPIRY_SECONDS = 15 * 24 * 60 * 60 //15 days
+
 extension ContentKeyDelegate {
     
     func contentKeySession(_ session: AVContentKeySession, didProvide keyRequest: AVPersistableContentKeyRequest) {
@@ -71,7 +73,7 @@ extension ContentKeyDelegate {
             do {
                 if self.requestingPersistentKey {
                     let persistentKey = try keyRequest.persistableContentKey(fromKeyVendorResponse: ckcData, options: nil)
-                    let expiryDate = Date().addingTimeInterval(self.licenseExpirySeconds ?? 0)
+                    let expiryDate = Date().addingTimeInterval(self.licenseExpirySeconds ?? DEFAULT_LICENSE_EXPIRY_SECONDS)
                     try self.storePersistentContentKey(contentKey: persistentKey, expiryDate: expiryDate)
                 }
                 
