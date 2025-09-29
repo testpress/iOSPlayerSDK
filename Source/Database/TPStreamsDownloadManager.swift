@@ -163,7 +163,7 @@ public final class TPStreamsDownloadManager {
         
         if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == localOfflineAsset })?.key {
             task.cancel()
-            self.deleteDownloadedFile(localOfflineAsset.downloadedFileURL!) { success, error in
+            self.deleteDownloadedFile(localOfflineAsset.downloadedFileURL!, localOfflineAsset: localOfflineAsset) { success, error in
                 if success {
                     LocalOfflineAsset.manager.delete(id: localOfflineAsset.assetId)
                 } else {
@@ -182,7 +182,7 @@ public final class TPStreamsDownloadManager {
                 return
             }
             
-            self.deleteDownloadedFile(downloadedFileURL) { success, error in
+            self.deleteDownloadedFile(downloadedFileURL, localOfflineAsset: localOfflineAsset) { success, error in
                 if success {
                     LocalOfflineAsset.manager.delete(id: localOfflineAsset.assetId)
                 } else {
@@ -200,7 +200,7 @@ public final class TPStreamsDownloadManager {
         LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.deleted.rawValue])
         tpStreamsDownloadDelegate?.onDelete(assetId: localOfflineAsset.assetId)
         
-        self.deleteDownloadedFile(localOfflineAsset.downloadedFileURL!) { success, error in
+        self.deleteDownloadedFile(localOfflineAsset.downloadedFileURL!, localOfflineAsset: localOfflineAsset) { success, error in
             if success {
                 LocalOfflineAsset.manager.delete(id: localOfflineAsset.assetId)
             } else {
@@ -209,11 +209,16 @@ public final class TPStreamsDownloadManager {
         }
     }
     
-    private func deleteDownloadedFile(_ downloadedFileURL: URL, completion: @escaping (Bool, Error?) -> Void) {
+    private func deleteDownloadedFile(_ downloadedFileURL: URL, localOfflineAsset: LocalOfflineAsset, completion: @escaping (Bool, Error?) -> Void) {
         DispatchQueue.global(qos: .background).async {
             do {
                 try FileManager.default.removeItem(at: downloadedFileURL)
+                
                 DispatchQueue.main.async {
+                    if localOfflineAsset.drmContentId != nil {
+                        self.contentKeyDelegate.cleanupPersistentContentKey()
+                    }
+                    
                     completion(true, nil)
                 }
             } catch {
