@@ -26,6 +26,7 @@ class LocalOfflineAsset: Object {
     @Persisted var drmContentId: String? = nil
     @Persisted var metadataMap = Map<String, AnyRealmValue>()
     @Persisted var licenseExpirySeconds: Double? = nil
+    @Persisted var contentKeyExpiryDate: Date? = nil
     
     static var manager = ObjectManager<LocalOfflineAsset>()
     

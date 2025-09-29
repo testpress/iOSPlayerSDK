@@ -39,12 +39,17 @@ extension ContentKeyDelegate {
             let remainingTime = expiryDate.timeIntervalSince(Date())
             return remainingTime <= 0
         }
-        return false
+        return true
     }
 
     func loadOfflineKeyExpiryDate() -> Date? {
-        guard let contentID = self.contentID else { return nil }
-        return UserDefaults.standard.object(forKey: "\(contentID)-KeyExpiry") as? Date
+        guard let assetID = self.assetID else { return nil }
+        
+        var expiryDate: Date? = nil
+        DispatchQueue.main.sync {
+            expiryDate = LocalOfflineAsset.manager.get(id: assetID)?.contentKeyExpiryDate ?? nil
+        }
+        return expiryDate
     }
     
     private func assignOfflineKey(_ keyRequest: AVPersistableContentKeyRequest, contentKey: Data) {
@@ -100,8 +105,10 @@ extension ContentKeyDelegate {
         guard let fileURL = getPersistentContentKeyURL() else { return }
         
         try contentKey.write(to: fileURL, options: .atomic)
-        if let contentID = self.contentID {
-            UserDefaults.standard.set(expiryDate, forKey: "\(contentID)-KeyExpiry")
+        if let assetID = self.assetID {
+            DispatchQueue.main.async {
+                LocalOfflineAsset.manager.update(id: assetID, with: ["contentKeyExpiryDate": expiryDate])
+            }
         }
     }
 
@@ -109,8 +116,10 @@ extension ContentKeyDelegate {
         if let keyURL = getPersistentContentKeyURL() {
             try? FileManager.default.removeItem(at: keyURL)
         }
-        if let contentID = self.contentID {
-            UserDefaults.standard.removeObject(forKey: "\(contentID)-KeyExpiry")
+        if let assetID = self.assetID {
+            DispatchQueue.main.async {
+                LocalOfflineAsset.manager.update(id: assetID, with: ["contentKeyExpiryDate": NSNull()])
+            }
         }
     }
     
