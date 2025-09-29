@@ -35,14 +35,14 @@ extension ContentKeyDelegate {
     }
 
     private func isOfflineKeyExpired() -> Bool {
-        if let expiryDate = loadOfflineKeyExpiryDate() {
+        if let expiryDate = getOfflineKeyExpiryDate() {
             let remainingTime = expiryDate.timeIntervalSince(Date())
             return remainingTime <= 0
         }
         return true
     }
 
-    func loadOfflineKeyExpiryDate() -> Date? {
+    func getOfflineKeyExpiryDate() -> Date? {
         guard let assetID = self.assetID else { return nil }
         
         var expiryDate: Date? = nil
