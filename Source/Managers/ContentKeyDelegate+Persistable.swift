@@ -8,7 +8,7 @@
 import Foundation
 import AVFoundation
 
-let DEFAULT_LICENSE_EXPIRY_SECONDS = 15 * 24 * 60 * 60 //15 days
+let DEFAULT_LICENSE_EXPIRY_SECONDS: Double = 15 * 24 * 60 * 60 //15 days
 
 extension ContentKeyDelegate {
     
@@ -19,8 +19,10 @@ extension ContentKeyDelegate {
     func handlePersistableContentKeyRequest(_ session: AVContentKeySession, keyRequest: AVPersistableContentKeyRequest) {
         if let offlineKey = loadOfflineContentKey() {
             if !isOfflineKeyExpired() {
+                print("🟢 [ContentKeyDelegate] Offline key not expired")
                 assignOfflineKey(keyRequest, contentKey: offlineKey)
             } else {
+                print("🟢 [ContentKeyDelegate] Offline key expired")
                 cleanupPersistentContentKey()
                 onError?(TPStreamPlayerError.drmLicenseExpired)
                 fetchContentKeyFromNetwork(session, keyRequest)
@@ -38,6 +40,7 @@ extension ContentKeyDelegate {
     private func isOfflineKeyExpired() -> Bool {
         if let expiryDate = loadOfflineKeyExpiryDate() {
             let remainingTime = expiryDate.timeIntervalSince(Date())
+            print("🟢 [ContentKeyDelegate] Remaining time: \(remainingTime)")
             return remainingTime <= 0
         }
         return false
