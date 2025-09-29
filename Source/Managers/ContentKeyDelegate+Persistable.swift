@@ -19,12 +19,12 @@ extension ContentKeyDelegate {
     func handlePersistableContentKeyRequest(_ session: AVContentKeySession, keyRequest: AVPersistableContentKeyRequest) {
         if let offlineKey = loadOfflineContentKey() {
             if !isOfflineKeyExpired() {
-                print("🟢 [ContentKeyDelegate] Offline key not expired")
                 assignOfflineKey(keyRequest, contentKey: offlineKey)
             } else {
-                print("🟢 [ContentKeyDelegate] Offline key expired")
                 cleanupPersistentContentKey()
-                onError?(TPStreamPlayerError.drmLicenseExpired)
+                DispatchQueue.main.async {
+                    self.onError?(TPStreamPlayerError.drmLicenseExpired)
+                }
                 fetchContentKeyFromNetwork(session, keyRequest)
             }
         } else {
@@ -40,7 +40,6 @@ extension ContentKeyDelegate {
     private func isOfflineKeyExpired() -> Bool {
         if let expiryDate = loadOfflineKeyExpiryDate() {
             let remainingTime = expiryDate.timeIntervalSince(Date())
-            print("🟢 [ContentKeyDelegate] Remaining time: \(remainingTime)")
             return remainingTime <= 0
         }
         return false
