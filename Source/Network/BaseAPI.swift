@@ -39,18 +39,9 @@ class BaseAPI {
     }
     
     static func getDRMLicense(_ assetID: String, _ accessToken: String?, _ spcData: Data, _ contentID: String, _ forOfflinePlayback: Bool, _ licenseExpirySeconds: Double? = nil, _ completion:@escaping(Data?, Error?) -> Void) -> Void {
-        let url: URL
-        if forOfflinePlayback {
-            let expiry: String
-            if let seconds = licenseExpirySeconds, seconds > 0 {
-                expiry = String(Int(seconds))
-            } else {
-                expiry = ""
-            }
-            url = URL(string: String(format: DRM_LICENSE_API_WITH_EXPIRY, TPStreamsSDK.orgCode!, assetID, accessToken ?? "", "true", expiry, expiry))!
-        } else {
-            url = URL(string: String(format: DRM_LICENSE_API, TPStreamsSDK.orgCode!, assetID, accessToken ?? "", "false"))!
-        }
+        let url = forOfflinePlayback 
+            ? buildOfflineLicenseURL(assetID: assetID, accessToken: accessToken, licenseExpirySeconds: licenseExpirySeconds)
+            : buildOnlineLicenseURL(assetID: assetID, accessToken: accessToken)
         
         let parameters = [
             "spc": spcData.base64EncodedString(),
@@ -81,6 +72,17 @@ class BaseAPI {
             }
             
         }
+    }
+    
+    private static func buildOfflineLicenseURL(assetID: String, accessToken: String?, licenseExpirySeconds: Double?) -> URL {
+        let expiry = licenseExpirySeconds.map { String(Int($0)) } ?? ""
+        let urlString = String(format: DRM_LICENSE_API_WITH_EXPIRY, TPStreamsSDK.orgCode!, assetID, accessToken ?? "", "true", expiry, expiry)
+        return URL(string: urlString)!
+    }
+    
+    private static func buildOnlineLicenseURL(assetID: String, accessToken: String?) -> URL {
+        let urlString = String(format: DRM_LICENSE_API, TPStreamsSDK.orgCode!, assetID, accessToken ?? "", "false")
+        return URL(string: urlString)!
     }
     
     static func handleResponse(_ response: AFDataResponse<Data>, _ data: Data, _ completion: @escaping (Asset?, Error?) -> Void) {
