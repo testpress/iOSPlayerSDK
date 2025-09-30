@@ -161,7 +161,7 @@ public class TPAVPlayer: AVPlayer {
     private func setupDRM(_ avURLAsset: AVURLAsset) {
         var expirySeconds: Double? = nil
         if let localOfflineAsset = LocalOfflineAsset.manager.get(id: assetID ?? "") {
-            expirySeconds = localOfflineAsset.licenseExpirySeconds
+            expirySeconds = localOfflineAsset.licenseDurationSeconds
         }
         ContentKeyManager.shared.contentKeySession.addContentKeyRecipient(avURLAsset)
         ContentKeyManager.shared.contentKeyDelegate.setAssetDetails(assetID, accessToken, isPlaybackOffline, expirySeconds)

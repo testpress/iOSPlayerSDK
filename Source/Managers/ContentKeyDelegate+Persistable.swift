@@ -47,7 +47,7 @@ extension ContentKeyDelegate {
         
         var expiryDate: Date? = nil
         DispatchQueue.main.sync {
-            expiryDate = LocalOfflineAsset.manager.get(id: assetID)?.contentKeyExpiryDate ?? nil
+            expiryDate = LocalOfflineAsset.manager.get(id: assetID)?.licenseExpiryDate ?? nil
         }
         return expiryDate
     }
@@ -77,7 +77,7 @@ extension ContentKeyDelegate {
             do {
                 if self.requestingPersistentKey {
                     let persistentKey = try keyRequest.persistableContentKey(fromKeyVendorResponse: ckcData, options: nil)
-                    let expiryDate = Date().addingTimeInterval(self.licenseExpirySeconds ?? DEFAULT_LICENSE_EXPIRY_SECONDS)
+                    let expiryDate = Date().addingTimeInterval(self.licenseDurationSeconds ?? DEFAULT_LICENSE_EXPIRY_SECONDS)
                     try self.storePersistentContentKey(contentKey: persistentKey, expiryDate: expiryDate)
                 }
                 
@@ -107,7 +107,7 @@ extension ContentKeyDelegate {
         try contentKey.write(to: fileURL, options: Data.WritingOptions.atomicWrite)
         if let assetID = self.assetID {
             DispatchQueue.main.async {
-                LocalOfflineAsset.manager.update(id: assetID, with: ["contentKeyExpiryDate": expiryDate])
+                LocalOfflineAsset.manager.update(id: assetID, with: ["licenseExpiryDate": expiryDate])
             }
         }
     }
@@ -118,7 +118,7 @@ extension ContentKeyDelegate {
         }
         if let assetID = self.assetID {
             DispatchQueue.main.async {
-                LocalOfflineAsset.manager.update(id: assetID, with: ["contentKeyExpiryDate": NSNull()])
+                LocalOfflineAsset.manager.update(id: assetID, with: ["licenseExpiryDate": NSNull()])
             }
         }
     }
