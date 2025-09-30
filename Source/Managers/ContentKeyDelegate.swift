@@ -13,8 +13,10 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
     var assetID: String?
     var accessToken: String?
     public var onError: ((Error) -> Void)?
+    public var onRequestOfflinePlaybackCredentials: ((String, @escaping (String?, Double?) -> Void) -> Void)?
     var requestingPersistentKey = false
     var forOfflinePlayback = false
+    var licenseDurationSeconds: Double? = nil
     
     enum ProgramError: Error {
         case missingApplicationCertificate
@@ -124,12 +126,13 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
     
     func requestCKC(_ spcData: Data, _ completion: @escaping(Data?, Error?) -> Void) {
         guard let assetID = assetID else { return }
-        TPStreamsSDK.provider.API.getDRMLicense(assetID, accessToken, spcData, contentID!, forOfflinePlayback, completion)
+        TPStreamsSDK.provider.API.getDRMLicense(assetID, accessToken, spcData, contentID!, forOfflinePlayback, forOfflinePlayback ? licenseDurationSeconds : nil, completion)
     }
     
-    func setAssetDetails(_ assetID: String?, _ accessToken: String?, _ forOfflinePlayback: Bool = false) {
+    func setAssetDetails(_ assetID: String?, _ accessToken: String?, _ forOfflinePlayback: Bool = false, _ licenseDurationSeconds: Double? = nil) {
         self.assetID = assetID
         self.accessToken = accessToken
         self.forOfflinePlayback = forOfflinePlayback
+        self.licenseDurationSeconds = licenseDurationSeconds
     }
 }

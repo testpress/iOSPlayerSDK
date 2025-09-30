@@ -8,6 +8,8 @@
 import Foundation
 import AVFoundation
 
+let DEFAULT_LICENSE_EXPIRY_SECONDS: Double = 15 * 24 * 60 * 60 //15 days
+
 extension ContentKeyDelegate {
     
     func contentKeySession(_ session: AVContentKeySession, didProvide keyRequest: AVPersistableContentKeyRequest) {
@@ -15,11 +17,27 @@ extension ContentKeyDelegate {
     }
     
     func handlePersistableContentKeyRequest(_ session: AVContentKeySession, keyRequest: AVPersistableContentKeyRequest) {
-        if let offlineKey = loadOfflineContentKey() {
+        guard let assetID = self.assetID else { return }
+        guard let offlineKey = loadOfflineContentKey() else { 
+            fetchContentKeyFromNetwork(session, keyRequest)
+            return 
+        }
+        if !isOfflineContentKeyExpired() {
             assignOfflineKey(keyRequest, contentKey: offlineKey)
         } else {
+            cleanupPersistentContentKey()
             fetchContentKeyFromNetwork(session, keyRequest)
         }
+    }
+
+    private func isOfflineContentKeyExpired() -> Bool {
+        var isExpired = true
+        DispatchQueue.main.sync {
+            if let offlineAsset = LocalOfflineAsset.manager.get(id: assetID!) {
+                isExpired = offlineAsset.isOfflineLicenseExpired()
+            }
+        }
+        return isExpired
     }
     
     private func loadOfflineContentKey() -> Data? {
@@ -33,8 +51,16 @@ extension ContentKeyDelegate {
     }
     
     private func fetchContentKeyFromNetwork(_ session: AVContentKeySession, _ keyRequest: AVPersistableContentKeyRequest) {
-        requestEncryptedSPCMessage(keyRequest) { [weak self] (spcData, error) in
-            self?.retrieveAndStoreContentKey(session, spcData, error, keyRequest)
+        if forOfflinePlayback && (accessToken == nil || licenseDurationSeconds == nil) {
+            requestOfflinePlaybackCredentials { [weak self] in
+                self?.requestEncryptedSPCMessage(keyRequest) { [weak self] (spcData, error) in
+                    self?.retrieveAndStoreContentKey(session, spcData, error, keyRequest)
+                }
+            }
+        } else {
+            requestEncryptedSPCMessage(keyRequest) { [weak self] (spcData, error) in
+                self?.retrieveAndStoreContentKey(session, spcData, error, keyRequest)
+            }
         }
     }
     
@@ -52,7 +78,8 @@ extension ContentKeyDelegate {
             do {
                 if self.requestingPersistentKey {
                     let persistentKey = try keyRequest.persistableContentKey(fromKeyVendorResponse: ckcData, options: nil)
-                    try self.storePersistentContentKey(contentKey: persistentKey)
+                    let expiryDate = Date().addingTimeInterval(self.licenseDurationSeconds ?? DEFAULT_LICENSE_EXPIRY_SECONDS)
+                    try self.storePersistentContentKey(contentKey: persistentKey, expiryDate: expiryDate)
                 }
                 
                 let keyResponse = AVContentKeyResponse(fairPlayStreamingKeyResponseData: ckcData)
@@ -75,15 +102,25 @@ extension ContentKeyDelegate {
         return FileManager.default.contents(atPath: contentKeyURL.path)
     }
     
-    func storePersistentContentKey(contentKey: Data) throws {
+    func storePersistentContentKey(contentKey: Data, expiryDate: Date) throws {
         guard let fileURL = getPersistentContentKeyURL() else { return }
         
         try contentKey.write(to: fileURL, options: Data.WritingOptions.atomicWrite)
+        if let assetID = self.assetID {
+            DispatchQueue.main.async {
+                LocalOfflineAsset.manager.update(id: assetID, with: ["licenseExpiryDate": expiryDate])
+            }
+        }
     }
 
     func cleanupPersistentContentKey() {
         if let keyURL = getPersistentContentKeyURL() {
             try? FileManager.default.removeItem(at: keyURL)
+        }
+        if let assetID = self.assetID {
+            DispatchQueue.main.async {
+                LocalOfflineAsset.manager.update(id: assetID, with: ["licenseExpiryDate": NSNull()])
+            }
         }
     }
     
@@ -91,5 +128,22 @@ extension ContentKeyDelegate {
         guard let contentID = self.contentID else { return nil }
         
         return contentKeyDirectory.appendingPathComponent("\(contentID)-Key")
+    }
+
+    private func requestOfflinePlaybackCredentials(completion: @escaping () -> Void) {
+        guard let assetID = assetID else {
+            completion()
+            return
+        }
+        
+        onRequestOfflinePlaybackCredentials?(assetID) { [weak self] accessToken, licenseDuration in
+            if let accessToken = accessToken {
+                self?.accessToken = accessToken
+            }
+            if let licenseDuration = licenseDuration {
+                self?.licenseDurationSeconds = licenseDuration
+            }
+            completion()
+        }
     }
 }
