@@ -46,7 +46,7 @@ public enum TPStreamPlayerError: Error {
         case .drmSimulatorError:
             return "DRM protected content cannot be played in simulator. Please use a physical device."
         case .drmLicenseExpired:
-            return "The offline DRM license has been expired."
+            return "Your offline access has expired. Please connect to internet and try again."
         case .unknownError:
             return "Oops! Something went wrong. Please contact support for assistance and provide details about the issue."
         }
