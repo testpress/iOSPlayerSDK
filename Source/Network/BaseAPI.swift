@@ -15,9 +15,6 @@ class BaseAPI {
     class var DRM_LICENSE_API: String {
         fatalError("DRM_LICENSE_API must be implemented by subclasses.")
     }
-    class var DRM_LICENSE_API_WITH_EXPIRY: String {
-        fatalError("DRM_LICENSE_API_WITH_EXPIRY must be implemented by subclasses.")
-    }
     class var parser: APIParser {
         fatalError("parser must be implemented by subclasses.")
     }
@@ -38,11 +35,17 @@ class BaseAPI {
             }
     }
     
-    static func getDRMLicense(_ assetID: String, _ accessToken: String?, _ spcData: Data, _ contentID: String, _ forOfflinePlayback: Bool, _ licenseExpirySeconds: Double? = nil, _ completion:@escaping(Data?, Error?) -> Void) -> Void {
-        let url = forOfflinePlayback 
-            ? buildOfflineLicenseURL(assetID: assetID, accessToken: accessToken, licenseExpirySeconds: licenseExpirySeconds)
-            : buildOnlineLicenseURL(assetID: assetID, accessToken: accessToken)
-        
+    static func getDRMLicense(_ assetID: String, _ accessToken: String?, _ spcData: Data, _ contentID: String, _ forOfflinePlayback: Bool, _ licenseDurationSeconds: Double? = nil, _ completion:@escaping(Data?, Error?) -> Void) -> Void {
+        var components = URLComponents(string: String(format: DRM_LICENSE_API, TPStreamsSDK.orgCode!, assetID, accessToken ?? "", (forOfflinePlayback == true ? "true" : "false")))!
+
+        if forOfflinePlayback {
+            let expiry = (licenseDurationSeconds ?? 0) > 0 ? String(Int(licenseDurationSeconds!)) : ""
+            var queryItems = components.queryItems ?? []
+            queryItems.append(URLQueryItem(name: "license_duration_seconds", value: expiry))
+            queryItems.append(URLQueryItem(name: "rental_duration_seconds", value: expiry))
+            components.queryItems = queryItems
+        }
+        let url = components.url!
         let parameters = [
             "spc": spcData.base64EncodedString(),
             "assetId" : contentID
@@ -72,17 +75,6 @@ class BaseAPI {
             }
             
         }
-    }
-    
-    private static func buildOfflineLicenseURL(assetID: String, accessToken: String?, licenseExpirySeconds: Double?) -> URL {
-        let expiry = licenseExpirySeconds.map { String(Int($0)) } ?? ""
-        let urlString = String(format: DRM_LICENSE_API_WITH_EXPIRY, TPStreamsSDK.orgCode!, assetID, accessToken ?? "", "true", expiry, expiry)
-        return URL(string: urlString)!
-    }
-    
-    private static func buildOnlineLicenseURL(assetID: String, accessToken: String?) -> URL {
-        let urlString = String(format: DRM_LICENSE_API, TPStreamsSDK.orgCode!, assetID, accessToken ?? "", "false")
-        return URL(string: urlString)!
     }
     
     static func handleResponse(_ response: AFDataResponse<Data>, _ data: Data, _ completion: @escaping (Asset?, Error?) -> Void) {
@@ -125,3 +117,4 @@ class BaseAPI {
         }
     }
 }
+
