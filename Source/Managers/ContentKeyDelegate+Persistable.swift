@@ -17,39 +17,32 @@ extension ContentKeyDelegate {
     }
     
     func handlePersistableContentKeyRequest(_ session: AVContentKeySession, keyRequest: AVPersistableContentKeyRequest) {
-        if let offlineKey = loadOfflineContentKey() {
-            if !isOfflineKeyExpired() {
-                assignOfflineKey(keyRequest, contentKey: offlineKey)
-            } else {
-                cleanupPersistentContentKey()
-                fetchContentKeyFromNetwork(session, keyRequest)
-            }
+        guard let assetID = self.assetID else { return }
+        guard let offlineKey = loadOfflineContentKey() else { 
+            fetchContentKeyFromNetwork(session, keyRequest)
+            return 
+        }
+        if !isOfflineContentKeyExpired() {
+            assignOfflineKey(keyRequest, contentKey: offlineKey)
         } else {
+            cleanupPersistentContentKey()
             fetchContentKeyFromNetwork(session, keyRequest)
         }
+    }
+
+    private func isOfflineContentKeyExpired() -> Bool {
+        var isExpired = true
+        DispatchQueue.main.sync {
+            if let offlineAsset = LocalOfflineAsset.manager.get(id: assetID!) {
+                isExpired = offlineAsset.isOfflineLicenseExpired()
+            }
+        }
+        return isExpired
     }
     
     private func loadOfflineContentKey() -> Data? {
         guard let contentKeyURL = getPersistentContentKeyURL() else { return nil }
         return getPersistentContentKey(contentKeyURL)
-    }
-
-    private func isOfflineKeyExpired() -> Bool {
-        if let expiryDate = getOfflineKeyExpiryDate() {
-            let remainingTime = expiryDate.timeIntervalSince(Date())
-            return remainingTime <= 0
-        }
-        return true
-    }
-
-    func getOfflineKeyExpiryDate() -> Date? {
-        guard let assetID = self.assetID else { return nil }
-        
-        var expiryDate: Date? = nil
-        DispatchQueue.main.sync {
-            expiryDate = LocalOfflineAsset.manager.get(id: assetID)?.licenseExpiryDate ?? nil
-        }
-        return expiryDate
     }
     
     private func assignOfflineKey(_ keyRequest: AVPersistableContentKeyRequest, contentKey: Data) {
