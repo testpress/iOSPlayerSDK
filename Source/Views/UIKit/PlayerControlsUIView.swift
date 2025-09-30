@@ -250,7 +250,7 @@ class PlayerControlsUIView: UIView {
                     accessToken: self.player.player.accessToken, 
                     videoQuality: quality,
                     metadata: self.playerConfig.downloadMetadata,
-                    offlineLicenseDurationSeconds: self.playerConfig.offlineLicenseDurationSeconds
+                    offlineLicenseDurationSeconds: self.playerConfig.licenseDurationSeconds
                 )
             } catch {
                 print("Error downloading video: \(error)")

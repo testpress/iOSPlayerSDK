@@ -51,8 +51,16 @@ extension ContentKeyDelegate {
     }
     
     private func fetchContentKeyFromNetwork(_ session: AVContentKeySession, _ keyRequest: AVPersistableContentKeyRequest) {
-        requestEncryptedSPCMessage(keyRequest) { [weak self] (spcData, error) in
-            self?.retrieveAndStoreContentKey(session, spcData, error, keyRequest)
+        if forOfflinePlayback && (accessToken == nil || licenseDurationSeconds == nil) {
+            requestOfflinePlaybackCredentials { [weak self] in
+                self?.requestEncryptedSPCMessage(keyRequest) { [weak self] (spcData, error) in
+                    self?.retrieveAndStoreContentKey(session, spcData, error, keyRequest)
+                }
+            }
+        } else {
+            requestEncryptedSPCMessage(keyRequest) { [weak self] (spcData, error) in
+                self?.retrieveAndStoreContentKey(session, spcData, error, keyRequest)
+            }
         }
     }
     
@@ -120,5 +128,22 @@ extension ContentKeyDelegate {
         guard let contentID = self.contentID else { return nil }
         
         return contentKeyDirectory.appendingPathComponent("\(contentID)-Key")
+    }
+
+    private func requestOfflinePlaybackCredentials(completion: @escaping () -> Void) {
+        guard let assetID = assetID else {
+            completion()
+            return
+        }
+        
+        onRequestOfflinePlaybackCredentials?(assetID) { [weak self] accessToken, licenseDuration in
+            if let accessToken = accessToken {
+                self?.accessToken = accessToken
+            }
+            if let licenseDuration = licenseDuration {
+                self?.licenseDurationSeconds = licenseDuration
+            }
+            completion()
+        }
     }
 }

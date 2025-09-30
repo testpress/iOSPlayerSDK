@@ -15,7 +15,7 @@ public struct TPStreamPlayerConfiguration {
     public var progressBarThumbColor: UIColor = .red
     public var showDownloadOption: Bool = false
     public var downloadMetadata: [String: Any]? = nil
-    public var offlineLicenseDurationSeconds: Double? = nil
+    public var licenseDurationSeconds: Double? = nil
 }
 
 
@@ -56,8 +56,8 @@ public class TPStreamPlayerConfigurationBuilder {
         return self
     }
     
-    public func setOfflineLicenseDurationSeconds(_ seconds: Double?) -> Self {
-        configuration.offlineLicenseDurationSeconds = seconds
+    public func setLicenseDurationSeconds(_ seconds: Double?) -> Self {
+        configuration.licenseDurationSeconds = seconds
         return self
     }
     
