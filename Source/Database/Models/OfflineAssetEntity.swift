@@ -25,6 +25,7 @@ class LocalOfflineAsset: Object {
     @Persisted var folderTree: String = ""
     @Persisted var drmContentId: String? = nil
     @Persisted var metadataMap = Map<String, AnyRealmValue>()
+    @Persisted var licenseExpiryDate: Date? = nil
     
     static var manager = ObjectManager<LocalOfflineAsset>()
     
