@@ -126,4 +126,10 @@ extension LocalOfflineAsset {
         }
         return nil
     }
+
+    func isOfflineLicenseExpired() -> Bool {
+        guard let expiryDate = self.licenseExpiryDate else { return true }
+        let remainingTime = expiryDate.timeIntervalSince(Date())
+        return remainingTime <= 0
+    }
 }
