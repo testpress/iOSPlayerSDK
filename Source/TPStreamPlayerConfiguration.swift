@@ -15,6 +15,7 @@ public struct TPStreamPlayerConfiguration {
     public var progressBarThumbColor: UIColor = .red
     public var showDownloadOption: Bool = false
     public var downloadMetadata: [String: Any]? = nil
+    public var licenseDurationSeconds: Double? = nil
 }
 
 
@@ -52,6 +53,11 @@ public class TPStreamPlayerConfigurationBuilder {
     
     public func setDownloadMetadata(_ metadata: [String: Any]?) -> Self {
         configuration.downloadMetadata = metadata
+        return self
+    }
+    
+    public func setLicenseDurationSeconds(_ seconds: Double?) -> Self {
+        configuration.licenseDurationSeconds = seconds
         return self
     }
     

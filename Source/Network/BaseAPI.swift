@@ -35,9 +35,18 @@ class BaseAPI {
             }
     }
     
-    static func getDRMLicense(_ assetID: String, _ accessToken: String?, _ spcData: Data, _ contentID: String, _ forOfflinePlayback: Bool, _ completion:@escaping(Data?, Error?) -> Void) -> Void {
-        let url = URL(string: String(format: DRM_LICENSE_API, TPStreamsSDK.orgCode!, assetID, accessToken ?? "", (forOfflinePlayback == true ? "true" : "false")))!
-        
+    static func getDRMLicense(_ assetID: String, _ accessToken: String?, _ spcData: Data, _ contentID: String, _ forOfflinePlayback: Bool, _ licenseDurationSeconds: Double? = nil, _ completion:@escaping(Data?, Error?) -> Void) -> Void {
+        var components = URLComponents(string: String(format: DRM_LICENSE_API, TPStreamsSDK.orgCode!, assetID, accessToken ?? "", (forOfflinePlayback == true ? "true" : "false")))!
+
+        if forOfflinePlayback {
+            if let licenseDuration = licenseDurationSeconds, licenseDuration > 0 {
+                var queryItems = components.queryItems ?? []
+                queryItems.append(URLQueryItem(name: "license_duration_seconds", value: String(Int(licenseDuration))))
+                queryItems.append(URLQueryItem(name: "rental_duration_seconds", value: String(Int(licenseDuration))))
+                components.queryItems = queryItems
+            }
+        }
+        let url = components.url!
         let parameters = [
             "spc": spcData.base64EncodedString(),
             "assetId" : contentID
