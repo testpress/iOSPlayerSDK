@@ -238,6 +238,13 @@ public final class TPStreamsDownloadManager {
             .map { $0.asOfflineAsset() }
     }
 
+    public func updateOfflineLicenseExpiry(_ assetID: String, expiryDate: Date?) {
+        DispatchQueue.main.async {
+            let updateData: [String: Any] = ["licenseExpiryDate": expiryDate ?? NSNull()]
+            LocalOfflineAsset.manager.update(id: assetID, with: updateData)
+        }
+    }
+
     private func requestPersistentKeyWithNewAccessToken() {
         guard let assetId = contentKeyDelegate.assetID else { return }
         guard let delegate = tpStreamsDownloadDelegate else { return }
