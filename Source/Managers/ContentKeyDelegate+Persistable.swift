@@ -34,13 +34,7 @@ extension ContentKeyDelegate {
     }
 
     private func isOfflineContentKeyExpired() -> Bool {
-        var isExpired = true
-        DispatchQueue.main.sync {
-            if let offlineAsset = LocalOfflineAsset.manager.get(id: assetID!) {
-                isExpired = offlineAsset.isOfflineLicenseExpired()
-            }
-        }
-        return isExpired
+        return TPStreamsDownloadManager.shared.isOfflineAssetLicenseExpired(assetID!)
     }
     
     private func loadOfflineContentKey() -> Data? {

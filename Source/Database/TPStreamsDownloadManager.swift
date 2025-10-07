@@ -245,6 +245,16 @@ public final class TPStreamsDownloadManager {
         }
     }
 
+    public func isOfflineAssetLicenseExpired(_ assetID: String) -> Bool {
+        var isExpired = true
+        DispatchQueue.main.sync {
+            if let offlineAsset = LocalOfflineAsset.manager.get(id: assetID!) {
+                isExpired = offlineAsset.isOfflineLicenseExpired()
+            }
+        }
+        return isExpired
+    }
+
     private func requestPersistentKeyWithNewAccessToken() {
         guard let assetId = contentKeyDelegate.assetID else { return }
         guard let delegate = tpStreamsDownloadDelegate else { return }
