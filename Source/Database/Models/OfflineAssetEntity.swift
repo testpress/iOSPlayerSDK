@@ -25,6 +25,7 @@ class LocalOfflineAsset: Object {
     @Persisted var folderTree: String = ""
     @Persisted var drmContentId: String? = nil
     @Persisted var metadataMap = Map<String, AnyRealmValue>()
+    @Persisted var licenseExpiryDate: Date? = nil
     
     static var manager = ObjectManager<LocalOfflineAsset>()
     
@@ -124,5 +125,11 @@ extension LocalOfflineAsset {
             return baseURL.appendingPathComponent(self.downloadedPath)
         }
         return nil
+    }
+
+    func isOfflineLicenseExpired() -> Bool {
+        guard let expiryDate = self.licenseExpiryDate else { return true }
+        let remainingTime = expiryDate.timeIntervalSince(Date())
+        return remainingTime <= 0
     }
 }
