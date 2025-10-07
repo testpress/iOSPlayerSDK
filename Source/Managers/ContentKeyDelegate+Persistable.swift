@@ -19,7 +19,6 @@ extension ContentKeyDelegate {
     func handlePersistableContentKeyRequest(_ session: AVContentKeySession, keyRequest: AVPersistableContentKeyRequest) {
         guard let assetID = self.assetID else { return }
         guard let offlineKey = loadOfflineContentKey() else { 
-
             fetchContentKeyFromNetwork(session, keyRequest)
             return 
         }
