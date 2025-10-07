@@ -28,7 +28,7 @@ public class TPAVPlayer: AVPlayer {
     private var setupCompletion: SetupCompletion?
     private var resourceLoaderDelegate: ResourceLoaderDelegate?
     public var onError: ((Error, String?) -> Void)?
-    public var onRequestOfflineLicenseCredentials: ((String, @escaping (String?, Double?) -> Void) -> Void)?
+    public var onRequestOfflineLicenseRenewal: ((String, @escaping (String?, Double?) -> Void) -> Void)?
     @objc internal dynamic var initializationStatus = "pending"
     internal var initializationErrorContext: InitializationErrorContext?
     internal var asset: Asset? = nil
@@ -161,8 +161,8 @@ public class TPAVPlayer: AVPlayer {
     private func setupDRM(_ avURLAsset: AVURLAsset) {
         ContentKeyManager.shared.contentKeySession.addContentKeyRecipient(avURLAsset)
         
-        ContentKeyManager.shared.contentKeyDelegate.onRequestOfflineLicenseCredentials = { [weak self] assetId, completion in
-            self?.onRequestOfflineLicenseCredentials?(assetId, completion)
+        ContentKeyManager.shared.contentKeyDelegate.onRequestOfflineLicenseRenewal = { [weak self] assetId, completion in
+            self?.onRequestOfflineLicenseRenewal?(assetId, completion)
         }
         
         ContentKeyManager.shared.contentKeyDelegate.setAssetDetails(assetID, accessToken, isPlaybackOffline)

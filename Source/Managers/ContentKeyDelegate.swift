@@ -13,7 +13,7 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
     var assetID: String?
     var accessToken: String?
     public var onError: ((Error) -> Void)?
-    public var onRequestOfflineLicenseCredentials: ((String, @escaping (String?, Double?) -> Void) -> Void)?
+    public var onRequestOfflineLicenseRenewal: ((String, @escaping (String?, Double?) -> Void) -> Void)?
     var requestingPersistentKey = false
     var forOfflinePlayback = false
     var licenseDurationSeconds: Double? = nil

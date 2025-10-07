@@ -128,7 +128,7 @@ extension ContentKeyDelegate {
             return
         }
         
-        onRequestOfflineLicenseCredentials?(assetID) { [weak self] accessToken, licenseDuration in
+        onRequestOfflineLicenseRenewal?(assetID) { [weak self] accessToken, licenseDuration in
             if let accessToken = accessToken {
                 self?.accessToken = accessToken
             }
