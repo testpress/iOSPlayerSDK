@@ -24,10 +24,8 @@ extension ContentKeyDelegate {
             return 
         }
         if !isOfflineContentKeyExpired() {
-            print("Offline key found and not expired")
             assignOfflineKey(keyRequest, contentKey: offlineKey)
         } else {
-            print("Offline key found and expired")
             cleanupPersistentContentKey()
             fetchContentKeyFromNetwork(session, keyRequest)
         }
@@ -48,16 +46,18 @@ extension ContentKeyDelegate {
     }
     
     private func fetchContentKeyFromNetwork(_ session: AVContentKeySession, _ keyRequest: AVPersistableContentKeyRequest) {
-        if forOfflinePlayback && (accessToken == nil || licenseDurationSeconds == nil) {
-            requestOfflineLicenseCredentials { [weak self] in
-                self?.requestEncryptedSPCMessage(keyRequest) { [weak self] (spcData, error) in
-                    self?.retrieveAndStoreContentKey(session, spcData, error, keyRequest)
-                }
-            }
-        } else {
-            requestEncryptedSPCMessage(keyRequest) { [weak self] (spcData, error) in
+        let requestSPCMessage = { [weak self] in
+            self?.requestEncryptedSPCMessage(keyRequest) { [weak self] (spcData, error) in
                 self?.retrieveAndStoreContentKey(session, spcData, error, keyRequest)
             }
+        }
+        
+        if forOfflinePlayback && (accessToken == nil || licenseDurationSeconds == nil) {
+            requestOfflineLicenseCredentials {
+                requestSPCMessage()
+            }
+        } else {
+            requestSPCMessage()
         }
     }
     

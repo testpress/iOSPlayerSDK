@@ -248,7 +248,7 @@ public final class TPStreamsDownloadManager {
     public func isOfflineAssetLicenseExpired(_ assetID: String) -> Bool {
         var isExpired = true
         DispatchQueue.main.sync {
-            if let offlineAsset = LocalOfflineAsset.manager.get(id: assetID!) {
+            if let offlineAsset = LocalOfflineAsset.manager.get(id: assetID) {
                 isExpired = offlineAsset.isOfflineLicenseExpired()
             }
         }
