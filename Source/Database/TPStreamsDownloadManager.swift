@@ -163,14 +163,28 @@ public final class TPStreamsDownloadManager {
         
         if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == localOfflineAsset })?.key {
             task.cancel()
-            self.deleteDownloadedFile(localOfflineAsset.downloadedFileURL!, localOfflineAsset: localOfflineAsset) { success, error in
-                if success {
-                    LocalOfflineAsset.manager.delete(id: localOfflineAsset.assetId)
-                } else {
-                    print("An error occurred trying to delete the contents on disk for \(localOfflineAsset.assetId): \(String(describing: error))")
-                }
-            }
         }
+        
+        guard let fileURL = localOfflineAsset.downloadedFileURL else {
+            completeCancelDownload(assetId: assetId)
+            return
+        }
+        
+        deleteDownloadedFile(fileURL, localOfflineAsset: localOfflineAsset) { [weak self] success, error in
+            let isFileStillExists = FileManager.default.fileExists(atPath: fileURL.path)
+            
+            if !success && isFileStillExists {
+                print("An error occurred trying to delete the contents on disk for \(assetId): \(String(describing: error))")
+                return
+            }
+            
+            self?.completeCancelDownload(assetId: assetId)
+        }
+    }
+    
+    private func completeCancelDownload(assetId: String) {
+        LocalOfflineAsset.manager.delete(id: assetId)
+        tpStreamsDownloadDelegate?.onCanceled(assetId: assetId)
     }
     
     internal func removePartiallyDeletedVideos() {
