@@ -161,14 +161,27 @@ public final class TPStreamsDownloadManager {
             return
         }
         
-        if let task = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == localOfflineAsset })?.key {
+        let hasActiveTask = assetDownloadDelegate.activeDownloadsMap.first(where: { $0.value == localOfflineAsset })?.key
+        if let task = hasActiveTask {
             task.cancel()
-            self.deleteDownloadedFile(localOfflineAsset.downloadedFileURL!, localOfflineAsset: localOfflineAsset) { success, error in
-                if success {
-                    LocalOfflineAsset.manager.delete(id: localOfflineAsset.assetId)
-                } else {
-                    print("An error occurred trying to delete the contents on disk for \(localOfflineAsset.assetId): \(String(describing: error))")
+        }
+        
+        guard let fileURL = localOfflineAsset.downloadedFileURL else {
+            LocalOfflineAsset.manager.delete(id: assetId)
+            if hasActiveTask == nil {
+                tpStreamsDownloadDelegate?.onCanceled(assetId: assetId)
+            }
+            return
+        }
+        
+        deleteDownloadedFile(fileURL, localOfflineAsset: localOfflineAsset) { [weak self] success, error in
+            if success {
+                LocalOfflineAsset.manager.delete(id: assetId)
+                if hasActiveTask == nil {
+                    self?.tpStreamsDownloadDelegate?.onCanceled(assetId: assetId)
                 }
+            } else {
+                print("An error occurred trying to delete the contents on disk for \(assetId): \(String(describing: error))")
             }
         }
     }
