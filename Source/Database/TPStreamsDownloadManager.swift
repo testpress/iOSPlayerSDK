@@ -166,7 +166,7 @@ public final class TPStreamsDownloadManager {
         }
         
         guard let fileURL = localOfflineAsset.downloadedFileURL else {
-            completeCancelDownload(assetId: assetId)
+            LocalOfflineAsset.manager.delete(id: assetId)
             return
         }
         
@@ -178,13 +178,8 @@ public final class TPStreamsDownloadManager {
                 return
             }
             
-            self?.completeCancelDownload(assetId: assetId)
+            LocalOfflineAsset.manager.delete(id: assetId)
         }
-    }
-    
-    private func completeCancelDownload(assetId: String) {
-        LocalOfflineAsset.manager.delete(id: assetId)
-        tpStreamsDownloadDelegate?.onCanceled(assetId: assetId)
     }
     
     internal func removePartiallyDeletedVideos() {
