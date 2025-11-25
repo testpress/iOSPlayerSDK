@@ -175,7 +175,7 @@ public final class TPStreamsDownloadManager {
     
     internal func removePartiallyDeletedVideos() {
         LocalOfflineAsset.manager.getAll().filter { localOfflineAsset in
-            localOfflineAsset.status != Status.finished.rawValue
+            localOfflineAsset.status == Status.deleted.rawValue
         }.forEach { localOfflineAsset in
             guard let downloadedFileURL = localOfflineAsset.downloadedFileURL else {
                 print("No downloaded file URL for asset \(localOfflineAsset.assetId). Skipping deletion.")
