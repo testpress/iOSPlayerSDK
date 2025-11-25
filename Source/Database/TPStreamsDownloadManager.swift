@@ -171,14 +171,22 @@ public final class TPStreamsDownloadManager {
         }
         
         deleteDownloadedFile(fileURL, localOfflineAsset: localOfflineAsset) { [weak self] success, error in
-            let isFileStillExists = FileManager.default.fileExists(atPath: fileURL.path)
-            
-            if !success && isFileStillExists {
-                print("An error occurred trying to delete the contents on disk for \(assetId): \(String(describing: error))")
+            if success {
+                LocalOfflineAsset.manager.delete(id: assetId)
                 return
             }
             
-            LocalOfflineAsset.manager.delete(id: assetId)
+            DispatchQueue.global(qos: .utility).async {
+                let isFileStillExists = FileManager.default.fileExists(atPath: fileURL.path)
+                
+                DispatchQueue.main.async {
+                    if isFileStillExists {
+                        print("An error occurred trying to delete the contents on disk for \(assetId): \(String(describing: error))")
+                    } else {
+                        LocalOfflineAsset.manager.delete(id: assetId)
+                    }
+                }
+            }
         }
     }
     
