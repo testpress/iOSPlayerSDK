@@ -25,6 +25,10 @@ public struct TPStreamPlayerView: View {
                 } else if viewModel.player.initializationStatus == "ready" {
                     AVPlayerBridge(player: viewModel.player)
                     PlayerControlsView(player: viewModel.player, isFullscreen: $viewModel.isFullScreen, playerViewConfig: playerViewConfig)
+                    if let tracker = viewModel.player.timelineTracker {
+                        PlayerDebugOverlay(tracker: PlayerTimelineTrackerObservable(tracker: tracker))
+                            .allowsHitTesting(false)
+                    }
                 }
             }
             .padding(.horizontal, viewModel.isFullScreen ? 48 : 0)

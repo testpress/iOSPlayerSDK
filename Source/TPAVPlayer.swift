@@ -34,6 +34,7 @@ public class TPAVPlayer: AVPlayer {
     internal var asset: Asset? = nil
     private var reachability: Reachability?
     internal var isPlaybackOffline: Bool = false
+    internal var timelineTracker: PlayerTimelineTracker?
     
     public var availableVideoQualities: [VideoQuality] = [VideoQuality(resolution:"Auto", bitrate: 0)]
     
@@ -53,6 +54,7 @@ public class TPAVPlayer: AVPlayer {
         self.assetID = assetID
         self.setupCompletion = completion
         self.resourceLoaderDelegate = ResourceLoaderDelegate(accessToken: accessToken)
+        self.timelineTracker = PlayerTimelineTracker()
         
         super.init()
         fetchAsset()
@@ -63,6 +65,7 @@ public class TPAVPlayer: AVPlayer {
         self.setupCompletion = completion
         super.init()
         isPlaybackOffline = true
+        self.timelineTracker = PlayerTimelineTracker()
         guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: offlineAssetId) else { return }
         if (localOfflineAsset.status == "finished") {
             self.asset = localOfflineAsset.asAsset()
@@ -70,14 +73,18 @@ public class TPAVPlayer: AVPlayer {
             self.initializePlayer()
             self.setupCompletion?(nil)
             self.initializationStatus = "ready"
+            timelineTracker?.markSetupCompleted()
         } else {
             self.processInitializationFailure(TPStreamPlayerError.incompleteOfflineVideo)
         }
     }
     
     private func fetchAsset() {
+        timelineTracker?.markAssetFetchStart()
         TPStreamsSDK.provider.API.getAsset(assetID!, accessToken) { [weak self] asset, error in
             guard let self = self else { return }
+            
+            self.timelineTracker?.markAssetFetchEnd()
             
             if let error = error {
                 self.processInitializationFailure(error)
@@ -116,6 +123,7 @@ public class TPAVPlayer: AVPlayer {
         initializePlayer()
         setupCompletion?(nil)
         initializationStatus = "ready"
+        timelineTracker?.markSetupCompleted()
     }
     
     private func initializePlayer() {
@@ -127,8 +135,11 @@ public class TPAVPlayer: AVPlayer {
         let avURLAsset = AVURLAsset(url: url)
         avURLAsset.resourceLoader.setDelegate(resourceLoaderDelegate, queue: DispatchQueue.main)
         self.setPlayerItem(avURLAsset)
+        timelineTracker?.markPlayerItemCreated()
         
         if asset.video?.drmEncrypted == true {
+            timelineTracker?.isDRM = true
+            timelineTracker?.markDRMSetupStart()
             self.setupDRM(avURLAsset)
         }
         self.populateAvailableVideoQualities(url)
@@ -160,6 +171,7 @@ public class TPAVPlayer: AVPlayer {
     
     private func setupDRM(_ avURLAsset: AVURLAsset) {
         ContentKeyManager.shared.contentKeySession.addContentKeyRecipient(avURLAsset)
+        ContentKeyManager.shared.registerPlayer(self, forAssetID: assetID ?? "")
         
         ContentKeyManager.shared.contentKeyDelegate.onRequestOfflineLicenseRenewal = { [weak self] assetId, completion in
             self?.onRequestOfflineLicenseRenewal?(assetId, completion)

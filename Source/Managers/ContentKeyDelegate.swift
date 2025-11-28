@@ -68,6 +68,11 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
         }
         self.contentID = contentID
         
+        // Notify timeline tracker that DRM license request is starting
+        if let player = ContentKeyManager.shared.getPlayerForAsset(assetID) {
+            player.timelineTracker?.markDRMLicenseRequestStart()
+        }
+        
         if forOfflinePlayback {
             try! keyRequest.respondByRequestingPersistableContentKeyRequestAndReturnError()
             self.requestingPersistentKey = true
@@ -117,6 +122,11 @@ class ContentKeyDelegate: NSObject, AVContentKeySessionDelegate {
                 self.onError?(error)
                 keyRequest.processContentKeyResponseError(error)
                 return
+            }
+            
+            // Notify timeline tracker that DRM license is resolved
+            if let player = ContentKeyManager.shared.getPlayerForAsset(self.assetID) {
+                player.timelineTracker?.markDRMLicenseResolved()
             }
             
             let keyResponse = AVContentKeyResponse(fairPlayStreamingKeyResponseData: ckcData!)

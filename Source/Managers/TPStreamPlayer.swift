@@ -31,6 +31,7 @@ class TPStreamPlayer: NSObject {
     var currentPlaybackSpeed = PlaybackSpeed(rawValue: 1)!
     private var playerCurrentTimeObserver: Any!
     private var currentItemChangeObservation: NSKeyValueObservation!
+    private var bufferingCheckTimer: Timer?
     
     private var isSeeking: Bool = false
     
@@ -97,6 +98,21 @@ class TPStreamPlayer: NSObject {
         self.player.currentItem?.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.isPlaybackLikelyToKeepUp), options: .new, context: nil)
         self.player.currentItem?.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.isPlaybackBufferEmpty), options: .new, context: nil)
         self.player.currentItem?.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.duration), options: .new, context: nil)
+        
+        // Start checking for buffering progress
+        startBufferingCheck()
+    }
+    
+    private func startBufferingCheck() {
+        bufferingCheckTimer?.invalidate()
+        bufferingCheckTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            let bufferedDuration = self.player.bufferedDuration()
+            if bufferedDuration >= 3.0 {
+                self.player.timelineTracker?.markFirstFewSecondsBuffered()
+                self.bufferingCheckTimer?.invalidate()
+            }
+        }
     }
     
     private func observeVideoEnd(){
@@ -133,7 +149,10 @@ class TPStreamPlayer: NSObject {
     private func handlePlaybackStatusChange(for player: TPAVPlayer) {
         switch player.timeControlStatus {
         case .playing:
-            status = "playing"
+            if status != "playing" {
+                status = "playing"
+                player.timelineTracker?.markPlaybackStarted()
+            }
         case .paused:
             if status == "ended" {return}
             status = "paused"
@@ -152,6 +171,9 @@ class TPStreamPlayer: NSObject {
             }
         case #keyPath(AVPlayerItem.isPlaybackLikelyToKeepUp):
             if playerItem.isPlaybackLikelyToKeepUp {
+                // Mark first buffer ready
+                player.timelineTracker?.markFirstBufferReady()
+                
                 status = self.player.timeControlStatus == .playing ? "playing" : "paused"
             }
         default:
@@ -163,7 +185,7 @@ class TPStreamPlayer: NSObject {
         switch player.status {
         case .readyToPlay:
             status = "ready"
-            print("called")
+            player.timelineTracker?.markPlayerReady()
         case .failed:
             status = "failed"
         case .unknown:
@@ -238,6 +260,10 @@ class TPStreamPlayer: NSObject {
         } else {
             return false
         }
+    }
+    
+    deinit {
+        bufferingCheckTimer?.invalidate()
     }
 }
 

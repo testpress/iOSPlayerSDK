@@ -19,6 +19,10 @@ public class TPStreamPlayerViewController: UIViewController {
             setupPlayerStatusObserver(for: player)
             showLiveStreamNotice()
             player.onError = showError
+            
+            if let tracker = player.timelineTracker {
+                debugOverlay.setTracker(tracker)
+            }
         }
     }
     private var playerStatusObervervation: NSKeyValueObservation?
@@ -68,13 +72,23 @@ public class TPStreamPlayerViewController: UIViewController {
         return view
     }()
     
+    private lazy var debugOverlay: PlayerDebugOverlayView = {
+        let overlay = PlayerDebugOverlayView()
+        overlay.translatesAutoresizingMaskIntoConstraints = false
+        overlay.isHidden = true
+        overlay.isUserInteractionEnabled = false
+        return overlay
+    }()
+    
     private lazy var containerView: UIView = {
         let view = UIView(frame: view.bounds)
         view.backgroundColor = .black
         view.addSubview(videoView)
         view.addSubview(controlsView)
         view.addSubview(noticeView)
+        view.addSubview(debugOverlay)
         view.bringSubviewToFront(controlsView)
+        view.bringSubviewToFront(debugOverlay)
         return view
     }()
     
@@ -126,6 +140,10 @@ public class TPStreamPlayerViewController: UIViewController {
                 case "ready":
                     self.noticeView.isHidden = true
                     self.showLiveStreamNotice()
+                    if let tracker = self.player?.timelineTracker {
+                        self.debugOverlay.setTracker(tracker)
+                        self.debugOverlay.isHidden = false
+                    }
                 default:
                     break
                 }
