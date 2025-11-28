@@ -186,6 +186,7 @@ class TPStreamPlayer: NSObject {
         case .readyToPlay:
             status = "ready"
             player.timelineTracker?.markPlayerReady()
+            play()
         case .failed:
             status = "failed"
         case .unknown:
