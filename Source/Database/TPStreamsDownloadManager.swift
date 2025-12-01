@@ -186,7 +186,7 @@ public final class TPStreamsDownloadManager {
         }
     }
     
-    internal func removePartiallyDownloadedVideos() {
+    internal func removeIncompleteDownloads() {
         LocalOfflineAsset.manager.getAll().filter { localOfflineAsset in
             localOfflineAsset.status != Status.finished.rawValue
         }.forEach { localOfflineAsset in
