@@ -33,7 +33,7 @@ public class TPStreamsSDK {
         self.activateAudioSession()
         self.initializeSentry()
         self.initializeDatabase()
-        self.removePartiallyDeletedVideos()
+        self.removeIncompleteDownloads()
     }
     
     private static func validateAuthToken() {
@@ -82,8 +82,8 @@ public class TPStreamsSDK {
         Realm.Configuration.defaultConfiguration = config
     }
     
-    private static func removePartiallyDeletedVideos() {
-        TPStreamsDownloadManager.shared.removePartiallyDeletedVideos()
+    private static func removeIncompleteDownloads() {
+        TPStreamsDownloadManager.shared.removeIncompleteDownloads()
     }
 }
 
