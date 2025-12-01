@@ -186,22 +186,11 @@ public final class TPStreamsDownloadManager {
         }
     }
     
-    internal func removePartiallyDeletedVideos() {
+    internal func removePartiallyDownloadedVideos() {
         LocalOfflineAsset.manager.getAll().filter { localOfflineAsset in
-            localOfflineAsset.status == Status.deleted.rawValue
+            localOfflineAsset.status != Status.finished.rawValue
         }.forEach { localOfflineAsset in
-            guard let downloadedFileURL = localOfflineAsset.downloadedFileURL else {
-                print("No downloaded file URL for asset \(localOfflineAsset.assetId). Skipping deletion.")
-                return
-            }
-            
-            self.deleteDownloadedFile(downloadedFileURL, localOfflineAsset: localOfflineAsset) { success, error in
-                if success {
-                    LocalOfflineAsset.manager.delete(id: localOfflineAsset.assetId)
-                } else {
-                    print("An error occurred trying to delete the contents on disk for \(localOfflineAsset.assetId): \(String(describing: error))")
-                }
-            }
+            cancelDownload(localOfflineAsset.assetId)
         }
     }
     
