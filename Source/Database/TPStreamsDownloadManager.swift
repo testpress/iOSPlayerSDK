@@ -17,6 +17,7 @@ public final class TPStreamsDownloadManager {
     private var contentKeySession: AVContentKeySession!
     private var contentKeyDelegate: ContentKeyDelegate!
     private let contentKeyDelegateQueue = DispatchQueue(label: "com.tpstreams.iOSPlayerSDK.ContentKeyDelegateQueueOffline")
+    private var tokenRefreshAttempted: [String: Bool] = [:]
 
     private init() {
         let backgroundConfiguration = URLSessionConfiguration.background(withIdentifier: "com.tpstreams.downloadSession")
@@ -31,11 +32,6 @@ public final class TPStreamsDownloadManager {
         contentKeySession = AVContentKeySession(keySystem: .fairPlayStreaming)
         contentKeyDelegate = ContentKeyDelegate()
         contentKeySession.setDelegate(contentKeyDelegate, queue: contentKeyDelegateQueue)
-        contentKeyDelegate.onError = { error in
-            if error as? TPStreamPlayerError == .unauthorizedAccess {
-                self.requestPersistentKeyWithNewAccessToken()
-            }
-        }
         #endif
     }
     
@@ -79,11 +75,29 @@ public final class TPStreamsDownloadManager {
             metadata: metadata
         )
         LocalOfflineAsset.manager.add(object: localOfflineAsset)
-        LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.notStarted.rawValue])
         if (asset.video?.drmEncrypted == true){
-            contentKeyDelegate.onSuccess = { [weak self] in
+            tokenRefreshAttempted[asset.id] = false
+
+            LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.acquiringLicense.rawValue])
+            contentKeyDelegate.onDRMLicenseAcquired = { [weak self] in
                 guard let self = self else { return }
-                self.startDownloadTask(asset: asset, videoQuality: videoQuality, localOfflineAsset: localOfflineAsset)
+                self.tokenRefreshAttempted.removeValue(forKey: asset.id)
+                self.beginMediaDownload(asset: asset, videoQuality: videoQuality, localOfflineAsset: localOfflineAsset)
+            }
+
+            contentKeyDelegate.onError = { [weak self] error in
+                guard let self = self else { return }
+                if error as? TPStreamPlayerError == .unauthorizedAccess {
+                    if !(self.tokenRefreshAttempted[asset.id] ?? false) {
+                        self.tokenRefreshAttempted[asset.id] = true
+                        self.requestPersistentKeyWithNewAccessToken()
+                    } else {
+                        self.tokenRefreshAttempted.removeValue(forKey: asset.id)
+                        self.markLicenseAcquisitionAsFailed(assetId: asset.id, error: error)
+                    }
+                } else {
+                    self.markLicenseAcquisitionAsFailed(assetId: asset.id, error: error)
+                }
             }
             
             M3U8Parser.extractContentID(url: URL(string: asset.video!.playbackURL)!) { result in
@@ -99,11 +113,11 @@ public final class TPStreamsDownloadManager {
                 }
             }
         } else {
-            startDownloadTask(asset: asset, videoQuality: videoQuality, localOfflineAsset: localOfflineAsset)
+            beginMediaDownload(asset: asset, videoQuality: videoQuality, localOfflineAsset: localOfflineAsset)
         }
     }
 
-    private func startDownloadTask(asset: Asset, videoQuality: VideoQuality, localOfflineAsset: LocalOfflineAsset) {
+    private func beginMediaDownload(asset: Asset, videoQuality: VideoQuality, localOfflineAsset: LocalOfflineAsset) {
         let avUrlAsset = AVURLAsset(url: URL(string: asset.video!.playbackURL)!)
 
         guard let task = assetDownloadURLSession.aggregateAssetDownloadTask(
@@ -281,6 +295,15 @@ public final class TPStreamsDownloadManager {
                 }
             }
         }
+    }
+
+    private func markLicenseAcquisitionAsFailed(assetId: String, error: Error) {
+        guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: assetId) else { return }
+        
+        LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.licenseAcquisitionFailed.rawValue])
+        tpStreamsDownloadDelegate?.onStateChange(status: .licenseAcquisitionFailed, offlineAsset: localOfflineAsset.asOfflineAsset())
+        
+        print("License acquisition failed for asset \(assetId): \(error.localizedDescription)")
     }
 }
 

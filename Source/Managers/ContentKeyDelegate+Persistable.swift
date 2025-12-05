@@ -82,7 +82,7 @@ extension ContentKeyDelegate {
                 keyRequest.processContentKeyResponse(keyResponse)
                 
                 if self.requestingPersistentKey {
-                    self.onSuccess?()
+                    self.onDRMLicenseAcquired?()
                 }
             } catch {
                 print(error)
