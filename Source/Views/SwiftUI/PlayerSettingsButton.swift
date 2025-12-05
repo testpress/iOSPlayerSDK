@@ -78,7 +78,7 @@ struct PlayerSettingsButton: View {
     }
     
     private func playbackSpeedButton() -> ActionSheet.Button {
-        return .default(Text("Playback Speed - \(player.currentPlaybackSpeed.label)")) {
+        return .default(Text("Playback Speed - \(player.observedCurrentPlaybackSpeed.label)")) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.showOptions = true
                 self.currentMenu = .playbackSpeed
