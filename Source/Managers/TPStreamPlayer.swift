@@ -7,6 +7,8 @@ class TPStreamPlayer: NSObject {
     @objc dynamic var currentTime: NSNumber = 0
     @objc dynamic var isVideoDurationInitialized = false
     
+    private static let rateComparisonTolerance: Float = 0.01
+    
     var player: TPAVPlayer!
     var isLive: Bool {
         guard let liveStream = player.asset?.liveStream else {
@@ -31,6 +33,7 @@ class TPStreamPlayer: NSObject {
     var currentPlaybackSpeed = PlaybackSpeed(rawValue: 1)!
     private var playerCurrentTimeObserver: Any!
     private var currentItemChangeObservation: NSKeyValueObservation!
+    private var playerRateObservation: NSKeyValueObservation?
     
     private var isSeeking: Bool = false
     
@@ -52,6 +55,7 @@ class TPStreamPlayer: NSObject {
         self.observePlayerCurrentTimeChange()
         self.observeCurrentItemChanges()
         self.observePlayerStatusChange()
+        self.observePlayerRateChange()
     }
     
     private func observeCurrentItemChanges() {
@@ -89,6 +93,20 @@ class TPStreamPlayer: NSObject {
             // where the thumb moves back to the previous position from the dragged position for a fraction of a second.
             if !self.isSeeking {
                 self.currentTime = NSNumber(value: CMTimeGetSeconds(progressTime))
+            }
+        }
+    }
+
+    private func observePlayerRateChange() {
+        playerRateObservation = player.observe(\.rate, options: [.new]) { [weak self] (player, _) in
+            guard let self = self else { return }
+            let newRate = Float(player.rate)
+            if let matchingSpeed = PlaybackSpeed.allCases.first(where: { abs($0.rawValue - newRate) < Self.rateComparisonTolerance }),
+               self.currentPlaybackSpeed != matchingSpeed {
+                self.currentPlaybackSpeed = matchingSpeed
+                if let observable = self as? TPStreamPlayerObservable {
+                    observable.observedCurrentPlaybackSpeed = matchingSpeed
+                }
             }
         }
     }
@@ -218,6 +236,9 @@ class TPStreamPlayer: NSObject {
     func changePlaybackSpeed(_ speed: PlaybackSpeed){
         currentPlaybackSpeed = speed
         player.rate = speed.rawValue
+        if let observable = self as? TPStreamPlayerObservable {
+            observable.observedCurrentPlaybackSpeed = speed
+        }
     }
     
     func changeVideoQuality(_ videoQuality: VideoQuality){
@@ -246,6 +267,7 @@ class TPStreamPlayer: NSObject {
 class TPStreamPlayerObservable: TPStreamPlayer, ObservableObject {
     @Published var observedStatus: String = "paused"
     @Published var observedCurrentTime: Float64?
+    @Published var observedCurrentPlaybackSpeed: PlaybackSpeed = PlaybackSpeed(rawValue: 1)!
     
     override var status: String {
         didSet {
@@ -262,6 +284,7 @@ class TPStreamPlayerObservable: TPStreamPlayer, ObservableObject {
     override init(player: TPAVPlayer) {
         observedStatus = "paused"
         observedCurrentTime = nil
+        observedCurrentPlaybackSpeed = PlaybackSpeed(rawValue: 1)!
         super.init(player: player)
     }
 }
