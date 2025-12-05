@@ -104,12 +104,15 @@ class TPStreamPlayer: NSObject {
             if let matchingSpeed = PlaybackSpeed.allCases.first(where: { abs($0.rawValue - newRate) < Self.rateComparisonTolerance }),
                self.currentPlaybackSpeed != matchingSpeed {
                 self.currentPlaybackSpeed = matchingSpeed
-                if let observable = self as? TPStreamPlayerObservable {
-                    observable.observedCurrentPlaybackSpeed = matchingSpeed
-                }
+                self.updateObservedPlaybackSpeed(matchingSpeed)
             }
         }
     }
+
+    func updateObservedPlaybackSpeed(_ speed: PlaybackSpeed) {
+        // Empty implementation - will be overridden in TPStreamPlayerObservable
+    }
+    
     
     private func observePlayerBufferingStatusChange(){
         self.player.currentItem?.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.isPlaybackLikelyToKeepUp), options: .new, context: nil)
@@ -236,9 +239,7 @@ class TPStreamPlayer: NSObject {
     func changePlaybackSpeed(_ speed: PlaybackSpeed){
         currentPlaybackSpeed = speed
         player.rate = speed.rawValue
-        if let observable = self as? TPStreamPlayerObservable {
-            observable.observedCurrentPlaybackSpeed = speed
-        }
+        self.updateObservedPlaybackSpeed(speed)
     }
     
     func changeVideoQuality(_ videoQuality: VideoQuality){
@@ -280,6 +281,11 @@ class TPStreamPlayerObservable: TPStreamPlayer, ObservableObject {
             observedCurrentTime = currentTime.doubleValue
         }
     }
+
+    override func updateObservedPlaybackSpeed(_ speed: PlaybackSpeed) {
+        observedCurrentPlaybackSpeed = speed
+    }
+    
     
     override init(player: TPAVPlayer) {
         observedStatus = "paused"
