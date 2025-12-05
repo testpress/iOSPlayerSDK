@@ -66,16 +66,6 @@ public final class TPStreamsDownloadManager {
             return
         }
         
-        let avUrlAsset = AVURLAsset(url: URL(string: asset.video!.playbackURL)!)
-
-        guard let task = assetDownloadURLSession.aggregateAssetDownloadTask(
-            with: avUrlAsset,
-            mediaSelections: [avUrlAsset.preferredMediaSelection],
-            assetTitle: asset.title,
-            assetArtworkData: nil,
-            options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: videoQuality.bitrate]
-        ) else { return }
-
         let localOfflineAsset = LocalOfflineAsset.create(
             assetId: asset.id,
             srcURL: asset.video!.playbackURL,
@@ -89,12 +79,13 @@ public final class TPStreamsDownloadManager {
             metadata: metadata
         )
         LocalOfflineAsset.manager.add(object: localOfflineAsset)
-        assetDownloadDelegate.activeDownloadsMap[task] = localOfflineAsset
-        task.resume()
-        tpStreamsDownloadDelegate?.onStart(offlineAsset: localOfflineAsset.asOfflineAsset())
-        tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: localOfflineAsset.asOfflineAsset())
-        
+        LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.notStarted.rawValue])
         if (asset.video?.drmEncrypted == true){
+            contentKeyDelegate.onSuccess = { [weak self] in
+                guard let self = self else { return }
+                self.startDownloadTask(asset: asset, videoQuality: videoQuality, localOfflineAsset: localOfflineAsset)
+            }
+            
             M3U8Parser.extractContentID(url: URL(string: asset.video!.playbackURL)!) { result in
                 switch result {
                 case .success(let drmContentId):
@@ -107,7 +98,26 @@ public final class TPStreamsDownloadManager {
                     print("Error extracting content ID: \(error.localizedDescription)")
                 }
             }
+        } else {
+            startDownloadTask(asset: asset, videoQuality: videoQuality, localOfflineAsset: localOfflineAsset)
         }
+    }
+
+    private func startDownloadTask(asset: Asset, videoQuality: VideoQuality, localOfflineAsset: LocalOfflineAsset) {
+        let avUrlAsset = AVURLAsset(url: URL(string: asset.video!.playbackURL)!)
+
+        guard let task = assetDownloadURLSession.aggregateAssetDownloadTask(
+            with: avUrlAsset,
+            mediaSelections: [avUrlAsset.preferredMediaSelection],
+            assetTitle: asset.title,
+            assetArtworkData: nil,
+            options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: videoQuality.bitrate]
+        ) else { return }
+
+        assetDownloadDelegate.activeDownloadsMap[task] = localOfflineAsset
+        task.resume()
+        tpStreamsDownloadDelegate?.onStart(offlineAsset: localOfflineAsset.asOfflineAsset())
+        tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: localOfflineAsset.asOfflineAsset())
         ToastHelper.show(message: DownloadMessages.started)
     }
     

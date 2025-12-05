@@ -80,6 +80,10 @@ extension ContentKeyDelegate {
                 
                 let keyResponse = AVContentKeyResponse(fairPlayStreamingKeyResponseData: ckcData)
                 keyRequest.processContentKeyResponse(keyResponse)
+                
+                if self.requestingPersistentKey {
+                    self.onSuccess?()
+                }
             } catch {
                 print(error)
             }
