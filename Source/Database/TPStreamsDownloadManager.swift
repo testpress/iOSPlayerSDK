@@ -284,12 +284,13 @@ public final class TPStreamsDownloadManager {
     private func requestPersistentKeyWithNewAccessToken() {
         guard let assetId = contentKeyDelegate.assetID else { return }
         guard let delegate = tpStreamsDownloadDelegate else { return }
+        guard let licenseDurationSeconds = contentKeyDelegate.licenseDurationSeconds else { return }
         
         delegate.onRequestNewAccessToken(assetId: assetId) { [weak self] newToken in
             guard let self = self else { return }
             
             if let newToken = newToken {
-                self.contentKeyDelegate.setAssetDetails(assetId, newToken, true)
+                self.contentKeyDelegate.setAssetDetails(assetId, newToken, true, licenseDurationSeconds)
                 DispatchQueue.main.async {
                     self.requestPersistentKey(assetId)
                 }
