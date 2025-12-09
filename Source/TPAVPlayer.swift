@@ -10,11 +10,7 @@ import AVKit
 import Sentry
 import Reachability
 
-#if CocoaPods
 import M3U8Kit
-#else
-import M3U8Parser
-#endif
 
 public typealias SetupCompletion = (Error?) -> Void
 public struct InitializationErrorContext {
