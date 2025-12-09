@@ -16,15 +16,15 @@ class MainViewController: UIViewController {
     @IBOutlet weak var downloads: UIButton!
     
     @IBAction func sample1Tapped(_ sender: UIButton) {
-        presentPlayerViewController(assistId: "95hBGFAhQYR", accessToken: "7d4e2ffb-3492-4cd4-8e5c-41b7af2f3e7f")
+        presentPlayerViewController(assistId: "42h2tZ5fmNf", accessToken: "9327e2d0-fa13-4288-902d-840f32cd0eed")
     }
     
     @IBAction func sample2Tapped(_ sender: UIButton) {
-        presentPlayerViewController(assistId: "72c9RRHj3M8", accessToken: "47c686d7-a50b-41f9-b2cd-0660960c357f")
+        presentPlayerViewController(assistId: "57gHcHDBxKX", accessToken: "5e28479d-69d8-41c7-9664-79b7eb8f1f95")
     }
     
     @IBAction func sample3Tapped(_ sender: UIButton) {
-        presentPlayerViewController(assistId: "AgAFNEJn3kt", accessToken: "f9b11692-78c5-4d14-9385-5f1efb0b8f4e")
+        presentPlayerViewController(assistId: "7BsJXTfb3hr", accessToken: "19c92b12-1a4e-4967-a34b-97724c092d26")
     }
     
     @IBAction func downloadsTapped(_ sender: UIButton) {

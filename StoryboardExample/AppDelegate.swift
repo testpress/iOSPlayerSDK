@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        TPStreamsSDK.initialize(withOrgCode: "6eafqn")
+        TPStreamsSDK.initialize(withOrgCode: "9q94nm")
         return true
     }
 
