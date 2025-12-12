@@ -35,6 +35,8 @@ public struct OfflineAsset: Hashable {
 
 public enum Status: String {
     case notStarted = "notStarted"
+    case acquiringLicense = "acquiringLicense"
+    case licenseAcquisitionFailed = "licenseAcquisitionFailed"
     case inProgress = "inProgress"
     case paused = "paused"
     case finished = "finished"
