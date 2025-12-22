@@ -7,7 +7,7 @@
 
 import Foundation
 import AVKit
-import Sentry
+// import Sentry
 import Reachability
 
 #if CocoaPods

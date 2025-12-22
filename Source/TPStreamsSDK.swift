@@ -7,7 +7,7 @@
 
 import Foundation
 import AVFoundation
-import Sentry
+// import Sentry
 import RealmSwift
 
 #if SPM
@@ -31,7 +31,7 @@ public class TPStreamsSDK {
         self.authToken = authToken
         self.validateAuthToken()
         self.activateAudioSession()
-        self.initializeSentry()
+        // self.initializeSentry()
         self.initializeDatabase()
         self.removePartiallyDeletedVideos()
     }
@@ -47,24 +47,24 @@ public class TPStreamsSDK {
         do {
             try audioSession.setCategory(AVAudioSession.Category.playback)
         } catch {
-            SentrySDK.capture(error: error)
+            // SentrySDK.capture(error: error)
             debugPrint("Setting category to AVAudioSessionCategoryPlayback failed.")
         }
     }
     
-    private static func initializeSentry(){
-        SentrySDK.start { options in
-            options.dsn = "https://8ac303d4635e4f3ab06a2b7d77b3c0c1@sentry.testpress.in/9"
-            options.debug = false
-            options.tracesSampleRate = 1.0
-            options.enablePreWarmedAppStartTracing = true
-            options.attachScreenshot = false
-            options.attachViewHierarchy = false
-        }
-        SentrySDK.configureScope { scope in
-            scope.setTag(value: orgCode!, key: "orgCode")
-        }
-    }
+    // private static func initializeSentry(){
+    //     SentrySDK.start { options in
+    //         options.dsn = "https://8ac303d4635e4f3ab06a2b7d77b3c0c1@sentry.testpress.in/9"
+    //         options.debug = false
+    //         options.tracesSampleRate = 1.0
+    //         options.enablePreWarmedAppStartTracing = true
+    //         options.attachScreenshot = false
+    //         options.attachViewHierarchy = false
+    //     }
+    //     SentrySDK.configureScope { scope in
+    //         scope.setTag(value: orgCode!, key: "orgCode")
+    //     }
+    // }
     
     private static func initializeDatabase() {
         var config = Realm.Configuration(
