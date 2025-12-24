@@ -30,7 +30,7 @@ let package = Package(
       name: "TPStreamsSDK",
       dependencies: [
         "Alamofire",
-        "M3U8Kit",
+        .product(name: "M3U8Kit", package: "M3U8Parser"),
         .product(name: "Sentry", package: "sentry-cocoa"),
         .product(name: "Reachability", package: "Reachability.swift"),
         .product(name: "RealmSwift", package: "realm-swift"),
