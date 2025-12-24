@@ -34,7 +34,7 @@ let package = Package(
         .product(name: "Sentry", package: "sentry-cocoa"),
         .product(name: "Reachability", package: "Reachability.swift"),
         .product(name: "RealmSwift", package: "realm-swift"),
-        .product(name: "Toast_Swift", package: "Toast-Swift", moduleAlias: "Toast")
+        .product(name: "Toast_Swift", package: "Toast-Swift" )
       ],
       path: "Source",
       resources: [
