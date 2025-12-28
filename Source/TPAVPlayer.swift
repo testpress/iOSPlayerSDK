@@ -7,7 +7,6 @@
 
 import Foundation
 import AVKit
-import Sentry
 import Reachability
 
 import M3U8Kit
@@ -94,10 +93,7 @@ public class TPAVPlayer: AVPlayer {
     
     private func processInitializationFailure(_ error: Error) {
         setupCompletion?(error)
-        var sentryIssueId: String? = nil
-        if (error as? TPStreamPlayerError)?.shouldLogToSentry ?? true {
-            sentryIssueId = captureErrorInSentry(error, assetID, accessToken)
-        }
+        let sentryIssueId: String? = nil
         initializationErrorContext = InitializationErrorContext(error: error, sentryIssueId: sentryIssueId)
         onError?(error, sentryIssueId)
         initializationStatus = "error"
@@ -163,7 +159,7 @@ public class TPAVPlayer: AVPlayer {
         
         ContentKeyManager.shared.contentKeyDelegate.setAssetDetails(assetID, accessToken, isPlaybackOffline)
         ContentKeyManager.shared.contentKeyDelegate.onError = { error in
-            let sentryIssueId = captureErrorInSentry(error, self.assetID, self.accessToken)
+            let sentryIssueId: String? = nil
             self.initializationErrorContext = InitializationErrorContext(error: error, sentryIssueId: sentryIssueId)
             self.onError?(error, sentryIssueId)
         }

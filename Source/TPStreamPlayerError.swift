@@ -1,5 +1,4 @@
-import Sentry
-
+import Foundation
 public enum TPStreamPlayerError: Error {
     case resourceNotFound
     case unauthorizedAccess
@@ -45,15 +44,6 @@ public enum TPStreamPlayerError: Error {
             return "DRM protected content cannot be played in simulator. Please use a physical device."
         case .unknownError:
             return "Oops! Something went wrong. Please contact support for assistance and provide details about the issue."
-        }
-    }
-    
-    public var shouldLogToSentry: Bool {
-        switch self {
-        case .noInternetConnection, .incompleteOfflineVideo, .drmSimulatorError:
-            return false
-        default:
-            return true
         }
     }
 }

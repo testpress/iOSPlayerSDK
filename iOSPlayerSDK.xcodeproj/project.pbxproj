@@ -9,10 +9,8 @@
 /* Begin PBXBuildFile section */
 		031099F62B28B22C0034D370 /* TPStreamPlayerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031099F52B28B22C0034D370 /* TPStreamPlayerError.swift */; };
 		0321F3272A2E0D1800E08AEE /* AVPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0321F3262A2E0D1800E08AEE /* AVPlayer.swift */; };
-		0326BADB2A335911009ABC58 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 0326BADA2A335911009ABC58 /* Sentry */; };
 		035351A02A2EDAFA001E38F3 /* PlayerSettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0353519F2A2EDAFA001E38F3 /* PlayerSettingsButton.swift */; };
 		035351A22A2F49E3001E38F3 /* MediaControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035351A12A2F49E3001E38F3 /* MediaControlsView.swift */; };
-		0367F6F52B861CFC0000922D /* Sentry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0367F6F42B861CFC0000922D /* Sentry.swift */; };
 		0374E36E2C1AD18400CE9CF2 /* BaseAPIParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0374E36D2C1AD18300CE9CF2 /* BaseAPIParser.swift */; };
 		0374E3702C1AD23100CE9CF2 /* StreamsAPIParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0374E36F2C1AD23100CE9CF2 /* StreamsAPIParser.swift */; };
 		0374E3722C1AD2A200CE9CF2 /* TestpressAPIParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0374E3712C1AD2A200CE9CF2 /* TestpressAPIParser.swift */; };
@@ -167,7 +165,6 @@
 		0321F3262A2E0D1800E08AEE /* AVPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVPlayer.swift; sourceTree = "<group>"; };
 		0353519F2A2EDAFA001E38F3 /* PlayerSettingsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerSettingsButton.swift; sourceTree = "<group>"; };
 		035351A12A2F49E3001E38F3 /* MediaControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaControlsView.swift; sourceTree = "<group>"; };
-		0367F6F42B861CFC0000922D /* Sentry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sentry.swift; sourceTree = "<group>"; };
 		0374E36D2C1AD18300CE9CF2 /* BaseAPIParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAPIParser.swift; sourceTree = "<group>"; };
 		0374E36F2C1AD23100CE9CF2 /* StreamsAPIParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamsAPIParser.swift; sourceTree = "<group>"; };
 		0374E3712C1AD2A200CE9CF2 /* TestpressAPIParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestpressAPIParser.swift; sourceTree = "<group>"; };
@@ -269,7 +266,6 @@
 				0394CA312B5E5529006BED3B /* Reachability in Frameworks */,
 				8E6389E52A275B2A00306FA4 /* Alamofire in Frameworks */,
 				2D46EC6A2EE856BB008B559A /* M3U8Kit in Frameworks */,
-				0326BADB2A335911009ABC58 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -380,7 +376,6 @@
 			children = (
 				70A0497B2E86959500533162 /* Toast.swift */,
 				03CE74FF2A7946A800B84304 /* Time.swift */,
-				0367F6F42B861CFC0000922D /* Sentry.swift */,
 				D960A8FA2CEDEE7C003B0B04 /* M3U8Parser.swift */,
 			);
 			path = Utils;
@@ -630,7 +625,6 @@
 			name = TPStreamsSDK;
 			packageProductDependencies = (
 				8E6389E42A275B2A00306FA4 /* Alamofire */,
-				0326BADA2A335911009ABC58 /* Sentry */,
 				0394CA302B5E5529006BED3B /* Reachability */,
 				D92E48F22CB0226A00B1FAC3 /* RealmSwift */,
 				70A0497E2E869E7500533162 /* Toast */,
@@ -694,7 +688,6 @@
 			mainGroup = 8EDE999A2A2643B000E43EA9;
 			packageReferences = (
 				8E6389E32A275B2A00306FA4 /* XCRemoteSwiftPackageReference "Alamofire" */,
-				0326BAD92A335911009ABC58 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 				0326BADC2A348690009ABC58 /* XCRemoteSwiftPackageReference "M3U8Parser" */,
 				0394CA2F2B5E5528006BED3B /* XCRemoteSwiftPackageReference "Reachability" */,
 				D92E48EF2CB0226A00B1FAC3 /* XCRemoteSwiftPackageReference "realm-swift" */,
@@ -797,7 +790,6 @@
 				035351A02A2EDAFA001E38F3 /* PlayerSettingsButton.swift in Sources */,
 				03913C482A850BF9002E7E0C /* ProgressBar.swift in Sources */,
 				8E6C5CB52A28BD9A003EC948 /* TPStreamsSDK.swift in Sources */,
-				0367F6F52B861CFC0000922D /* Sentry.swift in Sources */,
 				0377C4132A2B272C00F7E58F /* TestpressAPI.swift in Sources */,
 				0377C4112A2B1F0700F7E58F /* Asset.swift in Sources */,
 				8E6389E22A275AA800306FA4 /* StreamsAPI.swift in Sources */,
@@ -1284,14 +1276,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		0326BAD92A335911009ABC58 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/getsentry/sentry-cocoa.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 8.36.0;
-			};
-		};
 		0326BADC2A348690009ABC58 /* XCRemoteSwiftPackageReference "M3U8Parser" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/M3U8Kit/M3U8Parser";
@@ -1335,11 +1319,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		0326BADA2A335911009ABC58 /* Sentry */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0326BAD92A335911009ABC58 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
-			productName = Sentry;
-		};
 		0394CA302B5E5529006BED3B /* Reachability */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 0394CA2F2B5E5528006BED3B /* XCRemoteSwiftPackageReference "Reachability" */;
