@@ -13,9 +13,7 @@ public struct TPStreamPlayerView: View {
     private var playerViewConfig: TPStreamPlayerConfiguration
     
     public init(player: TPAVPlayer, playerViewConfig: TPStreamPlayerConfiguration = TPStreamPlayerConfigurationBuilder().build()) {
-        let viewModel = TPStreamPlayerViewModel(player: player)
-        viewModel.isFullScreen = playerViewConfig.startInFullscreen
-        _viewModel = StateObject(wrappedValue: viewModel)
+        _viewModel = StateObject(wrappedValue: TPStreamPlayerViewModel(player: player, startInFullscreen: playerViewConfig.startInFullscreen))
         self.playerViewConfig = playerViewConfig
     }
     

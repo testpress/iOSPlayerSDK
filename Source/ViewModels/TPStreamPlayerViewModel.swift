@@ -16,8 +16,9 @@ class TPStreamPlayerViewModel: ObservableObject {
     var player: TPAVPlayer
     private var playerStatusObservation: NSKeyValueObservation?
     
-    init(player: TPAVPlayer) {
+    init(player: TPAVPlayer, startInFullscreen: Bool = false) {
         self.player = player
+        self.isFullScreen = startInFullscreen
         self.showLiveStreamNotice()
         if let errorContext = player.initializationErrorContext {
             showError(error: errorContext.error, sentryIssueId: errorContext.sentryIssueId)
