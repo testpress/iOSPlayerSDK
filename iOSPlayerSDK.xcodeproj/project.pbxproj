@@ -1297,7 +1297,7 @@
 			repositoryURL = "https://github.com/M3U8Kit/M3U8Parser";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.0;
+				minimumVersion = 1.2.0;
 			};
 		};
 		0394CA2F2B5E5528006BED3B /* XCRemoteSwiftPackageReference "Reachability" */ = {
