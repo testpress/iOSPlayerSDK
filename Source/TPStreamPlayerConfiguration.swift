@@ -16,6 +16,7 @@ public struct TPStreamPlayerConfiguration {
     public var showDownloadOption: Bool = false
     public var downloadMetadata: [String: Any]? = nil
     public var licenseDurationSeconds: Double? = nil
+    public var startInFullscreen: Bool = false
 }
 
 
@@ -58,6 +59,11 @@ public class TPStreamPlayerConfigurationBuilder {
     
     public func setLicenseDurationSeconds(_ seconds: Double?) -> Self {
         configuration.licenseDurationSeconds = seconds
+        return self
+    }
+    
+    public func setStartInFullscreen(_ startInFullscreen: Bool) -> Self {
+        configuration.startInFullscreen = startInFullscreen
         return self
     }
     

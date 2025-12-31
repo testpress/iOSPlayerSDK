@@ -94,6 +94,13 @@ public class TPStreamPlayerViewController: UIViewController {
         handlePlayerInitializationError()
     }
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if config.startInFullscreen && !isFullScreen {
+            enterFullScreen()
+        }
+    }
+    
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         containerView.frame = containerView.superview!.bounds

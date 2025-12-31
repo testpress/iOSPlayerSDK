@@ -37,6 +37,11 @@ public struct TPStreamPlayerView: View {
             .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
                 viewModel.isFullScreen = UIDevice.current.orientation.isLandscape
             }
+            .onAppear {
+                if self.playerViewConfig.startInFullscreen {
+                    changeOrientation(isFullscreen: true)
+                }
+            }
         }
     }
     
