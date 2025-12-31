@@ -13,7 +13,7 @@ public struct TPStreamPlayerView: View {
     private var playerViewConfig: TPStreamPlayerConfiguration
     
     public init(player: TPAVPlayer, playerViewConfig: TPStreamPlayerConfiguration = TPStreamPlayerConfigurationBuilder().build()) {
-        _viewModel = StateObject(wrappedValue: TPStreamPlayerViewModel(player: player, startInFullscreen: playerViewConfig.startInFullscreen))
+        _viewModel = StateObject(wrappedValue: TPStreamPlayerViewModel(player: player))
         self.playerViewConfig = playerViewConfig
     }
     
@@ -38,7 +38,7 @@ public struct TPStreamPlayerView: View {
                 viewModel.isFullScreen = UIDevice.current.orientation.isLandscape
             }
             .onAppear {
-                if viewModel.isFullScreen {
+                if self.playerViewConfig.startInFullscreen {
                     changeOrientation(isFullscreen: true)
                 }
             }
