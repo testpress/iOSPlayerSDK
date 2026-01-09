@@ -51,7 +51,7 @@ extension ContentKeyDelegate {
             }
         }
         
-        if forOfflinePlayback && (accessToken == nil || licenseDurationSeconds == nil) {
+        if forOfflinePlayback && accessToken == nil {
             requestOfflineLicenseCredentials {
                 requestSPCMessage()
             }
