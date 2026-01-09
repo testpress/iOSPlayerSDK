@@ -266,9 +266,11 @@ public final class TPStreamsDownloadManager {
             guard let self = self else { return }
             
             if let newToken = newToken {
-                self.contentKeyDelegate.setAssetDetails(assetId, newToken, true, currentLicenseDuration)
-                DispatchQueue.main.async {
-                    self.requestPersistentKey(assetId)
+                self.contentKeyDelegateQueue.async {
+                    self.contentKeyDelegate.setAssetDetails(assetId, newToken, true, currentLicenseDuration)
+                    DispatchQueue.main.async {
+                        self.requestPersistentKey(assetId)
+                    }
                 }
             }
         }
