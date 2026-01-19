@@ -8,6 +8,9 @@
 import Foundation
 
 class TestpressAPI: BaseAPI {
+
+    private static let testpressiOSAppIdentifier = "ios-app"
+    
     class override var VIDEO_DETAIL_API: String { 
         return "https://%@.testpress.in/api/v2.5/video_info/%@/?access_token=%@&v=2"
     }
@@ -18,5 +21,9 @@ class TestpressAPI: BaseAPI {
     
     override class var parser: APIParser {
         return TestpressAPIParser()
+    }
+    
+    override class var userAgentPrefix: String? {
+        return testpressiOSAppIdentifier
     }
 }
