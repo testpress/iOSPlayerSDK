@@ -19,4 +19,8 @@ class TestpressAPI: BaseAPI {
     override class var parser: APIParser {
         return TestpressAPIParser()
     }
+    
+    override class var userAgentPrefix: String? {
+        return "ios-app"
+    }
 }

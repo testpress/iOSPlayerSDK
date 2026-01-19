@@ -19,10 +19,24 @@ class BaseAPI {
         fatalError("parser must be implemented by subclasses.")
     }
     
+    class var userAgentPrefix: String? {
+        return nil
+    }
+    
+    private static let systemUserAgent = HTTPHeaders.default.value(for: "User-Agent") ?? ""
+
+    private static var customUserAgent: String {
+        if let prefix = userAgentPrefix {
+            return "\(prefix) \(systemUserAgent)"
+        }
+        return systemUserAgent
+    }
+    
     static func getAsset(_ assetID: String, _ accessToken: String?, completion: @escaping (Asset?, Error?) -> Void) {
         let url = URL(string: String(format: VIDEO_DETAIL_API, TPStreamsSDK.orgCode!, assetID, accessToken ?? ""))!
         
-        let headers: HTTPHeaders = (TPStreamsSDK.authToken?.isEmpty == false) ? ["Authorization": "JWT \(TPStreamsSDK.authToken!)"] : [:]
+        var headers: HTTPHeaders = (TPStreamsSDK.authToken?.isEmpty == false) ? ["Authorization": "JWT \(TPStreamsSDK.authToken!)"] : [:]
+        headers.update(name: "User-Agent", value: Self.customUserAgent)
         
         AF.request(url, headers: headers)
             .responseData { response in
@@ -61,6 +75,7 @@ class BaseAPI {
             headers["Authorization"] = "JWT \(authToken)"
         }
         
+        headers.update(name: "User-Agent", value: Self.customUserAgent)       
         AF.request(url, method: .post, parameters: parameters, encoder: JSONParameterEncoder.prettyPrinted, headers: headers).responseData { response in
             switch response.result {
             case .success(let data):
