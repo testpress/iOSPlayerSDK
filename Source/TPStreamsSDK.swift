@@ -9,14 +9,70 @@ import Foundation
 import AVFoundation
 import Sentry
 import RealmSwift
+import UIKit
 
 #if SPM
 let bundle = Bundle.module
-#elseif CocoaPods
-let appBundle = Bundle(for: TPStreamsSDK.self)
-let bundle = Bundle(url: appBundle.url(forResource: "TPStreamsSDK", withExtension: "bundle")!)!
 #else
-let bundle = Bundle(identifier: "com.tpstreams.iOSPlayerSDK")! // Access bundle using identifier when directly including the framework
+let bundle: Bundle = {
+    #if DEBUG
+    func logBundle(_ name: String, _ b: Bundle?) {
+        guard let b = b else {
+            print("[TPStreamsSDK] \(name) is NIL")
+            return
+        }
+        print("[TPStreamsSDK] \(name) - ID: \(b.bundleIdentifier ?? "nil"), Path: \(b.bundlePath)")
+    }
+    print("[TPStreamsSDK] --- Debugging Bundle Resolution ---")
+    logBundle("Bundle.main", Bundle.main)
+    #endif
+
+    var resolvedBundle: Bundle?
+
+    #if CocoaPods
+    let frameworkBundle = Bundle(for: TPStreamsSDK.self)
+    #if DEBUG
+    logBundle("Framework Bundle (for: TPStreamsSDK.self)", frameworkBundle)
+    #endif
+    
+    if let resourceBundleURL = frameworkBundle.url(forResource: "TPStreamsSDK", withExtension: "bundle") {
+        #if DEBUG
+        print("[TPStreamsSDK] url(forResource: \"TPStreamsSDK\", withExtension: \"bundle\") -> \(resourceBundleURL.path)")
+        #endif
+        resolvedBundle = Bundle(url: resourceBundleURL)
+        #if DEBUG
+        print("[TPStreamsSDK] Bundle(url:) success: \(resolvedBundle != nil)")
+        #endif
+    } else {
+        #if DEBUG
+        print("[TPStreamsSDK] url(forResource: \"TPStreamsSDK\", withExtension: \"bundle\") -> NIL")
+        #endif
+    }
+    #else
+    let identifier = "com.tpstreams.iOSPlayerSDK"
+    resolvedBundle = Bundle(identifier: identifier)
+    #if DEBUG
+    print("[TPStreamsSDK] Bundle(identifier: \"\(identifier)\") lookup success: \(resolvedBundle != nil)")
+    #endif
+    #endif
+
+    #if DEBUG
+    logBundle("Resolved Resource Bundle", resolvedBundle)
+    #endif
+
+    let finalBundle = resolvedBundle ?? Bundle.main
+
+    #if DEBUG
+    if resolvedBundle == nil {
+        print("[TPStreamsSDK] WARNING: Bundle resolution failed. Falling back to Bundle.main.")
+    }
+    let testImage = UIImage(named: "play", in: finalBundle, compatibleWith: nil)
+    print("[TPStreamsSDK] Test Resource Lookup ('play' icon): \(testImage != nil ? "OK" : "NIL")")
+    print("[TPStreamsSDK] --- Debugging Bundle Resolution End ---")
+    #endif
+
+    return finalBundle
+}()
 #endif
 
 
