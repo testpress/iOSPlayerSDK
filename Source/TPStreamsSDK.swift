@@ -17,22 +17,53 @@ let bundle = Bundle.module
 #elseif CocoaPods
 let appBundle = Bundle(for: TPStreamsSDK.self)
 
+private func isValidTPStreamsResourceBundle(_ b: Bundle) -> Bool {
+    // This guarantees the bundle actually contains asset catalog
+    return b.path(forResource: "Assets", ofType: "car") != nil
+}
+
 let bundle: Bundle = {
     #if DEBUG
     print("[TPStreamsSDK] 🔍 Resolving bundle...")
     print("[TPStreamsSDK] Framework bundle: \(appBundle.bundlePath)")
     #endif
-    
+
+    // 1) Primary: inside framework bundle
     if let url = appBundle.url(forResource: "TPStreamsSDK", withExtension: "bundle"),
-       let resourceBundle = Bundle(url: url) {
+       let candidate = Bundle(url: url),
+       isValidTPStreamsResourceBundle(candidate) {
+
         #if DEBUG
-        print("[TPStreamsSDK] ✅ Found TPStreamsSDK.bundle at: \(url.path)")
+        print("[TPStreamsSDK] ✅ Found TPStreamsSDK.bundle (framework) at: \(url.path)")
+        print("[TPStreamsSDK] ✅ Assets.car: \(candidate.path(forResource: "Assets", ofType: "car") ?? "NIL")")
         #endif
-        return resourceBundle
+
+        return candidate
     }
-    
+
     #if DEBUG
-    print("[TPStreamsSDK] ⚠️ TPStreamsSDK.bundle not found, falling back to Bundle.main")
+    print("[TPStreamsSDK] ⚠️ Not found/invalid in framework bundle. Scanning all bundles...")
+    #endif
+
+    // 2) Fallback: scan everything loaded (modular apps fix)
+    for base in (Bundle.allFrameworks + Bundle.allBundles) {
+        if let url = base.url(forResource: "TPStreamsSDK", withExtension: "bundle"),
+           let candidate = Bundle(url: url),
+           isValidTPStreamsResourceBundle(candidate) {
+
+            #if DEBUG
+            print("[TPStreamsSDK] ✅ Found TPStreamsSDK.bundle (scan) at: \(url.path)")
+            print("[TPStreamsSDK] ✅ Base: \(base.bundleIdentifier ?? base.bundlePath)")
+            print("[TPStreamsSDK] ✅ Assets.car: \(candidate.path(forResource: "Assets", ofType: "car") ?? "NIL")")
+            #endif
+
+            return candidate
+        }
+    }
+
+    #if DEBUG
+    print("[TPStreamsSDK] ❌ TPStreamsSDK.bundle NOT FOUND or missing Assets.car")
+    print("[TPStreamsSDK] Falling back to Bundle.main: \(Bundle.main.bundlePath)")
     #endif
     return Bundle.main
 }()
@@ -41,24 +72,22 @@ let bundle: Bundle = {
 let bundle = Bundle(identifier: "com.tpstreams.iOSPlayerSDK") ?? Bundle(for: TPStreamsSDK.self)
 #endif
 
+// MARK: - Debug Helper
 #if DEBUG && CocoaPods
-private let _ = {
-    print("[TPStreamsSDK] 🎯 Final bundle: \(bundle.bundlePath)")
-    
-    // Test icon loading
-    let testIcons = ["play", "pause", "forward", "rewind", "maximize", "minimize"]
-    let foundIcons = testIcons.filter { UIImage(named: $0, in: bundle, compatibleWith: nil) != nil }
-    
-    if foundIcons.count == testIcons.count {
-        print("[TPStreamsSDK] ✅ All \(testIcons.count) icons loaded successfully")
-    } else {
-        let missing = testIcons.filter { !foundIcons.contains($0) }
-        print("[TPStreamsSDK] ⚠️ Found \(foundIcons.count)/\(testIcons.count) icons")
-        print("[TPStreamsSDK] ❌ Missing: \(missing.joined(separator: ", "))")
+struct TPStreamsDebugLogger {
+    static func logBundleResolution() {
+        print("[TPStreamsSDK] 🎯 Final bundle: \(bundle.bundlePath)")
+        print("[TPStreamsSDK] Assets.car: \(bundle.path(forResource: "Assets", ofType: "car") ?? "NIL")")
+
+        let testIcons = ["play", "pause", "forward", "rewind", "maximize", "minimize"]
+        for icon in testIcons {
+            let ok = UIImage(named: icon, in: bundle, compatibleWith: nil) != nil
+            print("[TPStreamsSDK] icon[\(icon)] = \(ok ? "OK" : "NIL")")
+        }
+
+        print("[TPStreamsSDK] 🏁 Bundle resolution complete\n")
     }
-    print("[TPStreamsSDK] 🏁 Bundle resolution complete\n")
-    return ()
-}()
+}
 #endif
 
 
@@ -81,6 +110,11 @@ public class TPStreamsSDK {
         self.authToken = authToken
         self.validateAuthToken()
         self.activateAudioSession()
+        
+        #if DEBUG && CocoaPods
+        TPStreamsDebugLogger.logBundleResolution()
+        #endif
+        
         self.initializeSentry()
         self.initializeDatabase()
         self.removeIncompleteDownloads()
