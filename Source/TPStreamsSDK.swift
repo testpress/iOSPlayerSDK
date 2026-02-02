@@ -13,68 +13,62 @@ import UIKit
 
 #if SPM
 let bundle = Bundle.module
-#else
+
+#elseif CocoaPods
+let appBundle = Bundle(for: TPStreamsSDK.self)
+
 let bundle: Bundle = {
     #if DEBUG
-    func logBundle(_ name: String, _ b: Bundle?) {
-        guard let b = b else {
-            print("[TPStreamsSDK] \(name) is NIL")
-            return
-        }
-        print("[TPStreamsSDK] \(name) - ID: \(b.bundleIdentifier ?? "nil"), Path: \(b.bundlePath)")
-    }
-    print("[TPStreamsSDK] --- Debugging Bundle Resolution ---")
-    logBundle("Bundle.main", Bundle.main)
-    #endif
-
-    var resolvedBundle: Bundle?
-
-    #if CocoaPods
-    let frameworkBundle = Bundle(for: TPStreamsSDK.self)
-    #if DEBUG
-    logBundle("Framework Bundle (for: TPStreamsSDK.self)", frameworkBundle)
+    print("[TPStreamsSDK] 🔍 Resolving bundle...")
+    print("[TPStreamsSDK] Framework bundle: \(appBundle.bundlePath)")
     #endif
     
-    if let resourceBundleURL = frameworkBundle.url(forResource: "TPStreamsSDK", withExtension: "bundle") {
+    if let url = appBundle.url(forResource: "TPStreamsSDK", withExtension: "bundle"),
+       let resourceBundle = Bundle(url: url) {
         #if DEBUG
-        print("[TPStreamsSDK] url(forResource: \"TPStreamsSDK\", withExtension: \"bundle\") -> \(resourceBundleURL.path)")
+        print("[TPStreamsSDK] ✅ Found TPStreamsSDK.bundle at: \(url.path)")
         #endif
-        resolvedBundle = Bundle(url: resourceBundleURL)
-        #if DEBUG
-        print("[TPStreamsSDK] Bundle(url:) success: \(resolvedBundle != nil)")
-        #endif
+        return resourceBundle
+    }
+    
+    #if DEBUG
+    print("[TPStreamsSDK] ⚠️ TPStreamsSDK.bundle not found, falling back to Bundle.main")
+    #endif
+    return Bundle.main
+}()
+
+#else
+let bundle = Bundle(identifier: "com.tpstreams.iOSPlayerSDK") ?? Bundle(for: TPStreamsSDK.self)
+#endif
+
+#if DEBUG && CocoaPods
+private let _ = {
+    print("[TPStreamsSDK] 🎯 Final bundle: \(bundle.bundlePath)")
+    
+    // Test icon loading
+    let testIcons = ["play", "pause", "forward", "rewind", "maximize", "minimize"]
+    let foundIcons = testIcons.filter { UIImage(named: $0, in: bundle, compatibleWith: nil) != nil }
+    
+    if foundIcons.count == testIcons.count {
+        print("[TPStreamsSDK] ✅ All \(testIcons.count) icons loaded successfully")
     } else {
-        #if DEBUG
-        print("[TPStreamsSDK] url(forResource: \"TPStreamsSDK\", withExtension: \"bundle\") -> NIL")
-        #endif
+        let missing = testIcons.filter { !foundIcons.contains($0) }
+        print("[TPStreamsSDK] ⚠️ Found \(foundIcons.count)/\(testIcons.count) icons")
+        print("[TPStreamsSDK] ❌ Missing: \(missing.joined(separator: ", "))")
     }
-    #else
-    let identifier = "com.tpstreams.iOSPlayerSDK"
-    resolvedBundle = Bundle(identifier: identifier)
-    #if DEBUG
-    print("[TPStreamsSDK] Bundle(identifier: \"\(identifier)\") lookup success: \(resolvedBundle != nil)")
-    #endif
-    #endif
-
-    #if DEBUG
-    logBundle("Resolved Resource Bundle", resolvedBundle)
-    #endif
-
-    let finalBundle = resolvedBundle ?? Bundle.main
-
-    #if DEBUG
-    if resolvedBundle == nil {
-        print("[TPStreamsSDK] WARNING: Bundle resolution failed. Falling back to Bundle.main.")
-    }
-    let testImage = UIImage(named: "play", in: finalBundle, compatibleWith: nil)
-    print("[TPStreamsSDK] Test Resource Lookup ('play' icon): \(testImage != nil ? "OK" : "NIL")")
-    print("[TPStreamsSDK] --- Debugging Bundle Resolution End ---")
-    #endif
-
-    return finalBundle
+    print("[TPStreamsSDK] 🏁 Bundle resolution complete\n")
+    return ()
 }()
 #endif
 
+
+// MARK: - Internal Asset Helper
+/// Load an image from the SDK's resource bundle
+/// - Parameter name: The name of the image asset
+/// - Returns: UIImage if found, nil otherwise
+internal func loadSDKImage(_ name: String) -> UIImage? {
+    return UIImage(named: name, in: bundle, compatibleWith: nil)
+}
 
 public class TPStreamsSDK {
     internal static var orgCode: String?

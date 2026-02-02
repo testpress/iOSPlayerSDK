@@ -52,6 +52,17 @@ class PlayerControlsUIView: UIView {
         }
     }
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        setupImages()
+    }
+
+    private func setupImages() {
+        playPauseButton.setImage(loadSDKImage("play"), for: .normal)
+        forwardButton.setImage(loadSDKImage("forward"), for: .normal)
+        fullScreenToggleButton.setImage(loadSDKImage("maximize"), for: .normal)
+    }
+
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == #keyPath(TPStreamPlayer.status) {
             handlePlayerStatusChange()
@@ -72,11 +83,11 @@ class PlayerControlsUIView: UIView {
                 setUpLiveIndicator()
             }
         case "playing":
-            playPauseButton.setImage(UIImage(named: "pause", in: bundle, compatibleWith: nil), for: .normal)
+            playPauseButton.setImage(loadSDKImage("pause"), for: .normal)
         case "paused":
-            playPauseButton.setImage(UIImage(named: "play", in: bundle, compatibleWith: nil), for: .normal)
+            playPauseButton.setImage(loadSDKImage("play"), for: .normal)
         case "ended":
-            playPauseButton.setImage(UIImage(named: "reload", in: bundle, compatibleWith: nil), for: .normal)
+            playPauseButton.setImage(loadSDKImage("reload"), for: .normal)
         case "buffering":
             playPauseButton.isHidden = true
             loadingIndicator.startAnimating()
@@ -225,7 +236,7 @@ class PlayerControlsUIView: UIView {
         }
         
         if playbackSpeed == .normal && self.player.currentPlaybackSpeed.rawValue == 0.0 || (playbackSpeed.rawValue == self.player.currentPlaybackSpeed.rawValue) {
-            action.setValue(UIImage(named: "checkmark", in: bundle, compatibleWith: nil), forKey: "image")
+            action.setValue(loadSDKImage("checkmark"), forKey: "image")
         }
         return action
     }
@@ -236,7 +247,7 @@ class PlayerControlsUIView: UIView {
         })
         
         if (quality.bitrate == player.currentVideoQuality?.bitrate) {
-            action.setValue(UIImage(named: "checkmark", in: bundle, compatibleWith: nil), forKey: "image")
+            action.setValue(loadSDKImage("checkmark"), forKey: "image")
         }
         
         return action
@@ -270,9 +281,9 @@ class PlayerControlsUIView: UIView {
     
     func updateFullScreenButtonIcon(){
         if isFullScreen {
-            fullScreenToggleButton.setImage(UIImage(named: "minimize", in: bundle, compatibleWith: nil), for: .normal)
+            fullScreenToggleButton.setImage(loadSDKImage("minimize"), for: .normal)
         } else{
-            fullScreenToggleButton.setImage(UIImage(named: "maximize", in: bundle, compatibleWith: nil), for: .normal)
+            fullScreenToggleButton.setImage(loadSDKImage("maximize"), for: .normal)
         }
     }
 }
