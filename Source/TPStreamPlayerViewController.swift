@@ -48,7 +48,7 @@ public class TPStreamPlayerViewController: UIViewController {
     }()
     
     private lazy var controlsView: PlayerControlsUIView = {
-        guard let view = bundle.loadNibNamed("PlayerControls", owner: nil, options: nil)?.first as? PlayerControlsUIView else {
+        guard let view = loadSDKNib("PlayerControls") as? PlayerControlsUIView else {
             fatalError("Could not load PlayerControls view from nib.")
         }
         view.player = TPStreamPlayer(player: self.player!)

@@ -18,14 +18,13 @@ let bundle = Bundle.module
 let appBundle = Bundle(for: TPStreamsSDK.self)
 
 private func isValidTPStreamsResourceBundle(_ b: Bundle) -> Bool {
-    // This guarantees the bundle actually contains asset catalog
     return b.path(forResource: "Assets", ofType: "car") != nil
 }
 
 let bundle: Bundle = {
     #if DEBUG
-    print("[TPStreamsSDK] 🔍 Resolving bundle...")
-    print("[TPStreamsSDK] Framework bundle: \(appBundle.bundlePath)")
+    print("[TPStreamsSDK] 🔍 Resolving resource bundle...")
+    print("[TPStreamsSDK] 📍 Framework Path: \(appBundle.bundlePath)")
     #endif
 
     // 1) Primary: inside framework bundle
@@ -34,15 +33,15 @@ let bundle: Bundle = {
        isValidTPStreamsResourceBundle(candidate) {
 
         #if DEBUG
-        print("[TPStreamsSDK] ✅ Found TPStreamsSDK.bundle (framework) at: \(url.path)")
-        print("[TPStreamsSDK] ✅ Assets.car: \(candidate.path(forResource: "Assets", ofType: "car") ?? "NIL")")
+        print("[TPStreamsSDK] ✅ Located: \(url.lastPathComponent) at \(url.deletingLastPathComponent().path)")
+        print("[TPStreamsSDK] 🎯 Active Resource Bundle: \(candidate.bundlePath)")
         #endif
 
         return candidate
     }
 
     #if DEBUG
-    print("[TPStreamsSDK] ⚠️ Not found/invalid in framework bundle. Scanning all bundles...")
+    print("[TPStreamsSDK] ⚠️ SDK bundle not found in framework. Scanning all loaded bundles...")
     #endif
 
     // 2) Fallback: scan everything loaded (modular apps fix)
@@ -52,9 +51,8 @@ let bundle: Bundle = {
            isValidTPStreamsResourceBundle(candidate) {
 
             #if DEBUG
-            print("[TPStreamsSDK] ✅ Found TPStreamsSDK.bundle (scan) at: \(url.path)")
-            print("[TPStreamsSDK] ✅ Base: \(base.bundleIdentifier ?? base.bundlePath)")
-            print("[TPStreamsSDK] ✅ Assets.car: \(candidate.path(forResource: "Assets", ofType: "car") ?? "NIL")")
+            print("[TPStreamsSDK] ✅ Located: \(url.lastPathComponent) during scan")
+            print("[TPStreamsSDK] 🎯 Active Resource Bundle: \(candidate.bundlePath)")
             #endif
 
             return candidate
@@ -62,8 +60,7 @@ let bundle: Bundle = {
     }
 
     #if DEBUG
-    print("[TPStreamsSDK] ❌ TPStreamsSDK.bundle NOT FOUND or missing Assets.car")
-    print("[TPStreamsSDK] Falling back to Bundle.main: \(Bundle.main.bundlePath)")
+    print("[TPStreamsSDK] ❌ Resource bundle NOT FOUND. Falling back to Bundle.main")
     #endif
     return Bundle.main
 }()
@@ -72,32 +69,44 @@ let bundle: Bundle = {
 let bundle = Bundle(identifier: "com.tpstreams.iOSPlayerSDK") ?? Bundle(for: TPStreamsSDK.self)
 #endif
 
-// MARK: - Debug Helper
-#if DEBUG && CocoaPods
-struct TPStreamsDebugLogger {
-    static func logBundleResolution() {
-        print("[TPStreamsSDK] 🎯 Final bundle: \(bundle.bundlePath)")
-        print("[TPStreamsSDK] Assets.car: \(bundle.path(forResource: "Assets", ofType: "car") ?? "NIL")")
-
-        let testIcons = ["play", "pause", "forward", "rewind", "maximize", "minimize"]
-        for icon in testIcons {
-            let ok = UIImage(named: icon, in: bundle, compatibleWith: nil) != nil
-            print("[TPStreamsSDK] icon[\(icon)] = \(ok ? "OK" : "NIL")")
-        }
-
-        print("[TPStreamsSDK] 🏁 Bundle resolution complete\n")
-    }
-}
-#endif
-
-
 // MARK: - Internal Asset Helper
 /// Load an image from the SDK's resource bundle
 /// - Parameter name: The name of the image asset
 /// - Returns: UIImage if found, nil otherwise
 internal func loadSDKImage(_ name: String) -> UIImage? {
-    return UIImage(named: name, in: bundle, compatibleWith: nil)
+    let img = UIImage(named: name, in: bundle, compatibleWith: nil)
+    #if DEBUG
+    if img == nil {
+        print("[TPStreamsSDK] ❌ Failed to load image: '\(name)'")
+        print("[TPStreamsSDK] 🔍 Searched In: \(bundle.bundlePath)")
+    } else {
+        let path = bundle.path(forResource: name, ofType: nil) ?? "\(bundle.bundlePath)/Assets.car/\(name)"
+        print("[TPStreamsSDK] 🖼️ Loaded: '\(name)'")
+        print("[TPStreamsSDK] 📍 Path: \(path)")
+    }
+    #endif
+    return img
 }
+
+/// Load a storyboard from the SDK's resource bundle
+/// - Parameter name: The name of the storyboard
+/// - Returns: UIStoryboard scoped to the SDK bundle
+internal func loadSDKStoryboard(_ name: String) -> UIStoryboard {
+    return UIStoryboard(name: name, bundle: bundle)
+}
+
+/// Load a NIB from the SDK's resource bundle
+/// - Parameter name: The name of the NIB
+/// - Parameter owner: The owner of the NIB
+/// - Parameter options: The options for the NIB
+/// - Returns: The first object in the NIB if found
+internal func loadSDKNib(_ name: String, owner: Any? = nil, options: [UINib.OptionsKey : Any]? = nil) -> Any? {
+    #if DEBUG
+    print("[TPStreamsSDK] 🧩 Loading NIB: '\(name)'")
+    #endif
+    return bundle.loadNibNamed(name, owner: owner, options: options)?.first
+}
+
 
 public class TPStreamsSDK {
     internal static var orgCode: String?

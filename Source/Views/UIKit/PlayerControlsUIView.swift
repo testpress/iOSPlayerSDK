@@ -18,6 +18,8 @@ class PlayerControlsUIView: UIView {
     @IBOutlet weak var fullScreenToggleButton: UIButton!
     @IBOutlet weak var progressBar: ProgressBar!
     @IBOutlet weak var forwardButton: UIButton!
+    @IBOutlet weak var rewindButton: UIButton!
+    @IBOutlet weak var settingsButton: UIButton!
     @IBOutlet weak var rewindSeekNoticeLabel: UILabel!
     @IBOutlet weak var forwardSeekNoticeLabel: UILabel!
     
@@ -60,9 +62,11 @@ class PlayerControlsUIView: UIView {
     private func setupImages() {
         playPauseButton.setImage(loadSDKImage("play"), for: .normal)
         forwardButton.setImage(loadSDKImage("forward"), for: .normal)
+        rewindButton.setImage(loadSDKImage("rewind"), for: .normal)
+        settingsButton.setImage(loadSDKImage("settings"), for: .normal)
         fullScreenToggleButton.setImage(loadSDKImage("maximize"), for: .normal)
     }
-
+    
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == #keyPath(TPStreamPlayer.status) {
             handlePlayerStatusChange()
@@ -83,10 +87,19 @@ class PlayerControlsUIView: UIView {
                 setUpLiveIndicator()
             }
         case "playing":
+            #if DEBUG
+            print("[TPStreamsSDK] ⏬ State -> Playing: Setting 'pause' icon")
+            #endif
             playPauseButton.setImage(loadSDKImage("pause"), for: .normal)
         case "paused":
+            #if DEBUG
+            print("[TPStreamsSDK] ⏬ State -> Paused: Setting 'play' icon")
+            #endif
             playPauseButton.setImage(loadSDKImage("play"), for: .normal)
         case "ended":
+            #if DEBUG
+            print("[TPStreamsSDK] ⏬ State -> Ended: Setting 'reload' icon")
+            #endif
             playPauseButton.setImage(loadSDKImage("reload"), for: .normal)
         case "buffering":
             playPauseButton.isHidden = true
@@ -236,6 +249,9 @@ class PlayerControlsUIView: UIView {
         }
         
         if playbackSpeed == .normal && self.player.currentPlaybackSpeed.rawValue == 0.0 || (playbackSpeed.rawValue == self.player.currentPlaybackSpeed.rawValue) {
+            #if DEBUG
+            print("[TPStreamsSDK] ⏬ Menu -> Speed: Applying checkmark to '\(playbackSpeed.label)'")
+            #endif
             action.setValue(loadSDKImage("checkmark"), forKey: "image")
         }
         return action
@@ -247,6 +263,9 @@ class PlayerControlsUIView: UIView {
         })
         
         if (quality.bitrate == player.currentVideoQuality?.bitrate) {
+            #if DEBUG
+            print("[TPStreamsSDK] ⏬ Menu -> Quality: Applying checkmark to '\(quality.resolution)'")
+            #endif
             action.setValue(loadSDKImage("checkmark"), forKey: "image")
         }
         
@@ -281,8 +300,14 @@ class PlayerControlsUIView: UIView {
     
     func updateFullScreenButtonIcon(){
         if isFullScreen {
+            #if DEBUG
+            print("[TPStreamsSDK] ⏬ Screen -> Shrink: Setting 'minimize' icon")
+            #endif
             fullScreenToggleButton.setImage(loadSDKImage("minimize"), for: .normal)
         } else{
+            #if DEBUG
+            print("[TPStreamsSDK] ⏬ Screen -> Expand: Setting 'maximize' icon")
+            #endif
             fullScreenToggleButton.setImage(loadSDKImage("maximize"), for: .normal)
         }
     }

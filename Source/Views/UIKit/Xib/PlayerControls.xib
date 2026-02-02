@@ -24,7 +24,7 @@
                         <constraint firstAttribute="width" constant="50" id="uMK-gP-Wjv"/>
                     </constraints>
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                    <state key="normal" title="Button" image="play"/>
+                    <state key="normal" title="play"/>
                     <connections>
                         <action selector="playOrPauseButton:" destination="Pdx-qm-hxi" eventType="touchUpInside" id="zZ1-fC-D6w"/>
                     </connections>
@@ -37,7 +37,7 @@
                     </constraints>
                     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                    <state key="normal" title="Button" image="forward">
+                    <state key="normal">
                         <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </state>
                     <connections>
@@ -52,7 +52,7 @@
                     </constraints>
                     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                    <state key="normal" image="rewind">
+                    <state key="normal">
                         <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </state>
                     <connections>
@@ -82,7 +82,7 @@
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                    <state key="normal" title="" image="settings"/>
+                    <state key="normal"/>
                     <connections>
                         <action selector="showOptionsMenu:" destination="Pdx-qm-hxi" eventType="touchUpInside" id="ui5-FT-Sea"/>
                     </connections>
@@ -98,7 +98,7 @@
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                    <state key="normal" image="maximize"/>
+                    <state key="normal"/>
                     <connections>
                         <action selector="toggleFullScreen:" destination="Pdx-qm-hxi" eventType="touchUpInside" id="42m-nt-Uz0"/>
                     </connections>
@@ -191,17 +191,14 @@
                 <outlet property="loadingIndicator" destination="FGD-AH-xjx" id="ptq-06-nG2"/>
                 <outlet property="playPauseButton" destination="rWY-7h-2Dd" id="kUX-RG-TOG"/>
                 <outlet property="progressBar" destination="1u3-pU-CDM" id="JtU-xe-78i"/>
+                <outlet property="rewindButton" destination="HpI-yc-TvP" id="rewind-outlet"/>
                 <outlet property="rewindSeekNoticeLabel" destination="e7F-Lb-uzC" id="pk1-Z6-yA9"/>
+                <outlet property="settingsButton" destination="ad7-vR-GCz" id="settings-outlet"/>
                 <outlet property="videoDurationLabel" destination="hAe-VC-JKX" id="83w-zJ-upN"/>
             </connections>
             <point key="canvasLocation" x="305.39730134932535" y="360.80000000000001"/>
         </view>
     </objects>
     <resources>
-        <image name="forward" width="64" height="64"/>
-        <image name="maximize" width="512" height="512"/>
-        <image name="play" width="512" height="512"/>
-        <image name="rewind" width="64" height="64"/>
-        <image name="settings" width="256" height="256"/>
     </resources>
 </document>

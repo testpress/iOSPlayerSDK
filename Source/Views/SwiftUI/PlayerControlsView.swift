@@ -49,9 +49,23 @@ struct PlayerControlsView: View {
     }
     
     func fullscreenButton() -> some View{
+        let imageName = isFullscreen ? "minimize": "maximize"
         return Button(action: {isFullscreen.toggle()}) {
-            Image(isFullscreen ? "minimize": "maximize", bundle: bundle)
+            Image(imageName, bundle: bundle)
                 .resizable()
+                .onAppear {
+                    #if DEBUG
+                    let img = UIImage(named: imageName, in: bundle, compatibleWith: nil)
+                    if let _ = img {
+                        let path = bundle.path(forResource: imageName, ofType: nil) ?? "\(bundle.bundlePath)/Assets.car/\(imageName)"
+                        print("[TPStreamsSDK] 🖼️ Loaded: '\(imageName)' (SwiftUI)")
+                        print("[TPStreamsSDK] 📍 Path: \(path)")
+                    } else {
+                        print("[TPStreamsSDK] ❌ Failed: '\(imageName)' (SwiftUI)")
+                        print("[TPStreamsSDK] 🔍 Searched In: \(bundle.bundlePath)")
+                    }
+                    #endif
+                }
                 .frame(width: 16, height: 16)
         }
     }
