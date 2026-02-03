@@ -12,6 +12,7 @@ import RealmSwift
 
 #if SPM
 let bundle = Bundle.module
+let resourceBundle = Bundle.module
 #elseif CocoaPods
 let appBundle = Bundle(for: TPStreamsSDK.self)
 let bundle: Bundle = {
@@ -22,10 +23,21 @@ let bundle: Bundle = {
     if Bundle.main.path(forResource: "PlayerControls", ofType: "nib") != nil {
         return Bundle.main
     }
-    return appBundle
+
+    fatalError("TPStreamsSDK: Could not locate UI resources. Please ensure the SDK is integrated correctly.")
 }()
+
+let resourceBundle: Bundle = {
+    if let url = appBundle.url(forResource: "TPStreamsSDKResources", withExtension: "bundle"),
+       let resolvedResourceBundle = Bundle(url: url) {
+        return resolvedResourceBundle
+    }
+    return bundle
+}()
+
 #else
 let bundle = Bundle(identifier: "com.tpstreams.iOSPlayerSDK")! // Access bundle using identifier when directly including the framework
+let resourceBundle = bundle
 #endif
 
 
@@ -35,7 +47,6 @@ public class TPStreamsSDK {
     internal static var authToken: String?
     
     public static func initialize(for provider: Provider = .tpstreams, withOrgCode orgCode: String, usingAuthToken authToken: String? = nil) {
-
         self.orgCode = orgCode
         self.provider = provider
         self.authToken = authToken
