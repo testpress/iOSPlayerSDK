@@ -193,6 +193,8 @@
                 <outlet property="progressBar" destination="1u3-pU-CDM" id="JtU-xe-78i"/>
                 <outlet property="rewindSeekNoticeLabel" destination="e7F-Lb-uzC" id="pk1-Z6-yA9"/>
                 <outlet property="videoDurationLabel" destination="hAe-VC-JKX" id="83w-zJ-upN"/>
+                <outlet property="rewindButton" destination="HpI-yc-TvP" id="RWd-btn-001"/>
+                <outlet property="settingsButton" destination="ad7-vR-GCz" id="Set-btn-001"/>
             </connections>
             <point key="canvasLocation" x="305.39730134932535" y="360.80000000000001"/>
         </view>

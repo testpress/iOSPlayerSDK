@@ -48,11 +48,14 @@ struct PlayerControlsView: View {
         }
     }
     
+    @ViewBuilder
     func fullscreenButton() -> some View{
-        return Button(action: {isFullscreen.toggle()}) {
-            Image(isFullscreen ? "minimize": "maximize", bundle: bundle)
-                .resizable()
-                .frame(width: 16, height: 16)
+        if playerViewConfig.enableFullscreen {
+            Button(action: {isFullscreen.toggle()}) {
+                Image(isFullscreen ? "minimize": "maximize", bundle: bundle)
+                    .resizable()
+                    .frame(width: 16, height: 16)
+            }
         }
     }
 }

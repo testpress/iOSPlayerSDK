@@ -15,16 +15,18 @@ struct PlayerSettingsButton: View {
     var body: some View {
         HStack {
             Spacer()
-            Button(action: {
-                showOptions = true
-                currentMenu = .main
-            }) {
-                Image("settings", bundle: bundle)
-                    .resizable()
-                    .frame(width: 16, height: 16)
+            if playerConfig.showSettingsButton {
+                Button(action: {
+                    showOptions = true
+                    currentMenu = .main
+                }) {
+                    Image("settings", bundle: bundle)
+                        .resizable()
+                        .frame(width: 16, height: 16)
+                }
+                .padding([.trailing, .top], 12)
+                .actionSheet(isPresented: $showOptions, content: settingsActionSheet)
             }
-            .padding([.trailing, .top], 12)
-            .actionSheet(isPresented: $showOptions, content: settingsActionSheet)
         }
     }
     
@@ -58,7 +60,11 @@ struct PlayerSettingsButton: View {
     }
     
     private func getMainActionSheetButtons() -> [ActionSheet.Button] {
-        var actionButtons: [ActionSheet.Button] = [playbackSpeedButton()]
+        var actionButtons: [ActionSheet.Button] = []
+        
+        if playerConfig.enablePlaybackSpeed {
+             actionButtons.append(playbackSpeedButton())
+        }
         
         if !player.player.isPlaybackOffline {
             addOnlinePlaybackButtons(to: &actionButtons)
@@ -70,7 +76,9 @@ struct PlayerSettingsButton: View {
     }
 
     private func addOnlinePlaybackButtons(to buttons: inout [ActionSheet.Button]) {
-        buttons.append(videoQualityButton())
+        if playerConfig.showResolutionOptions {
+            buttons.append(videoQualityButton())
+        }
         
         if playerConfig.showDownloadOption {
             buttons.append(downloadQualityButton())

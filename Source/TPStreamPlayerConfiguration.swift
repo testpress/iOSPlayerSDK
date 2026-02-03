@@ -17,6 +17,15 @@ public struct TPStreamPlayerConfiguration {
     public var downloadMetadata: [String: Any]? = nil
     public var licenseDurationSeconds: Double? = nil
     public var startInFullscreen: Bool = false
+    public var enableFullscreen: Bool = true
+    public var enablePlaybackSpeed: Bool = true
+    public var showResolutionOptions: Bool = true
+    public var enableSeekButtons: Bool = true
+    public var enableCaptions: Bool = false
+    
+    public var showSettingsButton: Bool {
+        return enablePlaybackSpeed || showResolutionOptions || showDownloadOption
+    }
 }
 
 
@@ -64,6 +73,31 @@ public class TPStreamPlayerConfigurationBuilder {
     
     public func setStartInFullscreen(_ startInFullscreen: Bool) -> Self {
         configuration.startInFullscreen = startInFullscreen
+        return self
+    }
+    
+    public func enableFullscreen(_ enable: Bool) -> Self {
+        configuration.enableFullscreen = enable
+        return self
+    }
+    
+    public func enablePlaybackSpeed(_ enable: Bool) -> Self {
+        configuration.enablePlaybackSpeed = enable
+        return self
+    }
+    
+    public func showResolutionOptions(_ show: Bool) -> Self {
+        configuration.showResolutionOptions = show
+        return self
+    }
+    
+    public func enableSeekButtons(_ enable: Bool) -> Self {
+        configuration.enableSeekButtons = enable
+        return self
+    }
+    
+    public func enableCaptions(_ enable: Bool) -> Self {
+        configuration.enableCaptions = enable
         return self
     }
     
