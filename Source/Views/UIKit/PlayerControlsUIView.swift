@@ -18,6 +18,8 @@ class PlayerControlsUIView: UIView {
     @IBOutlet weak var fullScreenToggleButton: UIButton!
     @IBOutlet weak var progressBar: ProgressBar!
     @IBOutlet weak var forwardButton: UIButton!
+    @IBOutlet weak var rewindButton: UIButton!
+    @IBOutlet weak var settingsButton: UIButton!
     @IBOutlet weak var rewindSeekNoticeLabel: UILabel!
     @IBOutlet weak var forwardSeekNoticeLabel: UILabel!
     
@@ -40,6 +42,10 @@ class PlayerControlsUIView: UIView {
         didSet {
             progressBar.watchedProgressTrackColor = playerConfig.watchedProgressTrackColor
             progressBar.progressBarThumbColor = playerConfig.progressBarThumbColor
+            fullScreenToggleButton.isHidden = !playerConfig.enableFullscreen
+            forwardButton.isHidden = !playerConfig.enableSeekButtons
+            rewindButton.isHidden = !playerConfig.enableSeekButtons
+            settingsButton.isHidden = !playerConfig.showSettingsButton
         }
     }
     
@@ -149,7 +155,11 @@ class PlayerControlsUIView: UIView {
     
     @IBAction func showOptionsMenu(_ sender: Any) {
         let optionsMenu = UIAlertController(title: nil, message: nil, preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
-        optionsMenu.addAction(UIAlertAction(title: "Playback Speed", style: .default) { _ in self.showPlaybackSpeedMenu()})
+        
+        if playerConfig.enablePlaybackSpeed {
+             optionsMenu.addAction(UIAlertAction(title: "Playback Speed", style: .default) { _ in self.showPlaybackSpeedMenu()})
+        }
+        
         if !player.player.isPlaybackOffline {
             addOnlinePlaybackButtons(to: optionsMenu)
         }
@@ -158,9 +168,11 @@ class PlayerControlsUIView: UIView {
     }
     
     private func addOnlinePlaybackButtons(to menu: UIAlertController) {
-        menu.addAction(UIAlertAction(title: "Video Quality", style: .default) { _ in
-            self.showVideoQualityMenu()
-        })
+        if playerConfig.showResolutionOptions {
+            menu.addAction(UIAlertAction(title: "Video Quality", style: .default) { _ in
+                self.showVideoQualityMenu()
+            })
+        }
         
         if playerConfig.showDownloadOption {
             menu.addAction(UIAlertAction(title: "Download", style: .default) { _ in

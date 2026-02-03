@@ -19,11 +19,13 @@ struct MediaControlsView: View {
     var body: some View {
         HStack() {
             Spacer()
-            Button(action: { player.rewind(playerViewConfig.preferredRewindDuration) }) {
-                Image("rewind", bundle: bundle)
-                    .resizable()
-                    .frame(width: 40, height: 40)
-                    .brightness(-0.1)
+            if playerViewConfig.enableSeekButtons {
+                Button(action: { player.rewind(playerViewConfig.preferredRewindDuration) }) {
+                    Image("rewind", bundle: bundle)
+                        .resizable()
+                        .frame(width: 40, height: 40)
+                        .brightness(-0.1)
+                }
             }
             Spacer()
             if player.observedStatus == "buffering" {
@@ -39,11 +41,13 @@ struct MediaControlsView: View {
                 }
             }
             Spacer()
-            Button(action: {player.forward(playerViewConfig.preferredForwardDuration)}) {
-                Image("forward", bundle: bundle)
-                    .resizable()
-                    .frame(width: 40, height: 40)
-                    .brightness(-0.1)
+            if playerViewConfig.enableSeekButtons {
+                Button(action: {player.forward(playerViewConfig.preferredForwardDuration)}) {
+                    Image("forward", bundle: bundle)
+                        .resizable()
+                        .frame(width: 40, height: 40)
+                        .brightness(-0.1)
+                }
             }
             Spacer()
         }
