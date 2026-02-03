@@ -14,7 +14,16 @@ import RealmSwift
 let bundle = Bundle.module
 #elseif CocoaPods
 let appBundle = Bundle(for: TPStreamsSDK.self)
-let bundle = Bundle(url: appBundle.url(forResource: "TPStreamsSDK", withExtension: "bundle")!)!
+let bundle: Bundle = {
+    if appBundle.path(forResource: "PlayerControls", ofType: "nib") != nil {
+        return appBundle
+    }
+
+    if Bundle.main.path(forResource: "PlayerControls", ofType: "nib") != nil {
+        return Bundle.main
+    }
+    return appBundle
+}()
 #else
 let bundle = Bundle(identifier: "com.tpstreams.iOSPlayerSDK")! // Access bundle using identifier when directly including the framework
 #endif
@@ -26,6 +35,7 @@ public class TPStreamsSDK {
     internal static var authToken: String?
     
     public static func initialize(for provider: Provider = .tpstreams, withOrgCode orgCode: String, usingAuthToken authToken: String? = nil) {
+
         self.orgCode = orgCode
         self.provider = provider
         self.authToken = authToken

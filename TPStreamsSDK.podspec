@@ -24,7 +24,8 @@ Pod::Spec.new do |spec|
 }
 
   spec.resources = [
-    'Source/**/*.{xcassets,xib,storyboard}'
+    'Source/**/*.{xcassets}',
+    'Source/**/*.{xib,storyboard}'
   ]
   spec.resource_bundles = {
     'TPStreamsSDKResources' => [
