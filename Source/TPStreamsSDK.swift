@@ -11,12 +11,28 @@ import Sentry
 import RealmSwift
 
 #if SPM
-let bundle = Bundle.module
+    let bundle = Bundle.module
+    let tpResourceBundle = Bundle.module
 #elseif CocoaPods
-let appBundle = Bundle(for: TPStreamsSDK.self)
-let bundle = Bundle(url: appBundle.url(forResource: "TPStreamsSDK", withExtension: "bundle")!)!
+    let appBundle = Bundle(for: TPStreamsSDK.self)
+    let bundle: Bundle = {
+        let candidates = [appBundle, Bundle.main]
+        guard let foundBundle = candidates.first(where: { $0.path(forResource: "PlayerControls", ofType: "nib") != nil }) else {
+            fatalError("TPStreamsSDK: Could not locate UI resources. Please ensure the SDK is integrated correctly.")
+        }
+        return foundBundle
+    }()
+
+    let tpResourceBundle: Bundle = {
+        if let url = appBundle.url(forResource: "TPStreamsSDKResources", withExtension: "bundle"),
+           let resolvedResourceBundle = Bundle(url: url) {
+            return resolvedResourceBundle
+        }
+        return bundle
+    }()
 #else
-let bundle = Bundle(identifier: "com.tpstreams.iOSPlayerSDK")! // Access bundle using identifier when directly including the framework
+    let bundle = Bundle(identifier: "com.tpstreams.iOSPlayerSDK")! // Access bundle using identifier when directly including the framework
+    let tpResourceBundle = bundle
 #endif
 
 
