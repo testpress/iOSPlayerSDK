@@ -22,7 +22,14 @@ Pod::Spec.new do |spec|
     'OTHER_SWIFT_FLAGS[config=Debug]' => '-DCocoaPods',
     'OTHER_SWIFT_FLAGS[config=Release]' => '-DCocoaPods'
 }
+
+  spec.resources = [
+    'Source/**/*.{xcassets,xib,storyboard}'
+  ]
   spec.resource_bundles = {
-    'TPStreamsSDK' => ['Source/**/*.{xib,storyboard,xcassets,json,png}', 'PrivacyInfo.xcprivacy'],
- }
+    'TPStreamsSDKResources' => [
+      'Source/**/*.{json,png}',
+      'PrivacyInfo.xcprivacy'
+    ]
+  }
 end
