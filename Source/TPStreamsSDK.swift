@@ -58,7 +58,7 @@ public class TPStreamsSDK {
         }
     }
     
-    internal static var isTestpressAuthTokenPresent: Bool {
+    internal static var hasTestpressAuthToken: Bool {
         return provider == .testpress && (authToken?.isEmpty == false)
     }
     
