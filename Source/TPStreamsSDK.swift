@@ -58,6 +58,10 @@ public class TPStreamsSDK {
         }
     }
     
+    internal static var hasTestpressAuthToken: Bool {
+        return provider == .testpress && (authToken?.isEmpty == false)
+    }
+    
     private static func activateAudioSession() {
         let audioSession = AVAudioSession.sharedInstance()
         do {
