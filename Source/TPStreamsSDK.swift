@@ -58,8 +58,8 @@ public class TPStreamsSDK {
         }
     }
     
-    internal static var isTestpressAuthTokenMissing: Bool {
-        return provider == .testpress && (authToken?.isEmpty ?? true)
+    internal static var isTestpressAuthTokenPresent: Bool {
+        return provider == .testpress && (authToken?.isEmpty == false)
     }
     
     private static func activateAudioSession() {
