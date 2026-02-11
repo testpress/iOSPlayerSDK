@@ -51,20 +51,13 @@ extension ContentKeyDelegate {
             }
         }
         
-        if shouldRequestOfflineToken {
+        if forOfflinePlayback && accessToken == nil && TPStreamsSDK.isTestpressAndTokenMissing {
             requestOfflineLicenseCredentials {
                 requestSPCMessage()
             }
         } else {
             requestSPCMessage()
         }
-    }
-    
-    private var shouldRequestOfflineToken: Bool {
-        return forOfflinePlayback &&
-               accessToken == nil &&
-               (TPStreamsSDK.authToken?.isEmpty ?? true) &&
-               TPStreamsSDK.provider == .testpress
     }
     
     func retrieveAndStoreContentKey(_ session: AVContentKeySession, _ spcData: Data?, _ error: Error?, _ keyRequest: AVPersistableContentKeyRequest) {
