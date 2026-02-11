@@ -51,7 +51,7 @@ extension ContentKeyDelegate {
             }
         }
         
-        if forOfflinePlayback && accessToken == nil && TPStreamsSDK.isTestpressAndTokenMissing {
+        if forOfflinePlayback && accessToken == nil && TPStreamsSDK.isTestpressAuthTokenMissing {
             requestOfflineLicenseCredentials {
                 requestSPCMessage()
             }
