@@ -51,7 +51,7 @@ extension ContentKeyDelegate {
             }
         }
         
-        if shouldRequestOfflineTokenDelegate {
+        if shouldRequestOfflineToken {
             requestOfflineLicenseCredentials {
                 requestSPCMessage()
             }
@@ -60,7 +60,7 @@ extension ContentKeyDelegate {
         }
     }
     
-    private var shouldRequestOfflineTokenDelegate: Bool {
+    private var shouldRequestOfflineToken: Bool {
         return forOfflinePlayback &&
                accessToken == nil &&
                (TPStreamsSDK.authToken?.isEmpty ?? true) &&
