@@ -51,7 +51,11 @@ public class TPStreamPlayerViewController: UIViewController {
         guard let view = bundle.loadNibNamed("PlayerControls", owner: nil, options: nil)?.first as? PlayerControlsUIView else {
             fatalError("Could not load PlayerControls view from nib.")
         }
-        view.player = TPStreamPlayer(player: self.player!)
+        let tpStreamPlayer = TPStreamPlayer(player: self.player!)
+        tpStreamPlayer.onReplay = { [weak self] in
+            self?.delegate?.onReplay()
+        }
+        view.player = tpStreamPlayer
         view.playerConfig = config
         view.frame = view.bounds
         view.isHidden = true
@@ -242,4 +246,9 @@ public protocol TPStreamPlayerViewControllerDelegate {
     func didEnterFullScreenMode()
     func willExitFullScreenMode()
     func didExitFullScreenMode()
+    func onReplay()
+}
+
+public extension TPStreamPlayerViewControllerDelegate {
+    func onReplay() {}
 }

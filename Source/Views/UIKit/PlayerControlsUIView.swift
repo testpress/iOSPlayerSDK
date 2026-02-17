@@ -120,8 +120,7 @@ class PlayerControlsUIView: UIView {
         if player.status == "paused" {
             player.play()
         } else if player.status == "ended" {
-            player.goTo(seconds: 0.0)
-            player.play()
+            player.replay()
         } else {
             player.pause()
         }

@@ -10,6 +10,7 @@ class TPStreamPlayer: NSObject {
     private static let rateComparisonTolerance: Float = 0.01
     
     var player: TPAVPlayer!
+    var onReplay: (() -> Void)?
     var isLive: Bool {
         guard let liveStream = player.asset?.liveStream else {
             return false
@@ -205,6 +206,11 @@ class TPStreamPlayer: NSObject {
         player.pause()
     }
     
+    func replay() {
+        goTo(seconds: 0.0)
+        play()
+        onReplay?()
+    }
     func forward(_ seconds: Float64 = 10.0) {
         var seekTo = self.player.currentTimeInSeconds + seconds
         if seekTo > playableDuration {
