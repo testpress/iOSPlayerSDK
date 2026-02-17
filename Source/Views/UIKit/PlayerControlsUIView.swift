@@ -51,6 +51,7 @@ class PlayerControlsUIView: UIView {
     
     var parentViewController: UIViewController?
     var fullScreenToggleDelegate: FullScreenToggleDelegate?
+    var controlsDelegate: PlayerControlsDelegate?
     var isFullScreen: Bool = false {
         didSet {
             updateFullScreenButtonIcon()
@@ -120,8 +121,7 @@ class PlayerControlsUIView: UIView {
         if player.status == "paused" {
             player.play()
         } else if player.status == "ended" {
-            player.goTo(seconds: 0.0)
-            player.play()
+            controlsDelegate?.didTapReplay()
         } else {
             player.pause()
         }
@@ -287,6 +287,10 @@ class PlayerControlsUIView: UIView {
             fullScreenToggleButton.setImage(UIImage(named: "maximize", in: bundle, compatibleWith: nil), for: .normal)
         }
     }
+}
+
+protocol PlayerControlsDelegate {
+    func didTapReplay()
 }
 
 protocol FullScreenToggleDelegate {

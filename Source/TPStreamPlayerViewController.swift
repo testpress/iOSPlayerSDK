@@ -56,6 +56,7 @@ public class TPStreamPlayerViewController: UIViewController {
         view.frame = view.bounds
         view.isHidden = true
         view.fullScreenToggleDelegate = self
+        view.controlsDelegate = self
         view.parentViewController = self
         return view
     }()
@@ -196,7 +197,7 @@ public class TPStreamPlayerViewController: UIViewController {
 }
 
 
-extension TPStreamPlayerViewController: FullScreenToggleDelegate {
+extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControlsDelegate {
     func enterFullScreen() {
         delegate?.willEnterFullScreenMode()
         changeOrientation(orientation: .landscape)
@@ -235,6 +236,11 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate {
             UIDevice.current.setValue(orientation.toUIInterfaceOrientation.rawValue, forKey: "orientation")
         }
     }
+
+    func didTapReplay() {
+        controlsView.player?.replay()
+        delegate?.didTapReplay()
+    }
 }
 
 public protocol TPStreamPlayerViewControllerDelegate {
@@ -242,4 +248,9 @@ public protocol TPStreamPlayerViewControllerDelegate {
     func didEnterFullScreenMode()
     func willExitFullScreenMode()
     func didExitFullScreenMode()
+    func didTapReplay()
+}
+
+public extension TPStreamPlayerViewControllerDelegate {
+    func didTapReplay() {}
 }
