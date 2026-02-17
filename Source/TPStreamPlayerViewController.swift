@@ -51,15 +51,12 @@ public class TPStreamPlayerViewController: UIViewController {
         guard let view = bundle.loadNibNamed("PlayerControls", owner: nil, options: nil)?.first as? PlayerControlsUIView else {
             fatalError("Could not load PlayerControls view from nib.")
         }
-        let tpStreamPlayer = TPStreamPlayer(player: self.player!)
-        tpStreamPlayer.onReplay = { [weak self] in
-            self?.delegate?.onReplay()
-        }
-        view.player = tpStreamPlayer
+        view.player = TPStreamPlayer(player: self.player!)
         view.playerConfig = config
         view.frame = view.bounds
         view.isHidden = true
         view.fullScreenToggleDelegate = self
+        view.controlsDelegate = self
         view.parentViewController = self
         return view
     }()
@@ -200,7 +197,12 @@ public class TPStreamPlayerViewController: UIViewController {
 }
 
 
-extension TPStreamPlayerViewController: FullScreenToggleDelegate {
+extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControlsDelegate {
+    func didTapReplay() {
+        controlsView.player?.replay()
+        delegate?.onReplay()
+    }
+
     func enterFullScreen() {
         delegate?.willEnterFullScreenMode()
         changeOrientation(orientation: .landscape)
