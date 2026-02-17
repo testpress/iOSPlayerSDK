@@ -87,8 +87,8 @@ extension PlayerViewController: TPStreamPlayerViewControllerDelegate {
         print("didExitFullScreenMode")
     }
     
-    func onReplay() {
-        print("onReplay")
+    func didTapReplay() {
+        print("didTapReplay")
     }
 }
 

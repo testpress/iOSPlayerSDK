@@ -239,7 +239,7 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
 
     func didTapReplay() {
         controlsView.player?.replay()
-        delegate?.onReplay()
+        delegate?.didTapReplay()
     }
 }
 
@@ -248,9 +248,9 @@ public protocol TPStreamPlayerViewControllerDelegate {
     func didEnterFullScreenMode()
     func willExitFullScreenMode()
     func didExitFullScreenMode()
-    func onReplay()
+    func didTapReplay()
 }
 
 public extension TPStreamPlayerViewControllerDelegate {
-    func onReplay() {}
+    func didTapReplay() {}
 }
