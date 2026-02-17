@@ -198,11 +198,6 @@ public class TPStreamPlayerViewController: UIViewController {
 
 
 extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControlsDelegate {
-    func didTapReplay() {
-        controlsView.player?.replay()
-        delegate?.onReplay()
-    }
-
     func enterFullScreen() {
         delegate?.willEnterFullScreenMode()
         changeOrientation(orientation: .landscape)
@@ -240,6 +235,11 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
         } else {
             UIDevice.current.setValue(orientation.toUIInterfaceOrientation.rawValue, forKey: "orientation")
         }
+    }
+
+    func didTapReplay() {
+        controlsView.player?.replay()
+        delegate?.onReplay()
     }
 }
 
