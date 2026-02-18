@@ -197,9 +197,9 @@ class TPStreamPlayer: NSObject {
     func play(){
         // When resuming playback, AVPlayer resets the rate to 1.0. We need to capture the current speed 
         // before calling play() and restore it after.
-        let previousPlaybackSpeed = currentPlaybackSpeed
+        let intendedPlaybackSpeed = currentPlaybackSpeed
         player.play()
-        player.rate = previousPlaybackSpeed.rawValue
+        player.rate = intendedPlaybackSpeed.rawValue
     }
     
     func pause(){
