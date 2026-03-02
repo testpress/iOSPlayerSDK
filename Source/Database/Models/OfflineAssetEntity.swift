@@ -10,6 +10,7 @@ import RealmSwift
 
 class LocalOfflineAsset: Object {
     @Persisted(primaryKey: true) var assetId: String = ""
+    @Persisted var videoId: String? = nil
     @Persisted var createdAt = Date()
     @Persisted var srcURL: String = ""
     @Persisted var title: String = ""
@@ -24,6 +25,7 @@ class LocalOfflineAsset: Object {
     @Persisted var size: Double = 0.0
     @Persisted var folderTree: String = ""
     @Persisted var drmContentId: String? = nil
+    @Persisted var contentProtectionType: ContentProtectionType? = nil
     @Persisted var metadataMap = Map<String, AnyRealmValue>()
     @Persisted var licenseExpiryDate: Date? = nil
     
@@ -47,6 +49,7 @@ extension LocalOfflineAsset {
     
     static func create(
         assetId: String,
+        videoId: String? = nil,
         srcURL: String,
         title: String,
         resolution: String,
@@ -55,10 +58,12 @@ extension LocalOfflineAsset {
         thumbnailURL: String? = nil,
         folderTree: String,
         drmContentId: String? = nil,
+        contentProtectionType: ContentProtectionType? = nil,
         metadata: [String: Any]? = nil
     ) -> LocalOfflineAsset {
         let localOfflineAsset = LocalOfflineAsset()
         localOfflineAsset.assetId = assetId
+        localOfflineAsset.videoId = videoId
         localOfflineAsset.srcURL = srcURL
         localOfflineAsset.title = title
         localOfflineAsset.resolution = resolution
@@ -68,6 +73,7 @@ extension LocalOfflineAsset {
         localOfflineAsset.thumbnailURL = thumbnailURL
         localOfflineAsset.folderTree = folderTree
         localOfflineAsset.drmContentId = drmContentId
+        localOfflineAsset.contentProtectionType = contentProtectionType
         localOfflineAsset.metadata = metadata
         return localOfflineAsset
     }
@@ -86,24 +92,27 @@ extension LocalOfflineAsset {
             size: self.size,
             thumbnailURL: self.thumbnailURL,
             folderTree: self.folderTree,
-            metadata: self.metadata
+            metadata: self.metadata,
+            contentProtectionType: self.contentProtectionType
         )
     }
     
-    func asAsset() -> Asset {
+    func asAsset() -> Asset? {
         guard let downloadedFileURL = downloadedFileURL else {
-            fatalError("downloadedFileURL is nil")
+            return nil
         }
 
         let isDrmEncrypted = drmContentId != nil && !drmContentId!.isEmpty
         let playbackURLString = downloadedFileURL.absoluteString
 
         let video = Video(
+            id: self.videoId,
             playbackURL: playbackURLString,
             status: self.status,
             drmEncrypted: isDrmEncrypted,
             duration: self.duration,
-            thumbnailURL: self.thumbnailURL
+            thumbnailURL: self.thumbnailURL,
+            contentProtectionType: isDrmEncrypted ? .drm : self.contentProtectionType
         )
 
         let asset: Asset = Asset(
@@ -120,10 +129,16 @@ extension LocalOfflineAsset {
     }
 
     var downloadedFileURL: URL? {
-        if !self.downloadedPath.isEmpty{
-            let baseURL = URL(fileURLWithPath: NSHomeDirectory())
-            return baseURL.appendingPathComponent(self.downloadedPath)
+        guard !self.downloadedPath.isEmpty else { return nil }
+        
+        let baseURL = URL(fileURLWithPath: NSHomeDirectory())
+        let directoryURL = baseURL.appendingPathComponent(self.downloadedPath)
+        
+        var isDir: ObjCBool = false
+        if FileManager.default.fileExists(atPath: directoryURL.path, isDirectory: &isDir), isDir.boolValue {
+            return directoryURL
         }
+        
         return nil
     }
 

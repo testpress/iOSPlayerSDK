@@ -19,6 +19,7 @@ public final class TPStreamsDownloadManager {
     private var contentKeySession: AVContentKeySession!
     private var contentKeyDelegate: ContentKeyDelegate!
     private let contentKeyDelegateQueue = DispatchQueue(label: "com.tpstreams.iOSPlayerSDK.ContentKeyDelegateQueueOffline")
+    private let encryptionKeyRepository = EncryptionKeyRepository.shared
 
     private init() {
         let backgroundConfiguration = URLSessionConfiguration.background(withIdentifier: "com.tpstreams.downloadSession")
@@ -192,14 +193,20 @@ public final class TPStreamsDownloadManager {
         #if targetEnvironment(simulator)
             if (asset.video?.drmEncrypted == true){
                 print("Downloading DRM content is not supported in simulator")
-                throw NSError(domain: "TPStreamsSDK", code: -1, userInfo: [NSLocalizedDescriptionKey: "DRM content downloading is not supported in simulator"])
+                throw TPStreamPlayerError.unknownError.asNSError
             }
         #else
-            contentKeyDelegate.setAssetDetails(asset.id, accessToken, true, offlineLicenseDurationSeconds)
+            if asset.video?.drmEncrypted == true {
+                contentKeyDelegate.setAssetDetails(asset.id, accessToken, true, offlineLicenseDurationSeconds)
+            }
         #endif
 
         if LocalOfflineAsset.manager.exists(id: asset.id) {
             return
+        }
+        
+        if let video = asset.video, video.isAESEncrypted {
+            AESKeyManager.prefetchEncryptionKey(for: video, accessToken: accessToken, assetId: asset.id)
         }
         
         let avUrlAsset = AVURLAsset(url: URL(string: asset.video!.playbackURL)!)
@@ -219,6 +226,7 @@ public final class TPStreamsDownloadManager {
 
         let localOfflineAsset = LocalOfflineAsset.create(
             assetId: asset.id,
+            videoId: asset.video?.id,
             srcURL: asset.video!.playbackURL,
             title: asset.title,
             resolution:videoQuality.resolution,
@@ -227,6 +235,7 @@ public final class TPStreamsDownloadManager {
             thumbnailURL: asset.video!.thumbnailURL ?? "",
             folderTree: asset.folderTree ?? "",
             drmContentId: asset.drmContentId,
+            contentProtectionType: asset.video?.contentProtectionType,
             metadata: metadata
         )
         LocalOfflineAsset.manager.add(object: localOfflineAsset)
@@ -254,6 +263,10 @@ public final class TPStreamsDownloadManager {
                         DispatchQueue.main.async {
                             self.cancelDownload(asset.id)
                         }
+                    }
+                }
+            }
+        }
                     }
                 }
             }
@@ -314,6 +327,7 @@ public final class TPStreamsDownloadManager {
         }
         
         guard let fileURL = localOfflineAsset.downloadedFileURL else {
+            deleteEncryptionKeys(for: localOfflineAsset)
             LocalOfflineAsset.manager.delete(id: assetId)
             if hasActiveTask == nil {
                 tpStreamsDownloadDelegate?.onCanceled(assetId: assetId)
@@ -368,6 +382,8 @@ public final class TPStreamsDownloadManager {
                         self.contentKeyDelegate.cleanupPersistentContentKey()
                     }
                     
+                    self.deleteEncryptionKeys(for: localOfflineAsset)
+                    
                     completion(true, nil)
                 }
             } catch {
@@ -376,6 +392,13 @@ public final class TPStreamsDownloadManager {
                 }
             }
         }
+    }
+
+    internal func deleteEncryptionKeys(for localOfflineAsset: LocalOfflineAsset) {
+        if let videoId = localOfflineAsset.videoId {
+            encryptionKeyRepository.delete(for: videoId)
+        }
+        encryptionKeyRepository.delete(for: localOfflineAsset.assetId)
     }
     
     public func getAllOfflineAssets() -> [OfflineAsset] {
@@ -424,6 +447,38 @@ public final class TPStreamsDownloadManager {
             }
         }
     }
+
+    internal func hardenOfflineManifests(for localOfflineAsset: LocalOfflineAsset) {
+        if localOfflineAsset.contentProtectionType == .drm || localOfflineAsset.drmContentId != nil {
+            return
+        }
+        let identifier: String = {
+            if TPStreamsSDK.provider == .testpress {
+                return localOfflineAsset.videoId ?? localOfflineAsset.assetId
+            } else {
+                return localOfflineAsset.assetId
+            }
+        }()
+        
+        guard let url = localOfflineAsset.downloadedFileURL else { return }
+        
+        let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles])
+        while let fileURL = enumerator?.nextObject() as? URL {
+            if fileURL.pathExtension.lowercased() == "m3u8",
+               var content = try? String(contentsOf: fileURL, encoding: .utf8),
+               content.contains("#EXT-X-KEY") {
+                let pattern = "(#EXT-X-KEY:.*URI=\")([^\"]+)(\")"
+                let regex = try? NSRegularExpression(pattern: pattern)
+                let range = NSRange(content.startIndex..., in: content)
+                let replacement = "$1tpkey://\(identifier)$3"
+                
+                let newContent = regex?.stringByReplacingMatches(in: content, options: [], range: range, withTemplate: replacement)
+                if let newContent = newContent, newContent != content {
+                    try? newContent.write(to: fileURL, atomically: true, encoding: .utf8)
+                }
+            }
+        }
+    }
 }
 
 internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
@@ -469,14 +524,22 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
                 return .failed
             }
         }()
+        
+        if status == .failed || status == .deleted {
+            TPStreamsDownloadManager.shared.deleteEncryptionKeys(for: localOfflineAsset)
+        }
+        
         let updateValues: [String: Any] = ["status": status.rawValue, "downloadedAt": Date()]
         LocalOfflineAsset.manager.update(object: localOfflineAsset, with: updateValues)
-        if status == Status.deleted {
+        if status == .deleted {
             tpStreamsDownloadDelegate?.onCanceled(assetId: localOfflineAsset.assetId)
         } else if status == Status.failed {
             tpStreamsDownloadDelegate?.onFailed(offlineAsset: localOfflineAsset.asOfflineAsset(), error: error)
             tpStreamsDownloadDelegate?.onStateChange(status: status, offlineAsset: localOfflineAsset.asOfflineAsset())
         } else {
+            if status == .finished {
+                TPStreamsDownloadManager.shared.hardenOfflineManifests(for: localOfflineAsset)
+            }
             tpStreamsDownloadDelegate?.onComplete(offlineAsset: localOfflineAsset.asOfflineAsset())
             tpStreamsDownloadDelegate?.onStateChange(status: status, offlineAsset: localOfflineAsset.asOfflineAsset())
         }

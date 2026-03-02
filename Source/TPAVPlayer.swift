@@ -48,7 +48,10 @@ public class TPAVPlayer: AVPlayer {
         self.accessToken = accessToken
         self.assetID = assetID
         self.setupCompletion = completion
-        self.resourceLoaderDelegate = ResourceLoaderDelegate(accessToken: accessToken)
+        self.resourceLoaderDelegate = ResourceLoaderDelegate(
+            accessToken: accessToken,
+            assetId: assetID
+        )
         
         super.init()
         fetchAsset()
@@ -57,12 +60,29 @@ public class TPAVPlayer: AVPlayer {
     
     public init(offlineAssetId: String, completion: SetupCompletion? = nil) {
         self.setupCompletion = completion
+        self.assetID = offlineAssetId
         super.init()
-        isPlaybackOffline = true
-        guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: offlineAssetId) else { return }
-        if (localOfflineAsset.status == "finished") {
-            self.asset = localOfflineAsset.asAsset()
-            self.assetID = offlineAssetId
+        
+        guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: offlineAssetId) else {
+            self.processInitializationFailure(TPStreamPlayerError.resourceNotFound)
+            return
+        }
+
+        self.isPlaybackOffline = true
+        self.resourceLoaderDelegate = ResourceLoaderDelegate(
+            accessToken: nil,
+            assetId: offlineAssetId,
+            isPlaybackOffline: true,
+            offlineAssetId: offlineAssetId,
+            localOfflineAsset: localOfflineAsset
+        )
+        if localOfflineAsset.status == "finished" {
+            guard let asset = localOfflineAsset.asAsset() else {
+                self.processInitializationFailure(TPStreamPlayerError.resourceNotFound)
+                return
+            }
+            self.asset = asset
+            self.resourceLoaderDelegate?.asset = asset
             self.initializePlayer()
             self.setupCompletion?(nil)
             self.initializationStatus = "ready"
@@ -109,6 +129,7 @@ public class TPAVPlayer: AVPlayer {
     
     private func initializePlayerWithFetchedAsset(_ asset: Asset) {
         self.asset = asset
+        self.resourceLoaderDelegate?.asset = asset
         initializePlayer()
         setupCompletion?(nil)
         initializationStatus = "ready"
@@ -121,6 +142,7 @@ public class TPAVPlayer: AVPlayer {
         }
         
         let avURLAsset = AVURLAsset(url: url)
+        
         avURLAsset.resourceLoader.setDelegate(resourceLoaderDelegate, queue: DispatchQueue.main)
         self.setPlayerItem(avURLAsset)
         
@@ -129,7 +151,7 @@ public class TPAVPlayer: AVPlayer {
         }
         self.populateAvailableVideoQualities(url)
     }
-    
+
     private func isNetworkUnavailableError(_ error: Error) -> Bool {
         return (error as? TPStreamPlayerError) == .noInternetConnection
     }

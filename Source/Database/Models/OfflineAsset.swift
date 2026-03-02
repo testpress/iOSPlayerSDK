@@ -22,6 +22,7 @@ public struct OfflineAsset: Hashable {
     public var thumbnailURL: String? = nil
     public var folderTree: String = ""
     public var metadata: [String: Any]? = nil
+    public var contentProtectionType: ContentProtectionType? = nil
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(assetId)
