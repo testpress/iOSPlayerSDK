@@ -464,18 +464,23 @@ public final class TPStreamsDownloadManager {
         
         let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles])
         while let fileURL = enumerator?.nextObject() as? URL {
-            if fileURL.pathExtension.lowercased() == "m3u8",
-               var content = try? String(contentsOf: fileURL, encoding: .utf8),
-               content.contains("#EXT-X-KEY") {
-                let pattern = "(#EXT-X-KEY:.*URI=\")([^\"]+)(\")"
-                let regex = try? NSRegularExpression(pattern: pattern)
+            guard fileURL.pathExtension.lowercased() == "m3u8" else { continue }
+            
+            do {
+                let content = try String(contentsOf: fileURL, encoding: .utf8)
+                guard content.contains("#EXT-X-KEY") else { continue }
+                
+                let pattern = "(#EXT-X-KEY:[^\\n]*?URI=\")([^\"]+)(\")"
+                let regex = try NSRegularExpression(pattern: pattern)
                 let range = NSRange(content.startIndex..., in: content)
                 let replacement = "$1tpkey://\(identifier)$3"
                 
-                let newContent = regex?.stringByReplacingMatches(in: content, options: [], range: range, withTemplate: replacement)
-                if let newContent = newContent, newContent != content {
-                    try? newContent.write(to: fileURL, atomically: true, encoding: .utf8)
+                let newContent = regex.stringByReplacingMatches(in: content, options: [], range: range, withTemplate: replacement)
+                if newContent != content {
+                    try newContent.write(to: fileURL, atomically: true, encoding: .utf8)
                 }
+            } catch {
+                debugPrint("Failed to harden manifest at \(fileURL.path): \(error.localizedDescription)")
             }
         }
     }

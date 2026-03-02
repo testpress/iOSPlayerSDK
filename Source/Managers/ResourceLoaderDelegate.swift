@@ -71,13 +71,18 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
     private func handleOnlineKeyRequest(_ loadingRequest: AVAssetResourceLoadingRequest) {
         guard let url = loadingRequest.request.url else { return }
         
-        var comp = URLComponents(url: url, resolvingAgainstBaseURL: true)
-        if TPStreamsSDK.provider == .testpress, let org = TPStreamsSDK.orgCode { comp?.host = "\(org).testpress.in" }
-        let token = (comp?.queryItems ?? []) + [URLQueryItem(name: "access_token", value: accessToken)]
-        comp?.queryItems = token
+        var requestURL = url
+        if TPStreamsSDK.provider == .testpress, let org = TPStreamsSDK.orgCode, var components = URLComponents(url: url, resolvingAgainstBaseURL: true) {
+            components.host = "\(org).testpress.in"
+            requestURL = components.url ?? url
+        }
         
-        AESKeyManager.fetchEncryptionKey(url: comp?.url ?? url, accessToken: accessToken) { [weak self] data in
-            if let data = data { self?.setEncryptionKeyResponse(for: loadingRequest, data: data) }
+        AESKeyManager.fetchEncryptionKey(url: requestURL, accessToken: accessToken) { [weak self] data in
+            if let data = data {
+                self?.setEncryptionKeyResponse(for: loadingRequest, data: data)
+            } else {
+                loadingRequest.finishLoading(with: TPStreamPlayerError.keyMissing.asNSError)
+            }
         }
     }
     

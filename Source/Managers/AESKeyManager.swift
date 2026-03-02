@@ -65,11 +65,12 @@ public class AESKeyManager {
 
     private static func handleMediaPlaylist(_ content: String, _ baseURL: URL, _ identifier: String, _ accessToken: String?) {
         let pattern = "#EXT-X-KEY:.*URI=\"([^\"]+)\""
-        guard let keyLineRange = content.range(of: pattern, options: .regularExpression),
-              let uriStartRange = content[keyLineRange].range(of: "URI=\"") else { return }
+        guard let regex = try? NSRegularExpression(pattern: pattern),
+              let match = regex.firstMatch(in: content, options: [], range: NSRange(content.startIndex..., in: content)),
+              let uriRange = Range(match.range(at: 1), in: content) else { return }
         
-        let uri = content[uriStartRange.upperBound...].split(separator: "\"").first.map(String.init)
-        guard let keyURL = uri.flatMap({ URL(string: $0, relativeTo: baseURL) }) else { return }
+        let uri = String(content[uriRange])
+        guard let keyURL = URL(string: uri, relativeTo: baseURL) else { return }
         
         fetchEncryptionKey(url: keyURL, accessToken: accessToken) { data in
             if let data = data { EncryptionKeyRepository.shared.save(encryptionKey: data, for: identifier) }
