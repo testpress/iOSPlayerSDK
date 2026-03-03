@@ -69,29 +69,8 @@ public final class TPStreamsDownloadManager {
         return false
     }
 
-    public func fetchDownloadQualities(
-        assetID: String,
-        accessToken: String? = nil,
-        completion: @escaping (Result<[VideoQuality], TPDownloadError>) -> Void
-    ) {
-        let token = accessToken ?? TPStreamsSDK.authToken
-
-        TPStreamsSDK.provider.API.getAsset(assetID, token) { asset, error in
-            if let error = error {
-                completion(.failure(.networkError(error)))
-                return
-            }
-
-            guard let asset = asset else {
-                completion(.failure(.assetNotFound))
-                return
-            }
-            
-            self.fetchManifestQualities(for: asset, completion: completion)
-        }
-    }
     
-    internal func fetchManifestQualities(
+    internal func fetchQualities(
         for asset: Asset,
         completion: @escaping (Result<[VideoQuality], TPDownloadError>) -> Void
     ) {
@@ -128,13 +107,13 @@ public final class TPStreamsDownloadManager {
                 return
             }
 
-            self.fetchManifestQualities(for: asset) { result in
+            self.fetchQualities(for: asset) { result in
                 switch result {
                 case .failure(let error):
                     completion?(.failure(error))
                 case .success(let qualities):
                     if let requestedResolution = resolution {
-                        self.resolveQualityAndSubmitDownload(forResolution: requestedResolution, asset: asset, from: qualities, token: token, completion: completion)
+                        self.enqueueDownload(forResolution: requestedResolution, asset: asset, from: qualities, token: token, completion: completion)
                     } else if let presentingViewController = presentingViewController {
                         self.showQualityPicker(qualities: qualities, asset: asset, token: token, on: presentingViewController, completion: completion)
                     } else {
@@ -156,7 +135,7 @@ public final class TPStreamsDownloadManager {
         
         for quality in qualities {
             alert.addAction(UIAlertAction(title: quality.resolution, style: .default) { _ in
-                self.resolveQualityAndSubmitDownload(forResolution: quality.resolution, asset: asset, from: qualities, token: token, completion: completion)
+                self.enqueueDownload(forResolution: quality.resolution, asset: asset, from: qualities, token: token, completion: completion)
             })
         }
         
@@ -167,7 +146,7 @@ public final class TPStreamsDownloadManager {
         }
     }
 
-    private func resolveQualityAndSubmitDownload(
+    private func enqueueDownload(
         forResolution resolution: String,
         asset: Asset,
         from availableQualities: [VideoQuality],
