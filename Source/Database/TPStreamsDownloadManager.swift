@@ -190,7 +190,7 @@ public final class TPStreamsDownloadManager {
                 completion?(.failure(.downloadStartFailed))
             }
         } catch {
-            completion?(.failure(.networkError(error)))
+            completion?(.failure(.downloadExecutionFailed(error)))
         }
     }
 
@@ -520,6 +520,7 @@ public enum TPDownloadError: Error {
     case resolutionRequired
     case downloadStartFailed
     case networkError(Error)
+    case downloadExecutionFailed(Error)
 
     public var code: Int {
         switch self {
@@ -528,6 +529,7 @@ public enum TPDownloadError: Error {
         case .resolutionRequired: return 6003
         case .downloadStartFailed: return 6004
         case .networkError: return 6005
+        case .downloadExecutionFailed: return 6006
         }
     }
 
@@ -542,6 +544,8 @@ public enum TPDownloadError: Error {
         case .downloadStartFailed:
             return "Failed to start download"
         case .networkError(let error):
+            return error.localizedDescription
+        case .downloadExecutionFailed(let error):
             return error.localizedDescription
         }
     }
