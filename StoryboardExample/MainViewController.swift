@@ -24,9 +24,9 @@ class MainViewController: UIViewController {
     @IBAction func downloadTapped(_ sender: UIButton) {
         TPStreamsDownloadManager.shared.startDownload(
             assetID: "BEArYFdaFbt",
+            accessToken: "ecf6366b-c2ee-408c-9472-6ed4e4b3047e",
             // resolution: "720p",
             presentingViewController: self,
-            accessToken: "ecf6366b-c2ee-408c-9472-6ed4e4b3047e"
         ) { result in
             switch result {
             case .success(let offlineAsset):

@@ -87,11 +87,11 @@ public final class TPStreamsDownloadManager {
                 return
             }
             
-            self.fetchDownloadQualities(for: asset, completion: completion)
+            self.fetchManifestQualities(for: asset, completion: completion)
         }
     }
     
-    internal func fetchDownloadQualities(
+    internal func fetchManifestQualities(
         for asset: Asset,
         completion: @escaping (Result<[VideoQuality], TPDownloadError>) -> Void
     ) {
@@ -108,9 +108,9 @@ public final class TPStreamsDownloadManager {
 
     public func startDownload(
         assetID: String,
+        accessToken: String? = nil,
         resolution: String? = nil,
         presentingViewController: UIViewController? = nil,
-        accessToken: String? = nil,
         completion: ((Result<OfflineAsset, TPDownloadError>) -> Void)? = nil
     ) {
         let token = accessToken ?? TPStreamsSDK.authToken
@@ -128,13 +128,13 @@ public final class TPStreamsDownloadManager {
                 return
             }
 
-            self.fetchDownloadQualities(for: asset) { result in
+            self.fetchManifestQualities(for: asset) { result in
                 switch result {
                 case .failure(let error):
                     completion?(.failure(error))
                 case .success(let qualities):
                     if let requestedResolution = resolution {
-                        self.initiateDownload(asset: asset, resolution: requestedResolution, qualities: qualities, token: token, completion: completion)
+                        self.resolveQualityAndSubmitDownload(forResolution: requestedResolution, asset: asset, from: qualities, token: token, completion: completion)
                     } else if let presentingViewController = presentingViewController {
                         self.showQualityPicker(qualities: qualities, asset: asset, token: token, on: presentingViewController, completion: completion)
                     } else {
@@ -156,7 +156,7 @@ public final class TPStreamsDownloadManager {
         
         for quality in qualities {
             alert.addAction(UIAlertAction(title: quality.resolution, style: .default) { _ in
-                self.initiateDownload(asset: asset, resolution: quality.resolution, qualities: qualities, token: token, completion: completion)
+                self.resolveQualityAndSubmitDownload(forResolution: quality.resolution, asset: asset, from: qualities, token: token, completion: completion)
             })
         }
         
@@ -167,14 +167,14 @@ public final class TPStreamsDownloadManager {
         }
     }
 
-    private func initiateDownload(
+    private func resolveQualityAndSubmitDownload(
+        forResolution resolution: String,
         asset: Asset,
-        resolution: String,
-        qualities: [VideoQuality],
+        from availableQualities: [VideoQuality],
         token: String?,
         completion: ((Result<OfflineAsset, TPDownloadError>) -> Void)?
     ) {
-        guard let quality = qualities.first(where: { $0.resolution == resolution }) else {
+        guard let quality = selectQuality(resolution: resolution, from: availableQualities) else {
             completion?(.failure(.resolutionNotAvailable(resolution)))
             return
         }
@@ -182,7 +182,7 @@ public final class TPStreamsDownloadManager {
         let videoQuality = quality
 
         do {
-            try self.performDownload(asset: asset, accessToken: token, videoQuality: videoQuality)
+            try self.submitDownload(asset: asset, accessToken: token, videoQuality: videoQuality)
 
             if let offlineAsset = LocalOfflineAsset.manager.get(id: asset.id) {
                 completion?(.success(offlineAsset.asOfflineAsset()))
@@ -194,7 +194,11 @@ public final class TPStreamsDownloadManager {
         }
     }
 
-    internal func performDownload(asset: Asset, accessToken: String?, videoQuality: VideoQuality, metadata: [String: Any]? = nil, offlineLicenseDurationSeconds: Double? = nil) throws {
+    private func selectQuality(resolution: String, from availableQualities: [VideoQuality]) -> VideoQuality? {
+        return availableQualities.first(where: { $0.resolution == resolution })
+    }
+
+    internal func submitDownload(asset: Asset, accessToken: String?, videoQuality: VideoQuality, metadata: [String: Any]? = nil, offlineLicenseDurationSeconds: Double? = nil) throws {
         #if targetEnvironment(simulator)
             if (asset.video?.drmEncrypted == true){
                 print("Downloading DRM content is not supported in simulator")
