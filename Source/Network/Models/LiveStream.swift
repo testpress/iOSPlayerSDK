@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct LiveStream{
-    let status: String
-    let hlsUrl: String
-    let transcodeRecordedVideo: Bool
-    let chatEmbedUrl: String
-    let noticeMessage: String?
+public struct LiveStream {
+    public let status: String
+    public let hlsUrl: String
+    public let transcodeRecordedVideo: Bool
+    public let chatEmbedUrl: String
+    public let noticeMessage: String?
     
-    var isStreaming: Bool {
+    public var isStreaming: Bool {
         return status == "Streaming" || status == "Running"
     }
 }

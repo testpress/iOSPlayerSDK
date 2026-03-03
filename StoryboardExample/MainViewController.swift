@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import TPStreamsSDK
 
 class MainViewController: UIViewController {
     
@@ -14,6 +15,27 @@ class MainViewController: UIViewController {
     @IBOutlet weak var sample2: UIButton!
     @IBOutlet weak var sample3: UIButton!
     @IBOutlet weak var downloads: UIButton!
+    @IBOutlet weak var downloadWithPicker: UIButton!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+    
+    @IBAction func downloadTapped(_ sender: UIButton) {
+        TPStreamsDownloadManager.shared.startDownload(
+            assetID: "BEArYFdaFbt",
+            // resolution: "720p",
+            presentingViewController: self,
+            accessToken: "ecf6366b-c2ee-408c-9472-6ed4e4b3047e"
+        ) { result in
+            switch result {
+            case .success(let offlineAsset):
+                print("Download started: \(offlineAsset.title)")
+            case .failure(let error):
+                print("Download failed: \(error.message)")
+            }
+        }
+    }
     
     @IBAction func sample1Tapped(_ sender: UIButton) {
         presentPlayerViewController(assistId: "42h2tZ5fmNf", accessToken: "9327e2d0-fa13-4288-902d-840f32cd0eed")

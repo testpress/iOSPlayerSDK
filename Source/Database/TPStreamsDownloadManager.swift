@@ -7,6 +7,7 @@
 
 import Foundation
 import AVFoundation
+import UIKit
 
 public final class TPStreamsDownloadManager {
 
@@ -68,7 +69,132 @@ public final class TPStreamsDownloadManager {
         return false
     }
 
-    internal func startDownload(asset: Asset, accessToken: String?, videoQuality: VideoQuality, metadata: [String: Any]? = nil, offlineLicenseDurationSeconds: Double? = nil) throws {
+    public func fetchDownloadQualities(
+        assetID: String,
+        accessToken: String? = nil,
+        completion: @escaping (Result<[VideoQuality], TPDownloadError>) -> Void
+    ) {
+        let token = accessToken ?? TPStreamsSDK.authToken
+
+        TPStreamsSDK.provider.API.getAsset(assetID, token) { asset, error in
+            if let error = error {
+                completion(.failure(.networkError(error)))
+                return
+            }
+
+            guard let asset = asset else {
+                completion(.failure(.assetNotFound))
+                return
+            }
+            
+            self.fetchDownloadQualities(for: asset, completion: completion)
+        }
+    }
+    
+    internal func fetchDownloadQualities(
+        for asset: Asset,
+        completion: @escaping (Result<[VideoQuality], TPDownloadError>) -> Void
+    ) {
+        guard let urlString = asset.video?.playbackURL,
+              let url = URL(string: urlString) else {
+            completion(.failure(.assetNotFound))
+            return
+        }
+
+        M3U8Parser.parseQualities(from: url) { qualities in
+            completion(.success(qualities))
+        }
+    }
+
+    public func startDownload(
+        assetID: String,
+        resolution: String? = nil,
+        presentingViewController: UIViewController? = nil,
+        accessToken: String? = nil,
+        completion: ((Result<OfflineAsset, TPDownloadError>) -> Void)? = nil
+    ) {
+        let token = accessToken ?? TPStreamsSDK.authToken
+
+        TPStreamsSDK.provider.API.getAsset(assetID, token) { [weak self] asset, error in
+            guard let self = self else { return }
+
+            if let error = error {
+                completion?(.failure(.networkError(error)))
+                return
+            }
+
+            guard let asset = asset else {
+                completion?(.failure(.assetNotFound))
+                return
+            }
+
+            self.fetchDownloadQualities(for: asset) { result in
+                switch result {
+                case .failure(let error):
+                    completion?(.failure(error))
+                case .success(let qualities):
+                    if let requestedResolution = resolution {
+                        self.initiateDownload(asset: asset, resolution: requestedResolution, qualities: qualities, token: token, completion: completion)
+                    } else if let presentingViewController = presentingViewController {
+                        self.showQualityPicker(qualities: qualities, asset: asset, token: token, on: presentingViewController, completion: completion)
+                    } else {
+                        completion?(.failure(.resolutionRequired))
+                    }
+                }
+            }
+        }
+    }
+
+    private func showQualityPicker(
+        qualities: [VideoQuality],
+        asset: Asset,
+        token: String?,
+        on viewController: UIViewController,
+        completion: ((Result<OfflineAsset, TPDownloadError>) -> Void)?
+    ) {
+        let alert = UIAlertController(title: "Select Download Quality", message: nil, preferredStyle: .actionSheet)
+        
+        for quality in qualities {
+            alert.addAction(UIAlertAction(title: quality.resolution, style: .default) { _ in
+                self.initiateDownload(asset: asset, resolution: quality.resolution, qualities: qualities, token: token, completion: completion)
+            })
+        }
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        DispatchQueue.main.async {
+            viewController.present(alert, animated: true)
+        }
+    }
+
+    private func initiateDownload(
+        asset: Asset,
+        resolution: String,
+        qualities: [VideoQuality],
+        token: String?,
+        completion: ((Result<OfflineAsset, TPDownloadError>) -> Void)?
+    ) {
+        guard let quality = qualities.first(where: { $0.resolution == resolution }) else {
+            completion?(.failure(.resolutionNotAvailable(resolution)))
+            return
+        }
+
+        let videoQuality = quality
+
+        do {
+            try self.performDownload(asset: asset, accessToken: token, videoQuality: videoQuality)
+
+            if let offlineAsset = LocalOfflineAsset.manager.get(id: asset.id) {
+                completion?(.success(offlineAsset.asOfflineAsset()))
+            } else {
+                completion?(.failure(.downloadStartFailed))
+            }
+        } catch {
+            completion?(.failure(.networkError(error)))
+        }
+    }
+
+    internal func performDownload(asset: Asset, accessToken: String?, videoQuality: VideoQuality, metadata: [String: Any]? = nil, offlineLicenseDurationSeconds: Double? = nil) throws {
         #if targetEnvironment(simulator)
             if (asset.video?.drmEncrypted == true){
                 print("Downloading DRM content is not supported in simulator")
@@ -383,7 +509,45 @@ public extension TPStreamsDownloadDelegate {
     func onFailed(offlineAsset: OfflineAsset) {}
 
     func onRequestNewAccessToken(assetId: String, completion: @escaping (String?) -> Void) {
-        debugPrint("Default onRequestNewAccessToken called - no token returned for assetId: \(assetId)")
+        print("Default onRequestNewAccessToken called - no token returned for assetId: \(assetId)")
         completion(nil) 
     }
+}
+
+public enum TPDownloadError: Error {
+    case assetNotFound
+    case resolutionNotAvailable(String)
+    case resolutionRequired
+    case downloadStartFailed
+    case networkError(Error)
+
+    public var code: Int {
+        switch self {
+        case .assetNotFound: return 6001
+        case .resolutionNotAvailable: return 6002
+        case .resolutionRequired: return 6003
+        case .downloadStartFailed: return 6004
+        case .networkError: return 6005
+        }
+    }
+
+    public var message: String {
+        switch self {
+        case .assetNotFound:
+            return "Asset not found"
+        case .resolutionNotAvailable(let res):
+            return "Resolution \(res) not available"
+        case .resolutionRequired:
+            return "Resolution required if no presentingViewController provided"
+        case .downloadStartFailed:
+            return "Failed to start download"
+        case .networkError(let error):
+            return error.localizedDescription
+        }
+    }
+}
+
+extension TPDownloadError: CustomNSError {
+    public var errorCode: Int { code }
+    public var errorUserInfo: [String: Any] { [NSLocalizedDescriptionKey: message] }
 }

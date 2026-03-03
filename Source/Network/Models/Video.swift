@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct Video{
-    let playbackURL: String
-    let status: String
-    let drmEncrypted: Bool
-    let duration: Double
-    let thumbnailURL: String?
+public struct Video {
+    public let playbackURL: String
+    public let status: String
+    public let drmEncrypted: Bool
+    public let duration: Double
+    public let thumbnailURL: String?
 }

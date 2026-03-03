@@ -7,16 +7,16 @@
 
 import Foundation
 
-struct Asset {
-    let id: String
-    let title: String
-    let contentType: String
-    let video: Video?
-    let liveStream: LiveStream?
-    let folderTree: String?
-    let drmContentId: String?
+public struct Asset {
+    public let id: String
+    public let title: String
+    public let contentType: String
+    public let video: Video?
+    public let liveStream: LiveStream?
+    public let folderTree: String?
+    public let drmContentId: String?
     
-    var playbackURL: String? {
+    public var playbackURL: String? {
         if let video = video {
             return video.playbackURL
         } else if let liveStream = liveStream {
@@ -24,5 +24,15 @@ struct Asset {
         } else {
             return nil
         }
+    }
+}
+
+public struct VideoQuality: Equatable {
+    public let resolution: String
+    public let bitrate: Double
+    
+    public init(resolution: String, bitrate: Double) {
+        self.resolution = resolution
+        self.bitrate = bitrate
     }
 }
