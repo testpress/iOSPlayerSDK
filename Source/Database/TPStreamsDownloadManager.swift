@@ -108,7 +108,6 @@ public final class TPStreamsDownloadManager {
                 }
             }
         }
-        ToastHelper.show(message: DownloadMessages.started)
     }
     
     private func requestPersistentKey(_ assetID: String) {
@@ -134,7 +133,6 @@ public final class TPStreamsDownloadManager {
             LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.paused.rawValue])
             tpStreamsDownloadDelegate?.onPause(offlineAsset: localOfflineAsset.asOfflineAsset())
             tpStreamsDownloadDelegate?.onStateChange(status: .paused, offlineAsset: localOfflineAsset.asOfflineAsset())
-            ToastHelper.show(message: DownloadMessages.paused)
         }
     }
     
@@ -150,7 +148,6 @@ public final class TPStreamsDownloadManager {
                 LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.inProgress.rawValue])
                 tpStreamsDownloadDelegate?.onResume(offlineAsset: localOfflineAsset.asOfflineAsset())
                 tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: localOfflineAsset.asOfflineAsset())
-                ToastHelper.show(message: DownloadMessages.resumed)
             }
         }
     }
@@ -322,12 +319,15 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
         }()
         let updateValues: [String: Any] = ["status": status.rawValue, "downloadedAt": Date()]
         LocalOfflineAsset.manager.update(object: localOfflineAsset, with: updateValues)
-        if status == Status.deleted {
+        switch status {
+        case .deleted:
             tpStreamsDownloadDelegate?.onCanceled(assetId: localOfflineAsset.assetId)
-        } else {
+        case .failed:
+            tpStreamsDownloadDelegate?.onFailed(offlineAsset: localOfflineAsset.asOfflineAsset(), error: error!)
+            tpStreamsDownloadDelegate?.onStateChange(status: status, offlineAsset: localOfflineAsset.asOfflineAsset())
+        default:
             tpStreamsDownloadDelegate?.onComplete(offlineAsset: localOfflineAsset.asOfflineAsset())
             tpStreamsDownloadDelegate?.onStateChange(status: status, offlineAsset: localOfflineAsset.asOfflineAsset())
-            ToastHelper.show(message: DownloadMessages.completed)
         }
     }
 
@@ -346,6 +346,7 @@ public protocol TPStreamsDownloadDelegate {
     func onStart(offlineAsset: OfflineAsset)
     func onPause(offlineAsset: OfflineAsset)
     func onResume(offlineAsset: OfflineAsset)
+    func onFailed(offlineAsset: OfflineAsset, error: Error)
     func onCanceled(assetId: String)
     func onDelete(assetId: String)
     func onProgressChange(assetId: String, percentage: Double)
@@ -354,6 +355,15 @@ public protocol TPStreamsDownloadDelegate {
 }
 
 public extension TPStreamsDownloadDelegate {
+    func onStart(offlineAsset: OfflineAsset) {}
+    func onPause(offlineAsset: OfflineAsset) {}
+    func onResume(offlineAsset: OfflineAsset) {}
+    func onComplete(offlineAsset: OfflineAsset) {}
+    func onFailed(offlineAsset: OfflineAsset, error: Error) {}
+    func onDelete(assetId: String) {}
+    func onCanceled(assetId: String) {}
+    func onProgressChange(assetId: String, percentage: Double) {}
+    func onStateChange(status: Status, offlineAsset: OfflineAsset) {}
     func onRequestNewAccessToken(assetId: String, completion: @escaping (String?) -> Void) {
         debugPrint("Default onRequestNewAccessToken called - no token returned for assetId: \(assetId)")
         completion(nil) 

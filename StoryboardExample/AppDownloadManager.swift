@@ -37,6 +37,10 @@ class AppDownloadManager: TPStreamsDownloadDelegate, ObservableObject {
         print("Download Pause", offlineAsset.assetId)
     }
 
+    func onFailed(offlineAsset: OfflineAsset, error: Error) {
+        print("Download Failed", offlineAsset.assetId)
+    }
+
     func onResume(offlineAsset: OfflineAsset) {
         print("Download Resume", offlineAsset.assetId)
     }

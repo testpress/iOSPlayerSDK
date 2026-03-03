@@ -19,7 +19,6 @@ let package = Package(
     .package(url: "https://github.com/M3U8Kit/M3U8Parser", .upToNextMajor(from: "1.2.0")),
     .package(url: "https://github.com/ashleymills/Reachability.swift", .upToNextMajor(from: "5.2.2")),
     .package(url: "https://github.com/realm/realm-swift", exact: "10.54.2"),
-    .package(url: "https://github.com/scalessec/Toast-Swift.git", from: "5.1.1")
 
   ],
 
@@ -34,7 +33,6 @@ let package = Package(
         .product(name: "Sentry", package: "sentry-cocoa"),
         .product(name: "Reachability", package: "Reachability.swift"),
         .product(name: "RealmSwift", package: "realm-swift"),
-        .product(name: "Toast", package: "Toast-Swift")
       ],
       path: "Source",
       resources: [
