@@ -323,8 +323,10 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
         case .deleted:
             tpStreamsDownloadDelegate?.onCanceled(assetId: localOfflineAsset.assetId)
         case .failed:
-            tpStreamsDownloadDelegate?.onFailed(offlineAsset: localOfflineAsset.asOfflineAsset(), error: error!)
-            tpStreamsDownloadDelegate?.onStateChange(status: status, offlineAsset: localOfflineAsset.asOfflineAsset())
+            if let error = error {
+                tpStreamsDownloadDelegate?.onFailed(offlineAsset: localOfflineAsset.asOfflineAsset(), error: error)
+                tpStreamsDownloadDelegate?.onStateChange(status: status, offlineAsset: localOfflineAsset.asOfflineAsset())
+            }
         default:
             tpStreamsDownloadDelegate?.onComplete(offlineAsset: localOfflineAsset.asOfflineAsset())
             tpStreamsDownloadDelegate?.onStateChange(status: status, offlineAsset: localOfflineAsset.asOfflineAsset())
