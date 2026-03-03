@@ -509,7 +509,7 @@ public extension TPStreamsDownloadDelegate {
     func onFailed(offlineAsset: OfflineAsset) {}
 
     func onRequestNewAccessToken(assetId: String, completion: @escaping (String?) -> Void) {
-        print("Default onRequestNewAccessToken called - no token returned for assetId: \(assetId)")
+        debugPrint("Default onRequestNewAccessToken called - no token returned for assetId: \(assetId)")
         completion(nil) 
     }
 }
