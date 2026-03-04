@@ -202,3 +202,7 @@ public class TPAVPlayer: AVPlayer {
     }
 }
 
+public struct VideoQuality {
+    public var resolution: String
+    public var bitrate: Double
+}
