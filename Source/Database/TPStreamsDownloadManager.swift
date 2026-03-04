@@ -319,15 +319,9 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
         }()
         let updateValues: [String: Any] = ["status": status.rawValue, "downloadedAt": Date()]
         LocalOfflineAsset.manager.update(object: localOfflineAsset, with: updateValues)
-        switch status {
-        case .deleted:
+        if status == Status.deleted {
             tpStreamsDownloadDelegate?.onCanceled(assetId: localOfflineAsset.assetId)
-        case .failed:
-            if let error = error {
-                tpStreamsDownloadDelegate?.onFailed(offlineAsset: localOfflineAsset.asOfflineAsset(), error: error)
-                tpStreamsDownloadDelegate?.onStateChange(status: status, offlineAsset: localOfflineAsset.asOfflineAsset())
-            }
-        default:
+        } else {
             tpStreamsDownloadDelegate?.onComplete(offlineAsset: localOfflineAsset.asOfflineAsset())
             tpStreamsDownloadDelegate?.onStateChange(status: status, offlineAsset: localOfflineAsset.asOfflineAsset())
         }
@@ -348,7 +342,6 @@ public protocol TPStreamsDownloadDelegate {
     func onStart(offlineAsset: OfflineAsset)
     func onPause(offlineAsset: OfflineAsset)
     func onResume(offlineAsset: OfflineAsset)
-    func onFailed(offlineAsset: OfflineAsset, error: Error)
     func onCanceled(assetId: String)
     func onDelete(assetId: String)
     func onProgressChange(assetId: String, percentage: Double)
@@ -357,15 +350,6 @@ public protocol TPStreamsDownloadDelegate {
 }
 
 public extension TPStreamsDownloadDelegate {
-    func onStart(offlineAsset: OfflineAsset) {}
-    func onPause(offlineAsset: OfflineAsset) {}
-    func onResume(offlineAsset: OfflineAsset) {}
-    func onComplete(offlineAsset: OfflineAsset) {}
-    func onFailed(offlineAsset: OfflineAsset, error: Error) {}
-    func onDelete(assetId: String) {}
-    func onCanceled(assetId: String) {}
-    func onProgressChange(assetId: String, percentage: Double) {}
-    func onStateChange(status: Status, offlineAsset: OfflineAsset) {}
     func onRequestNewAccessToken(assetId: String, completion: @escaping (String?) -> Void) {
         debugPrint("Default onRequestNewAccessToken called - no token returned for assetId: \(assetId)")
         completion(nil) 
