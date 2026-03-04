@@ -95,6 +95,7 @@ public final class TPStreamsDownloadManager {
         assetID: String,
         accessToken: String? = nil,
         resolution: String? = nil,
+        allowResolutionFallback: Bool = false,
         metadata: [String: Any]? = nil,
         presentingViewController: UIViewController? = nil,
         completion: ((Result<OfflineAsset, TPDownloadError>) -> Void)? = nil
@@ -125,7 +126,13 @@ public final class TPStreamsDownloadManager {
                     completion?(.failure(error))
                 case .success(let (qualities, playlistModel)):
                     if let requestedResolution = resolution {
-                        guard let quality = qualities.first(where: { $0.resolution == requestedResolution }) else {
+                        let selectedQuality = self.selectQuality(
+                            qualities,
+                            requestedResolution: requestedResolution,
+                            allowResolutionFallback: allowResolutionFallback
+                        )
+
+                        guard let quality = selectedQuality else {
                             completion?(.failure(.resolutionNotAvailable(requestedResolution)))
                             return
                         }
@@ -149,6 +156,37 @@ public final class TPStreamsDownloadManager {
                 }
             }
         }
+    }
+
+    private func selectQuality(
+        _ qualities: [VideoQuality],
+        requestedResolution: String,
+        allowResolutionFallback: Bool
+    ) -> VideoQuality? {
+        if let exactMatch = qualities.first(where: { $0.resolution == requestedResolution }) {
+            return exactMatch
+        }
+
+        guard allowResolutionFallback, let requestedHeight = parseResolution(requestedResolution) else {
+            return nil
+        }
+
+        return qualities.min { q1, q2 in
+            let h1 = parseResolution(q1.resolution) ?? 0
+            let h2 = parseResolution(q2.resolution) ?? 0
+            let d1 = abs(h1 - requestedHeight)
+            let d2 = abs(h2 - requestedHeight)
+
+            if d1 == d2 {
+                return h1 < h2 // Prefer lower on tie
+            }
+            return d1 < d2
+        }
+    }
+
+    private func parseResolution(_ resolution: String) -> Int? {
+        let digits = resolution.filter { $0.isNumber }
+        return Int(digits)
     }
 
     private func showQualityPicker(
