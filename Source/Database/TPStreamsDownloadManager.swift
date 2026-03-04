@@ -45,7 +45,11 @@ public final class TPStreamsDownloadManager {
     private func handleDownloadFailure(assetId: String?, error: Error?) {
         guard let assetId = assetId,
               let localOfflineAsset = LocalOfflineAsset.manager.get(id: assetId) else { return }
-        
+
+        if let error = error {
+            print("Download failed for asset \(assetId): \(error.localizedDescription)")
+        }
+
         LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.failed.rawValue])
         tpStreamsDownloadDelegate?.onFailed(offlineAsset: localOfflineAsset.asOfflineAsset())
         tpStreamsDownloadDelegate?.onStateChange(status: .failed, offlineAsset: localOfflineAsset.asOfflineAsset())
@@ -87,7 +91,9 @@ public final class TPStreamsDownloadManager {
             assetArtworkData: nil,
             options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: videoQuality.bitrate]
         ) else {
-            tpStreamsDownloadDelegate?.onStateChange(status: .failed, offlineAsset: OfflineAsset(assetId: asset.id, title: asset.title))
+            let offlineAsset = OfflineAsset(assetId: asset.id, title: asset.title)
+            tpStreamsDownloadDelegate?.onFailed(offlineAsset: offlineAsset)
+            tpStreamsDownloadDelegate?.onStateChange(status: .failed, offlineAsset: offlineAsset)
             return
         }
 
