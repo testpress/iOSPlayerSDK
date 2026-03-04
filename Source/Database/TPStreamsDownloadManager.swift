@@ -166,26 +166,25 @@ public final class TPStreamsDownloadManager {
             return exactMatch
         }
 
-        guard allowResolutionFallback, let requestedHeight = parseResolution(requestedResolution) else {
+        var requestedHeight: Int = 0
+        guard allowResolutionFallback, Scanner(string: requestedResolution).scanInt(&requestedHeight) else {
             return nil
         }
 
-        return qualities.min { q1, q2 in
-            let h1 = parseResolution(q1.resolution) ?? 0
-            let h2 = parseResolution(q2.resolution) ?? 0
-            let d1 = abs(h1 - requestedHeight)
-            let d2 = abs(h2 - requestedHeight)
-
-            if d1 == d2 {
-                return h1 < h2 // Prefer lower on tie
-            }
-            return d1 < d2
+        let qualitiesWithHeights: [(quality: VideoQuality, height: Int)] = qualities.compactMap { quality in
+            var height: Int = 0
+            return Scanner(string: quality.resolution).scanInt(&height) ? (quality, height) : nil
         }
-    }
 
-    private func parseResolution(_ resolution: String) -> Int? {
-        let digits = resolution.filter { $0.isNumber }
-        return Int(digits)
+        return qualitiesWithHeights.min { first, second in
+            let diff1 = abs(first.height - requestedHeight)
+            let diff2 = abs(second.height - requestedHeight)
+            
+            if diff1 == diff2 {
+                return first.height < second.height // Prefer lower resolution on tie
+            }
+            return diff1 < diff2
+        }?.quality
     }
 
     private func showQualityPicker(
