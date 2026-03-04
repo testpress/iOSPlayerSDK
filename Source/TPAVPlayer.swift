@@ -170,10 +170,15 @@ public class TPAVPlayer: AVPlayer {
     }
     
     private func populateAvailableVideoQualities(_ url: URL) {
-        M3U8Parser.parseQualities(from: url) { [weak self] qualities in
-            var allQualities = [VideoQuality(resolution: "Auto", bitrate: 0)]
-            allQualities.append(contentsOf: qualities)
-            self?.availableVideoQualities = allQualities
+        M3U8Parser.parseQualities(from: url) { [weak self] result in
+            switch result {
+            case .success(let (qualities, _)):
+                var allQualities = [VideoQuality(resolution: "Auto", bitrate: 0)]
+                allQualities.append(contentsOf: qualities)
+                self?.availableVideoQualities = allQualities
+            case .failure(let error):
+                print("Error fetching qualities: \(error.localizedDescription)")
+            }
         }
     }
     

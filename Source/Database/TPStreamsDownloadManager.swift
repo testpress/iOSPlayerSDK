@@ -8,6 +8,7 @@
 import Foundation
 import AVFoundation
 import UIKit
+import M3U8Kit
 
 public final class TPStreamsDownloadManager {
 
@@ -72,7 +73,7 @@ public final class TPStreamsDownloadManager {
     
     internal func fetchQualities(
         for asset: Asset,
-        completion: @escaping (Result<[VideoQuality], TPDownloadError>) -> Void
+        completion: @escaping (Result<([VideoQuality], M3U8PlaylistModel), TPDownloadError>) -> Void
     ) {
         guard let urlString = asset.video?.playbackURL,
               let url = URL(string: urlString) else {
@@ -80,8 +81,13 @@ public final class TPStreamsDownloadManager {
             return
         }
 
-        M3U8Parser.parseQualities(from: url) { qualities in
-            completion(.success(qualities))
+        M3U8Parser.parseQualities(from: url) { result in
+            switch result {
+            case .success(let (qualities, model)):
+                completion(.success((qualities, model)))
+            case .failure(let error):
+                completion(.failure(.networkError(error)))
+            }
         }
     }
 
@@ -111,11 +117,26 @@ public final class TPStreamsDownloadManager {
                 switch result {
                 case .failure(let error):
                     completion?(.failure(error))
-                case .success(let qualities):
+                case .success(let (qualities, playlistModel)):
                     if let requestedResolution = resolution {
-                        self.enqueueDownload(forResolution: requestedResolution, asset: asset, from: qualities, token: token, completion: completion)
+                        guard let quality = qualities.first(where: { $0.resolution == requestedResolution }) else {
+                            completion?(.failure(.resolutionNotAvailable(requestedResolution)))
+                            return
+                        }
+                        
+                        do {
+                            try self.enqueueDownload(asset: asset, accessToken: token, videoQuality: quality, playlistModel: playlistModel)
+                            
+                            if let offlineAsset = LocalOfflineAsset.manager.get(id: asset.id) {
+                                completion?(.success(offlineAsset.asOfflineAsset()))
+                            } else {
+                                completion?(.failure(.downloadStartFailed))
+                            }
+                        } catch {
+                            completion?(.failure(.downloadExecutionFailed(error)))
+                        }
                     } else if let presentingViewController = presentingViewController {
-                        self.showQualityPicker(qualities: qualities, asset: asset, token: token, on: presentingViewController, completion: completion)
+                        self.showQualityPicker(asset: asset, token: token, qualities: qualities, playlistModel: playlistModel, on: presentingViewController, completion: completion)
                     } else {
                         completion?(.failure(.resolutionRequired))
                     }
@@ -125,9 +146,10 @@ public final class TPStreamsDownloadManager {
     }
 
     private func showQualityPicker(
-        qualities: [VideoQuality],
         asset: Asset,
         token: String?,
+        qualities: [VideoQuality],
+        playlistModel: M3U8PlaylistModel,
         on viewController: UIViewController,
         completion: ((Result<OfflineAsset, TPDownloadError>) -> Void)?
     ) {
@@ -135,7 +157,17 @@ public final class TPStreamsDownloadManager {
         
         for quality in qualities {
             alert.addAction(UIAlertAction(title: quality.resolution, style: .default) { _ in
-                self.enqueueDownload(forResolution: quality.resolution, asset: asset, from: qualities, token: token, completion: completion)
+                do {
+                    try self.enqueueDownload(asset: asset, accessToken: token, videoQuality: quality, playlistModel: playlistModel)
+                    
+                    if let offlineAsset = LocalOfflineAsset.manager.get(id: asset.id) {
+                        completion?(.success(offlineAsset.asOfflineAsset()))
+                    } else {
+                        completion?(.failure(.downloadStartFailed))
+                    }
+                } catch {
+                    completion?(.failure(.downloadExecutionFailed(error)))
+                }
             })
         }
         
@@ -146,38 +178,7 @@ public final class TPStreamsDownloadManager {
         }
     }
 
-    private func enqueueDownload(
-        forResolution resolution: String,
-        asset: Asset,
-        from availableQualities: [VideoQuality],
-        token: String?,
-        completion: ((Result<OfflineAsset, TPDownloadError>) -> Void)?
-    ) {
-        guard let quality = selectQuality(resolution: resolution, from: availableQualities) else {
-            completion?(.failure(.resolutionNotAvailable(resolution)))
-            return
-        }
-
-        let videoQuality = quality
-
-        do {
-            try self.submitDownload(asset: asset, accessToken: token, videoQuality: videoQuality)
-
-            if let offlineAsset = LocalOfflineAsset.manager.get(id: asset.id) {
-                completion?(.success(offlineAsset.asOfflineAsset()))
-            } else {
-                completion?(.failure(.downloadStartFailed))
-            }
-        } catch {
-            completion?(.failure(.downloadExecutionFailed(error)))
-        }
-    }
-
-    private func selectQuality(resolution: String, from availableQualities: [VideoQuality]) -> VideoQuality? {
-        return availableQualities.first(where: { $0.resolution == resolution })
-    }
-
-    internal func submitDownload(asset: Asset, accessToken: String?, videoQuality: VideoQuality, metadata: [String: Any]? = nil, offlineLicenseDurationSeconds: Double? = nil) throws {
+    internal func enqueueDownload(asset: Asset, accessToken: String?, videoQuality: VideoQuality, playlistModel: M3U8PlaylistModel? = nil, metadata: [String: Any]? = nil, offlineLicenseDurationSeconds: Double? = nil) throws {
         #if targetEnvironment(simulator)
             if (asset.video?.drmEncrypted == true){
                 print("Downloading DRM content is not supported in simulator")
@@ -225,18 +226,27 @@ public final class TPStreamsDownloadManager {
         tpStreamsDownloadDelegate?.onStateChange(status: .inProgress, offlineAsset: localOfflineAsset.asOfflineAsset())
         
         if (asset.video?.drmEncrypted == true){
-            M3U8Parser.extractContentID(url: URL(string: asset.video!.playbackURL)!) { result in
-                switch result {
-                case .success(let drmContentId):
-                    print("Extracted DRM content ID: \(drmContentId)")
-                    DispatchQueue.main.async {
-                        LocalOfflineAsset.manager.update(id: asset.id, with: ["drmContentId": drmContentId])
-                        self.requestPersistentKey(localOfflineAsset.assetId)
-                    }
-                case .failure(let error):
-                    print("Error extracting content ID: \(error.localizedDescription)")
-                    DispatchQueue.main.async {
-                        self.handleDownloadFailure(assetId: asset.id, error: error)
+            if let existingID = asset.drmContentId, !existingID.isEmpty {
+                print("Using existing DRM content ID: \(existingID)")
+                DispatchQueue.main.async {
+                    LocalOfflineAsset.manager.update(id: asset.id, with: ["drmContentId": existingID])
+                    self.requestPersistentKey(localOfflineAsset.assetId)
+                }
+            } else {
+                M3U8Parser.extractContentID(url: URL(string: asset.video!.playbackURL)!, playlistModel: playlistModel) { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let drmContentId):
+                        print("Extracted DRM content ID: \(drmContentId)")
+                        DispatchQueue.main.async {
+                            LocalOfflineAsset.manager.update(id: asset.id, with: ["drmContentId": drmContentId])
+                            self.requestPersistentKey(localOfflineAsset.assetId)
+                        }
+                    case .failure(let error):
+                        print("Error extracting content ID: \(error.localizedDescription)")
+                        DispatchQueue.main.async {
+                            self.cancelDownload(asset.id)
+                        }
                     }
                 }
             }
@@ -505,17 +515,6 @@ public enum TPDownloadError: Error {
     case networkError(Error)
     case downloadExecutionFailed(Error)
 
-    public var code: Int {
-        switch self {
-        case .assetNotFound: return 6001
-        case .resolutionNotAvailable: return 6002
-        case .resolutionRequired: return 6003
-        case .downloadStartFailed: return 6004
-        case .networkError: return 6005
-        case .downloadExecutionFailed: return 6006
-        }
-    }
-
     public var message: String {
         switch self {
         case .assetNotFound:
@@ -535,6 +534,5 @@ public enum TPDownloadError: Error {
 }
 
 extension TPDownloadError: CustomNSError {
-    public var errorCode: Int { code }
     public var errorUserInfo: [String: Any] { [NSLocalizedDescriptionKey: message] }
 }
