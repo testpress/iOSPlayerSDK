@@ -53,7 +53,8 @@ public final class TPStreamsDownloadManager {
         }
 
         LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.failed.rawValue])
-        tpStreamsDownloadDelegate?.onFailed(offlineAsset: localOfflineAsset.asOfflineAsset())
+        let downloadError = error ?? TPDownloadError.downloadExecutionFailed(NSError(domain: "TPStreamsSDK", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unknown error"]))
+        tpStreamsDownloadDelegate?.onFailed(offlineAsset: localOfflineAsset.asOfflineAsset(), error: downloadError)
         tpStreamsDownloadDelegate?.onStateChange(status: .failed, offlineAsset: localOfflineAsset.asOfflineAsset())
     }
     
@@ -215,7 +216,7 @@ public final class TPStreamsDownloadManager {
             options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: videoQuality.bitrate]
         ) else {
             let offlineAsset = OfflineAsset(assetId: asset.id, title: asset.title)
-            tpStreamsDownloadDelegate?.onFailed(offlineAsset: offlineAsset)
+            tpStreamsDownloadDelegate?.onFailed(offlineAsset: offlineAsset, error: TPDownloadError.downloadStartFailed)
             tpStreamsDownloadDelegate?.onStateChange(status: .failed, offlineAsset: offlineAsset)
             return
         }
@@ -477,7 +478,8 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
         if status == Status.deleted {
             tpStreamsDownloadDelegate?.onCanceled(assetId: localOfflineAsset.assetId)
         } else if status == Status.failed {
-            tpStreamsDownloadDelegate?.onFailed(offlineAsset: localOfflineAsset.asOfflineAsset())
+            let downloadError = error ?? TPDownloadError.downloadExecutionFailed(NSError(domain: "TPStreamsSDK", code: -1, userInfo: [NSLocalizedDescriptionKey: "Download failed"]))
+            tpStreamsDownloadDelegate?.onFailed(offlineAsset: localOfflineAsset.asOfflineAsset(), error: downloadError)
             tpStreamsDownloadDelegate?.onStateChange(status: status, offlineAsset: localOfflineAsset.asOfflineAsset())
         } else {
             tpStreamsDownloadDelegate?.onComplete(offlineAsset: localOfflineAsset.asOfflineAsset())
@@ -497,7 +499,7 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
 
 public protocol TPStreamsDownloadDelegate {
     func onComplete(offlineAsset: OfflineAsset)
-    func onFailed(offlineAsset: OfflineAsset)
+    func onFailed(offlineAsset: OfflineAsset, error: Error)
     func onStart(offlineAsset: OfflineAsset)
     func onPause(offlineAsset: OfflineAsset)
     func onResume(offlineAsset: OfflineAsset)
@@ -509,7 +511,7 @@ public protocol TPStreamsDownloadDelegate {
 }
 
 public extension TPStreamsDownloadDelegate {
-    func onFailed(offlineAsset: OfflineAsset) {}
+    func onFailed(offlineAsset: OfflineAsset, error: Error) {}
 
     func onRequestNewAccessToken(assetId: String, completion: @escaping (String?) -> Void) {
         debugPrint("Default onRequestNewAccessToken called - no token returned for assetId: \(assetId)")
