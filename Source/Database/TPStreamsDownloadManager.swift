@@ -95,6 +95,7 @@ public final class TPStreamsDownloadManager {
         assetID: String,
         accessToken: String? = nil,
         resolution: String? = nil,
+        metadata: [String: Any]? = nil,
         presentingViewController: UIViewController? = nil,
         completion: ((Result<OfflineAsset, TPDownloadError>) -> Void)? = nil
     ) {
@@ -130,7 +131,7 @@ public final class TPStreamsDownloadManager {
                         }
                         
                         do {
-                            try self.enqueueDownload(asset: asset, accessToken: token, videoQuality: quality, playlistModel: playlistModel)
+                            try self.enqueueDownload(asset: asset, accessToken: token, videoQuality: quality, playlistModel: playlistModel, metadata: metadata)
                             
                             if let offlineAsset = LocalOfflineAsset.manager.get(id: asset.id) {
                                 completion?(.success(offlineAsset.asOfflineAsset()))
@@ -141,7 +142,7 @@ public final class TPStreamsDownloadManager {
                             completion?(.failure(.downloadExecutionFailed(error)))
                         }
                     } else if let presentingViewController = presentingViewController {
-                        self.showQualityPicker(asset: asset, token: token, qualities: qualities, playlistModel: playlistModel, on: presentingViewController, completion: completion)
+                        self.showQualityPicker(asset: asset, token: token, qualities: qualities, playlistModel: playlistModel, metadata: metadata, on: presentingViewController, completion: completion)
                     } else {
                         completion?(.failure(.resolutionRequired))
                     }
@@ -155,6 +156,7 @@ public final class TPStreamsDownloadManager {
         token: String?,
         qualities: [VideoQuality],
         playlistModel: M3U8PlaylistModel,
+        metadata: [String: Any]? = nil,
         on viewController: UIViewController,
         completion: ((Result<OfflineAsset, TPDownloadError>) -> Void)?
     ) {
@@ -163,7 +165,7 @@ public final class TPStreamsDownloadManager {
         for quality in qualities {
             alert.addAction(UIAlertAction(title: quality.resolution, style: .default) { _ in
                 do {
-                    try self.enqueueDownload(asset: asset, accessToken: token, videoQuality: quality, playlistModel: playlistModel)
+                    try self.enqueueDownload(asset: asset, accessToken: token, videoQuality: quality, playlistModel: playlistModel, metadata: metadata)
                     
                     if let offlineAsset = LocalOfflineAsset.manager.get(id: asset.id) {
                         completion?(.success(offlineAsset.asOfflineAsset()))
