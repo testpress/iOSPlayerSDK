@@ -107,7 +107,6 @@ public class M3U8Parser {
                     completion(.success((sortedQualities, playlistModel)))
                 }
             } catch {
-                print("Error parsing manifest for qualities: \(error.localizedDescription)")
                 DispatchQueue.main.async {
                     completion(.failure(error))
                 }

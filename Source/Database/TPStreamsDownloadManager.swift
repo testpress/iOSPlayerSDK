@@ -227,7 +227,6 @@ public final class TPStreamsDownloadManager {
         
         if (asset.video?.drmEncrypted == true){
             if let existingID = asset.drmContentId, !existingID.isEmpty {
-                print("Using existing DRM content ID: \(existingID)")
                 DispatchQueue.main.async {
                     LocalOfflineAsset.manager.update(id: asset.id, with: ["drmContentId": existingID])
                     self.requestPersistentKey(localOfflineAsset.assetId)
@@ -237,13 +236,11 @@ public final class TPStreamsDownloadManager {
                     guard let self = self else { return }
                     switch result {
                     case .success(let drmContentId):
-                        print("Extracted DRM content ID: \(drmContentId)")
                         DispatchQueue.main.async {
                             LocalOfflineAsset.manager.update(id: asset.id, with: ["drmContentId": drmContentId])
                             self.requestPersistentKey(localOfflineAsset.assetId)
                         }
                     case .failure(let error):
-                        print("Error extracting content ID: \(error.localizedDescription)")
                         DispatchQueue.main.async {
                             self.cancelDownload(asset.id)
                         }

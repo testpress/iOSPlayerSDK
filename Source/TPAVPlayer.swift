@@ -176,8 +176,8 @@ public class TPAVPlayer: AVPlayer {
                 var allQualities = [VideoQuality(resolution: "Auto", bitrate: 0)]
                 allQualities.append(contentsOf: qualities)
                 self?.availableVideoQualities = allQualities
-            case .failure(let error):
-                print("Error fetching qualities: \(error.localizedDescription)")
+            case .failure:
+                break
             }
         }
     }
