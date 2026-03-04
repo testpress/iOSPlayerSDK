@@ -31,12 +31,24 @@ public final class TPStreamsDownloadManager {
         contentKeySession = AVContentKeySession(keySystem: .fairPlayStreaming)
         contentKeyDelegate = ContentKeyDelegate()
         contentKeySession.setDelegate(contentKeyDelegate, queue: contentKeyDelegateQueue)
-        contentKeyDelegate.onError = { error in
+        contentKeyDelegate.onError = { [weak self] error in
+            guard let self = self else { return }
             if error as? TPStreamPlayerError == .unauthorizedAccess {
                 self.requestPersistentKeyWithNewAccessToken()
+            } else {
+                self.handleDownloadFailure(assetId: self.contentKeyDelegate.assetID, error: error)
             }
         }
         #endif
+    }
+    
+    private func handleDownloadFailure(assetId: String?, error: Error?) {
+        guard let assetId = assetId,
+              let localOfflineAsset = LocalOfflineAsset.manager.get(id: assetId) else { return }
+        
+        LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.failed.rawValue])
+        tpStreamsDownloadDelegate?.onFailed(offlineAsset: localOfflineAsset.asOfflineAsset())
+        tpStreamsDownloadDelegate?.onStateChange(status: .failed, offlineAsset: localOfflineAsset.asOfflineAsset())
     }
     
     public func setTPStreamsDownloadDelegate(tpStreamsDownloadDelegate: TPStreamsDownloadDelegate) {
@@ -74,7 +86,10 @@ public final class TPStreamsDownloadManager {
             assetTitle: asset.title,
             assetArtworkData: nil,
             options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: videoQuality.bitrate]
-        ) else { return }
+        ) else {
+            tpStreamsDownloadDelegate?.onStateChange(status: .failed, offlineAsset: OfflineAsset(assetId: asset.id, title: asset.title))
+            return
+        }
 
         let localOfflineAsset = LocalOfflineAsset.create(
             assetId: asset.id,
@@ -105,6 +120,9 @@ public final class TPStreamsDownloadManager {
                     }
                 case .failure(let error):
                     print("Error extracting content ID: \(error.localizedDescription)")
+                    DispatchQueue.main.async {
+                        self.handleDownloadFailure(assetId: asset.id, error: error)
+                    }
                 }
             }
         }
@@ -269,6 +287,8 @@ public final class TPStreamsDownloadManager {
                         self.requestPersistentKey(assetId)
                     }
                 }
+            } else {
+                self.handleDownloadFailure(assetId: assetId, error: nil)
             }
         }
     }
@@ -321,6 +341,9 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
         LocalOfflineAsset.manager.update(object: localOfflineAsset, with: updateValues)
         if status == Status.deleted {
             tpStreamsDownloadDelegate?.onCanceled(assetId: localOfflineAsset.assetId)
+        } else if status == Status.failed {
+            tpStreamsDownloadDelegate?.onFailed(offlineAsset: localOfflineAsset.asOfflineAsset())
+            tpStreamsDownloadDelegate?.onStateChange(status: status, offlineAsset: localOfflineAsset.asOfflineAsset())
         } else {
             tpStreamsDownloadDelegate?.onComplete(offlineAsset: localOfflineAsset.asOfflineAsset())
             tpStreamsDownloadDelegate?.onStateChange(status: status, offlineAsset: localOfflineAsset.asOfflineAsset())
@@ -339,6 +362,7 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
 
 public protocol TPStreamsDownloadDelegate {
     func onComplete(offlineAsset: OfflineAsset)
+    func onFailed(offlineAsset: OfflineAsset)
     func onStart(offlineAsset: OfflineAsset)
     func onPause(offlineAsset: OfflineAsset)
     func onResume(offlineAsset: OfflineAsset)
@@ -350,6 +374,8 @@ public protocol TPStreamsDownloadDelegate {
 }
 
 public extension TPStreamsDownloadDelegate {
+    func onFailed(offlineAsset: OfflineAsset) {}
+
     func onRequestNewAccessToken(assetId: String, completion: @escaping (String?) -> Void) {
         debugPrint("Default onRequestNewAccessToken called - no token returned for assetId: \(assetId)")
         completion(nil) 
