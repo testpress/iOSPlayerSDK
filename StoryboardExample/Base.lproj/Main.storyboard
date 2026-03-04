@@ -93,8 +93,16 @@
                                             <action selector="sample3Tapped:" destination="8gL-1j-ULe" eventType="touchUpInside" id="iOD-4m-clK"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3YN-TW-nqu">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v4r-7a-X1y">
                                         <rect key="frame" x="0.0" y="151" width="108.33333333333333" height="34.333333333333343"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="filled" title="Download (Programmatic)"/>
+                                        <connections>
+                                            <action selector="downloadTapped:" destination="8gL-1j-ULe" eventType="touchUpInside" id="z7B-2w-P9e"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3YN-TW-nqu">
+                                        <rect key="frame" x="0.0" y="201.33333333333334" width="108.33333333333333" height="34.333333333333343"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="filled" title="Downloads"/>
                                         <connections>
@@ -112,6 +120,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="downloadWithPicker" destination="v4r-7a-X1y" id="p0X-4m-D9q"/>
                         <outlet property="downloads" destination="3YN-TW-nqu" id="V0r-Nv-LJe"/>
                         <outlet property="sample1" destination="oj5-Xi-yml" id="lJy-zY-Br2"/>
                         <outlet property="sample2" destination="BNS-IB-A2Q" id="beQ-9y-4Kt"/>

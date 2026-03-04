@@ -11,23 +11,15 @@ import M3U8Kit
 
 public class M3U8Parser {
     
-    static func extractContentID(url: URL, completion: @escaping (Result<String, Error>) -> Void) {
-        do {
-            // Create a playlist model from the master URL
-            let masterPlaylist = try M3U8PlaylistModel(url: url)
-            
+    public static func extractContentID(url: URL, playlistModel: M3U8PlaylistModel? = nil, completion: @escaping (Result<String, Error>) -> Void) {
+        let processPlaylist = { (model: M3U8PlaylistModel) in
             // Check if the master playlist contains a valid stream list
-            if let streamList = masterPlaylist.masterPlaylist?.xStreamList, streamList.count != 0 {
+            if let streamList = model.masterPlaylist?.xStreamList, streamList.count != 0 {
                 // Take the first variant's URL from the stream list
                 if let variant = streamList.xStreamInf(at: 0),
                    let variantURL = variant.m3u8URL() {
                     parseVariantURL(variantURL) { result in
-                        switch result {
-                        case .success(let contentID):
-                            completion(.success(contentID)) // Pass the contentID back
-                        case .failure(let error):
-                            completion(.failure(error)) // Pass the error back
-                        }
+                        completion(result)
                     }
                 } else {
                     completion(.failure(NSError(domain: "M3U8Error", code: -1, userInfo: [NSLocalizedDescriptionKey: "No variant URL found."])))
@@ -35,8 +27,20 @@ public class M3U8Parser {
             } else {
                 completion(.failure(NSError(domain: "M3U8Error", code: -1, userInfo: [NSLocalizedDescriptionKey: "No variants found in master playlist."])))
             }
-        } catch {
-            completion(.failure(error)) // Pass the error back if something went wrong
+        }
+
+        if let model = playlistModel {
+            processPlaylist(model)
+            return
+        }
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                let model = try M3U8PlaylistModel(url: url)
+                processPlaylist(model)
+            } catch {
+                completion(.failure(error))
+            }
         }
     }
     
@@ -80,5 +84,33 @@ public class M3U8Parser {
             return uri // Retain the full URI with skd:// prefix
         }
         return nil
+    }
+    
+    public static func parseQualities(from url: URL, completion: @escaping (Result<([VideoQuality], M3U8PlaylistModel), Error>) -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                let playlistModel = try M3U8PlaylistModel(url: url)
+                var qualities: [VideoQuality] = []
+                
+                if let streamList = playlistModel.masterPlaylist?.xStreamList {
+                    for i in 0..<streamList.count {
+                        if let extXStreamInf = streamList.xStreamInf(at: i) {
+                            let resolution = "\(Int(extXStreamInf.resolution.height))p"
+                            let bitrate = Double(extXStreamInf.bandwidth)
+                            qualities.append(VideoQuality(resolution: resolution, bitrate: bitrate))
+                        }
+                    }
+                }
+                
+                let sortedQualities = qualities.sorted { $0.bitrate < $1.bitrate }
+                DispatchQueue.main.async {
+                    completion(.success((sortedQualities, playlistModel)))
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
     }
 }

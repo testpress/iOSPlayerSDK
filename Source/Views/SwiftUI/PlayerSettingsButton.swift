@@ -136,7 +136,7 @@ struct PlayerSettingsButton: View {
         return availableVideoQualities.map { downloadQuality in
                 .default(Text(downloadQuality.resolution)) {
                     do {
-                        try TPStreamsDownloadManager.shared.startDownload(
+                        try TPStreamsDownloadManager.shared.enqueueDownload(
                             asset: player.asset!, 
                             accessToken: player.player.accessToken, 
                             videoQuality: downloadQuality,
