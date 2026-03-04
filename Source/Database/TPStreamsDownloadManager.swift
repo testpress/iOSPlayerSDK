@@ -98,6 +98,11 @@ public final class TPStreamsDownloadManager {
         presentingViewController: UIViewController? = nil,
         completion: ((Result<OfflineAsset, TPDownloadError>) -> Void)? = nil
     ) {
+        if LocalOfflineAsset.manager.exists(id: assetID) {
+            completion?(.failure(.alreadyExists))
+            return
+        }
+
         let token = accessToken ?? TPStreamsSDK.authToken
 
         TPStreamsSDK.provider.API.getAsset(assetID, token) { [weak self] asset, error in
@@ -506,6 +511,7 @@ public extension TPStreamsDownloadDelegate {
 
 public enum TPDownloadError: Error {
     case assetNotFound
+    case alreadyExists
     case resolutionNotAvailable(String)
     case resolutionRequired
     case downloadStartFailed
@@ -516,6 +522,8 @@ public enum TPDownloadError: Error {
         switch self {
         case .assetNotFound:
             return "Asset not found"
+        case .alreadyExists:
+            return "Download already exists or is in progress"
         case .resolutionNotAvailable(let res):
             return "Resolution \(res) not available"
         case .resolutionRequired:
