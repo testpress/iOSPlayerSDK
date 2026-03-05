@@ -205,7 +205,6 @@
 		03D7F4272C22C4F900DF3597 /* PlaybackSpeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackSpeed.swift; sourceTree = "<group>"; };
 		2D3CE81E2F5957EE0011CAB7 /* VideoQualityUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoQualityUtils.swift; sourceTree = "<group>"; };
 		2DC08F862F448BB900AABC59 /* EncryptionKeyRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionKeyRepository.swift; sourceTree = "<group>"; };
-		7077275D2E87AA9100EF7D3F /* DownloadMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadMessages.swift; sourceTree = "<group>"; };
 		70D42E0A2E6075F3002AC32C /* AnyRealmValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyRealmValue.swift; sourceTree = "<group>"; };
 		8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayerView.swift; sourceTree = "<group>"; };
 		8E6389C12A27277D00306FA4 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -446,7 +445,7 @@
 			isa = PBXGroup;
 			children = (
 				2DC08F862F448BB900AABC59 /* EncryptionKeyRepository.swift */,
-			03B809092A2DF8A000AB3D03 /* TPStreamPlayer.swift */,
+				03B809092A2DF8A000AB3D03 /* TPStreamPlayer.swift */,
 				8E6389E82A278D1D00306FA4 /* ContentKeyDelegate.swift */,
 				8E6C5CB12A28AB94003EC948 /* ContentKeyManager.swift */,
 				03CC86672AE142FF002F5D28 /* ResourceLoaderDelegate.swift */,
@@ -817,8 +816,8 @@
 				8E6389DF2A2751C800306FA4 /* TPAVPlayer.swift in Sources */,
 				D92E48D62CAFCD2400B1FAC3 /* OfflineAsset.swift in Sources */,
 				D960A8FB2CEDEE7C003B0B04 /* M3U8Parser.swift in Sources */,
-			2DC08F882F448BB900AABC59 /* EncryptionKeyRepository.swift in Sources */,
-			03B8090A2A2DF8A000AB3D03 /* TPStreamPlayer.swift in Sources */,
+				2DC08F882F448BB900AABC59 /* EncryptionKeyRepository.swift in Sources */,
+				03B8090A2A2DF8A000AB3D03 /* TPStreamPlayer.swift in Sources */,
 				70D42E0B2E6075F3002AC32C /* AnyRealmValue.swift in Sources */,
 				03D7F4252C21C64D00DF3597 /* LiveIndicatorView.swift in Sources */,
 				0321F3272A2E0D1800E08AEE /* AVPlayer.swift in Sources */,
