@@ -25,7 +25,7 @@ class MainViewController: UIViewController {
         TPStreamsDownloadManager.shared.startDownload(
             assetID: "BEArYFdaFbt",
             accessToken: "ecf6366b-c2ee-408c-9472-6ed4e4b3047e",
-            resolution: "1440p",
+            resolution: "140p",
             allowResolutionFallback: true,
             presentingViewController: self,
         ) { result in

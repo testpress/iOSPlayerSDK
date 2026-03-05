@@ -126,10 +126,10 @@ public final class TPStreamsDownloadManager {
                     completion?(.failure(error))
                 case .success(let (qualities, playlistModel)):
                     if let requestedResolution = resolution {
-                        let selectedQuality = self.selectQuality(
+                        let selectedQuality = VideoQualityUtils.findQualityForResolution(
                             qualities,
-                            requestedResolution: requestedResolution,
-                            allowResolutionFallback: allowResolutionFallback
+                            resolution: requestedResolution,
+                            allowFallback: allowResolutionFallback
                         )
 
                         guard let quality = selectedQuality else {
@@ -156,36 +156,6 @@ public final class TPStreamsDownloadManager {
                 }
             }
         }
-    }
-
-    private func selectQuality(
-        _ qualities: [VideoQuality],
-        requestedResolution: String,
-        allowResolutionFallback: Bool
-    ) -> VideoQuality? {
-        if let exactMatch = qualities.first(where: { $0.resolution == requestedResolution }) {
-            return exactMatch
-        }
-
-        var requestedHeight: Int = 0
-        guard allowResolutionFallback, Scanner(string: requestedResolution).scanInt(&requestedHeight) else {
-            return nil
-        }
-
-        let qualitiesWithHeights: [(quality: VideoQuality, height: Int)] = qualities.compactMap { quality in
-            var height: Int = 0
-            return Scanner(string: quality.resolution).scanInt(&height) ? (quality, height) : nil
-        }
-
-        return qualitiesWithHeights.min { first, second in
-            let diff1 = abs(first.height - requestedHeight)
-            let diff2 = abs(second.height - requestedHeight)
-            
-            if diff1 == diff2 {
-                return first.height < second.height // Prefer lower resolution on tie
-            }
-            return diff1 < diff2
-        }?.quality
     }
 
     private func showQualityPicker(
