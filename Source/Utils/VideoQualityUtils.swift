@@ -15,9 +15,9 @@ extension VideoQuality {
 }
 
 public class VideoQualityUtils {
-    public static func findQualityForResolution(
-        _ qualities: [VideoQuality],
-        resolution: String,
+    public static func closestQuality(
+        in qualities: [VideoQuality],
+        for resolution: String,
         allowFallback: Bool
     ) -> VideoQuality? {
         if let exactMatch = qualities.first(where: { $0.resolution == resolution }) {
