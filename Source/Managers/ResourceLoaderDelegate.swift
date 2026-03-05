@@ -13,6 +13,7 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
     private let assetId: String?
     private let isPlaybackOffline: Bool
     private let offlineAssetId: String?
+    private let videoId: String?
     internal var asset: Asset? = nil
     
     private let encryptionKeyRepository = EncryptionKeyRepository.shared
@@ -22,6 +23,7 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
         self.assetId = assetId
         self.isPlaybackOffline = isPlaybackOffline
         self.offlineAssetId = offlineAssetId
+        self.videoId = localOfflineAsset?.videoId
         super.init()
     }
     
@@ -56,7 +58,7 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
             !["aes_key", "encryption_key", "api", "v1", "v2.5", "/"].contains(component)
         })) ?? ""
         
-        let fallbacks = ([id, assetId, offlineAssetId].compactMap { $0 }).filter { !$0.isEmpty }
+        let fallbacks = ([id, videoId, assetId, offlineAssetId].compactMap { $0 }).filter { !$0.isEmpty }
         for key in fallbacks {
             if let data = encryptionKeyRepository.get(for: key) {
                 setEncryptionKeyResponse(for: loadingRequest, data: data)
@@ -77,7 +79,7 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
             requestURL = components.url ?? url
         }
         
-        AESKeyManager.fetchEncryptionKey(url: requestURL, accessToken: accessToken) { [weak self] data in
+        EncryptionKeyRepository.fetchEncryptionKey(url: requestURL, accessToken: accessToken) { [weak self] data in
             if let data = data {
                 self?.setEncryptionKeyResponse(for: loadingRequest, data: data)
             } else {

@@ -206,7 +206,7 @@ public final class TPStreamsDownloadManager {
         }
         
         if let video = asset.video, video.isAESEncrypted {
-            AESKeyManager.prefetchEncryptionKey(for: video, accessToken: accessToken, assetId: asset.id)
+            EncryptionKeyRepository.prefetchEncryptionKey(for: video, accessToken: accessToken, assetId: asset.id)
         }
         
         let avUrlAsset = AVURLAsset(url: URL(string: asset.video!.playbackURL)!)
@@ -263,10 +263,6 @@ public final class TPStreamsDownloadManager {
                         DispatchQueue.main.async {
                             self.cancelDownload(asset.id)
                         }
-                    }
-                }
-            }
-        }
                     }
                 }
             }
