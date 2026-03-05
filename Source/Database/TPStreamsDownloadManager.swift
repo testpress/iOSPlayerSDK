@@ -193,7 +193,7 @@ public final class TPStreamsDownloadManager {
         #if targetEnvironment(simulator)
             if (asset.video?.drmEncrypted == true){
                 print("Downloading DRM content is not supported in simulator")
-                throw TPStreamPlayerError.unknownError.asNSError
+                throw NSError(domain: "TPStreamsSDK", code: -1, userInfo: [NSLocalizedDescriptionKey: "DRM content downloading is not supported in simulator"])
             }
         #else
             if asset.video?.drmEncrypted == true {

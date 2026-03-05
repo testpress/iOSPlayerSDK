@@ -67,7 +67,7 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
         }
         
         debugPrint("Key not found for \(id). Tried: \(fallbacks)")
-        loadingRequest.finishLoading(with: TPStreamPlayerError.keyMissing.asNSError)
+        loadingRequest.finishLoading()
     }
     
     private func handleOnlineKeyRequest(_ loadingRequest: AVAssetResourceLoadingRequest) {
@@ -83,7 +83,7 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
             if let data = data {
                 self?.setEncryptionKeyResponse(for: loadingRequest, data: data)
             } else {
-                loadingRequest.finishLoading(with: TPStreamPlayerError.keyMissing.asNSError)
+                loadingRequest.finishLoading()
             }
         }
     }

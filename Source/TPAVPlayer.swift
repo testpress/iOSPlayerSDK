@@ -142,7 +142,6 @@ public class TPAVPlayer: AVPlayer {
         }
         
         let avURLAsset = AVURLAsset(url: url)
-        
         avURLAsset.resourceLoader.setDelegate(resourceLoaderDelegate, queue: DispatchQueue.main)
         self.setPlayerItem(avURLAsset)
         
@@ -151,7 +150,7 @@ public class TPAVPlayer: AVPlayer {
         }
         self.populateAvailableVideoQualities(url)
     }
-
+    
     private func isNetworkUnavailableError(_ error: Error) -> Bool {
         return (error as? TPStreamPlayerError) == .noInternetConnection
     }

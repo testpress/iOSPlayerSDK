@@ -10,7 +10,6 @@ public enum TPStreamPlayerError: Error {
     case incompleteOfflineVideo
     case unknownError
     case drmSimulatorError
-    case keyMissing
     
     public var code: Int {
         switch self {
@@ -22,7 +21,6 @@ public enum TPStreamPlayerError: Error {
         case .networkTimeout: return 5006
         case .incompleteOfflineVideo: return 5007
         case .drmSimulatorError: return 5008
-        case .keyMissing: return 5009
         case .unknownError: return 5100
         }
     }
@@ -45,8 +43,6 @@ public enum TPStreamPlayerError: Error {
             return "This video hasn't been downloaded completely. Please try downloading it again."
         case .drmSimulatorError:
             return "DRM protected content cannot be played in simulator. Please use a physical device."
-        case .keyMissing:
-            return "The encryption key is missing. Please try again."
         case .unknownError:
             return "Oops! Something went wrong. Please contact support for assistance and provide details about the issue."
         }
@@ -54,7 +50,7 @@ public enum TPStreamPlayerError: Error {
     
     public var shouldLogToSentry: Bool {
         switch self {
-        case .noInternetConnection, .incompleteOfflineVideo, .drmSimulatorError, .keyMissing:
+        case .noInternetConnection, .incompleteOfflineVideo, .drmSimulatorError:
             return false
         default:
             return true
@@ -68,10 +64,6 @@ extension TPStreamPlayerError: CustomNSError {
     }
     
     public var errorUserInfo: [String : Any] {
-        return [NSDebugDescriptionErrorKey: self.message, NSLocalizedDescriptionKey: self.message]
-    }
-    
-    internal var asNSError: NSError {
-        return self as NSError
+        return [NSDebugDescriptionErrorKey: self.message]
     }
 }
