@@ -95,6 +95,7 @@ public final class TPStreamsDownloadManager {
         assetID: String,
         accessToken: String? = nil,
         resolution: String? = nil,
+        allowResolutionFallback: Bool = false,
         metadata: [String: Any]? = nil,
         presentingViewController: UIViewController? = nil,
         completion: ((Result<OfflineAsset, TPDownloadError>) -> Void)? = nil
@@ -125,7 +126,13 @@ public final class TPStreamsDownloadManager {
                     completion?(.failure(error))
                 case .success(let (qualities, playlistModel)):
                     if let requestedResolution = resolution {
-                        guard let quality = qualities.first(where: { $0.resolution == requestedResolution }) else {
+                        let selectedQuality = VideoQualityUtils.selectClosestQuality(
+                            in: qualities,
+                            for: requestedResolution,
+                            allowFallback: allowResolutionFallback
+                        )
+
+                        guard let quality = selectedQuality else {
                             completion?(.failure(.resolutionNotAvailable(requestedResolution)))
                             return
                         }
