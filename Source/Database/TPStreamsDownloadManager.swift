@@ -127,6 +127,7 @@ public final class TPStreamsDownloadManager {
                             for: requestedResolution,
                             allowFallback: allowResolutionFallback
                         )
+
                         guard let quality = selectedQuality else {
                             completion?(.failure(.resolutionNotAvailable(requestedResolution)))
                             return
