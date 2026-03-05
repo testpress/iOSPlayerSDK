@@ -126,7 +126,7 @@ public final class TPStreamsDownloadManager {
                     completion?(.failure(error))
                 case .success(let (qualities, playlistModel)):
                     if let requestedResolution = resolution {
-                        let selectedQuality = VideoQualityUtils.closestQuality(
+                        let selectedQuality = VideoQualityUtils.selectClosestQuality(
                             in: qualities,
                             for: requestedResolution,
                             allowFallback: allowResolutionFallback

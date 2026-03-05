@@ -15,7 +15,7 @@ extension VideoQuality {
 }
 
 public class VideoQualityUtils {
-    public static func closestQuality(
+    public static func selectClosestQuality(
         in qualities: [VideoQuality],
         for resolution: String,
         allowFallback: Bool
