@@ -8,18 +8,12 @@ final class EncryptionKeyService {
     
     private init() {}
     
-    func prefetchKey(for video: Video, accessToken: String?, assetId: String? = nil) {
-        guard let keyId = video.keyIdentifier ?? assetId, !keyId.isEmpty else { return }
-        
-        fetchKey(videoId: keyId, accessToken: accessToken) { [weak self] keyData in
+    func prefetchKey(for video: Video, identifier: String, accessToken: String?) {
+        fetchKey(videoId: identifier, accessToken: accessToken) { [weak self] keyData in
             if let keyData = keyData {
-                self?.repository.save(encryptionKey: keyData, for: keyId)
+                self?.repository.save(encryptionKey: keyData, for: identifier)
             } else if let url = URL(string: video.playbackURL) {
-                self?.parsePlaylist(
-                    url,
-                    identifier: keyId,
-                    accessToken: accessToken
-                )
+                self?.parsePlaylist(url, identifier: identifier, accessToken: accessToken)
             }
         }
     }

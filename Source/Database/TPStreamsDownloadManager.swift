@@ -206,7 +206,7 @@ public final class TPStreamsDownloadManager {
         }
         
         if let video = asset.video, video.isAESEncrypted {
-            EncryptionKeyService.shared.prefetchKey(for: video, accessToken: accessToken, assetId: asset.id)
+            EncryptionKeyService.shared.prefetchKey(for: video, identifier: asset.keyIdentifier, accessToken: accessToken)
         }
         
         let avUrlAsset = AVURLAsset(url: URL(string: asset.video!.playbackURL)!)
@@ -450,7 +450,15 @@ public final class TPStreamsDownloadManager {
             return
         }
 
-        let keyIdentifier = localOfflineAsset.videoId ?? localOfflineAsset.assetId
+        // Use videoId for Testpress, assetId for TPStreams
+        let keyIdentifier: String = {
+            if TPStreamsSDK.provider == .testpress {
+                return localOfflineAsset.videoId ?? localOfflineAsset.assetId
+            } else {
+                return localOfflineAsset.assetId
+            }
+        }()
+        
         let enumerator = FileManager.default.enumerator(at: downloadURL, includingPropertiesForKeys: nil)
         
         while let fileURL = enumerator?.nextObject() as? URL {
