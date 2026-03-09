@@ -53,6 +53,7 @@
 		2D3CE81F2F5957EE0011CAB7 /* VideoQualityUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3CE81E2F5957EE0011CAB7 /* VideoQualityUtils.swift */; };
 		2D46EC6A2EE856BB008B559A /* M3U8Kit in Frameworks */ = {isa = PBXBuildFile; productRef = 2D46EC692EE856BB008B559A /* M3U8Kit */; };
 		2DC08F882F448BB900AABC59 /* EncryptionKeyRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC08F862F448BB900AABC59 /* EncryptionKeyRepository.swift */; };
+		2DC08F892F448BB900AABC60 /* EncryptionKeyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC08F872F448BB900AABC60 /* EncryptionKeyService.swift */; };
 		2DD12A212D4CF75400272433 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D92E48F22CB0226A00B1FAC3 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		70D42E0B2E6075F3002AC32C /* AnyRealmValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D42E0A2E6075F3002AC32C /* AnyRealmValue.swift */; };
 		8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */; };
@@ -205,6 +206,7 @@
 		03D7F4272C22C4F900DF3597 /* PlaybackSpeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackSpeed.swift; sourceTree = "<group>"; };
 		2D3CE81E2F5957EE0011CAB7 /* VideoQualityUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoQualityUtils.swift; sourceTree = "<group>"; };
 		2DC08F862F448BB900AABC59 /* EncryptionKeyRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionKeyRepository.swift; sourceTree = "<group>"; };
+		2DC08F872F448BB900AABC60 /* EncryptionKeyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionKeyService.swift; sourceTree = "<group>"; };
 		70D42E0A2E6075F3002AC32C /* AnyRealmValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyRealmValue.swift; sourceTree = "<group>"; };
 		8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayerView.swift; sourceTree = "<group>"; };
 		8E6389C12A27277D00306FA4 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -445,6 +447,7 @@
 			isa = PBXGroup;
 			children = (
 				2DC08F862F448BB900AABC59 /* EncryptionKeyRepository.swift */,
+				2DC08F872F448BB900AABC60 /* EncryptionKeyService.swift */,
 				03B809092A2DF8A000AB3D03 /* TPStreamPlayer.swift */,
 				8E6389E82A278D1D00306FA4 /* ContentKeyDelegate.swift */,
 				8E6C5CB12A28AB94003EC948 /* ContentKeyManager.swift */,
@@ -817,6 +820,7 @@
 				D92E48D62CAFCD2400B1FAC3 /* OfflineAsset.swift in Sources */,
 				D960A8FB2CEDEE7C003B0B04 /* M3U8Parser.swift in Sources */,
 				2DC08F882F448BB900AABC59 /* EncryptionKeyRepository.swift in Sources */,
+				2DC08F892F448BB900AABC60 /* EncryptionKeyService.swift in Sources */,
 				03B8090A2A2DF8A000AB3D03 /* TPStreamPlayer.swift in Sources */,
 				70D42E0B2E6075F3002AC32C /* AnyRealmValue.swift in Sources */,
 				03D7F4252C21C64D00DF3597 /* LiveIndicatorView.swift in Sources */,

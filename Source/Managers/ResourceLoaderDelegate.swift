@@ -17,6 +17,7 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
     internal var asset: Asset? = nil
     
     private let encryptionKeyRepository = EncryptionKeyRepository.shared
+    private let encryptionKeyService = EncryptionKeyService.shared
     
     init(accessToken: String?, assetId: String? = nil, isPlaybackOffline: Bool = false, offlineAssetId: String? = nil, localOfflineAsset: LocalOfflineAsset? = nil) {
         self.accessToken = accessToken
@@ -79,7 +80,7 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
             requestURL = components.url ?? url
         }
         
-        EncryptionKeyRepository.fetchEncryptionKey(url: requestURL, accessToken: accessToken) { [weak self] data in
+        encryptionKeyService.fetchKey(url: requestURL, accessToken: accessToken) { [weak self] data in
             if let data = data {
                 self?.setEncryptionKeyResponse(for: loadingRequest, data: data)
             } else {

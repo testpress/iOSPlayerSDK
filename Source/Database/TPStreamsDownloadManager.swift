@@ -206,7 +206,7 @@ public final class TPStreamsDownloadManager {
         }
         
         if let video = asset.video, video.isAESEncrypted {
-            EncryptionKeyRepository.prefetchEncryptionKey(for: video, accessToken: accessToken, assetId: asset.id)
+            EncryptionKeyService.shared.prefetchKey(for: video, accessToken: accessToken, assetId: asset.id)
         }
         
         let avUrlAsset = AVURLAsset(url: URL(string: asset.video!.playbackURL)!)
@@ -445,43 +445,33 @@ public final class TPStreamsDownloadManager {
     }
 
     internal func hardenOfflineManifests(for localOfflineAsset: LocalOfflineAsset) {
-        // Only harden manifests for AES encrypted content
-        // DRM content uses FairPlay key delivery (handled separately)
-        // Non-encrypted content has no EXT-X-KEY to harden
-        if localOfflineAsset.contentProtectionType != .aes {
+        guard localOfflineAsset.contentProtectionType == .aes,
+              let downloadURL = localOfflineAsset.downloadedFileURL else {
             return
         }
-        let identifier: String = {
-            if TPStreamsSDK.provider == .testpress {
-                return localOfflineAsset.videoId ?? localOfflineAsset.assetId
-            } else {
-                return localOfflineAsset.assetId
-            }
-        }()
+
+        let keyIdentifier = localOfflineAsset.videoId ?? localOfflineAsset.assetId
+        let enumerator = FileManager.default.enumerator(at: downloadURL, includingPropertiesForKeys: nil)
         
-        guard let url = localOfflineAsset.downloadedFileURL else { return }
-        
-        let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles])
         while let fileURL = enumerator?.nextObject() as? URL {
             guard fileURL.pathExtension.lowercased() == "m3u8" else { continue }
-            
-            do {
-                let content = try String(contentsOf: fileURL, encoding: .utf8)
-                guard content.contains("#EXT-X-KEY") else { continue }
-                
-                let pattern = "(#EXT-X-KEY:[^\\n]*?URI=\")([^\"]+)(\")"
-                let regex = try NSRegularExpression(pattern: pattern)
-                let range = NSRange(content.startIndex..., in: content)
-                let replacement = "$1tpkey://\(identifier)$3"
-                
-                let newContent = regex.stringByReplacingMatches(in: content, options: [], range: range, withTemplate: replacement)
-                if newContent != content {
-                    try newContent.write(to: fileURL, atomically: true, encoding: .utf8)
-                }
-            } catch {
-                debugPrint("Failed to harden manifest at \(fileURL.path): \(error.localizedDescription)")
-            }
+            hardenManifest(at: fileURL, keyIdentifier: keyIdentifier)
         }
+    }
+
+    private func hardenManifest(at url: URL, keyIdentifier: String) {
+        guard let content = try? String(contentsOf: url, encoding: .utf8),
+              let regex = try? NSRegularExpression(pattern: "#EXT-X-KEY:METHOD=AES-128,URI=\"([^\"]+)\""),
+              let match = regex.firstMatch(in: content, range: NSRange(content.startIndex..., in: content)) else {
+            return
+        }
+
+        let fullMatchRange = Range(match.range, in: content)!
+        let uriRange = Range(match.range(at: 1), in: content)!
+        let originalURI = String(content[uriRange])
+        
+        let hardenedContent = content.replacingCharacters(in: fullMatchRange, with: "#EXT-X-KEY:METHOD=AES-128,URI=\"tpkey://\(keyIdentifier)\"")
+        try? hardenedContent.write(to: url, atomically: true, encoding: .utf8)
     }
 }
 
