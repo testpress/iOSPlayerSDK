@@ -97,9 +97,9 @@ extension LocalOfflineAsset {
         )
     }
     
-    func asAsset() -> Asset? {
+    func asAsset() -> Asset {
         guard let downloadedFileURL = downloadedFileURL else {
-            return nil
+            fatalError("downloadedFileURL is nil")
         }
 
         let isDrmEncrypted = drmContentId != nil && !drmContentId!.isEmpty
@@ -129,16 +129,10 @@ extension LocalOfflineAsset {
     }
 
     var downloadedFileURL: URL? {
-        guard !self.downloadedPath.isEmpty else { return nil }
-        
-        let baseURL = URL(fileURLWithPath: NSHomeDirectory())
-        let directoryURL = baseURL.appendingPathComponent(self.downloadedPath)
-        
-        var isDir: ObjCBool = false
-        if FileManager.default.fileExists(atPath: directoryURL.path, isDirectory: &isDir), isDir.boolValue {
-            return directoryURL
+        if !self.downloadedPath.isEmpty {
+            let baseURL = URL(fileURLWithPath: NSHomeDirectory())
+            return baseURL.appendingPathComponent(self.downloadedPath)
         }
-        
         return nil
     }
 

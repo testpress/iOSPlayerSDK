@@ -77,10 +77,7 @@ public class TPAVPlayer: AVPlayer {
             localOfflineAsset: localOfflineAsset
         )
         if localOfflineAsset.status == "finished" {
-            guard let asset = localOfflineAsset.asAsset() else {
-                self.processInitializationFailure(TPStreamPlayerError.resourceNotFound)
-                return
-            }
+            let asset = localOfflineAsset.asAsset()
             self.asset = asset
             self.resourceLoaderDelegate?.asset = asset
             self.initializePlayer()

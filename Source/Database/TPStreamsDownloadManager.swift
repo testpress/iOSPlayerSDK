@@ -445,7 +445,10 @@ public final class TPStreamsDownloadManager {
     }
 
     internal func hardenOfflineManifests(for localOfflineAsset: LocalOfflineAsset) {
-        if localOfflineAsset.contentProtectionType == .drm || localOfflineAsset.drmContentId != nil {
+        // Only harden manifests for AES encrypted content
+        // DRM content uses FairPlay key delivery (handled separately)
+        // Non-encrypted content has no EXT-X-KEY to harden
+        if localOfflineAsset.contentProtectionType != .aes {
             return
         }
         let identifier: String = {
