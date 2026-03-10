@@ -19,7 +19,7 @@ public final class TPStreamsDownloadManager {
     private var contentKeySession: AVContentKeySession!
     private var contentKeyDelegate: ContentKeyDelegate!
     private let contentKeyDelegateQueue = DispatchQueue(label: "com.tpstreams.iOSPlayerSDK.ContentKeyDelegateQueueOffline")
-    private let encryptionKeyRepository = EncryptionKeyRepository.shared
+    private let encryptionKeyDelegate = EncryptionKeyDelegate.shared
 
     private init() {
         let backgroundConfiguration = URLSessionConfiguration.background(withIdentifier: "com.tpstreams.downloadSession")
@@ -206,7 +206,7 @@ public final class TPStreamsDownloadManager {
         }
         
         if let video = asset.video, video.isAESEncrypted {
-            EncryptionKeyService.shared.prefetchKey(for: video, identifier: asset.keyIdentifier, accessToken: accessToken)
+            EncryptionKeyDelegate.shared.prefetchKey(for: video, identifier: asset.keyIdentifier, accessToken: accessToken)
         }
         
         let avUrlAsset = AVURLAsset(url: URL(string: asset.video!.playbackURL)!)
@@ -392,9 +392,9 @@ public final class TPStreamsDownloadManager {
 
     internal func deleteEncryptionKeys(for localOfflineAsset: LocalOfflineAsset) {
         if let videoId = localOfflineAsset.videoId {
-            encryptionKeyRepository.delete(for: videoId)
+            encryptionKeyDelegate.delete(for: videoId)
         }
-        encryptionKeyRepository.delete(for: localOfflineAsset.assetId)
+        encryptionKeyDelegate.delete(for: localOfflineAsset.assetId)
     }
     
     public func getAllOfflineAssets() -> [OfflineAsset] {

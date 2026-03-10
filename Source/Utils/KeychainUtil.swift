@@ -1,47 +1,37 @@
 import Foundation
 import Security
 
-private let serviceId = "com.tpstreams.iOSPlayerSDK.encryption.keys"
-private let keyPrefix = "VIDEO_ENCRYPTION_KEY_"
-
-public final class EncryptionKeyRepository {
-    static let shared = EncryptionKeyRepository()
+class KeychainUtil {
     
-    private init() {}
-    
-    private func keychainKey(for identifier: String) -> String {
-        return keyPrefix + identifier
-    }
-    
-    public func save(encryptionKey: Data, for identifier: String) {
+    static func save(data: Data, service: String, account: String) {
         let keychainQuery: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: serviceId,
-            kSecAttrAccount as String: keychainKey(for: identifier)
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: account
         ]
         let keychainUpdateAttributes: [String: Any] = [
-            kSecValueData as String: encryptionKey
+            kSecValueData as String: data
         ]
         
         let status = SecItemUpdate(keychainQuery as CFDictionary, keychainUpdateAttributes as CFDictionary)
         if status == errSecItemNotFound {
             var insertQuery = keychainQuery
-            insertQuery[kSecValueData as String] = encryptionKey
+            insertQuery[kSecValueData as String] = data
             insertQuery[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
             let addStatus = SecItemAdd(insertQuery as CFDictionary, nil)
             if addStatus != errSecSuccess {
-                debugPrint("EncryptionKeyRepository: Failed to save key for \(identifier). Status: \(addStatus)")
+                debugPrint("KeychainUtil: Failed to save key for \(account). Status: \(addStatus)")
             }
         } else if status != errSecSuccess {
-            debugPrint("EncryptionKeyRepository: Failed to update key for \(identifier). Status: \(status)")
+            debugPrint("KeychainUtil: Failed to update key for \(account). Status: \(status)")
         }
     }
     
-    public func get(for identifier: String) -> Data? {
+    static func get(service: String, account: String) -> Data? {
         let keychainQuery: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: serviceId,
-            kSecAttrAccount as String: keychainKey(for: identifier),
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: account,
             kSecMatchLimit as String: kSecMatchLimitOne,
             kSecReturnData as String: true
         ]
@@ -51,26 +41,26 @@ public final class EncryptionKeyRepository {
         return status == errSecSuccess ? result as? Data : nil
     }
     
-    public func delete(for identifier: String) {
+    static func delete(service: String, account: String) {
         let keychainQuery: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: serviceId,
-            kSecAttrAccount as String: keychainKey(for: identifier)
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: account
         ]
         let status = SecItemDelete(keychainQuery as CFDictionary)
         if status != errSecSuccess && status != errSecItemNotFound {
-            debugPrint("EncryptionKeyRepository: Failed to delete key for \(identifier). Status: \(status)")
+            debugPrint("KeychainUtil: Failed to delete key for \(account). Status: \(status)")
         }
     }
     
-    public func deleteAll() {
+    static func deleteAll(service: String) {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: serviceId
+            kSecAttrService as String: service
         ]
         let status = SecItemDelete(query as CFDictionary)
         if status != errSecSuccess && status != errSecItemNotFound {
-            debugPrint("EncryptionKeyRepository: Failed to delete all keys. Status: \(status)")
+            debugPrint("KeychainUtil: Failed to delete all keys. Status: \(status)")
         }
     }
 }

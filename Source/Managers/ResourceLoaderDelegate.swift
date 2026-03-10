@@ -16,8 +16,7 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
     private let videoId: String?
     internal var asset: Asset? = nil
     
-    private let encryptionKeyRepository = EncryptionKeyRepository.shared
-    private let encryptionKeyService = EncryptionKeyService.shared
+    private let encryptionKeyDelegate = EncryptionKeyDelegate.shared
     
     init(accessToken: String?, assetId: String? = nil, isPlaybackOffline: Bool = false, offlineAssetId: String? = nil, localOfflineAsset: LocalOfflineAsset? = nil) {
         self.accessToken = accessToken
@@ -61,7 +60,7 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
         
         let fallbacks = ([id, videoId, assetId, offlineAssetId].compactMap { $0 }).filter { !$0.isEmpty }
         for key in fallbacks {
-            if let data = encryptionKeyRepository.get(for: key) {
+            if let data = encryptionKeyDelegate.get(for: key) {
                 setEncryptionKeyResponse(for: loadingRequest, data: data)
                 return
             }
@@ -80,7 +79,7 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
             requestURL = components.url ?? url
         }
         
-        encryptionKeyService.fetchKey(url: requestURL, accessToken: accessToken) { [weak self] data in
+        encryptionKeyDelegate.fetchKey(url: requestURL, accessToken: accessToken) { [weak self] data in
             if let data = data {
                 self?.setEncryptionKeyResponse(for: loadingRequest, data: data)
             } else {

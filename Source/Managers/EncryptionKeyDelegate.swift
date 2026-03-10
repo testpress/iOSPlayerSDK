@@ -1,17 +1,38 @@
 import Foundation
 import Alamofire
 
-final class EncryptionKeyService {
-    static let shared = EncryptionKeyService()
+final class EncryptionKeyDelegate {
+    static let shared = EncryptionKeyDelegate()
     
-    private let repository = EncryptionKeyRepository.shared
+    private let serviceId = "com.tpstreams.iOSPlayerSDK.encryption.keys"
+    private let keyPrefix = "VIDEO_ENCRYPTION_KEY_"
     
     private init() {}
+    
+    private func keychainKey(for identifier: String) -> String {
+        return keyPrefix + identifier
+    }
+    
+    func save(encryptionKey: Data, for identifier: String) {
+        KeychainUtil.save(data: encryptionKey, service: serviceId, account: keychainKey(for: identifier))
+    }
+    
+    func get(for identifier: String) -> Data? {
+        return KeychainUtil.get(service: serviceId, account: keychainKey(for: identifier))
+    }
+    
+    func delete(for identifier: String) {
+        KeychainUtil.delete(service: serviceId, account: keychainKey(for: identifier))
+    }
+    
+    func deleteAll() {
+        KeychainUtil.deleteAll(service: serviceId)
+    }
     
     func prefetchKey(for video: Video, identifier: String, accessToken: String?) {
         fetchKey(videoId: identifier, accessToken: accessToken) { [weak self] keyData in
             if let keyData = keyData {
-                self?.repository.save(encryptionKey: keyData, for: identifier)
+                self?.save(encryptionKey: keyData, for: identifier)
             } else if let url = URL(string: video.playbackURL) {
                 self?.parsePlaylist(url, identifier: identifier, accessToken: accessToken)
             }
@@ -49,7 +70,7 @@ final class EncryptionKeyService {
         
         fetchKey(url: keyURL, accessToken: accessToken) { [weak self] data in
             if let data = data {
-                self?.repository.save(encryptionKey: data, for: identifier)
+                self?.save(encryptionKey: data, for: identifier)
             }
         }
     }
