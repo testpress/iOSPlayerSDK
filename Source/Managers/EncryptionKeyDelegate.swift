@@ -30,7 +30,7 @@ final class EncryptionKeyDelegate {
     }
     
     func prefetchKey(for video: Video, identifier: String, accessToken: String?) {
-        fetchKey(videoId: identifier, accessToken: accessToken) { [weak self] keyData in
+        fetchKey(assetId: identifier, accessToken: accessToken) { [weak self] keyData in
             if let keyData = keyData {
                 self?.save(encryptionKey: keyData, for: identifier)
             } else if let url = URL(string: video.playbackURL) {
@@ -86,8 +86,8 @@ final class EncryptionKeyDelegate {
         return URL(string: uri, relativeTo: baseURL)
     }
     
-    func fetchKey(videoId: String? = nil, url: URL? = nil, accessToken: String?, completion: @escaping (Data?) -> Void) {
-        guard let requestURL = buildRequestURL(videoId: videoId, url: url) else {
+    func fetchKey(assetId: String? = nil, url: URL? = nil, accessToken: String?, completion: @escaping (Data?) -> Void) {
+        guard let requestURL = buildRequestURL(assetId: assetId, url: url) else {
             completion(nil)
             return
         }
@@ -100,14 +100,14 @@ final class EncryptionKeyDelegate {
         }
     }
     
-    private func buildRequestURL(videoId: String?, url: URL?) -> URL? {
+    private func buildRequestURL(assetId: String?, url: URL?) -> URL? {
         if let url = url { return url }
         
-        guard let videoId = videoId,
+        guard let assetId = assetId,
               let org = TPStreamsSDK.orgCode else { return nil }
         
         let template = TPStreamsSDK.provider.API.AES_ENCRYPTION_KEY_API
-        return URL(string: String(format: template, org, videoId))
+        return URL(string: String(format: template, org, assetId))
     }
     
     private func addTokenToURL(_ url: URL, accessToken: String?) -> URL? {

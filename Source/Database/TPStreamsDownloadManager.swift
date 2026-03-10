@@ -226,7 +226,6 @@ public final class TPStreamsDownloadManager {
 
         let localOfflineAsset = LocalOfflineAsset.create(
             assetId: asset.id,
-            videoId: asset.video?.id,
             srcURL: asset.video!.playbackURL,
             title: asset.title,
             resolution:videoQuality.resolution,
@@ -323,7 +322,7 @@ public final class TPStreamsDownloadManager {
         }
         
         guard let fileURL = localOfflineAsset.downloadedFileURL else {
-            deleteEncryptionKeys(for: localOfflineAsset)
+            deleteEncryptionKey(for: localOfflineAsset)
             LocalOfflineAsset.manager.delete(id: assetId)
             if hasActiveTask == nil {
                 tpStreamsDownloadDelegate?.onCanceled(assetId: assetId)
@@ -378,7 +377,7 @@ public final class TPStreamsDownloadManager {
                         self.contentKeyDelegate.cleanupPersistentContentKey()
                     }
                     
-                    self.deleteEncryptionKeys(for: localOfflineAsset)
+                    self.deleteEncryptionKey(for: localOfflineAsset)
                     
                     completion(true, nil)
                 }
@@ -390,10 +389,7 @@ public final class TPStreamsDownloadManager {
         }
     }
 
-    internal func deleteEncryptionKeys(for localOfflineAsset: LocalOfflineAsset) {
-        if let videoId = localOfflineAsset.videoId {
-            encryptionKeyDelegate.delete(for: videoId)
-        }
+    internal func deleteEncryptionKey(for localOfflineAsset: LocalOfflineAsset) {
         encryptionKeyDelegate.delete(for: localOfflineAsset.assetId)
     }
     
@@ -450,14 +446,7 @@ public final class TPStreamsDownloadManager {
             return
         }
 
-        // Use videoId for Testpress, assetId for TPStreams
-        let keyIdentifier: String = {
-            if TPStreamsSDK.provider == .testpress {
-                return localOfflineAsset.videoId ?? localOfflineAsset.assetId
-            } else {
-                return localOfflineAsset.assetId
-            }
-        }()
+        let keyIdentifier: String = localOfflineAsset.assetId
         
         let enumerator = FileManager.default.enumerator(at: downloadURL, includingPropertiesForKeys: nil)
         
@@ -528,7 +517,7 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
         }()
         
         if status == .failed || status == .deleted {
-            TPStreamsDownloadManager.shared.deleteEncryptionKeys(for: localOfflineAsset)
+            TPStreamsDownloadManager.shared.deleteEncryptionKey(for: localOfflineAsset)
         }
         
         let updateValues: [String: Any] = ["status": status.rawValue, "downloadedAt": Date()]

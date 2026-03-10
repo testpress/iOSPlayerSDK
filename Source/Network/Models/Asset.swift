@@ -26,12 +26,8 @@ struct Asset {
         }
     }
 
-    /// Returns the canonical identifier for encryption keys based on the provider.
+    /// Returns the canonical identifier for encryption keys.
     var keyIdentifier: String {
-        if TPStreamsSDK.provider == .testpress {
-            return video?.id ?? id
-        } else {
-            return id
-        }
+        return id
     }
 }

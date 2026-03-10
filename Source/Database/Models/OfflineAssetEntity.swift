@@ -10,7 +10,6 @@ import RealmSwift
 
 class LocalOfflineAsset: Object {
     @Persisted(primaryKey: true) var assetId: String = ""
-    @Persisted var videoId: String? = nil
     @Persisted var createdAt = Date()
     @Persisted var srcURL: String = ""
     @Persisted var title: String = ""
@@ -49,7 +48,6 @@ extension LocalOfflineAsset {
     
     static func create(
         assetId: String,
-        videoId: String? = nil,
         srcURL: String,
         title: String,
         resolution: String,
@@ -63,7 +61,6 @@ extension LocalOfflineAsset {
     ) -> LocalOfflineAsset {
         let localOfflineAsset = LocalOfflineAsset()
         localOfflineAsset.assetId = assetId
-        localOfflineAsset.videoId = videoId
         localOfflineAsset.srcURL = srcURL
         localOfflineAsset.title = title
         localOfflineAsset.resolution = resolution
@@ -106,7 +103,7 @@ extension LocalOfflineAsset {
         let playbackURLString = downloadedFileURL.absoluteString
 
         let video = Video(
-            id: self.videoId,
+            id: self.assetId,
             playbackURL: playbackURLString,
             status: self.status,
             drmEncrypted: isDrmEncrypted,
