@@ -24,6 +24,7 @@ class LocalOfflineAsset: Object {
     @Persisted var size: Double = 0.0
     @Persisted var folderTree: String = ""
     @Persisted var drmContentId: String? = nil
+    @Persisted var contentProtectionType: ContentProtectionType? = nil
     @Persisted var metadataMap = Map<String, AnyRealmValue>()
     @Persisted var licenseExpiryDate: Date? = nil
     
@@ -55,6 +56,7 @@ extension LocalOfflineAsset {
         thumbnailURL: String? = nil,
         folderTree: String,
         drmContentId: String? = nil,
+        contentProtectionType: ContentProtectionType? = nil,
         metadata: [String: Any]? = nil
     ) -> LocalOfflineAsset {
         let localOfflineAsset = LocalOfflineAsset()
@@ -68,6 +70,7 @@ extension LocalOfflineAsset {
         localOfflineAsset.thumbnailURL = thumbnailURL
         localOfflineAsset.folderTree = folderTree
         localOfflineAsset.drmContentId = drmContentId
+        localOfflineAsset.contentProtectionType = contentProtectionType
         localOfflineAsset.metadata = metadata
         return localOfflineAsset
     }
@@ -86,7 +89,8 @@ extension LocalOfflineAsset {
             size: self.size,
             thumbnailURL: self.thumbnailURL,
             folderTree: self.folderTree,
-            metadata: self.metadata
+            metadata: self.metadata,
+            contentProtectionType: self.contentProtectionType
         )
     }
     
@@ -99,11 +103,13 @@ extension LocalOfflineAsset {
         let playbackURLString = downloadedFileURL.absoluteString
 
         let video = Video(
+            id: self.assetId,
             playbackURL: playbackURLString,
             status: self.status,
             drmEncrypted: isDrmEncrypted,
             duration: self.duration,
-            thumbnailURL: self.thumbnailURL
+            thumbnailURL: self.thumbnailURL,
+            contentProtectionType: isDrmEncrypted ? .drm : self.contentProtectionType
         )
 
         let asset: Asset = Asset(
@@ -120,7 +126,7 @@ extension LocalOfflineAsset {
     }
 
     var downloadedFileURL: URL? {
-        if !self.downloadedPath.isEmpty{
+        if !self.downloadedPath.isEmpty {
             let baseURL = URL(fileURLWithPath: NSHomeDirectory())
             return baseURL.appendingPathComponent(self.downloadedPath)
         }

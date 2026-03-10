@@ -15,6 +15,9 @@ class BaseAPI {
     class var DRM_LICENSE_API: String {
         fatalError("DRM_LICENSE_API must be implemented by subclasses.")
     }
+    class var AES_ENCRYPTION_KEY_API: String {
+        fatalError("AES_ENCRYPTION_KEY_API must be implemented by subclasses.")
+    }
     class var parser: APIParser {
         fatalError("parser must be implemented by subclasses.")
     }

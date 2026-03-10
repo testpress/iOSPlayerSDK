@@ -27,15 +27,23 @@ class StreamsAPIParser: APIParser {
     func parseVideo(from dictionary: [String: Any]?) -> Video? {
         guard let videoDict = dictionary,
               let playbackURL = videoDict["playback_url"] as? String,
-              let status = videoDict["status"] as? String,
-              let contentProtectionType = videoDict["content_protection_type"] as? String else {
+              let status = videoDict["status"] as? String else {
             return nil
         }
         
+        let id: String? = videoDict["id"] as? String
         let duration: Double = videoDict["duration"] as? Double ?? 0.0
         let thumbnailURL: String? = videoDict["cover_thumbnail_url"] as? String
+        let contentProtectionType: ContentProtectionType? = {
+            let type = ContentProtectionType.fromString(videoDict["content_protection_type"] as? String)
+            // If the backend specifically sends DRM, or if we want to force priority
+            return type
+        }()
         
-        return Video(playbackURL: playbackURL, status: status, drmEncrypted: contentProtectionType == "drm", duration: duration, thumbnailURL: thumbnailURL)
+        let isDrm = contentProtectionType == .drm
+        
+        
+        return Video(id: id, playbackURL: playbackURL, status: status, drmEncrypted: isDrm, duration: duration, thumbnailURL: thumbnailURL, contentProtectionType: contentProtectionType)
     }
 
     func parseLiveStream(from dictionary: [String: Any]?) -> LiveStream? {

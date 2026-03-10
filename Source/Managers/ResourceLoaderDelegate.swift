@@ -10,79 +10,94 @@ import AVFoundation
 
 class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
     let accessToken: String?
+    private let assetId: String?
+    private let isPlaybackOffline: Bool
+    private let offlineAssetId: String?
+    internal var asset: Asset? = nil
     
-    init(accessToken: String?) {
+    private let encryptionKeyDelegate = EncryptionKeyDelegate.shared
+    
+    init(accessToken: String?, assetId: String? = nil, isPlaybackOffline: Bool = false, offlineAssetId: String? = nil, localOfflineAsset: LocalOfflineAsset? = nil) {
         self.accessToken = accessToken
+        self.assetId = assetId
+        self.isPlaybackOffline = isPlaybackOffline
+        self.offlineAssetId = offlineAssetId
         super.init()
     }
     
     func resourceLoader(_ resourceLoader: AVAssetResourceLoader, shouldWaitForLoadingOfRequestedResource loadingRequest: AVAssetResourceLoadingRequest) -> Bool {
         guard let url = loadingRequest.request.url else { return false }
         
-        if isEncryptionKeyUrl(url), let modifiedURL = appendAccessToken(url) {
-            fetchEncryptionKey(from: modifiedURL) { [weak self] data in
-                self?.setEncryptionKeyResponse(for: loadingRequest, data: data)
+        guard let asset = asset, asset.video?.isAESEncrypted == true else {
+            return false
+        }
+
+        if url.scheme == "tpkey" {
+            handleLocalKeyRequest(loadingRequest)
+            return true
+        } else if url.scheme == "https" && isEncryptionKeyUrl(url) {
+            if isPlaybackOffline {
+                handleLocalKeyRequest(loadingRequest)
+            } else {
+                handleOnlineKeyRequest(loadingRequest)
             }
             return true
         }
+        
         return false
     }
     
-    func isEncryptionKeyUrl(_ url: URL) -> Bool {
-        return url.path.contains("key")
-    }
+    // MARK: - Key Request Handling
     
-    func appendAccessToken(_ url: URL) -> URL? {
-        if var components = URLComponents(url: url, resolvingAgainstBaseURL: true){
-            if TPStreamsSDK.provider == .testpress, let orgCode = TPStreamsSDK.orgCode, !orgCode.isEmpty {
-                components.host = "\(orgCode).testpress.in"
+    private func handleLocalKeyRequest(_ loadingRequest: AVAssetResourceLoadingRequest) {
+        guard let url = loadingRequest.request.url else { return }
+        
+        let id: String = (url.scheme == "tpkey" ? url.host : url.pathComponents.last(where: { component in
+            !["aes_key", "encryption_key", "api", "v1", "v2.5", "/"].contains(component)
+        })) ?? ""
+        
+        let fallbacks = ([id, assetId, offlineAssetId].compactMap { $0 }).filter { !$0.isEmpty }
+        for key in fallbacks {
+            if let data = encryptionKeyDelegate.get(for: key) {
+                setEncryptionKeyResponse(for: loadingRequest, data: data)
+                return
             }
-            let accessTokenQueryItem = URLQueryItem(name: "access_token", value: self.accessToken)
-            components.queryItems = (components.queryItems ?? []) + [accessTokenQueryItem]
-            return components.url
         }
         
-        return url
+        debugPrint("Key not found for \(id). Tried: \(fallbacks)")
+        loadingRequest.finishLoading()
     }
     
-    func fetchEncryptionKey(from url: URL, completion: @escaping (Data) -> Void) {
-        var request = URLRequest(url: url)
+    private func handleOnlineKeyRequest(_ loadingRequest: AVAssetResourceLoadingRequest) {
+        guard let url = loadingRequest.request.url else { return }
         
-        // Add Authorization header if authToken is available and non-empty
-        if let authToken = TPStreamsSDK.authToken, !authToken.isEmpty {
-            request.addValue("JWT \(authToken)", forHTTPHeaderField: "Authorization")
+        var requestURL = url
+        if TPStreamsSDK.provider == .testpress, let org = TPStreamsSDK.orgCode, var components = URLComponents(url: url, resolvingAgainstBaseURL: true) {
+            components.host = "\(org).testpress.in"
+            requestURL = components.url ?? url
         }
         
-        let dataTask = URLSession.shared.dataTask(with: request) { data, _, _ in
+        encryptionKeyDelegate.fetchKey(url: requestURL, accessToken: accessToken) { [weak self] data in
             if let data = data {
-                completion(data)
+                self?.setEncryptionKeyResponse(for: loadingRequest, data: data)
+            } else {
+                loadingRequest.finishLoading()
             }
         }
-        dataTask.resume()
     }
     
-    func setEncryptionKeyResponse(for loadingRequest: AVAssetResourceLoadingRequest, data: Data) {
-        if let contentInformationRequest = loadingRequest.contentInformationRequest {
-            contentInformationRequest.contentType = getContentType(contentInformationRequest: contentInformationRequest)
-            contentInformationRequest.isByteRangeAccessSupported = true
-            contentInformationRequest.contentLength = Int64(data.count)
+    private func setEncryptionKeyResponse(for loadingRequest: AVAssetResourceLoadingRequest, data: Data) {
+        if let info = loadingRequest.contentInformationRequest {
+            info.contentType = "application/octet-stream"
+            info.isByteRangeAccessSupported = true
+            info.contentLength = Int64(data.count)
         }
-        
         loadingRequest.dataRequest?.respond(with: data)
         loadingRequest.finishLoading()
     }
     
-    func getContentType(contentInformationRequest: AVAssetResourceLoadingContentInformationRequest?) -> String {
-        var contentType = AVStreamingKeyDeliveryPersistentContentKeyType
-        
-        if #available(iOS 11.2, *) {
-            if let allowedContentType = contentInformationRequest?.allowedContentTypes?.first {
-                if allowedContentType == AVStreamingKeyDeliveryContentKeyType {
-                    contentType = AVStreamingKeyDeliveryContentKeyType
-                }
-            }
-        }
-        
-        return contentType
+    private func isEncryptionKeyUrl(_ url: URL) -> Bool {
+        let path = url.path.lowercased()
+        return path.contains("/aes_key") || path.contains("/encryption_key")
     }
 }

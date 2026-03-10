@@ -25,4 +25,9 @@ struct Asset {
             return nil
         }
     }
+
+    /// Returns the canonical identifier for encryption keys.
+    var keyIdentifier: String {
+        return id
+    }
 }

@@ -16,6 +16,10 @@ class StreamsAPI: BaseAPI {
         return "https://app.tpstreams.com/api/v1/%@/assets/%@/drm_license/?access_token=%@&drm_type=fairplay&download=%@"
     }
     
+    class override var AES_ENCRYPTION_KEY_API: String {
+        return "https://app.tpstreams.com/api/v1/%@/assets/%@/aes_key/"
+    }
+    
     override class var parser: APIParser {
         return StreamsAPIParser()
     }
