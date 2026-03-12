@@ -16,7 +16,7 @@ extension VideoQuality {
 
 public class VideoQualityUtils {
     public static func getDisplayLabel(for quality: VideoQuality) -> String {
-        if quality.resolution == "Auto" {
+        guard quality.resolution != "Auto" else {
             return "Auto"
         }
         return "Up to \(quality.resolution)"
