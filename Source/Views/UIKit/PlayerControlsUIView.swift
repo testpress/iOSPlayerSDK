@@ -243,7 +243,8 @@ class PlayerControlsUIView: UIView {
     }
     
     func createActionForVideoQuality(_ quality: VideoQuality) -> UIAlertAction {
-        let action = UIAlertAction(title: quality.resolution, style: .default, handler: { (_) in
+        let label = VideoQualityUtils.getDisplayLabel(for: quality)
+        let action = UIAlertAction(title: label, style: .default, handler: { (_) in
             self.player.changeVideoQuality(quality)
         })
         

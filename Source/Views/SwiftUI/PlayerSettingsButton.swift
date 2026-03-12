@@ -95,7 +95,9 @@ struct PlayerSettingsButton: View {
     }
     
     private func videoQualityButton() -> ActionSheet.Button {
-        return .default(Text("Video Quality - \(player.currentVideoQuality?.resolution ?? "Auto")")) {
+        let currentLabel = player.currentVideoQuality.map { VideoQualityUtils.getDisplayLabel(for: $0) } ?? "Auto"
+
+        return .default(Text("Video Quality - \(currentLabel)")) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.showOptions = true
                 self.currentMenu = .videoQuality
@@ -123,7 +125,7 @@ struct PlayerSettingsButton: View {
     
     private func videoQualityOptions() -> [ActionSheet.Button] {
         return player.availableVideoQualities.map { videoQuality in
-                .default(Text(videoQuality.resolution)) {
+                .default(Text(VideoQualityUtils.getDisplayLabel(for: videoQuality))) {
                     player.changeVideoQuality(videoQuality)
                 }
         }
