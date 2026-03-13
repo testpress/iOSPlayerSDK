@@ -47,13 +47,13 @@ struct PlayerSettingsButton: View {
         case .videoQuality:
             return ActionSheet(
                 title: Text("Video Quality"),
-                message: nil,
+                message: Text("Video quality adjusts based on your internet speed. Your selection sets the highest possible quality."),
                 buttons: videoQualityOptions() + [.cancel()]
             )
         case .downloadQuality:
             return ActionSheet(
                 title: Text("Download Quality"),
-                message: nil,
+                message: Text("Video quality adjusts based on your internet speed. Your selection sets the highest possible quality."),
                 buttons: downloadQualityOptions() + [.cancel()]
             )
         }
@@ -95,7 +95,9 @@ struct PlayerSettingsButton: View {
     }
     
     private func videoQualityButton() -> ActionSheet.Button {
-        return .default(Text("Video Quality - \(player.currentVideoQuality?.resolution ?? "Auto")")) {
+        let currentLabel = player.currentVideoQuality.map { VideoQualityUtils.getDisplayLabel(for: $0) } ?? "Auto"
+
+        return .default(Text("Video Quality - \(currentLabel)")) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.showOptions = true
                 self.currentMenu = .videoQuality
@@ -123,7 +125,7 @@ struct PlayerSettingsButton: View {
     
     private func videoQualityOptions() -> [ActionSheet.Button] {
         return player.availableVideoQualities.map { videoQuality in
-                .default(Text(videoQuality.resolution)) {
+                .default(Text(VideoQualityUtils.getDisplayLabel(for: videoQuality))) {
                     player.changeVideoQuality(videoQuality)
                 }
         }

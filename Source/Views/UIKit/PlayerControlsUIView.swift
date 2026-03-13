@@ -209,7 +209,7 @@ class PlayerControlsUIView: UIView {
     }
     
     func createVideoQualityMenu() -> UIAlertController {
-        let qualityMenu = UIAlertController(title: "Available resolutions", message: nil, preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
+        let qualityMenu = UIAlertController(title: "Available resolutions", message: "Video quality adjusts based on your internet speed. Your selection sets the highest possible quality.", preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
         for quality in self.player.availableVideoQualities {
             let action = createActionForVideoQuality(quality)
             qualityMenu.addAction(action)
@@ -219,7 +219,7 @@ class PlayerControlsUIView: UIView {
     }
     
     func createDownloadQualityMenu() -> UIAlertController {
-        let qualityMenu = UIAlertController(title: "Available resolutions", message: nil, preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
+        let qualityMenu = UIAlertController(title: "Available resolutions", message: "Video quality adjusts based on your internet speed. Your selection sets the highest possible quality.", preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
         var availableVideoQualities = player.availableVideoQualities
         // Remove Auto Quality from the Array
         availableVideoQualities.remove(at: 0)
@@ -243,7 +243,8 @@ class PlayerControlsUIView: UIView {
     }
     
     func createActionForVideoQuality(_ quality: VideoQuality) -> UIAlertAction {
-        let action = UIAlertAction(title: quality.resolution, style: .default, handler: { (_) in
+        let label = VideoQualityUtils.getDisplayLabel(for: quality)
+        let action = UIAlertAction(title: label, style: .default, handler: { (_) in
             self.player.changeVideoQuality(quality)
         })
         
