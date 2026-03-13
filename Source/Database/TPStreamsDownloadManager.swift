@@ -164,7 +164,7 @@ public final class TPStreamsDownloadManager {
         on viewController: UIViewController,
         completion: ((Result<OfflineAsset, TPDownloadError>) -> Void)?
     ) {
-        let alert = UIAlertController(title: "Select Download Quality", message: nil, preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "Select Download Quality", message: "Video quality adjusts based on your internet speed. Your selection sets the highest possible quality.", preferredStyle: .actionSheet)
         
         for quality in qualities {
             alert.addAction(UIAlertAction(title: quality.resolution, style: .default) { _ in

@@ -47,13 +47,13 @@ struct PlayerSettingsButton: View {
         case .videoQuality:
             return ActionSheet(
                 title: Text("Video Quality"),
-                message: nil,
+                message: Text("Video quality adjusts based on your internet speed. Your selection sets the highest possible quality."),
                 buttons: videoQualityOptions() + [.cancel()]
             )
         case .downloadQuality:
             return ActionSheet(
                 title: Text("Download Quality"),
-                message: nil,
+                message: Text("Video quality adjusts based on your internet speed. Your selection sets the highest possible quality."),
                 buttons: downloadQualityOptions() + [.cancel()]
             )
         }
