@@ -219,7 +219,7 @@ class PlayerControlsUIView: UIView {
     }
     
     func createDownloadQualityMenu() -> UIAlertController {
-        let qualityMenu = UIAlertController(title: "Available resolutions", message: "Video quality adjusts based on your internet speed. Your selection sets the highest possible quality.", preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
+        let qualityMenu = UIAlertController(title: "Available resolutions", message: nil, preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
         var availableVideoQualities = player.availableVideoQualities
         // Remove Auto Quality from the Array
         availableVideoQualities.remove(at: 0)
