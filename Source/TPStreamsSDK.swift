@@ -37,6 +37,7 @@ import RealmSwift
 
 
 public class TPStreamsSDK {
+    internal static let realmConfig: Realm.Configuration = buildRealmConfig()
     internal static var orgCode: String?
     internal static var provider: Provider = .tpstreams
     internal static var authToken: String?
@@ -86,7 +87,7 @@ public class TPStreamsSDK {
         }
     }
     
-    private static func initializeDatabase() {
+    private static func buildRealmConfig() -> Realm.Configuration {
         var config = Realm.Configuration(
             schemaVersion: 5,
             migrationBlock: { migration, oldSchemaVersion in
@@ -94,12 +95,17 @@ public class TPStreamsSDK {
                         // No manual migration needed.
                         // Realm automatically handles newly added optional properties.
                 }
-            }
+            },
+            objectTypes: [LocalOfflineAsset.self]
         )
         config.fileURL!.deleteLastPathComponent()
         config.fileURL!.appendPathComponent("TPStreamsPlayerSDK")
         config.fileURL!.appendPathExtension("realm")
-        Realm.Configuration.defaultConfiguration = config
+        return config
+    }
+    
+    private static func initializeDatabase() {
+        _ = Self.realmConfig
     }
     
     private static func removeIncompleteDownloads() {

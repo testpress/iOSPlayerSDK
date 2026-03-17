@@ -9,7 +9,7 @@ import Foundation
 import RealmSwift
 
 public class ObjectManager<T: Object> {
-    let realm = try! Realm()
+    let realm = try! Realm(configuration: TPStreamsSDK.realmConfig)
     
     func add(object: T) {
         try! realm.write {
