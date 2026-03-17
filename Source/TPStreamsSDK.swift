@@ -98,9 +98,10 @@ public class TPStreamsSDK {
             },
             objectTypes: [LocalOfflineAsset.self]
         )
-        config.fileURL!.deleteLastPathComponent()
-        config.fileURL!.appendPathComponent("TPStreamsPlayerSDK")
-        config.fileURL!.appendPathExtension("realm")
+        config.fileURL = config.fileURL?
+            .deletingLastPathComponent()
+            .appendingPathComponent("TPStreamsPlayerSDK")
+            .appendingPathExtension("realm")
         return config
     }
     
