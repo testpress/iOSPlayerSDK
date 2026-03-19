@@ -30,7 +30,7 @@ public class TPStreamPlayerViewController: UIViewController {
         }
     }
     private var controlsVisibilityTimer: Timer?
-    public var isFullScreen: Bool = false {
+    public private(set) var isFullScreen: Bool = false {
         didSet {
             controlsView.isFullScreen = isFullScreen
             setNeedsStatusBarAppearanceUpdate()
