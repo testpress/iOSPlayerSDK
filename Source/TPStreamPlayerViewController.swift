@@ -30,7 +30,7 @@ public class TPStreamPlayerViewController: UIViewController {
         }
     }
     private var controlsVisibilityTimer: Timer?
-    private var isFullScreen: Bool = false {
+    public private(set) var isFullScreen: Bool = false {
         didSet {
             controlsView.isFullScreen = isFullScreen
             setNeedsStatusBarAppearanceUpdate()
@@ -198,14 +198,14 @@ public class TPStreamPlayerViewController: UIViewController {
 
 
 extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControlsDelegate {
-    func enterFullScreen() {
+    public func enterFullScreen() {
         delegate?.willEnterFullScreenMode()
         changeOrientation(orientation: .landscape)
         resizeContainerToWindow()
         delegate?.didEnterFullScreenMode()
     }
     
-    func exitFullScreen() {
+    public func exitFullScreen() {
         delegate?.willExitFullScreenMode()
         changeOrientation(orientation: .portrait)
         resizeContainerToParentView()
