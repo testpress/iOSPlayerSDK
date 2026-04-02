@@ -30,4 +30,8 @@ struct Asset {
     var keyIdentifier: String {
         return id
     }
+
+    var isDrmEncrypted: Bool {
+        return video?.drmEncrypted == true || liveStream?.enableDRM == true
+    }
 }

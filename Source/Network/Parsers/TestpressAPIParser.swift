@@ -60,7 +60,8 @@ class TestpressAPIParser: APIParser {
         
         let noticeMessage = liveStreamDict["notice_message"] as? String
         let transcodeRecordedVideo = liveStreamDict["show_recorded_video"] as? Bool ?? false
+        let enableDRM = false
         
-        return LiveStream(status: status, hlsUrl: hlsUrl, transcodeRecordedVideo: transcodeRecordedVideo, chatEmbedUrl: chatEmbedUrl, noticeMessage: noticeMessage)
+        return LiveStream(status: status, hlsUrl: hlsUrl, transcodeRecordedVideo: transcodeRecordedVideo, chatEmbedUrl: chatEmbedUrl, noticeMessage: noticeMessage, enableDRM: enableDRM)
     }
 }

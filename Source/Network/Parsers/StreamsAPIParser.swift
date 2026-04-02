@@ -55,7 +55,8 @@ class StreamsAPIParser: APIParser {
             return nil
         }
         let noticeMessage = liveStreamDict["notice_message"] as? String
+        let enableDRM = liveStreamDict["enable_drm"] as? Bool ?? false
    
-        return LiveStream(status: status, hlsUrl: hlsUrl, transcodeRecordedVideo: transcodeRecordedVideo, chatEmbedUrl: chatEmbedUrl, noticeMessage: noticeMessage)
+        return LiveStream(status: status, hlsUrl: hlsUrl, transcodeRecordedVideo: transcodeRecordedVideo, chatEmbedUrl: chatEmbedUrl, noticeMessage: noticeMessage, enableDRM: enableDRM)
     }
 }
