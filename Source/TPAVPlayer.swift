@@ -98,7 +98,7 @@ public class TPAVPlayer: AVPlayer {
             }
 
             #if targetEnvironment(simulator)
-            if asset?.drmEncrypted == true {
+            if asset?.isDrmEncrypted == true {
                 self.processInitializationFailure(TPStreamPlayerError.drmSimulatorError)
                 return
             }
