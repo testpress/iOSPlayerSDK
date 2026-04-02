@@ -98,7 +98,7 @@ public class TPAVPlayer: AVPlayer {
             }
 
             #if targetEnvironment(simulator)
-            if asset?.video?.drmEncrypted == true {
+            if asset?.isDrmEncrypted == true {
                 self.processInitializationFailure(TPStreamPlayerError.drmSimulatorError)
                 return
             }
@@ -142,7 +142,7 @@ public class TPAVPlayer: AVPlayer {
         avURLAsset.resourceLoader.setDelegate(resourceLoaderDelegate, queue: DispatchQueue.main)
         self.setPlayerItem(avURLAsset)
         
-        if asset.video?.drmEncrypted == true {
+        if asset.isDrmEncrypted == true {
             self.setupDRM(avURLAsset)
         }
         self.populateAvailableVideoQualities(url)

@@ -13,6 +13,7 @@ struct LiveStream{
     let transcodeRecordedVideo: Bool
     let chatEmbedUrl: String
     let noticeMessage: String?
+    let enableDRM: Bool
     
     var isStreaming: Bool {
         return status == "Streaming" || status == "Running"
