@@ -26,6 +26,13 @@ class PlayerControlsUIView: UIView {
     @IBOutlet weak var liveIndicatorContainer: UIView!
     @IBOutlet weak var controlsContainer: UIView!
 
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        guard let controlsContainer = controlsContainer, !controlsContainer.isHidden else {
+            return false
+        }
+        return controlsContainer.frame.contains(point)
+    }
+
     private lazy var liveIndicatorView: LiveIndicatorView = {
         let indicatorView = LiveIndicatorView(frame: liveIndicatorContainer.bounds)
         return indicatorView
