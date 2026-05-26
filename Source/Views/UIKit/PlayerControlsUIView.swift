@@ -24,6 +24,7 @@ class PlayerControlsUIView: UIView {
     @IBOutlet weak var forwardSeekNoticeLabel: UILabel!
     
     @IBOutlet weak var liveIndicatorContainer: UIView!
+    @IBOutlet weak var controlsContainer: UIView!
 
     private lazy var liveIndicatorView: LiveIndicatorView = {
         let indicatorView = LiveIndicatorView(frame: liveIndicatorContainer.bounds)

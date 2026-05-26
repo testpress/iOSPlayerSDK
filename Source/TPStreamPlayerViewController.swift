@@ -54,7 +54,7 @@ public class TPStreamPlayerViewController: UIViewController {
         view.player = TPStreamPlayer(player: self.player!)
         view.playerConfig = config
         view.frame = view.bounds
-        view.isHidden = true
+        view.controlsContainer.isHidden = true
         view.fullScreenToggleDelegate = self
         view.controlsDelegate = self
         view.parentViewController = self
@@ -157,13 +157,13 @@ public class TPStreamPlayerViewController: UIViewController {
     }
     
     @objc private func toggleControlsVisibility() {
-        controlsView.isHidden = !controlsView.isHidden
+        controlsView.controlsContainer.isHidden = !controlsView.controlsContainer.isHidden
         
-        // Hide controls view after 10 seconds
-        if !controlsView.isHidden {
+        // Hide controls container after 10 seconds
+        if !controlsView.controlsContainer.isHidden {
             controlsVisibilityTimer?.invalidate()
             controlsVisibilityTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] _ in
-                self?.controlsView.isHidden = true
+                self?.controlsView.controlsContainer.isHidden = true
             }
         }
     }
