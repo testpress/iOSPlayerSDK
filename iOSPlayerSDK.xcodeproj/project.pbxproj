@@ -38,8 +38,7 @@
 		03B8FDA12A69169100DAB7AE /* TPStreamsSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */; };
 		03B8FDA22A69169100DAB7AE /* TPStreamsSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		03B8FDA92A695FED00DAB7AE /* TPStreamPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B8FDA82A695FED00DAB7AE /* TPStreamPlayerViewController.swift */; };
-		03B8FDAB2A696E6D00DAB7AE /* PlayerControls.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03B8FDAA2A696E6D00DAB7AE /* PlayerControls.xib */; };
-		03B8FDAE2A69752800DAB7AE /* PlayerControlsUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B8FDAD2A69752800DAB7AE /* PlayerControlsUIView.swift */; };
+		03B8FDAB2A696E6D00DAB7AE /* PlayerOverlay.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03B8FDAA2A696E6D00DAB7AE /* PlayerOverlay.xib */; };
 		03BE54182BF780D1004ED191 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 03BE54172BF780D1004ED191 /* PrivacyInfo.xcprivacy */; };
 		03BF8C522B173ED10006CBC1 /* TPStreamPlayerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03BF8C512B173ED10006CBC1 /* TPStreamPlayerConfiguration.swift */; };
 		03CA2D312A2F757D00532549 /* TimeIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CA2D302A2F757D00532549 /* TimeIndicatorView.swift */; };
@@ -55,6 +54,7 @@
 		2D46EC6A2EE856BB008B559A /* M3U8Kit in Frameworks */ = {isa = PBXBuildFile; productRef = 2D46EC692EE856BB008B559A /* M3U8Kit */; };
 		2DC08F892F448BB900AABC60 /* EncryptionKeyDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC08F872F448BB900AABC60 /* EncryptionKeyDelegate.swift */; };
 		2DD12A212D4CF75400272433 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D92E48F22CB0226A00B1FAC3 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		2DD25B5B2FC5E999001FD5B4 /* PlayerOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD25B5A2FC5E999001FD5B4 /* PlayerOverlay.swift */; };
 		70D42E0B2E6075F3002AC32C /* AnyRealmValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D42E0A2E6075F3002AC32C /* AnyRealmValue.swift */; };
 		8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */; };
 		8E6389C42A27277D00306FA4 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389C32A27277D00306FA4 /* ExampleApp.swift */; };
@@ -192,8 +192,7 @@
 		03B8FD9B2A690CAD00DAB7AE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		03B8FD9D2A690CAD00DAB7AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		03B8FDA82A695FED00DAB7AE /* TPStreamPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayerViewController.swift; sourceTree = "<group>"; };
-		03B8FDAA2A696E6D00DAB7AE /* PlayerControls.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayerControls.xib; sourceTree = "<group>"; };
-		03B8FDAD2A69752800DAB7AE /* PlayerControlsUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlsUIView.swift; sourceTree = "<group>"; };
+		03B8FDAA2A696E6D00DAB7AE /* PlayerOverlay.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayerOverlay.xib; sourceTree = "<group>"; };
 		03BE54172BF780D1004ED191 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		03BF8C512B173ED10006CBC1 /* TPStreamPlayerConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayerConfiguration.swift; sourceTree = "<group>"; };
 		03CA2D302A2F757D00532549 /* TimeIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeIndicatorView.swift; sourceTree = "<group>"; };
@@ -207,6 +206,7 @@
 		2D2BA5782F5FEB2400D53996 /* KeychainUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtil.swift; sourceTree = "<group>"; };
 		2D3CE81E2F5957EE0011CAB7 /* VideoQualityUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoQualityUtils.swift; sourceTree = "<group>"; };
 		2DC08F872F448BB900AABC60 /* EncryptionKeyDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionKeyDelegate.swift; sourceTree = "<group>"; };
+		2DD25B5A2FC5E999001FD5B4 /* PlayerOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerOverlay.swift; sourceTree = "<group>"; };
 		70D42E0A2E6075F3002AC32C /* AnyRealmValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyRealmValue.swift; sourceTree = "<group>"; };
 		8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayerView.swift; sourceTree = "<group>"; };
 		8E6389C12A27277D00306FA4 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -344,7 +344,7 @@
 		03B8FDAC2A69749500DAB7AE /* Xib */ = {
 			isa = PBXGroup;
 			children = (
-				03B8FDAA2A696E6D00DAB7AE /* PlayerControls.xib */,
+				03B8FDAA2A696E6D00DAB7AE /* PlayerOverlay.xib */,
 			);
 			path = Xib;
 			sourceTree = "<group>";
@@ -368,8 +368,8 @@
 			children = (
 				03B8FDAC2A69749500DAB7AE /* Xib */,
 				03CC784C2A6BB6E5005E8F7E /* VideoPlayerView.swift */,
-				03B8FDAD2A69752800DAB7AE /* PlayerControlsUIView.swift */,
 				03913C472A850BF9002E7E0C /* ProgressBar.swift */,
+				2DD25B5A2FC5E999001FD5B4 /* PlayerOverlay.swift */,
 				03D7F4242C21C64D00DF3597 /* LiveIndicatorView.swift */,
 			);
 			path = UIKit;
@@ -736,7 +736,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				03BE54182BF780D1004ED191 /* PrivacyInfo.xcprivacy in Resources */,
-				03B8FDAB2A696E6D00DAB7AE /* PlayerControls.xib in Resources */,
+				03B8FDAB2A696E6D00DAB7AE /* PlayerOverlay.xib in Resources */,
 				03B8090E2A2DFC0F00AB3D03 /* TPStreamsSDKAssets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -784,9 +784,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				037F3BBF2B05EDD900ECEF57 /* UIInterfaceOrientationMask.swift in Sources */,
-				03B8FDAE2A69752800DAB7AE /* PlayerControlsUIView.swift in Sources */,
 				0374E3762C1B15C200CE9CF2 /* LiveStream.swift in Sources */,
 				D92E48AD2CAFBCFB00B1FAC3 /* OfflineAssetEntity.swift in Sources */,
+				2DD25B5B2FC5E999001FD5B4 /* PlayerOverlay.swift in Sources */,
 				8E6389E92A278D1D00306FA4 /* ContentKeyDelegate.swift in Sources */,
 				0374E3722C1AD2A200CE9CF2 /* TestpressAPIParser.swift in Sources */,
 				8E6389DD2A27338F00306FA4 /* AVPlayerBridge.swift in Sources */,

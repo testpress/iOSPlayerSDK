@@ -26,13 +26,13 @@ public class TPStreamPlayerViewController: UIViewController {
     public var autoFullScreenOnRotate = true
     public var config = TPStreamPlayerConfiguration(){
         didSet {
-            controlsView.playerConfig = config
+            overlayView.playerConfig = config
         }
     }
     private var controlsVisibilityTimer: Timer?
     public private(set) var isFullScreen: Bool = false {
         didSet {
-            controlsView.isFullScreen = isFullScreen
+            overlayView.isFullScreen = isFullScreen
             setNeedsStatusBarAppearanceUpdate()
         }
     }
@@ -47,18 +47,18 @@ public class TPStreamPlayerViewController: UIViewController {
         return view
     }()
     
-    private lazy var controlsView: PlayerControlsUIView = {
-        guard let view = bundle.loadNibNamed("PlayerControls", owner: nil, options: nil)?.first as? PlayerControlsUIView else {
-            fatalError("Could not load PlayerControls view from nib.")
+    private lazy var overlayView: PlayerOverlay = {
+        guard let overlay = bundle.loadNibNamed("PlayerOverlay", owner: nil, options: nil)?.first as? PlayerOverlay else {
+            fatalError("Could not load PlayerOverlay view from nib.")
         }
-        view.player = TPStreamPlayer(player: self.player!)
-        view.playerConfig = config
-        view.frame = view.bounds
-        view.controlsContainer.isHidden = true
-        view.fullScreenToggleDelegate = self
-        view.controlsDelegate = self
-        view.parentViewController = self
-        return view
+        overlay.player = TPStreamPlayer(player: self.player!)
+        overlay.playerConfig = config
+        overlay.frame = overlay.bounds
+        overlay.controls.isHidden = true
+        overlay.fullScreenToggleDelegate = self
+        overlay.controlsDelegate = self
+        overlay.parentViewController = self
+        return overlay
     }()
     
     private lazy var noticeView: UIView = {
@@ -73,9 +73,9 @@ public class TPStreamPlayerViewController: UIViewController {
         let view = UIView(frame: view.bounds)
         view.backgroundColor = .black
         view.addSubview(videoView)
-        view.addSubview(controlsView)
+        view.addSubview(overlayView)
         view.addSubview(noticeView)
-        view.bringSubviewToFront(controlsView)
+        view.bringSubviewToFront(overlayView)
         return view
     }()
     
@@ -106,7 +106,7 @@ public class TPStreamPlayerViewController: UIViewController {
         super.viewDidLayoutSubviews()
         containerView.frame = containerView.superview!.bounds
         videoView.frame = containerView.bounds
-        controlsView.frame = containerView.bounds
+        overlayView.frame = containerView.bounds
         noticeView.frame = containerView.bounds
         noticeMessageLabel.frame = noticeView.bounds
     }
@@ -157,13 +157,13 @@ public class TPStreamPlayerViewController: UIViewController {
     }
     
     @objc private func toggleControlsVisibility() {
-        controlsView.controlsContainer.isHidden = !controlsView.controlsContainer.isHidden
+        overlayView.controls.isHidden = !overlayView.controls.isHidden
         
         // Hide controls container after 10 seconds
-        if !controlsView.controlsContainer.isHidden {
+        if !overlayView.controls.isHidden {
             controlsVisibilityTimer?.invalidate()
             controlsVisibilityTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] _ in
-                self?.controlsView.controlsContainer.isHidden = true
+                self?.overlayView.controls.isHidden = true
             }
         }
     }
@@ -238,7 +238,7 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
     }
 
     func didTapReplay() {
-        controlsView.player?.replay()
+        overlayView.player?.replay()
         delegate?.didTapReplay()
     }
 }

@@ -10,11 +10,11 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="Pdx-qm-hxi" customClass="PlayerControlsUIView" customModule="TPStreamsSDK">
+        <view contentMode="scaleToFill" id="Pdx-qm-hxi" userLabel="Player Overlay View" customClass="PlayerOverlay" customModule="TPStreamsSDK">
             <rect key="frame" x="0.0" y="0.0" width="667" height="375"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CCC-cc-ccc">
+                <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CCC-cc-ccc" userLabel="Controls">
                     <rect key="frame" x="0.0" y="0.0" width="667" height="375"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rWY-7h-2Dd">
@@ -192,7 +192,7 @@
                 <constraint firstItem="w1Z-d2-tRh" firstAttribute="bottom" secondItem="rJo-p9-gc7" secondAttribute="bottom" constant="15" id="zcD-2u-Cfj"/>
             </constraints>
             <connections>
-                <outlet property="controlsContainer" destination="CCC-cc-ccc" id="ccc-otl"/>
+                <outlet property="controls" destination="CCC-cc-ccc" id="ccc-otl"/>
                 <outlet property="currentTimelabel" destination="rJo-p9-gc7" id="A5I-6V-15l"/>
                 <outlet property="forwardButton" destination="z2i-lj-k69" id="CDh-Of-PtG"/>
                 <outlet property="forwardSeekNoticeLabel" destination="vbY-Vi-98f" id="aOV-LF-VXC"/>
