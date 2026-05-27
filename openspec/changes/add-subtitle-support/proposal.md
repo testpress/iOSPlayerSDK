@@ -9,7 +9,7 @@ The Android SDK already supports subtitles/captions with WebVTT sidecar tracks. 
 - `TPStreamPlayerViewController` adds `SubtitleView` as a subview of `containerView` (between videoView and noticeView)
 - `TPStreamPlayerView` (SwiftUI) adds a SwiftUI subtitle view in its ZStack
 - Settings menu in both UIKit and SwiftUI gains a "Captions" entry listing available subtitle languages
-- `TPStreamPlayerConfiguration` gets `startWithCaption` flag; on player ready, auto-selects the track matching device language
+- `TPStreamPlayerConfiguration` gets `autoSelectFirstSubtitle` flag; on player ready and auto select the first subtitle from the api
 - `enableCaptions` config flag wired into `showSettingsButton` so the settings button appears when only captions are enabled
 - `SwiftSubtitles` added as a dependency in both `Package.swift` and `TPStreamsSDK.podspec`
 

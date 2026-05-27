@@ -46,12 +46,12 @@ The player SHALL automatically select the first available subtitle track on firs
 
 #### Scenario: Auto-select first track
 - **WHEN** the user starts playing the video for the first time
-- **AND** `startWithCaption` is `true` and the video has subtitle tracks
+- **AND** `autoSelectFirstSubtitle` is `true` and the video has subtitle tracks
 - **THEN** the first subtitle track SHALL be automatically selected
 - **THEN** subtitles SHALL begin displaying from the first cue
 
 #### Scenario: No auto-select when disabled
-- **WHEN** `startWithCaption` is `false`
+- **WHEN** `autoSelectFirstSubtitle` is `false`
 - **THEN** no subtitle track SHALL be auto-selected
 
 ### Requirement: Subtitles remain visible in fullscreen
