@@ -41,9 +41,9 @@ class StreamsAPIParser: APIParser {
         }()
         
         let isDrm = contentProtectionType == .drm
+        let tracks = parseTracks(from: videoDict["tracks"] as? [[String: Any]])
         
-        
-        return Video(id: id, playbackURL: playbackURL, status: status, drmEncrypted: isDrm, duration: duration, thumbnailURL: thumbnailURL, contentProtectionType: contentProtectionType)
+        return Video(id: id, playbackURL: playbackURL, status: status, drmEncrypted: isDrm, duration: duration, thumbnailURL: thumbnailURL, contentProtectionType: contentProtectionType, tracks: tracks)
     }
 
     func parseLiveStream(from dictionary: [String: Any]?) -> LiveStream? {

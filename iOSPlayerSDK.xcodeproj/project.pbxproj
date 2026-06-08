@@ -53,6 +53,7 @@
 		2D2BA5792F5FEB2400D53996 /* KeychainUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D2BA5782F5FEB2400D53996 /* KeychainUtil.swift */; };
 		2D3CE81F2F5957EE0011CAB7 /* VideoQualityUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3CE81E2F5957EE0011CAB7 /* VideoQualityUtils.swift */; };
 		2D46EC6A2EE856BB008B559A /* M3U8Kit in Frameworks */ = {isa = PBXBuildFile; productRef = 2D46EC692EE856BB008B559A /* M3U8Kit */; };
+		2D9798C02FC966D800593EAC /* SubtitleTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9798BF2FC966D800593EAC /* SubtitleTrack.swift */; };
 		2DC08F892F448BB900AABC60 /* EncryptionKeyDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC08F872F448BB900AABC60 /* EncryptionKeyDelegate.swift */; };
 		2DD12A212D4CF75400272433 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D92E48F22CB0226A00B1FAC3 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		70D42E0B2E6075F3002AC32C /* AnyRealmValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D42E0A2E6075F3002AC32C /* AnyRealmValue.swift */; };
@@ -206,6 +207,7 @@
 		03D7F4272C22C4F900DF3597 /* PlaybackSpeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackSpeed.swift; sourceTree = "<group>"; };
 		2D2BA5782F5FEB2400D53996 /* KeychainUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtil.swift; sourceTree = "<group>"; };
 		2D3CE81E2F5957EE0011CAB7 /* VideoQualityUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoQualityUtils.swift; sourceTree = "<group>"; };
+		2D9798BF2FC966D800593EAC /* SubtitleTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleTrack.swift; sourceTree = "<group>"; };
 		2DC08F872F448BB900AABC60 /* EncryptionKeyDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionKeyDelegate.swift; sourceTree = "<group>"; };
 		70D42E0A2E6075F3002AC32C /* AnyRealmValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyRealmValue.swift; sourceTree = "<group>"; };
 		8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayerView.swift; sourceTree = "<group>"; };
@@ -309,6 +311,7 @@
 			isa = PBXGroup;
 			children = (
 				0377C4102A2B1F0700F7E58F /* Asset.swift */,
+				2D9798BF2FC966D800593EAC /* SubtitleTrack.swift */,
 				0374E3732C1B159A00CE9CF2 /* Video.swift */,
 				0374E3752C1B15C200CE9CF2 /* LiveStream.swift */,
 			);
@@ -814,6 +817,7 @@
 				D92E48B62CAFBD6F00B1FAC3 /* ObjectManager.swift in Sources */,
 				03CC86682AE142FF002F5D28 /* ResourceLoaderDelegate.swift in Sources */,
 				031099F62B28B22C0034D370 /* TPStreamPlayerError.swift in Sources */,
+				2D9798C02FC966D800593EAC /* SubtitleTrack.swift in Sources */,
 				D9CC9A582CB3BF46008037FE /* TPStreamsDownloadManager.swift in Sources */,
 				03B8090C2A2DF9A200AB3D03 /* PlayerControlsView.swift in Sources */,
 				8E6389DF2A2751C800306FA4 /* TPAVPlayer.swift in Sources */,

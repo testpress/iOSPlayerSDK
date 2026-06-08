@@ -12,3 +12,10 @@ protocol APIParser {
     func parseVideo(from dictionary: [String: Any]?) -> Video?
     func parseLiveStream(from dictionary: [String: Any]?) -> LiveStream?
 }
+
+extension APIParser {
+    func parseTracks(from tracksArray: [[String: Any]]?) -> [SubtitleTrack] {
+        guard let tracksArray = tracksArray else { return [] }
+        return tracksArray.compactMap { SubtitleTrack(from: $0) }
+    }
+}
