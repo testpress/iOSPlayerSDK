@@ -46,8 +46,9 @@ class TestpressAPIParser: APIParser {
         
         // Get content protection type directly from API
         let contentProtectionType = ContentProtectionType.fromString(videoDict["content_protection_type"] as? String)
+        let tracks = parseTracks(from: videoDict["tracks"] as? [[String: Any]])
         
-        return Video(id: id, playbackURL: playbackURL, status: status, drmEncrypted: drmEncrypted, duration: duration, thumbnailURL: thumbnailURL, contentProtectionType: contentProtectionType)
+        return Video(id: id, playbackURL: playbackURL, status: status, drmEncrypted: drmEncrypted, duration: duration, thumbnailURL: thumbnailURL, contentProtectionType: contentProtectionType, tracks: tracks)
     }
 
     func parseLiveStream(from dictionary: [String: Any]?) -> LiveStream? {

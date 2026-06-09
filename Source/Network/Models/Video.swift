@@ -28,6 +28,7 @@ public struct Video {
     let duration: Double
     let thumbnailURL: String?
     let contentProtectionType: ContentProtectionType?
+    let tracks: [SubtitleTrack]
     
     var isAESEncrypted: Bool {
         return contentProtectionType == .aes

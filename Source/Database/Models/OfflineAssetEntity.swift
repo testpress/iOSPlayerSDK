@@ -109,7 +109,8 @@ extension LocalOfflineAsset {
             drmEncrypted: isDrmEncrypted,
             duration: self.duration,
             thumbnailURL: self.thumbnailURL,
-            contentProtectionType: isDrmEncrypted ? .drm : self.contentProtectionType
+            contentProtectionType: isDrmEncrypted ? .drm : self.contentProtectionType,
+            tracks: []
         )
 
         let asset: Asset = Asset(

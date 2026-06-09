@@ -1,7 +1,7 @@
 ## 1. API Parsing
 
-- [ ] 1.1 Update `StreamsAPIParser.parseVideo(from:)` to extract tracks from the `video.tracks` response dict
-- [ ] 1.2 Update `TestpressAPIParser.parseVideo(from:)` to extract tracks from the `video.tracks` response dict
+- [x] 1.1 Update `StreamsAPIParser.parseVideo(from:)` to extract tracks from the `video.tracks` response dict
+- [x] 1.2 Update `TestpressAPIParser.parseVideo(from:)` to extract tracks from the `video.tracks` response dict
 
 ## 2. SubtitleView (UIKit)
 
