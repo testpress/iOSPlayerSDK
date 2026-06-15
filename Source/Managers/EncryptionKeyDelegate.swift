@@ -129,9 +129,7 @@ final class EncryptionKeyDelegate {
  
         if let authToken = TPStreamsSDK.authToken, !authToken.isEmpty {
             headers.add(name: "Authorization", value: "JWT \(authToken)")
-        } else if let token = accessToken, !token.isEmpty {
-            headers.add(name: "Authorization", value: "JWT \(token)")
-        }
+        } 
         if let userAgentPrefix = TPStreamsSDK.provider.API.userAgentPrefix {
             headers.add(name: "User-Agent", value: userAgentPrefix)
         }
