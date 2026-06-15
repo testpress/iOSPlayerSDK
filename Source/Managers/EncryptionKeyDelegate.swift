@@ -125,9 +125,13 @@ final class EncryptionKeyDelegate {
     }
     
     private func makeAuthHeaders(accessToken: String?) -> HTTPHeaders {
+        var headers: HTTPHeaders = []
         if let token = TPStreamsSDK.authToken {
-            return ["Authorization": "JWT \(token)"]
+            headers.add(name: "Authorization", value: "JWT \(token)")
         }
-        return [:]
+        if TPStreamsSDK.provider == .testpress {
+            headers.add(name: "User-Agent", value: "ios-app (iPhone)")
+        }
+        return headers
     }
 }
