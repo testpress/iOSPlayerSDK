@@ -41,8 +41,9 @@ class SubtitleView: UIView {
 
         NSLayoutConstraint.activate([
             container.centerXAnchor.constraint(equalTo: centerXAnchor),
+            container.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 20),
+            container.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -20),
             container.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
-            container.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, multiplier: 0.9),
 
             label.topAnchor.constraint(equalTo: container.topAnchor, constant: 3),
             label.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -3),

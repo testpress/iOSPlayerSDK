@@ -13,12 +13,8 @@ public struct SubtitleTrack {
         }
 
         guard let parsedURL = URL(string: url),
-              parsedURL.scheme == "http" || parsedURL.scheme == "https" else {
-            return nil
-        }
-
-        let lastPath = parsedURL.lastPathComponent.lowercased()
-        if ["none", "null", "undefined", "nil"].contains(lastPath) {
+              parsedURL.scheme == "http" || parsedURL.scheme == "https",
+              parsedURL.pathExtension.lowercased() == "vtt" else {
             return nil
         }
 

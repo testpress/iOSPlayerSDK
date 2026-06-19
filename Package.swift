@@ -19,7 +19,7 @@ let package = Package(
     .package(url: "https://github.com/M3U8Kit/M3U8Parser", .upToNextMajor(from: "1.2.0")),
     .package(url: "https://github.com/ashleymills/Reachability.swift", .upToNextMajor(from: "5.2.2")),
     .package(url: "https://github.com/realm/realm-swift", exact: "10.54.2"),
-    .package(url: "https://github.com/dagronf/SwiftSubtitles.git", .upToNextMajor(from: "2.2.0")),
+    .package(url: "https://github.com/dagronf/SwiftSubtitles.git", .upToNextMinor(from: "2.2.0")),
 
   ],
 
