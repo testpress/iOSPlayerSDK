@@ -2,6 +2,7 @@ import UIKit
 import SwiftSubtitles
 
 class SubtitleView: UIView {
+
     private let container = UIView()
     private let label = UILabel()
     private var currentTrack: SubtitleTrack?
@@ -26,13 +27,13 @@ class SubtitleView: UIView {
     private func setupView() {
         backgroundColor = .clear
         isUserInteractionEnabled = false
-        
+
         createContainer()
         createLabel()
-        
+
         addSubview(container)
         container.addSubview(label)
-        
+
         setupConstraints()
     }
 
@@ -52,7 +53,6 @@ class SubtitleView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
     }
 
-
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             container.centerXAnchor.constraint(equalTo: centerXAnchor),
@@ -66,6 +66,7 @@ class SubtitleView: UIView {
             label.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -6)
         ])
     }
+
 
     func setTrack(_ track: SubtitleTrack?) {
         if let currentTrack, let track, currentTrack.url == track.url {
@@ -85,16 +86,6 @@ class SubtitleView: UIView {
         downloadSubtitles(from: url, for: track)
     }
 
-    private func parseSubtitles(_ content: String) {
-        defer { downloadTask = nil }
-
-        do {
-            subtitles = try Subtitles(content: content, expectedExtension: "vtt")
-        } catch {
-            handleLoadFailure()
-        }
-    }
-
     func updateSubtitle(at time: TimeInterval) {
         lastUpdateTime = time
 
@@ -106,16 +97,6 @@ class SubtitleView: UIView {
         } else {
             hideSubtitle()
         }
-    }
-
-    private func hideSubtitle() {
-        label.text = nil
-        container.isHidden = true
-    }
-
-    private func handleLoadFailure() {
-        hideSubtitle()
-        downloadTask = nil
     }
 
     private func downloadSubtitles(from url: URL, for track: SubtitleTrack) {
@@ -136,11 +117,31 @@ class SubtitleView: UIView {
         }
         downloadTask?.resume()
     }
-    
+
     private func onDownloadSuccess(_ content: String) {
         parseSubtitles(content)
         if let lastUpdateTime {
             updateSubtitle(at: lastUpdateTime)
         }
+    }
+
+    private func parseSubtitles(_ content: String) {
+        defer { downloadTask = nil }
+
+        do {
+            subtitles = try Subtitles(content: content, expectedExtension: "vtt")
+        } catch {
+            handleLoadFailure()
+        }
+    }
+
+    private func hideSubtitle() {
+        label.text = nil
+        container.isHidden = true
+    }
+
+    private func handleLoadFailure() {
+        hideSubtitle()
+        downloadTask = nil
     }
 }
