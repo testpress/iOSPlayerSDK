@@ -26,23 +26,34 @@ class SubtitleView: UIView {
     private func setupView() {
         backgroundColor = .clear
         isUserInteractionEnabled = false
+        
+        createContainer()
+        createLabel()
+        
+        addSubview(container)
+        container.addSubview(label)
+        
+        setupConstraints()
+    }
 
+    private func createContainer() {
         container.backgroundColor = UIColor.black.withAlphaComponent(0.8)
         container.layer.cornerRadius = 4
         container.isHidden = true
+        container.translatesAutoresizingMaskIntoConstraints = false
+    }
 
+    private func createLabel() {
         label.textColor = .white
         label.font = UIFont.systemFont(ofSize: 14)
         label.numberOfLines = 0
         label.textAlignment = .center
         label.lineBreakMode = .byWordWrapping
-
-        addSubview(container)
-        container.addSubview(label)
-
-        container.translatesAutoresizingMaskIntoConstraints = false
         label.translatesAutoresizingMaskIntoConstraints = false
+    }
 
+
+    private func setupConstraints() {
         NSLayoutConstraint.activate([
             container.centerXAnchor.constraint(equalTo: centerXAnchor),
             container.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 20),
@@ -71,26 +82,7 @@ class SubtitleView: UIView {
 
         guard let url = URL(string: track.url) else { return }
 
-        downloadTask = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-            DispatchQueue.main.async {
-                guard let self else { return }
-                guard self.currentTrack?.url == track.url else { return }
-
-                guard error == nil,let httpResponse = response as? HTTPURLResponse,
-                      (200...299).contains(httpResponse.statusCode) else {
-                    self.handleLoadFailure()
-                    return
-                }
-
-                guard let data, let content = String(data: data, encoding: .utf8) else {
-                    self.handleLoadFailure()
-                    return
-                }
-
-                self.parseSubtitles(content)
-            }
-        }
-        downloadTask?.resume()
+        downloadSubtitles(from: url, for: track)
     }
 
     private func parseSubtitles(_ content: String) {
@@ -98,9 +90,6 @@ class SubtitleView: UIView {
 
         do {
             subtitles = try Subtitles(content: content, expectedExtension: "vtt")
-            if let lastUpdateTime {
-                updateSubtitle(at: lastUpdateTime)
-            }
         } catch {
             handleLoadFailure()
         }
@@ -127,5 +116,31 @@ class SubtitleView: UIView {
     private func handleLoadFailure() {
         hideSubtitle()
         downloadTask = nil
+    }
+
+    private func downloadSubtitles(from url: URL, for track: SubtitleTrack) {
+        downloadTask = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            DispatchQueue.main.async {
+                guard let self else { return }
+                guard self.currentTrack?.url == track.url else { return }
+                guard error == nil,
+                      let httpResponse = response as? HTTPURLResponse,
+                      (200...299).contains(httpResponse.statusCode),
+                      let data,
+                      let content = String(data: data, encoding: .utf8) else {
+                    self.handleLoadFailure()
+                    return
+                }
+                self.onDownloadSuccess(content)
+            }
+        }
+        downloadTask?.resume()
+    }
+    
+    private func onDownloadSuccess(_ content: String) {
+        parseSubtitles(content)
+        if let lastUpdateTime {
+            updateSubtitle(at: lastUpdateTime)
+        }
     }
 }
