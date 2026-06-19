@@ -21,7 +21,7 @@ class SubtitleView: UIView {
     }
 
     deinit {
-        downloadTask?.cancel()
+        reset()
     }
 
     private func setupView() {
@@ -73,9 +73,7 @@ class SubtitleView: UIView {
             return
         }
 
-        downloadTask?.cancel()
-        downloadTask = nil
-        subtitles = nil
+        reset()
         currentTrack = track
 
         hideSubtitle()
@@ -83,7 +81,7 @@ class SubtitleView: UIView {
 
         guard let url = URL(string: track.url) else { return }
 
-        downloadSubtitles(from: url, for: track)
+        loadSubtitles(from: url, for: track)
     }
 
     func updateSubtitle(at time: TimeInterval) {
@@ -99,7 +97,7 @@ class SubtitleView: UIView {
         }
     }
 
-    private func downloadSubtitles(from url: URL, for track: SubtitleTrack) {
+    private func loadSubtitles(from url: URL, for track: SubtitleTrack) {
         downloadTask = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
             DispatchQueue.main.async {
                 guard let self else { return }
@@ -133,6 +131,12 @@ class SubtitleView: UIView {
         } catch {
             handleLoadFailure()
         }
+    }
+
+    private func reset() {
+        downloadTask?.cancel()
+        downloadTask = nil
+        subtitles = nil
     }
 
     private func hideSubtitle() {
