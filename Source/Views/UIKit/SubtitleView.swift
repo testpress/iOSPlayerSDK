@@ -19,6 +19,10 @@ class SubtitleView: UIView {
         setupView()
     }
 
+    deinit {
+        downloadTask?.cancel()
+    }
+
     private func setupView() {
         backgroundColor = .clear
         isUserInteractionEnabled = false
@@ -52,12 +56,7 @@ class SubtitleView: UIView {
         ])
     }
 
-    deinit {
-        downloadTask?.cancel()
-    }
-
     func setTrack(_ track: SubtitleTrack?) {
-        dispatchPrecondition(condition: .onQueue(.main))
         if let currentTrack, let track, currentTrack.url == track.url {
             return
         }
@@ -77,12 +76,7 @@ class SubtitleView: UIView {
                 guard let self else { return }
                 guard self.currentTrack?.url == track.url else { return }
 
-                guard error == nil else {
-                    self.handleLoadFailure()
-                    return
-                }
-
-                guard let httpResponse = response as? HTTPURLResponse,
+                guard error == nil,let httpResponse = response as? HTTPURLResponse,
                       (200...299).contains(httpResponse.statusCode) else {
                     self.handleLoadFailure()
                     return
@@ -99,8 +93,20 @@ class SubtitleView: UIView {
         downloadTask?.resume()
     }
 
+    private func parseSubtitles(_ content: String) {
+        defer { downloadTask = nil }
+
+        do {
+            subtitles = try Subtitles(content: content, expectedExtension: "vtt")
+            if let lastUpdateTime {
+                updateSubtitle(at: lastUpdateTime)
+            }
+        } catch {
+            handleLoadFailure()
+        }
+    }
+
     func updateSubtitle(at time: TimeInterval) {
-        dispatchPrecondition(condition: .onQueue(.main))
         lastUpdateTime = time
 
         guard let subtitles else { return }
@@ -121,18 +127,5 @@ class SubtitleView: UIView {
     private func handleLoadFailure() {
         hideSubtitle()
         downloadTask = nil
-    }
-
-    private func parseSubtitles(_ content: String) {
-        defer { downloadTask = nil }
-
-        do {
-            subtitles = try Subtitles(content: content, expectedExtension: "vtt")
-            if let lastUpdateTime {
-                updateSubtitle(at: lastUpdateTime)
-            }
-        } catch {
-            handleLoadFailure()
-        }
     }
 }
