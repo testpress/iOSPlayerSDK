@@ -17,7 +17,7 @@ import RealmSwift
     let appBundle = Bundle(for: TPStreamsSDK.self)
     let bundle: Bundle = {
         let candidates = [appBundle, Bundle.main]
-        guard let foundBundle = candidates.first(where: { $0.path(forResource: "PlayerControls", ofType: "nib") != nil }) else {
+        guard let foundBundle = candidates.first(where: { $0.path(forResource: "PlayerOverlay", ofType: "nib") != nil }) else {
             fatalError("TPStreamsSDK: Could not locate UI resources. Please ensure the SDK is integrated correctly.")
         }
         return foundBundle

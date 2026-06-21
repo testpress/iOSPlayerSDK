@@ -10,7 +10,7 @@ import UIKit
 
 let ACTION_SHEET_PREFERRED_STYLE: UIAlertController.Style  = UIDevice.current.userInterfaceIdiom == .pad ? .alert : .actionSheet
 
-class PlayerControlsUIView: UIView {
+class PlayerOverlay: UIView {
     @IBOutlet weak var playPauseButton: UIButton!
     @IBOutlet weak var currentTimelabel: UILabel!
     @IBOutlet weak var videoDurationLabel: UILabel!
@@ -24,6 +24,14 @@ class PlayerControlsUIView: UIView {
     @IBOutlet weak var forwardSeekNoticeLabel: UILabel!
     
     @IBOutlet weak var liveIndicatorContainer: UIView!
+    @IBOutlet weak var controls: UIView!
+
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        guard let controls = controls, !controls.isHidden else {
+            return false
+        }
+        return controls.frame.contains(point)
+    }
 
     private lazy var liveIndicatorView: LiveIndicatorView = {
         let indicatorView = LiveIndicatorView(frame: liveIndicatorContainer.bounds)
