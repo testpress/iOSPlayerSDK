@@ -13,6 +13,10 @@ import CoreMedia
 public class TPStreamPlayerViewController: UIViewController {
     public var player: TPAVPlayer?{
         didSet {
+            if let obs = playerTimeObserver, let oldPlayer = oldValue {
+                oldPlayer.removeTimeObserver(obs)
+                playerTimeObserver = nil
+            }
             guard let player = player else { return }
             if isViewLoaded {
                 handlePlayerInitializationError()
@@ -122,6 +126,7 @@ public class TPStreamPlayerViewController: UIViewController {
         
         setupTapGesture()
         handlePlayerInitializationError()
+        controlsView.selectedSubtitleTrack = activeSubtitleTrack
     }
     
     public override func viewWillAppear(_ animated: Bool) {
