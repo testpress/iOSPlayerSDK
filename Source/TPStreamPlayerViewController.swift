@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import CoreMedia
 
 
 public class TPStreamPlayerViewController: UIViewController {
@@ -22,12 +23,15 @@ public class TPStreamPlayerViewController: UIViewController {
             player.onError = showError
         }
     }
-    private var playerStatusObervervation: NSKeyValueObservation?
-    private var playerTimeObservation: NSKeyValueObservation?
+    private var playerStatusObservation: NSKeyValueObservation?
+    private var playerTimeObserver: Any?
     
     public var activeSubtitleTrack: SubtitleTrack? {
         didSet {
             subtitleView.setTrack(activeSubtitleTrack)
+            if isViewLoaded {
+                controlsView.selectedSubtitleTrack = activeSubtitleTrack
+            }
         }
     }
     
@@ -67,6 +71,9 @@ public class TPStreamPlayerViewController: UIViewController {
         view.fullScreenToggleDelegate = self
         view.controlsDelegate = self
         view.parentViewController = self
+        view.onSubtitleTrackSelected = { [weak self] track in
+            self?.activeSubtitleTrack = track
+        }
         return view
     }()
     
@@ -102,6 +109,13 @@ public class TPStreamPlayerViewController: UIViewController {
         return messageLabel
     }()
     
+    deinit {
+        playerStatusObservation = nil
+        if let observer = playerTimeObserver, let player = player {
+            player.removeTimeObserver(observer)
+        }
+    }
+
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(containerView)
@@ -139,7 +153,7 @@ public class TPStreamPlayerViewController: UIViewController {
     }
     
     private func setupPlayerStatusObserver(for player: TPAVPlayer) {
-        playerStatusObervervation = player.observe(\.initializationStatus, options: [.new]) { [weak self] (_, change) in
+        playerStatusObservation = player.observe(\.initializationStatus, options: [.new]) { [weak self] (_, change) in
             guard let self = self else { return }
 
             if let status = change.newValue {
@@ -150,7 +164,9 @@ public class TPStreamPlayerViewController: UIViewController {
                 case "ready":
                     self.noticeView.isHidden = true
                     self.showLiveStreamNotice()
-                    if self.config.autoSelectFirstSubtitle, let tracks = self.player?.asset?.video?.tracks, let firstTrack = tracks.first {
+                    if self.config.autoSelectFirstSubtitle,
+                       self.activeSubtitleTrack == nil,
+                       let firstTrack = self.player?.asset?.video?.tracks.first {
                         self.activeSubtitleTrack = firstTrack
                     }
                 default:
@@ -161,9 +177,9 @@ public class TPStreamPlayerViewController: UIViewController {
     }
     
     private func setupPlayerTimeObserver() {
-        playerTimeObservation = controlsView.player?.observe(\.currentTime, options: [.new]) { [weak self] (_, change) in
-            guard let self = self, let newTime = change.newValue else { return }
-            self.subtitleView.updateSubtitle(at: newTime.doubleValue)
+        let interval = CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+        playerTimeObserver = player?.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [weak self] time in
+            self?.subtitleView.updateSubtitle(at: CMTimeGetSeconds(time))
         }
     }
     

@@ -49,7 +49,9 @@ class PlayerControlsUIView: UIView {
         }
     }
     
-    var parentViewController: UIViewController?
+    weak var parentViewController: UIViewController?
+    var selectedSubtitleTrack: SubtitleTrack?
+    var onSubtitleTrackSelected: ((SubtitleTrack?) -> Void)?
     var fullScreenToggleDelegate: FullScreenToggleDelegate?
     var controlsDelegate: PlayerControlsDelegate?
     var isFullScreen: Bool = false {
@@ -171,12 +173,12 @@ class PlayerControlsUIView: UIView {
         parentViewController?.present(optionsMenu, animated: true, completion: nil)
     }
     
-    func showCaptionsMenu() {
+    private func showCaptionsMenu() {
         guard let captionsMenu = createCaptionsMenu() else { return }
         parentViewController?.present(captionsMenu, animated: true, completion: nil)
     }
     
-    func createCaptionsMenu() -> UIAlertController? {
+    private func createCaptionsMenu() -> UIAlertController? {
         guard let tracks = player.asset?.video?.tracks else { return nil }
         let captionsMenu = UIAlertController(title: "Captions", message: nil, preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
         
@@ -191,15 +193,13 @@ class PlayerControlsUIView: UIView {
         return captionsMenu
     }
     
-    func createActionForCaptionTrack(_ track: SubtitleTrack?) -> UIAlertAction {
+    private func createActionForCaptionTrack(_ track: SubtitleTrack?) -> UIAlertAction {
         let title = track?.displayName ?? "Off"
         let action = UIAlertAction(title: title, style: .default) { [weak self] _ in
-            if let playerVC = self?.parentViewController as? TPStreamPlayerViewController {
-                playerVC.activeSubtitleTrack = track
-            }
+            self?.selectedSubtitleTrack = track
+            self?.onSubtitleTrackSelected?(track)
         }
-        let activeTrack = (parentViewController as? TPStreamPlayerViewController)?.activeSubtitleTrack
-        if track?.url == activeTrack?.url {
+        if track?.url == selectedSubtitleTrack?.url {
             action.setValue(UIImage(named: "checkmark", in: bundle, compatibleWith: nil), forKey: "image")
         }
         return action
