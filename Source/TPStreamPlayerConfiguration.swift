@@ -22,9 +22,10 @@ public struct TPStreamPlayerConfiguration {
     public var showResolutionOptions: Bool = true
     public var enableSeekButtons: Bool = true
     public var enableCaptions: Bool = false
+    public var autoSelectFirstSubtitle: Bool = false
     
     public var showSettingsButton: Bool {
-        return enablePlaybackSpeed || showResolutionOptions || showDownloadOption
+        return enablePlaybackSpeed || showResolutionOptions || showDownloadOption || enableCaptions
     }
 }
 
@@ -98,6 +99,11 @@ public class TPStreamPlayerConfigurationBuilder {
     
     public func enableCaptions(_ enable: Bool) -> Self {
         configuration.enableCaptions = enable
+        return self
+    }
+    
+    public func autoSelectFirstSubtitle(_ enable: Bool) -> Self {
+        configuration.autoSelectFirstSubtitle = enable
         return self
     }
     

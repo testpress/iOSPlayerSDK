@@ -50,7 +50,9 @@
 		03CE75022A7A337B00B84304 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CE75012A7A337B00B84304 /* UIView.swift */; };
 		03D7F4252C21C64D00DF3597 /* LiveIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D7F4242C21C64D00DF3597 /* LiveIndicatorView.swift */; };
 		03D7F4282C22C4F900DF3597 /* PlaybackSpeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D7F4272C22C4F900DF3597 /* PlaybackSpeed.swift */; };
+		2D2023032FD6DD1A0077600E /* SwiftSubtitles in Frameworks */ = {isa = PBXBuildFile; productRef = 2D2023022FD6DD1A0077600E /* SwiftSubtitles */; };
 		2D2BA5792F5FEB2400D53996 /* KeychainUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D2BA5782F5FEB2400D53996 /* KeychainUtil.swift */; };
+		4F02A7FA872249B68023A541 /* SubtitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F02A7FA872249B68023A540 /* SubtitleView.swift */; };
 		2D3CE81F2F5957EE0011CAB7 /* VideoQualityUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3CE81E2F5957EE0011CAB7 /* VideoQualityUtils.swift */; };
 		2D46EC6A2EE856BB008B559A /* M3U8Kit in Frameworks */ = {isa = PBXBuildFile; productRef = 2D46EC692EE856BB008B559A /* M3U8Kit */; };
 		2D9798C02FC966D800593EAC /* SubtitleTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9798BF2FC966D800593EAC /* SubtitleTrack.swift */; };
@@ -204,6 +206,7 @@
 		03CE74FF2A7946A800B84304 /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		03CE75012A7A337B00B84304 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		03D7F4242C21C64D00DF3597 /* LiveIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveIndicatorView.swift; sourceTree = "<group>"; };
+		3F02A7FA872249B68023A540 /* SubtitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleView.swift; sourceTree = "<group>"; };
 		03D7F4272C22C4F900DF3597 /* PlaybackSpeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackSpeed.swift; sourceTree = "<group>"; };
 		2D2BA5782F5FEB2400D53996 /* KeychainUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtil.swift; sourceTree = "<group>"; };
 		2D3CE81E2F5957EE0011CAB7 /* VideoQualityUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoQualityUtils.swift; sourceTree = "<group>"; };
@@ -271,6 +274,7 @@
 				0394CA312B5E5529006BED3B /* Reachability in Frameworks */,
 				8E6389E52A275B2A00306FA4 /* Alamofire in Frameworks */,
 				2D46EC6A2EE856BB008B559A /* M3U8Kit in Frameworks */,
+				2D2023032FD6DD1A0077600E /* SwiftSubtitles in Frameworks */,
 				0326BADB2A335911009ABC58 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -374,6 +378,7 @@
 				03B8FDAD2A69752800DAB7AE /* PlayerControlsUIView.swift */,
 				03913C472A850BF9002E7E0C /* ProgressBar.swift */,
 				03D7F4242C21C64D00DF3597 /* LiveIndicatorView.swift */,
+				3F02A7FA872249B68023A540 /* SubtitleView.swift */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -638,6 +643,7 @@
 				0394CA302B5E5529006BED3B /* Reachability */,
 				D92E48F22CB0226A00B1FAC3 /* RealmSwift */,
 				2D46EC692EE856BB008B559A /* M3U8Kit */,
+				2D2023022FD6DD1A0077600E /* SwiftSubtitles */,
 			);
 			productName = iOSPlayerSDK;
 			productReference = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */;
@@ -701,6 +707,7 @@
 				0326BADC2A348690009ABC58 /* XCRemoteSwiftPackageReference "M3U8Parser" */,
 				0394CA2F2B5E5528006BED3B /* XCRemoteSwiftPackageReference "Reachability" */,
 				D92E48EF2CB0226A00B1FAC3 /* XCRemoteSwiftPackageReference "realm-swift" */,
+				2D2023012FD6DD1A0077600E /* XCRemoteSwiftPackageReference "SwiftSubtitles" */,
 			);
 			productRefGroup = 8EDE99A52A2643B000E43EA9 /* Products */;
 			projectDirPath = "";
@@ -834,6 +841,7 @@
 				8E6C5CB22A28AB94003EC948 /* ContentKeyManager.swift in Sources */,
 				03CC784D2A6BB6E5005E8F7E /* VideoPlayerView.swift in Sources */,
 				2D2BA5792F5FEB2400D53996 /* KeychainUtil.swift in Sources */,
+				4F02A7FA872249B68023A541 /* SubtitleView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1312,6 +1320,14 @@
 				minimumVersion = 5.2.2;
 			};
 		};
+		2D2023012FD6DD1A0077600E /* XCRemoteSwiftPackageReference "SwiftSubtitles" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/dagronf/SwiftSubtitles.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.0;
+			};
+		};
 		8E6389E32A275B2A00306FA4 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire";
@@ -1340,6 +1356,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0394CA2F2B5E5528006BED3B /* XCRemoteSwiftPackageReference "Reachability" */;
 			productName = Reachability;
+		};
+		2D2023022FD6DD1A0077600E /* SwiftSubtitles */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2D2023012FD6DD1A0077600E /* XCRemoteSwiftPackageReference "SwiftSubtitles" */;
+			productName = SwiftSubtitles;
 		};
 		2D46EC692EE856BB008B559A /* M3U8Kit */ = {
 			isa = XCSwiftPackageProductDependency;

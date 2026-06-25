@@ -5,13 +5,13 @@
 
 ## 2. SubtitleView (UIKit)
 
-- [ ] 2.1 Add `dagronf/SwiftSubtitles` SPM dependency to `Package.swift`
-- [ ] 2.2 Add `SwiftSubtitles` pod dependency to `TPStreamsSDK.podspec`
-- [ ] 2.3 Create `SubtitleView` as a UIView subclass with a `UILabel` for rendering subtitle text
-- [ ] 2.4 Add `setTrack(_ track: SubtitleTrack?)` method that stores the track, downloads WebVTT via `URLSession`, parses with `Subtitles(content:expectedExtension: "vtt")`, and caches the cues
-- [ ] 2.5 Add `updateSubtitle(at time: TimeInterval)` method that looks up active cue (startTimeInSeconds <= time < endTimeInSeconds) and updates the label text
-- [ ] 2.6 Show empty state while WebVTT is downloading
-- [ ] 2.7 Handle download failures gracefully (hide subtitle view)
+- [x] 2.1 Add `dagronf/SwiftSubtitles` SPM dependency to `Package.swift`
+- [x] 2.2 Add `SwiftSubtitles` pod dependency to `TPStreamsSDK.podspec`
+- [x] 2.3 Create `SubtitleView` as a UIView subclass with a `UILabel` for rendering subtitle text
+- [x] 2.4 Add `setTrack(_ track: SubtitleTrack?)` method that stores the track, downloads WebVTT via `URLSession`, parses with `Subtitles(content:expectedExtension: "vtt")`, and caches the cues
+- [x] 2.5 Add `updateSubtitle(at time: TimeInterval)` method that looks up active cue (startTimeInSeconds <= time < endTimeInSeconds) and updates the label text
+- [x] 2.6 Show empty state while WebVTT is downloading
+- [x] 2.7 Handle download failures gracefully (hide subtitle view)
 
 ## 3. UIKit Integration
 
