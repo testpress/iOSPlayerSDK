@@ -15,16 +15,16 @@
 
 ## 3. UIKit Integration
 
-- [ ] 3.1 Add `autoSelectFirstSubtitle: Bool` to `TPStreamPlayerConfiguration` and builder method
-- [ ] 3.2 Verify `enableCaptions` builder method exists (already in struct)
-- [ ] 3.3 Add `SubtitleView` as lazy var in `TPStreamPlayerViewController` and add as subview of `containerView`
-- [ ] 3.4 Size `SubtitleView` in `viewDidLayoutSubviews`
-- [ ] 3.5 Add "Captions" option to `PlayerControlsUIView.showOptionsMenu()`, only when `enableCaptions == true` and tracks exist
-- [ ] 3.6 Build captions submenu showing available languages with checkmark on active, plus "Off" option
-- [ ] 3.7 On language selection, pass the track to `SubtitleView.setTrack()`; on "Off", pass `nil`
-- [ ] 3.8 Implement auto-selection on player "ready": if `autoSelectFirstSubtitle == true`, auto-set the first available subtitle track
-- [ ] 3.9 Set up KVO on `TPStreamPlayer.currentTime` in VC to push time updates to `SubtitleView.updateSubtitle(at:)`
-- [ ] 3.10 Update `showSettingsButton` to include `enableCaptions`
+- [x] 3.1 Add `autoSelectFirstSubtitle: Bool` to `TPStreamPlayerConfiguration` and builder method
+- [x] 3.2 Verify `enableCaptions` builder method exists (already in struct)
+- [x] 3.3 Add `SubtitleView` as lazy var in `TPStreamPlayerViewController` and add as subview of `containerView`
+- [x] 3.4 Size `SubtitleView` in `viewDidLayoutSubviews`
+- [x] 3.5 Add "Captions" option to `PlayerControlsUIView.showOptionsMenu()`, only when `enableCaptions == true` and tracks exist
+- [x] 3.6 Build captions submenu showing available languages with checkmark on active, plus "Off" option
+- [x] 3.7 On language selection, pass the track to `SubtitleView.setTrack()`; on "Off", pass `nil`
+- [x] 3.8 Implement auto-selection on player "ready": if `autoSelectFirstSubtitle == true`, auto-set the first available subtitle track
+- [x] 3.9 Set up KVO on `TPStreamPlayer.currentTime` in VC to push time updates to `SubtitleView.updateSubtitle(at:)`
+- [x] 3.10 Update `showSettingsButton` to include `enableCaptions`
 
 
 ## 4. SwiftUI Integration

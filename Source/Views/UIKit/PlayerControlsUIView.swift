@@ -160,11 +160,49 @@ class PlayerControlsUIView: UIView {
              optionsMenu.addAction(UIAlertAction(title: "Playback Speed", style: .default) { _ in self.showPlaybackSpeedMenu()})
         }
         
+        if playerConfig.enableCaptions, let tracks = player.asset?.video?.tracks, !tracks.isEmpty {
+            optionsMenu.addAction(UIAlertAction(title: "Captions", style: .default) { _ in self.showCaptionsMenu()})
+        }
+        
         if !player.player.isPlaybackOffline {
             addOnlinePlaybackButtons(to: optionsMenu)
         }
         optionsMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         parentViewController?.present(optionsMenu, animated: true, completion: nil)
+    }
+    
+    func showCaptionsMenu() {
+        guard let captionsMenu = createCaptionsMenu() else { return }
+        parentViewController?.present(captionsMenu, animated: true, completion: nil)
+    }
+    
+    func createCaptionsMenu() -> UIAlertController? {
+        guard let tracks = player.asset?.video?.tracks else { return nil }
+        let captionsMenu = UIAlertController(title: "Captions", message: nil, preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
+        
+        captionsMenu.addAction(createActionForCaptionTrack(nil))
+        
+        for track in tracks {
+            let action = createActionForCaptionTrack(track)
+            captionsMenu.addAction(action)
+        }
+        
+        captionsMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        return captionsMenu
+    }
+    
+    func createActionForCaptionTrack(_ track: SubtitleTrack?) -> UIAlertAction {
+        let title = track?.displayName ?? "Off"
+        let action = UIAlertAction(title: title, style: .default) { [weak self] _ in
+            if let playerVC = self?.parentViewController as? TPStreamPlayerViewController {
+                playerVC.activeSubtitleTrack = track
+            }
+        }
+        let activeTrack = (parentViewController as? TPStreamPlayerViewController)?.activeSubtitleTrack
+        if track?.url == activeTrack?.url {
+            action.setValue(UIImage(named: "checkmark", in: bundle, compatibleWith: nil), forKey: "image")
+        }
+        return action
     }
     
     private func addOnlinePlaybackButtons(to menu: UIAlertController) {

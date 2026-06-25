@@ -17,11 +17,20 @@ public class TPStreamPlayerViewController: UIViewController {
                 handlePlayerInitializationError()
             }
             setupPlayerStatusObserver(for: player)
+            setupPlayerTimeObserver()
             showLiveStreamNotice()
             player.onError = showError
         }
     }
     private var playerStatusObervervation: NSKeyValueObservation?
+    private var playerTimeObservation: NSKeyValueObservation?
+    
+    public var activeSubtitleTrack: SubtitleTrack? {
+        didSet {
+            subtitleView.setTrack(activeSubtitleTrack)
+        }
+    }
+    
     public var delegate: TPStreamPlayerViewControllerDelegate?
     public var autoFullScreenOnRotate = true
     public var config = TPStreamPlayerConfiguration(){
@@ -61,6 +70,11 @@ public class TPStreamPlayerViewController: UIViewController {
         return view
     }()
     
+    private lazy var subtitleView: SubtitleView = {
+        let view = SubtitleView(frame: .zero)
+        return view
+    }()
+    
     private lazy var noticeView: UIView = {
         let view = UIView(frame: view.frame)
         view.isHidden = true
@@ -73,6 +87,7 @@ public class TPStreamPlayerViewController: UIViewController {
         let view = UIView(frame: view.bounds)
         view.backgroundColor = .black
         view.addSubview(videoView)
+        view.addSubview(subtitleView)
         view.addSubview(controlsView)
         view.addSubview(noticeView)
         view.bringSubviewToFront(controlsView)
@@ -106,6 +121,7 @@ public class TPStreamPlayerViewController: UIViewController {
         super.viewDidLayoutSubviews()
         containerView.frame = containerView.superview!.bounds
         videoView.frame = containerView.bounds
+        subtitleView.frame = containerView.bounds
         controlsView.frame = containerView.bounds
         noticeView.frame = containerView.bounds
         noticeMessageLabel.frame = noticeView.bounds
@@ -134,10 +150,20 @@ public class TPStreamPlayerViewController: UIViewController {
                 case "ready":
                     self.noticeView.isHidden = true
                     self.showLiveStreamNotice()
+                    if self.config.autoSelectFirstSubtitle, let tracks = self.player?.asset?.video?.tracks, let firstTrack = tracks.first {
+                        self.activeSubtitleTrack = firstTrack
+                    }
                 default:
                     break
                 }
             }
+        }
+    }
+    
+    private func setupPlayerTimeObserver() {
+        playerTimeObservation = controlsView.player?.observe(\.currentTime, options: [.new]) { [weak self] (_, change) in
+            guard let self = self, let newTime = change.newValue else { return }
+            self.subtitleView.updateSubtitle(at: newTime.doubleValue)
         }
     }
     
