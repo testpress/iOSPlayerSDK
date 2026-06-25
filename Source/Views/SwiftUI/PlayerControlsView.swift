@@ -6,18 +6,20 @@ struct PlayerControlsView: View {
     @State private var showControls = false
     @State private var controlsHideTimer: Timer?
     @Binding private var isFullscreen: Bool
+    @Binding private var activeSubtitleTrack: SubtitleTrack?
     private var playerViewConfig: TPStreamPlayerConfiguration
     
-    init(player: TPAVPlayer, isFullscreen: Binding<Bool>, playerViewConfig: TPStreamPlayerConfiguration){
+    init(player: TPAVPlayer, isFullscreen: Binding<Bool>, playerViewConfig: TPStreamPlayerConfiguration, activeSubtitleTrack: Binding<SubtitleTrack?>){
         _player = StateObject(wrappedValue: TPStreamPlayerObservable(player: player))
         self.playerViewConfig = playerViewConfig
         _isFullscreen = isFullscreen
+        _activeSubtitleTrack = activeSubtitleTrack
     }
     
     var body: some View {
         VStack{
             if showControls {
-                PlayerSettingsButton(playerConfig: playerViewConfig)
+                PlayerSettingsButton(playerConfig: playerViewConfig, activeSubtitleTrack: $activeSubtitleTrack)
                 Spacer()
                 MediaControlsView(playerViewConfig: playerViewConfig)
                 Spacer()
@@ -69,7 +71,8 @@ struct TPVideoPlayerControls_Previews: PreviewProvider {
                 accessToken: "dummy"
             ),
             isFullscreen: .constant(true),
-            playerViewConfig: TPStreamPlayerConfigurationBuilder().build()
+            playerViewConfig: TPStreamPlayerConfigurationBuilder().build(),
+            activeSubtitleTrack: .constant(nil)
         ).background(Color.black)
     }
 }

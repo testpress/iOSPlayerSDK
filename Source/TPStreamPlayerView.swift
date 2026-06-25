@@ -10,10 +10,14 @@ import SwiftUI
 @available(iOS 14.0, *)
 public struct TPStreamPlayerView: View {
     @StateObject private var viewModel: TPStreamPlayerViewModel
+    @StateObject private var playerObservable: TPStreamPlayerObservable
+    @State private var activeSubtitleTrack: SubtitleTrack?
+    @State private var didAutoSelectSubtitle = false
     private var playerViewConfig: TPStreamPlayerConfiguration
     
     public init(player: TPAVPlayer, playerViewConfig: TPStreamPlayerConfiguration = TPStreamPlayerConfigurationBuilder().build()) {
         _viewModel = StateObject(wrappedValue: TPStreamPlayerViewModel(player: player))
+        _playerObservable = StateObject(wrappedValue: TPStreamPlayerObservable(player: player))
         self.playerViewConfig = playerViewConfig
     }
     
@@ -24,7 +28,20 @@ public struct TPStreamPlayerView: View {
                     NoticeView(message: message)
                 } else if viewModel.player.initializationStatus == "ready" {
                     AVPlayerBridge(player: viewModel.player)
-                    PlayerControlsView(player: viewModel.player, isFullscreen: $viewModel.isFullScreen, playerViewConfig: playerViewConfig)
+                    
+                    if playerViewConfig.enableCaptions {
+                        SubtitleTextView(
+                            track: activeSubtitleTrack,
+                            currentTime: playerObservable.observedCurrentTime
+                        )
+                    }
+                    
+                    PlayerControlsView(
+                        player: viewModel.player,
+                        isFullscreen: $viewModel.isFullScreen,
+                        playerViewConfig: playerViewConfig,
+                        activeSubtitleTrack: $activeSubtitleTrack
+                    )
                 }
             }
             .padding(.horizontal, viewModel.isFullScreen ? 48 : 0)
@@ -40,6 +57,14 @@ public struct TPStreamPlayerView: View {
             .onAppear {
                 if self.playerViewConfig.startInFullscreen {
                     changeOrientation(isFullscreen: true)
+                }
+            }
+            .onChange(of: viewModel.player.initializationStatus) { newStatus in
+                if newStatus == "ready" && !didAutoSelectSubtitle && playerViewConfig.autoSelectFirstSubtitle {
+                    if let firstTrack = viewModel.player.asset?.video?.tracks.first {
+                        activeSubtitleTrack = firstTrack
+                    }
+                    didAutoSelectSubtitle = true
                 }
             }
         }

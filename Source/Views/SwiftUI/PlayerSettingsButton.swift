@@ -7,9 +7,11 @@ struct PlayerSettingsButton: View {
     
     @EnvironmentObject var player: TPStreamPlayerObservable
     private var playerConfig: TPStreamPlayerConfiguration
+    @Binding private var activeSubtitleTrack: SubtitleTrack?
     
-    init(playerConfig: TPStreamPlayerConfiguration){
+    init(playerConfig: TPStreamPlayerConfiguration, activeSubtitleTrack: Binding<SubtitleTrack?>){
         self.playerConfig = playerConfig
+        _activeSubtitleTrack = activeSubtitleTrack
     }
     
     var body: some View {
@@ -56,6 +58,12 @@ struct PlayerSettingsButton: View {
                 message: nil,
                 buttons: downloadQualityOptions() + [.cancel()]
             )
+        case .captions:
+            return ActionSheet(
+                title: Text("Captions"),
+                message: nil,
+                buttons: captionsOptions() + [.cancel()]
+            )
         }
     }
     
@@ -64,6 +72,10 @@ struct PlayerSettingsButton: View {
         
         if playerConfig.enablePlaybackSpeed {
              actionButtons.append(playbackSpeedButton())
+        }
+        
+        if playerConfig.enableCaptions, let tracks = player.asset?.video?.tracks, !tracks.isEmpty {
+            actionButtons.append(captionsButton())
         }
         
         if !player.player.isPlaybackOffline {
@@ -114,6 +126,37 @@ struct PlayerSettingsButton: View {
         }
     }
     
+    private func captionsButton() -> ActionSheet.Button {
+        let currentLabel = activeSubtitleTrack?.displayName ?? "Off"
+        return .default(Text("Captions - \(currentLabel)")) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.showOptions = true
+                self.currentMenu = .captions
+            }
+        }
+    }
+    
+    private func captionsOptions() -> [ActionSheet.Button] {
+        guard let tracks = player.asset?.video?.tracks else { return [] }
+        var buttons: [ActionSheet.Button] = []
+        
+        // Add "Off" option
+        let offAction = ActionSheet.Button.default(Text("Off")) {
+            activeSubtitleTrack = nil
+        }
+        buttons.append(offAction)
+        
+        // Add each track option
+        for track in tracks {
+            let action = ActionSheet.Button.default(Text(track.displayName)) {
+                activeSubtitleTrack = track
+            }
+            buttons.append(action)
+        }
+        
+        return buttons
+    }
+    
     private func playbackSpeedOptions() -> [ActionSheet.Button] {
         let playbackSpeeds = PlaybackSpeed.allCases
         return playbackSpeeds.map { speed in
@@ -153,4 +196,4 @@ struct PlayerSettingsButton: View {
     }
 }
 
-enum SettingsMenu { case main, playbackSpeed, videoQuality, downloadQuality }
+enum SettingsMenu { case main, playbackSpeed, videoQuality, downloadQuality, captions }
