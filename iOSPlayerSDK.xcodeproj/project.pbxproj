@@ -52,12 +52,13 @@
 		03D7F4282C22C4F900DF3597 /* PlaybackSpeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D7F4272C22C4F900DF3597 /* PlaybackSpeed.swift */; };
 		2D2023032FD6DD1A0077600E /* SwiftSubtitles in Frameworks */ = {isa = PBXBuildFile; productRef = 2D2023022FD6DD1A0077600E /* SwiftSubtitles */; };
 		2D2BA5792F5FEB2400D53996 /* KeychainUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D2BA5782F5FEB2400D53996 /* KeychainUtil.swift */; };
-		4F02A7FA872249B68023A541 /* SubtitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F02A7FA872249B68023A540 /* SubtitleView.swift */; };
 		2D3CE81F2F5957EE0011CAB7 /* VideoQualityUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3CE81E2F5957EE0011CAB7 /* VideoQualityUtils.swift */; };
 		2D46EC6A2EE856BB008B559A /* M3U8Kit in Frameworks */ = {isa = PBXBuildFile; productRef = 2D46EC692EE856BB008B559A /* M3U8Kit */; };
 		2D9798C02FC966D800593EAC /* SubtitleTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9798BF2FC966D800593EAC /* SubtitleTrack.swift */; };
 		2DC08F892F448BB900AABC60 /* EncryptionKeyDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC08F872F448BB900AABC60 /* EncryptionKeyDelegate.swift */; };
 		2DD12A212D4CF75400272433 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D92E48F22CB0226A00B1FAC3 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		2DF3CE142FED6494001872ED /* SubtitleTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF3CE132FED6494001872ED /* SubtitleTextView.swift */; };
+		4F02A7FA872249B68023A541 /* SubtitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F02A7FA872249B68023A540 /* SubtitleView.swift */; };
 		70D42E0B2E6075F3002AC32C /* AnyRealmValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D42E0A2E6075F3002AC32C /* AnyRealmValue.swift */; };
 		8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */; };
 		8E6389C42A27277D00306FA4 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389C32A27277D00306FA4 /* ExampleApp.swift */; };
@@ -206,12 +207,13 @@
 		03CE74FF2A7946A800B84304 /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		03CE75012A7A337B00B84304 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		03D7F4242C21C64D00DF3597 /* LiveIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveIndicatorView.swift; sourceTree = "<group>"; };
-		3F02A7FA872249B68023A540 /* SubtitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleView.swift; sourceTree = "<group>"; };
 		03D7F4272C22C4F900DF3597 /* PlaybackSpeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackSpeed.swift; sourceTree = "<group>"; };
 		2D2BA5782F5FEB2400D53996 /* KeychainUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtil.swift; sourceTree = "<group>"; };
 		2D3CE81E2F5957EE0011CAB7 /* VideoQualityUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoQualityUtils.swift; sourceTree = "<group>"; };
 		2D9798BF2FC966D800593EAC /* SubtitleTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleTrack.swift; sourceTree = "<group>"; };
 		2DC08F872F448BB900AABC60 /* EncryptionKeyDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionKeyDelegate.swift; sourceTree = "<group>"; };
+		2DF3CE132FED6494001872ED /* SubtitleTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleTextView.swift; sourceTree = "<group>"; };
+		3F02A7FA872249B68023A540 /* SubtitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleView.swift; sourceTree = "<group>"; };
 		70D42E0A2E6075F3002AC32C /* AnyRealmValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyRealmValue.swift; sourceTree = "<group>"; };
 		8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayerView.swift; sourceTree = "<group>"; };
 		8E6389C12A27277D00306FA4 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -361,6 +363,7 @@
 			children = (
 				8E6389DC2A27338F00306FA4 /* AVPlayerBridge.swift */,
 				03CA2D302A2F757D00532549 /* TimeIndicatorView.swift */,
+				2DF3CE132FED6494001872ED /* SubtitleTextView.swift */,
 				0353519F2A2EDAFA001E38F3 /* PlayerSettingsButton.swift */,
 				035351A12A2F49E3001E38F3 /* MediaControlsView.swift */,
 				03CA2D362A30A8E500532549 /* PlayerProgressBar.swift */,
@@ -800,6 +803,7 @@
 				8E6389E92A278D1D00306FA4 /* ContentKeyDelegate.swift in Sources */,
 				0374E3722C1AD2A200CE9CF2 /* TestpressAPIParser.swift in Sources */,
 				8E6389DD2A27338F00306FA4 /* AVPlayerBridge.swift in Sources */,
+				2DF3CE142FED6494001872ED /* SubtitleTextView.swift in Sources */,
 				8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */,
 				035351A02A2EDAFA001E38F3 /* PlayerSettingsButton.swift in Sources */,
 				03913C482A850BF9002E7E0C /* ProgressBar.swift in Sources */,

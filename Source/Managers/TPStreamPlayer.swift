@@ -184,7 +184,6 @@ class TPStreamPlayer: NSObject {
         switch player.status {
         case .readyToPlay:
             status = "ready"
-            print("called")
         case .failed:
             status = "failed"
         case .unknown:

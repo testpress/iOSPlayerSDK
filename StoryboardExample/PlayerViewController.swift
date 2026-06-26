@@ -55,6 +55,8 @@ class PlayerViewController: UIViewController {
             .setprogressBarThumbColor(.systemBlue)
             .setwatchedProgressTrackColor(.systemBlue)
             .showDownloadOption()
+            .enableCaptions(true)
+            .autoSelectFirstSubtitle(true)
             .build()
         
         playerViewController?.config = config
