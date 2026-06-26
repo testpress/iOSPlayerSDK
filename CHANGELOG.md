@@ -1,4 +1,14 @@
 
+## 1.2.33 - 2026-06-26
+
+
+
+### Maintenance
+
+- Pin SwiftSubtitles dependency to version 1.8.1 across SPM, CocoaPods, and Xcode project to align all distribution channels
+
+
+
 ## 1.2.32 - 2026-06-26
 
 
