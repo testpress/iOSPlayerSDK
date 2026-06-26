@@ -1,4 +1,15 @@
 
+## 1.2.32 - 2026-06-26
+
+
+
+### Features
+
+- Added support for displaying subtitles during video playback.
+- Introduced subtitle track selection and automatic subtitle track detection.
+
+
+
 ## 1.2.31 - 2026-06-15
 
 
