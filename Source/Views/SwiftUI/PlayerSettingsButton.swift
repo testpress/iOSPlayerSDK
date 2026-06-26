@@ -140,15 +140,19 @@ struct PlayerSettingsButton: View {
         guard let tracks = player.asset?.video?.tracks else { return [] }
         var buttons: [ActionSheet.Button] = []
         
-        // Add "Off" option
-        let offAction = ActionSheet.Button.default(Text("Off")) {
+        // Add "Off" option with selection indicator
+        let isOffSelected = activeSubtitleTrack == nil
+        let offLabel = isOffSelected ? "✓ Off" : "Off"
+        let offAction = ActionSheet.Button.default(Text(offLabel)) {
             activeSubtitleTrack = nil
         }
         buttons.append(offAction)
         
-        // Add each track option
+        // Add each track option with selection indicator
         for track in tracks {
-            let action = ActionSheet.Button.default(Text(track.displayName)) {
+            let isSelected = track.url == activeSubtitleTrack?.url
+            let label = isSelected ? "✓ \(track.displayName)" : track.displayName
+            let action = ActionSheet.Button.default(Text(label)) {
                 activeSubtitleTrack = track
             }
             buttons.append(action)

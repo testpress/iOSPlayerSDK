@@ -12,7 +12,6 @@ public struct TPStreamPlayerView: View {
     @StateObject private var viewModel: TPStreamPlayerViewModel
     @StateObject private var playerObservable: TPStreamPlayerObservable
     @State private var activeSubtitleTrack: SubtitleTrack?
-    @State private var didAutoSelectSubtitle = false
     private var playerViewConfig: TPStreamPlayerConfiguration
     
     public init(player: TPAVPlayer, playerViewConfig: TPStreamPlayerConfiguration = TPStreamPlayerConfigurationBuilder().build()) {
@@ -29,7 +28,7 @@ public struct TPStreamPlayerView: View {
                 } else if viewModel.player.initializationStatus == "ready" {
                     AVPlayerBridge(player: viewModel.player)
                     
-                    if playerViewConfig.enableCaptions {
+                    if playerViewConfig.enableCaptions, let activeSubtitleTrack = activeSubtitleTrack {
                         SubtitleTextView(
                             track: activeSubtitleTrack,
                             currentTime: playerObservable.observedCurrentTime
@@ -37,11 +36,11 @@ public struct TPStreamPlayerView: View {
                     }
                     
                     PlayerControlsView(
-                        player: viewModel.player,
                         isFullscreen: $viewModel.isFullScreen,
                         playerViewConfig: playerViewConfig,
                         activeSubtitleTrack: $activeSubtitleTrack
                     )
+                    .environmentObject(playerObservable)
                 }
             }
             .padding(.horizontal, viewModel.isFullScreen ? 48 : 0)
@@ -60,11 +59,10 @@ public struct TPStreamPlayerView: View {
                 }
             }
             .onChange(of: viewModel.player.initializationStatus) { newStatus in
-                if newStatus == "ready" && !didAutoSelectSubtitle && playerViewConfig.autoSelectFirstSubtitle {
+                if newStatus == "ready" && activeSubtitleTrack == nil && playerViewConfig.autoSelectFirstSubtitle {
                     if let firstTrack = viewModel.player.asset?.video?.tracks.first {
                         activeSubtitleTrack = firstTrack
                     }
-                    didAutoSelectSubtitle = true
                 }
             }
         }

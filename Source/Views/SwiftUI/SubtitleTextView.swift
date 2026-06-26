@@ -1,8 +1,8 @@
 import SwiftUI
 
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 struct SubtitleTextView: UIViewRepresentable {
-  let track: SubtitleTrack?
+  let track: SubtitleTrack
   let currentTime: Float64?
 
   func makeUIView(context: Context) -> SubtitleView {

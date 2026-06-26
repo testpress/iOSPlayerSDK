@@ -39,7 +39,7 @@ class MainViewController: UIViewController {
     }
     
     @IBAction func sample1Tapped(_ sender: UIButton) {
-        presentPlayerViewController(assistId: "42h2tZ5fmNf", accessToken: "9327e2d0-fa13-4288-902d-840f32cd0eed")
+        presentPlayerViewController(assistId: "9rsN7yKPDGN", accessToken: "c84a49f7-c959-423b-a932-06d62c69e6da")
     }
     
     @IBAction func sample2Tapped(_ sender: UIButton) {
