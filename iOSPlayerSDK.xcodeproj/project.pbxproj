@@ -1328,8 +1328,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/dagronf/SwiftSubtitles.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.2.0;
+				kind = exactVersion;
+				version = 1.8.1;
 			};
 		};
 		8E6389E32A275B2A00306FA4 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
