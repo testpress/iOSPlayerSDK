@@ -1,6 +1,6 @@
 import SwiftUI
 
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 struct PlayerSettingsButton: View {
     @State private var showOptions = false
     @State private var currentMenu: SettingsMenu = .main
@@ -127,8 +127,7 @@ struct PlayerSettingsButton: View {
     }
     
     private func captionsButton() -> ActionSheet.Button {
-        let currentLabel = activeSubtitleTrack?.displayName ?? "Off"
-        return .default(Text("Captions - \(currentLabel)")) {
+        return .default(Text("Captions")) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.showOptions = true
                 self.currentMenu = .captions
