@@ -29,11 +29,11 @@
 
 ## 4. SwiftUI Integration
 
-- [ ] 4.1 Create SwiftUI subtitle view in `Source/Views/SwiftUI/` with a `Text` view that reads `player.observedCurrentTime` (@Published) for cue lookup and rendering
-- [ ] 4.2 Integrate subtitle view into `TPStreamPlayerView` ZStack
-- [ ] 4.3 Add "Captions" option to `PlayerSettingsButton` action sheet with language selection and "Off"
-- [ ] 4.4 Implement auto-selection for SwiftUI path
+- [x] 4.1 Create `SubtitleTextView` (UIViewRepresentable wrapping `SubtitleView`) in `Source/Views/SwiftUI/` with `currentTime` binding for cue lookup
+- [x] 4.2 Integrate `SubtitleTextView` into `TPStreamPlayerView` ZStack, gated by `enableCaptions && activeSubtitleTrack != nil`
+- [x] 4.3 Add "Captions" option to `PlayerSettingsButton` action sheet with language selection and "Off" (menu label simplified to just "Captions")
+- [x] 4.4 Implement auto-selection for SwiftUI path via `.onChange(of: viewModel.player.initializationStatus)`, guarded by `enableCaptions`
 
 ## 5. Verification
 
-- [ ] 5.1 Build — `xcodebuild build -project iOSPlayerSDK.xcodeproj -scheme TPStreamsSDK`
+- [x] 5.1 Build — `xcodebuild build -project iOSPlayerSDK.xcodeproj -scheme TPStreamsSDK`

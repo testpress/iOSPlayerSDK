@@ -59,7 +59,7 @@ public struct TPStreamPlayerView: View {
                 }
             }
             .onChange(of: viewModel.player.initializationStatus) { newStatus in
-                if newStatus == "ready" && activeSubtitleTrack == nil && playerViewConfig.autoSelectFirstSubtitle {
+                if newStatus == "ready" && activeSubtitleTrack == nil && playerViewConfig.autoSelectFirstSubtitle && playerViewConfig.enableCaptions {
                     if let firstTrack = viewModel.player.asset?.video?.tracks.first {
                         activeSubtitleTrack = firstTrack
                     }
