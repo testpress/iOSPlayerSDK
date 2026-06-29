@@ -127,15 +127,19 @@ public class TPAVPlayer: AVPlayer {
     private func initializePlayerWithFetchedAsset(_ asset: Asset) {
         self.asset = asset
         self.resourceLoaderDelegate?.asset = asset
-        initializePlayer()
+        guard initializePlayer() else {
+            processInitializationFailure(TPStreamPlayerError.unknownError)
+            return
+        }
         setupCompletion?(nil)
         initializationStatus = "ready"
     }
     
-    private func initializePlayer() {
+    @discardableResult
+    private func initializePlayer() -> Bool {
         guard let asset = asset, let urlString = asset.playbackURL, let url = URL(string: urlString) else {
             debugPrint("Invalid playback URL received from API: \(asset?.playbackURL ?? "nil")")
-            return
+            return false
         }
         
         let avURLAsset = AVURLAsset(url: url)
@@ -146,6 +150,7 @@ public class TPAVPlayer: AVPlayer {
             self.setupDRM(avURLAsset)
         }
         self.populateAvailableVideoQualities(url)
+        return true
     }
     
     private func isNetworkUnavailableError(_ error: Error) -> Bool {
