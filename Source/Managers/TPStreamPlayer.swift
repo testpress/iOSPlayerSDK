@@ -231,6 +231,7 @@ class TPStreamPlayer: NSObject {
             print("Invalid seconds value: NaN")
             return
         }
+        player?.onSeek?(seconds)
         currentTime = NSNumber(value: seconds)
         let seekTime = CMTime(value: Int64(seconds), timescale: 1)
         isSeeking = true

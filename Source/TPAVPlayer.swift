@@ -24,6 +24,7 @@ public class TPAVPlayer: AVPlayer {
     private var setupCompletion: SetupCompletion?
     private var resourceLoaderDelegate: ResourceLoaderDelegate?
     public var onError: ((Error, String?) -> Void)?
+    public var onSeek: ((TimeInterval) -> Void)?
     public var onRequestOfflineLicenseRenewal: ((String, @escaping (String?, Double?) -> Void) -> Void)?
     @objc internal dynamic var initializationStatus = "pending"
     internal var initializationErrorContext: InitializationErrorContext?
