@@ -86,8 +86,6 @@ public class TPAVPlayer: AVPlayer {
                 self.processInitializationFailure(error)
                 return
             }
-            self.setupCompletion?(nil)
-            self.initializationStatus = "ready"
         } else {
             self.processInitializationFailure(TPStreamPlayerError.incompleteOfflineVideo)
         }
@@ -138,8 +136,6 @@ public class TPAVPlayer: AVPlayer {
             processInitializationFailure(error)
             return
         }
-        setupCompletion?(nil)
-        initializationStatus = "ready"
     }
     
     private func initializePlayer() throws {
@@ -155,7 +151,11 @@ public class TPAVPlayer: AVPlayer {
         if asset.isDrmEncrypted == true {
             self.setupDRM(avURLAsset)
         }
-        self.populateAvailableVideoQualities(url)
+        self.populateAvailableVideoQualities(url) { [weak self] in
+            self?.setupCompletion?(nil)
+            self?.setupCompletion = nil
+            self?.initializationStatus = "ready"
+        }
     }
     
     private func isNetworkUnavailableError(_ error: Error) -> Bool {
@@ -197,7 +197,7 @@ public class TPAVPlayer: AVPlayer {
         }
     }
     
-    private func populateAvailableVideoQualities(_ url: URL) {
+    private func populateAvailableVideoQualities(_ url: URL, completion: @escaping () -> Void) {
         M3U8Parser.parseQualities(from: url) { [weak self] result in
             switch result {
             case .success(let (qualities, _)):
@@ -207,6 +207,7 @@ public class TPAVPlayer: AVPlayer {
             case .failure:
                 break
             }
+            completion()
         }
     }
     

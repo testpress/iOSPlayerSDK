@@ -42,6 +42,13 @@ class PlayerViewController: UIViewController {
                 }
 
                 print("TPAVPlayer setup successfully")
+                print("Available qualities: \(self.player?.availableVideoQualities ?? [])")
+                let qualities = self.player?.availableVideoQualities ?? []
+                for quality in qualities {
+                    if quality.resolution == "240p" {
+                        self.player?.changeVideoQuality(to: quality)
+                    }
+                }
             }
         }
         playerViewController = TPStreamPlayerViewController()
