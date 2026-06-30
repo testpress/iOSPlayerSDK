@@ -20,8 +20,7 @@ Pod::Spec.new do |spec|
   spec.dependency 'SwiftSubtitles', '1.8.1'
 
   spec.pod_target_xcconfig = {
-    'OTHER_SWIFT_FLAGS[config=Debug]' => '-DCocoaPods',
-    'OTHER_SWIFT_FLAGS[config=Release]' => '-DCocoaPods'
+    'OTHER_SWIFT_FLAGS' => '-DCocoaPods'
 }
 
   spec.resources = [
