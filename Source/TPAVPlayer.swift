@@ -80,8 +80,10 @@ public class TPAVPlayer: AVPlayer {
             let asset = localOfflineAsset.asAsset()
             self.asset = asset
             self.resourceLoaderDelegate?.asset = asset
-            guard self.initializePlayer() else {
-                self.processInitializationFailure(TPStreamPlayerError.unknownError)
+            do {
+                try self.initializePlayer()
+            } catch {
+                self.processInitializationFailure(error)
                 return
             }
             self.setupCompletion?(nil)
@@ -130,18 +132,20 @@ public class TPAVPlayer: AVPlayer {
     private func initializePlayerWithFetchedAsset(_ asset: Asset) {
         self.asset = asset
         self.resourceLoaderDelegate?.asset = asset
-        guard initializePlayer() else {
-            processInitializationFailure(TPStreamPlayerError.unknownError)
+        do {
+            try initializePlayer()
+        } catch {
+            processInitializationFailure(error)
             return
         }
         setupCompletion?(nil)
         initializationStatus = "ready"
     }
     
-    private func initializePlayer() -> Bool {
+    private func initializePlayer() throws {
         guard let asset = asset, let urlString = asset.playbackURL, let url = URL(string: urlString) else {
             debugPrint("Invalid playback URL received from API: \(asset?.playbackURL ?? "nil")")
-            return false
+            throw TPStreamPlayerError.unknownError
         }
         
         let avURLAsset = AVURLAsset(url: url)
@@ -152,7 +156,6 @@ public class TPAVPlayer: AVPlayer {
             self.setupDRM(avURLAsset)
         }
         self.populateAvailableVideoQualities(url)
-        return true
     }
     
     private func isNetworkUnavailableError(_ error: Error) -> Bool {
