@@ -1,4 +1,18 @@
 
+## 1.2.34 - 2026-06-30
+
+
+
+### Bug Fixes
+
+- Apply CocoaPods compilation flag to all build configurations, not just `Debug` and `Release`, so custom configurations load resources correctly (#149)
+
+- Ensure `setupCompletion` fires only after video qualities have finished loading, preventing premature initialization (#147)
+
+- Report initialization failure when playback URL is invalid instead of falsely reporting success (#148)
+
+
+
 ## 1.2.33 - 2026-06-26
 
 
