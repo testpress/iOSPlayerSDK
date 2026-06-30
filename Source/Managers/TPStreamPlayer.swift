@@ -232,7 +232,6 @@ class TPStreamPlayer: NSObject {
             return
         }
         let seekTime = CMTimeMakeWithSeconds(seconds, preferredTimescale: 600)
-        player?.onSeek?(CMTimeGetSeconds(seekTime))
         currentTime = NSNumber(value: seconds)
         isSeeking = true
         player?.seek(to: seekTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero){ [weak self] _ in

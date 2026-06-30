@@ -227,6 +227,44 @@ public class TPAVPlayer: AVPlayer {
         }
     }
     
+    // MARK: - Seek Overrides
+
+    public override func seek(to time: CMTime, toleranceBefore: CMTime, toleranceAfter: CMTime, completionHandler: @escaping (Bool) -> Void) {
+        guard time.seconds.isFinite && time.seconds >= 0 else {
+            print("Invalid seek time: \(time.seconds)")
+            completionHandler(false)
+            return
+        }
+        super.seek(to: time, toleranceBefore: toleranceBefore, toleranceAfter: toleranceAfter) { [weak self] finished in
+            if finished {
+                self?.onSeek?(CMTimeGetSeconds(time))
+            }
+            completionHandler(finished)
+        }
+    }
+
+    public override func seek(to time: CMTime, completionHandler: @escaping (Bool) -> Void) {
+        guard time.seconds.isFinite && time.seconds >= 0 else {
+            print("Invalid seek time: \(time.seconds)")
+            completionHandler(false)
+            return
+        }
+        super.seek(to: time) { [weak self] finished in
+            if finished {
+                self?.onSeek?(CMTimeGetSeconds(time))
+            }
+            completionHandler(finished)
+        }
+    }
+
+    public override func seek(to time: CMTime) {
+        self.seek(to: time, completionHandler: { _ in })
+    }
+
+    public override func seek(to time: CMTime, toleranceBefore: CMTime, toleranceAfter: CMTime) {
+        self.seek(to: time, toleranceBefore: toleranceBefore, toleranceAfter: toleranceAfter, completionHandler: { _ in })
+    }
+
     deinit {
         reachability?.stopNotifier()
     }
