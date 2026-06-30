@@ -80,7 +80,10 @@ public class TPAVPlayer: AVPlayer {
             let asset = localOfflineAsset.asAsset()
             self.asset = asset
             self.resourceLoaderDelegate?.asset = asset
-            self.initializePlayer()
+            guard self.initializePlayer() else {
+                self.processInitializationFailure(TPStreamPlayerError.unknownError)
+                return
+            }
             self.setupCompletion?(nil)
             self.initializationStatus = "ready"
         } else {
@@ -135,7 +138,6 @@ public class TPAVPlayer: AVPlayer {
         initializationStatus = "ready"
     }
     
-    @discardableResult
     private func initializePlayer() -> Bool {
         guard let asset = asset, let urlString = asset.playbackURL, let url = URL(string: urlString) else {
             debugPrint("Invalid playback URL received from API: \(asset?.playbackURL ?? "nil")")
