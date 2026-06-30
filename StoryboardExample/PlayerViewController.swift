@@ -52,7 +52,7 @@ class PlayerViewController: UIViewController {
             }
         }
         player?.onSeek = { time in
-            print("Seeked to \(time)s")
+            print("Seeking to \(time)s")
         }
         playerViewController = TPStreamPlayerViewController()
         playerViewController?.player = player
