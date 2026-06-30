@@ -20,7 +20,7 @@ Pod::Spec.new do |spec|
   spec.dependency 'SwiftSubtitles', '1.8.1'
 
   spec.pod_target_xcconfig = {
-    'OTHER_SWIFT_FLAGS' => '-DCocoaPods'
+    'OTHER_SWIFT_FLAGS' => '$(inherited) -DCocoaPods'
 }
 
   spec.resources = [
