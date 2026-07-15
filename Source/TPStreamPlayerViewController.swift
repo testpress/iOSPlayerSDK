@@ -195,7 +195,7 @@ public class TPStreamPlayerViewController: UIViewController {
                 return
             }
         
-        if liveStream.transcodeRecordedVideo && player.asset?.video?.playbackURL != nil {
+        if liveStream.transcodeRecordedVideo && player.asset?.video != nil {
             return
         }
         
