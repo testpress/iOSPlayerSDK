@@ -195,6 +195,10 @@ public class TPStreamPlayerViewController: UIViewController {
                 return
             }
         
+        if liveStream.transcodeRecordedVideo && player.asset?.video?.playbackURL != nil {
+            return
+        }
+        
         showNotice(withMessage: noticeMessage)
     }
     
