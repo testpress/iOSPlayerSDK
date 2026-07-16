@@ -52,6 +52,10 @@ class TPStreamPlayerViewModel: ObservableObject {
                 return
             }
         
+        if liveStream.transcodeRecordedVideo && player.asset?.video != nil {
+            return
+        }
+        
         self.setNoticeMessage(noticeMessage)
     }
     
