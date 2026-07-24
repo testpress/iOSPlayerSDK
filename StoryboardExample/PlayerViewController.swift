@@ -51,12 +51,6 @@ class PlayerViewController: UIViewController {
                 }
             }
         }
-        
-        player?.onRequestOfflineLicenseRenewal = { assetId, completion in
-            print("====> onRequestOfflineLicenseRenewal is called for asset: \(assetId) <====")
-            completion(nil, nil)
-        }
-        
         playerViewController = TPStreamPlayerViewController()
         playerViewController?.player = player
         playerViewController?.delegate = self
