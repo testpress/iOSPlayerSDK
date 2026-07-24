@@ -23,10 +23,11 @@ class MainViewController: UIViewController {
     
     @IBAction func downloadTapped(_ sender: UIButton) {
         TPStreamsDownloadManager.shared.startDownload(
-            assetID: "BEArYFdaFbt",
-            accessToken: "ecf6366b-c2ee-408c-9472-6ed4e4b3047e",
+            assetID: "42h2tZ5fmNf",
+            accessToken: "9327e2d0-fa13-4288-902d-840f32cd0eed",
             resolution: "140p",
             allowResolutionFallback: true,
+            // offlineLicenseDurationSeconds: 30,
             presentingViewController: self,
         ) { result in
             switch result {
