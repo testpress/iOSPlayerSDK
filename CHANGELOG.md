@@ -1,4 +1,20 @@
 
+## 1.2.35 - 2026-07-27
+
+
+
+### Features
+
+- Add offline license duration parameter to download API, allowing custom expiration periods for different download scenarios (#152)
+
+
+
+### Bug Fixes
+
+- Skip live stream notice for Testpress when the recorded video is already available and playable (#151)
+
+
+
 ## 1.2.34 - 2026-06-30
 
 
