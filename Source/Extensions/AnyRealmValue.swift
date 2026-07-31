@@ -28,6 +28,11 @@ extension AnyRealmValue {
         case .date(let v): return v
         case .data(let v): return v
         case .none: return NSNull()
+        case .object(let v): return v as Any
+        case .objectId(let v): return v
+        case .decimal128(let v): return v
+        case .uuid(let v): return v
+        case .list(let v): return Array(v.map { $0.toAny })
         case .dictionary(let dict): return Dictionary(uniqueKeysWithValues: dict.map { ($0.key, $0.value.toAny) })
         @unknown default: return NSNull()
         }
