@@ -388,17 +388,15 @@ public final class TPStreamsDownloadManager {
                 }
 
                 if let drmContentId = drmContentId, !drmContentId.isEmpty {
-                    // Delegate access must be on contentKeyDelegateQueue to avoid
-                    // racing with key-request callbacks that read/write contentID/assetID.
-                    self.contentKeyDelegateQueue.async {
-                        self.contentKeyDelegate.contentID = drmContentId
-                        self.contentKeyDelegate.assetID = assetId
-                        self.contentKeyDelegate.cleanupPersistentContentKey()
-                        finishDeletion()
-                    }
-                } else {
-                    finishDeletion()
+                    // Key file name must match getPersistentContentKeyURL in
+                    // ContentKeyDelegate+Persistable. Deleting directly avoids touching
+                    // the shared delegate's mutable contentID/assetID, which in-flight
+                    // key requests read.
+                    let keyURL = self.contentKeyDelegate.contentKeyDirectory.appendingPathComponent("\(drmContentId)-Key")
+                    try? FileManager.default.removeItem(at: keyURL)
+                    self.updateOfflineLicenseExpiry(assetId, expiryDate: nil)
                 }
+                finishDeletion()
             } catch {
                 DispatchQueue.main.async {
                     completion(false, error)
