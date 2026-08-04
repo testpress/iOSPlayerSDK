@@ -27,7 +27,7 @@ class MainViewController: UIViewController {
             accessToken: "9327e2d0-fa13-4288-902d-840f32cd0eed",
             resolution: "140p",
             allowResolutionFallback: true,
-            // offlineLicenseDurationSeconds: 30,
+            offlineLicenseDurationSeconds: 30,
             presentingViewController: self,
         ) { result in
             switch result {
