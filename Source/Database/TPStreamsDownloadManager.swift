@@ -324,7 +324,7 @@ public final class TPStreamsDownloadManager {
         }
         
         guard let fileURL = localOfflineAsset.downloadedFileURL else {
-            deleteEncryptionKey(for: localOfflineAsset)
+            deleteEncryptionKey(for: assetId)
             LocalOfflineAsset.manager.delete(id: assetId)
             if hasActiveTask == nil {
                 tpStreamsDownloadDelegate?.onCanceled(assetId: assetId)
@@ -332,7 +332,7 @@ public final class TPStreamsDownloadManager {
             return
         }
         
-        deleteDownloadedFile(fileURL, localOfflineAsset: localOfflineAsset) { [weak self] success, error in
+        deleteDownloadedFile(fileURL, assetId: assetId, drmContentId: localOfflineAsset.drmContentId) { [weak self] success, error in
             if success {
                 LocalOfflineAsset.manager.delete(id: assetId)
                 if hasActiveTask == nil {
@@ -357,30 +357,39 @@ public final class TPStreamsDownloadManager {
               localOfflineAsset.status == Status.finished.rawValue,
               localOfflineAsset.downloadedFileURL != nil else { return }
         
-        LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.deleted.rawValue])
-        tpStreamsDownloadDelegate?.onDelete(assetId: localOfflineAsset.assetId)
+        let assetId = localOfflineAsset.assetId
+        let drmContentId = localOfflineAsset.drmContentId
+        let downloadedFileURL = localOfflineAsset.downloadedFileURL!
         
-        self.deleteDownloadedFile(localOfflineAsset.downloadedFileURL!, localOfflineAsset: localOfflineAsset) { success, error in
+        LocalOfflineAsset.manager.update(object: localOfflineAsset, with: ["status": Status.deleted.rawValue])
+        tpStreamsDownloadDelegate?.onDelete(assetId: assetId)
+        
+        self.deleteDownloadedFile(downloadedFileURL, assetId: assetId, drmContentId: drmContentId) { success, error in
             if success {
-                LocalOfflineAsset.manager.delete(id: localOfflineAsset.assetId)
+                LocalOfflineAsset.manager.delete(id: assetId)
             } else {
-                print("An error occurred trying to delete the contents on disk for \(localOfflineAsset.assetId): \(String(describing: error))")
+                print("An error occurred trying to delete the contents on disk for \(assetId): \(String(describing: error))")
             }
         }
     }
     
-    private func deleteDownloadedFile(_ downloadedFileURL: URL, localOfflineAsset: LocalOfflineAsset, completion: @escaping (Bool, Error?) -> Void) {
+    private func deleteDownloadedFile(_ downloadedFileURL: URL, assetId: String, drmContentId: String?, completion: @escaping (Bool, Error?) -> Void) {
+        // assetId / drmContentId must be plain values copied on the Realm thread —
+        // never pass a LocalOfflineAsset into this background work.
         DispatchQueue.global(qos: .background).async {
             do {
                 try FileManager.default.removeItem(at: downloadedFileURL)
-                
+
+                if let drmContentId = drmContentId, !drmContentId.isEmpty {
+                    // Deleting directly avoids touching the shared delegate's mutable
+                    // contentID/assetID, which in-flight key requests read.
+                    let keyURL = self.contentKeyDelegate.contentKeyDirectory.appendingPathComponent(ContentKeyDelegate.persistentContentKeyFileName(for: drmContentId))
+                    try? FileManager.default.removeItem(at: keyURL)
+                    self.updateOfflineLicenseExpiry(assetId, expiryDate: nil)
+                }
+
+                self.deleteEncryptionKey(for: assetId)
                 DispatchQueue.main.async {
-                    if localOfflineAsset.drmContentId != nil {
-                        self.contentKeyDelegate.cleanupPersistentContentKey()
-                    }
-                    
-                    self.deleteEncryptionKey(for: localOfflineAsset)
-                    
                     completion(true, nil)
                 }
             } catch {
@@ -391,8 +400,8 @@ public final class TPStreamsDownloadManager {
         }
     }
 
-    internal func deleteEncryptionKey(for localOfflineAsset: LocalOfflineAsset) {
-        encryptionKeyDelegate.delete(for: localOfflineAsset.assetId)
+    internal func deleteEncryptionKey(for assetId: String) {
+        encryptionKeyDelegate.delete(for: assetId)
     }
     
     public func getAllOfflineAssets() -> [OfflineAsset] {
@@ -519,7 +528,7 @@ internal class AssetDownloadDelegate: NSObject, AVAssetDownloadDelegate {
         }()
         
         if status == .failed || status == .deleted {
-            TPStreamsDownloadManager.shared.deleteEncryptionKey(for: localOfflineAsset)
+            TPStreamsDownloadManager.shared.deleteEncryptionKey(for: localOfflineAsset.assetId)
         }
         
         let updateValues: [String: Any] = ["status": status.rawValue, "downloadedAt": Date()]

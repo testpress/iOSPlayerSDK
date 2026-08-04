@@ -119,7 +119,11 @@ extension ContentKeyDelegate {
     func getPersistentContentKeyURL() -> URL?{
         guard let contentID = self.contentID else { return nil }
         
-        return contentKeyDirectory.appendingPathComponent("\(contentID)-Key")
+        return contentKeyDirectory.appendingPathComponent(Self.persistentContentKeyFileName(for: contentID))
+    }
+    
+    static func persistentContentKeyFileName(for contentID: String) -> String {
+        "\(contentID)-Key"
     }
 
     private func requestOfflineLicenseCredentials(completion: @escaping () -> Void) {
