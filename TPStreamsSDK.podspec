@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   spec.dependency 'Alamofire', '~> 5.9.0'
   spec.dependency 'M3U8Kit', '~> 1.2.0'
   spec.dependency 'ReachabilitySwift', '~> 5.2.2'
-  spec.dependency 'RealmSwift', '~> 10.54.2'
+  spec.dependency 'RealmSwift', '~> 20.0.4'
   spec.dependency 'SwiftSubtitles', '1.8.1'
 
   spec.pod_target_xcconfig = {
