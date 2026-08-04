@@ -1,4 +1,26 @@
 
+## 1.2.36 - 2026-08-04
+
+
+
+### Bug Fixes
+
+- Use a per-player AVContentKeySession for offline DRM, ensuring expired licenses are validated on every playback instead of being bypassed by cached content keys from a shared session (#153)
+
+
+
+### Maintenance
+
+- Migrate RealmSwift from 10.54.2 to 20.0.4 (#154)
+
+
+
+### Refactoring
+
+- Make offline asset deletion thread-safe by carrying only plain asset and content ids across threads, and running encryption-key cleanup on the content key delegate queue (#155)
+
+
+
 ## 1.2.35 - 2026-07-27
 
 
