@@ -31,6 +31,10 @@ public class TPAVPlayer: AVPlayer {
     private var reachability: Reachability?
     internal var isPlaybackOffline: Bool = false
     
+    private let contentKeySession: AVContentKeySession
+    private let contentKeyDelegate: ContentKeyDelegate
+    private let contentKeyDelegateQueue = DispatchQueue(label: "com.tpstreams.iOSPlayerSDK.ContentKeyDelegateQueue")
+    
     public var availableVideoQualities: [VideoQuality] = [VideoQuality(resolution:"Auto", bitrate: 0)]
     
     public init(assetID: String, accessToken: String? = nil, completion: SetupCompletion? = nil) {
@@ -52,8 +56,12 @@ public class TPAVPlayer: AVPlayer {
             accessToken: accessToken,
             assetId: assetID
         )
+        contentKeySession = AVContentKeySession(keySystem: .fairPlayStreaming)
+        contentKeyDelegate = ContentKeyDelegate()
         
         super.init()
+        
+        contentKeySession.setDelegate(contentKeyDelegate, queue: contentKeyDelegateQueue)
         fetchAsset()
         isPlaybackOffline = false
     }
@@ -61,7 +69,11 @@ public class TPAVPlayer: AVPlayer {
     public init(offlineAssetId: String, completion: SetupCompletion? = nil) {
         self.setupCompletion = completion
         self.assetID = offlineAssetId
+        contentKeySession = AVContentKeySession(keySystem: .fairPlayStreaming)
+        contentKeyDelegate = ContentKeyDelegate()
         super.init()
+        
+        contentKeySession.setDelegate(contentKeyDelegate, queue: contentKeyDelegateQueue)
         
         guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: offlineAssetId) else {
             self.processInitializationFailure(TPStreamPlayerError.resourceNotFound)
@@ -183,18 +195,18 @@ public class TPAVPlayer: AVPlayer {
     }
     
     private func setupDRM(_ avURLAsset: AVURLAsset) {
-        ContentKeyManager.shared.contentKeySession.addContentKeyRecipient(avURLAsset)
-        
-        ContentKeyManager.shared.contentKeyDelegate.onRequestOfflineLicenseRenewal = { [weak self] assetId, completion in
+        contentKeyDelegate.onRequestOfflineLicenseRenewal = { [weak self] assetId, completion in
             self?.onRequestOfflineLicenseRenewal?(assetId, completion)
         }
-        
-        ContentKeyManager.shared.contentKeyDelegate.setAssetDetails(assetID, accessToken, isPlaybackOffline)
-        ContentKeyManager.shared.contentKeyDelegate.onError = { error in
+        contentKeyDelegate.onError = { [weak self] error in
+            guard let self = self else { return }
             let sentryIssueId = captureErrorInSentry(error, self.assetID, self.accessToken)
             self.initializationErrorContext = InitializationErrorContext(error: error, sentryIssueId: sentryIssueId)
             self.onError?(error, sentryIssueId)
         }
+
+        contentKeyDelegate.setAssetDetails(assetID, accessToken, isPlaybackOffline)
+        contentKeySession.addContentKeyRecipient(avURLAsset)
     }
     
     private func populateAvailableVideoQualities(_ url: URL, completion: @escaping () -> Void) {

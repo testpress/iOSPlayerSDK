@@ -26,13 +26,19 @@ class PlayerViewController: UIViewController {
     
     func setupPlayerView(){
         if (TPStreamsDownloadManager.shared.isAssetDownloaded(assetID: assistId!)){
-            player = TPAVPlayer(offlineAssetId:assistId!){ error in
+            player = TPAVPlayer(offlineAssetId: assistId!) { error in
                 guard error == nil else {
                     print("Setup error: \(error!.localizedDescription)")
                     return
                 }
-
-                print("TPAVPlayer setup successfully")
+            }
+            player?.onRequestOfflineLicenseRenewal = { [weak self] assetId, completion in
+                debugPrint("onRequestOfflineLicenseRenewal")
+                let token = self?.accessToken ?? "9327e2d0-fa13-4288-902d-840f32cd0eed"
+                completion(token, 40)
+            }
+            player?.onError = { error, _ in
+                print("Player error: \(error.localizedDescription)")
             }
         } else {
             player = TPAVPlayer(assetID: assistId!, accessToken: accessToken!){ error in

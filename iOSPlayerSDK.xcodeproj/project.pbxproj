@@ -72,7 +72,6 @@
 		8E6389E22A275AA800306FA4 /* StreamsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389E12A275AA800306FA4 /* StreamsAPI.swift */; };
 		8E6389E52A275B2A00306FA4 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 8E6389E42A275B2A00306FA4 /* Alamofire */; };
 		8E6389E92A278D1D00306FA4 /* ContentKeyDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389E82A278D1D00306FA4 /* ContentKeyDelegate.swift */; };
-		8E6C5CB22A28AB94003EC948 /* ContentKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6C5CB12A28AB94003EC948 /* ContentKeyManager.swift */; };
 		8E6C5CB52A28BD9A003EC948 /* TPStreamsSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6C5CB42A28BD9A003EC948 /* TPStreamsSDK.swift */; };
 		8EDE99AF2A2643B000E43EA9 /* TPStreamsSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */; };
 		8EDE99B42A2643B000E43EA9 /* iOSPlayerSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */; };
@@ -225,7 +224,6 @@
 		8E6389DE2A2751C800306FA4 /* TPAVPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPAVPlayer.swift; sourceTree = "<group>"; };
 		8E6389E12A275AA800306FA4 /* StreamsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamsAPI.swift; sourceTree = "<group>"; };
 		8E6389E82A278D1D00306FA4 /* ContentKeyDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentKeyDelegate.swift; sourceTree = "<group>"; };
-		8E6C5CB12A28AB94003EC948 /* ContentKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentKeyManager.swift; sourceTree = "<group>"; };
 		8E6C5CB42A28BD9A003EC948 /* TPStreamsSDK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsSDK.swift; sourceTree = "<group>"; };
 		8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TPStreamsSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EDE99A72A2643B000E43EA9 /* iOSPlayerSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = iOSPlayerSDK.h; sourceTree = "<group>"; };
@@ -461,7 +459,6 @@
 				2DC08F872F448BB900AABC60 /* EncryptionKeyDelegate.swift */,
 				03B809092A2DF8A000AB3D03 /* TPStreamPlayer.swift */,
 				8E6389E82A278D1D00306FA4 /* ContentKeyDelegate.swift */,
-				8E6C5CB12A28AB94003EC948 /* ContentKeyManager.swift */,
 				03CC86672AE142FF002F5D28 /* ResourceLoaderDelegate.swift */,
 				D9A2F2AD2CE2102E0052802D /* ContentKeyDelegate+Persistable.swift */,
 			);
@@ -842,7 +839,6 @@
 				D9A2F2AE2CE2102E0052802D /* ContentKeyDelegate+Persistable.swift in Sources */,
 				0374E36E2C1AD18400CE9CF2 /* BaseAPIParser.swift in Sources */,
 				0374E3742C1B159A00CE9CF2 /* Video.swift in Sources */,
-				8E6C5CB22A28AB94003EC948 /* ContentKeyManager.swift in Sources */,
 				03CC784D2A6BB6E5005E8F7E /* VideoPlayerView.swift in Sources */,
 				2D2BA5792F5FEB2400D53996 /* KeychainUtil.swift in Sources */,
 				4F02A7FA872249B68023A541 /* SubtitleView.swift in Sources */,
