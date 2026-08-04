@@ -380,13 +380,6 @@ public final class TPStreamsDownloadManager {
             do {
                 try FileManager.default.removeItem(at: downloadedFileURL)
 
-                let finishDeletion = {
-                    self.deleteEncryptionKey(for: assetId)
-                    DispatchQueue.main.async {
-                        completion(true, nil)
-                    }
-                }
-
                 if let drmContentId = drmContentId, !drmContentId.isEmpty {
                     // Deleting directly avoids touching the shared delegate's mutable
                     // contentID/assetID, which in-flight key requests read.
@@ -394,7 +387,11 @@ public final class TPStreamsDownloadManager {
                     try? FileManager.default.removeItem(at: keyURL)
                     self.updateOfflineLicenseExpiry(assetId, expiryDate: nil)
                 }
-                finishDeletion()
+
+                self.deleteEncryptionKey(for: assetId)
+                DispatchQueue.main.async {
+                    completion(true, nil)
+                }
             } catch {
                 DispatchQueue.main.async {
                     completion(false, error)
