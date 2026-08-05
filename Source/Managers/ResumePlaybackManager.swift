@@ -16,11 +16,13 @@ final class ResumePlaybackManager {
     private var hasFetched = false
     private var isEnded = false
     private var saveTimer: Timer?
+    private let onSeekCompleted: ((Double) -> Void)?
 
-    init(player: AVPlayer, organizationId: String, assetId: String) {
+    init(player: AVPlayer, organizationId: String, assetId: String, onSeekCompleted: ((Double) -> Void)? = nil) {
         self.player = player
         self.organizationId = organizationId
         self.assetId = assetId
+        self.onSeekCompleted = onSeekCompleted
         startPeriodicSave()
     }
 
@@ -42,7 +44,9 @@ final class ResumePlaybackManager {
             DispatchQueue.main.async {
                 self.player.seek(to: CMTime(seconds: seconds, preferredTimescale: 600),
                                  toleranceBefore: CMTime.zero,
-                                 toleranceAfter: CMTime.zero)
+                                 toleranceAfter: CMTime.zero) { _ in
+                    self.onSeekCompleted?(seconds)
+                }
             }
         }
     }
