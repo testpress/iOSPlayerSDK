@@ -24,6 +24,10 @@ final class ResumePlaybackManager {
         startPeriodicSave()
     }
 
+    deinit {
+        saveTimer?.invalidate()
+    }
+
     func resumeFromLastPosition() {
         guard !hasFetched, let body = watchBody else { return }
         hasFetched = true
@@ -36,7 +40,9 @@ final class ResumePlaybackManager {
                   let seconds = json["watched_seconds"] as? Double,
                   seconds > 0 else { return }
             DispatchQueue.main.async {
-                self.player.seek(to: CMTime(seconds: seconds, preferredTimescale: 600))
+                self.player.seek(to: CMTime(seconds: seconds, preferredTimescale: 600),
+                                 toleranceBefore: CMTime.zero,
+                                 toleranceAfter: CMTime.zero)
             }
         }
     }
@@ -69,10 +75,12 @@ final class ResumePlaybackManager {
 
     private func startPeriodicSave() {
         saveTimer?.invalidate()
-        saveTimer = Timer.scheduledTimer(withTimeInterval: Self.periodicSaveInterval, repeats: true) { [weak self] _ in
+        let timer = Timer(timeInterval: Self.periodicSaveInterval, repeats: true) { [weak self] _ in
             guard let self = self, self.player.timeControlStatus == .playing else { return }
             self.saveWatchedPosition()
         }
+        RunLoop.main.add(timer, forMode: .common)
+        saveTimer = timer
     }
 
     private func stopPeriodicSave() {
@@ -93,7 +101,12 @@ final class ResumePlaybackManager {
         request.httpMethod = method
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
-        URLSession.shared.dataTask(with: request) { data, _, _ in
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                debugPrint("ResumePlaybackManager request failed: \(error)")
+            } else if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
+                debugPrint("ResumePlaybackManager request failed: HTTP \(http.statusCode)")
+            }
             completion?(data)
         }.resume()
     }

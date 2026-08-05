@@ -45,8 +45,7 @@ class TPStreamPlayer: NSObject {
         guard TPStreamsSDK.userId != nil,
               let assetID = player.assetID,
               let organizationId = TPStreamsSDK.orgCode,
-              let liveStream = player.asset?.liveStream,
-              !liveStream.isStreaming else { return nil }
+              !isLive else { return nil }
         let resumeManager = ResumePlaybackManager(player: player, organizationId: organizationId, assetId: assetID)
         _resumeManager = resumeManager
         return resumeManager
