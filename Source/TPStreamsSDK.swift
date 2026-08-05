@@ -42,6 +42,8 @@ public class TPStreamsSDK {
     internal static var provider: Provider = .tpstreams
     internal static var authToken: String?
     
+    public static var userId: String?
+    
     public static func initialize(for provider: Provider = .tpstreams, withOrgCode orgCode: String, usingAuthToken authToken: String? = nil) {
         self.orgCode = orgCode
         self.provider = provider

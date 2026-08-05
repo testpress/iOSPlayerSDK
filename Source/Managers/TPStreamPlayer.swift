@@ -37,6 +37,21 @@ class TPStreamPlayer: NSObject {
     
     private var isSeeking: Bool = false
     
+    private var _resumeManager: ResumePlaybackManager?
+    private var resumeManager: ResumePlaybackManager? {
+        if let resumeManager = _resumeManager {
+            return resumeManager
+        }
+        guard TPStreamsSDK.userId != nil,
+              let assetID = player.assetID,
+              let organizationId = TPStreamsSDK.orgCode,
+              let liveStream = player.asset?.liveStream,
+              !liveStream.isStreaming else { return nil }
+        let resumeManager = ResumePlaybackManager(player: player, organizationId: organizationId, assetId: assetID)
+        _resumeManager = resumeManager
+        return resumeManager
+    }
+    
     var availableVideoQualities: [VideoQuality] {
         return self.player.availableVideoQualities
     }
@@ -56,6 +71,10 @@ class TPStreamPlayer: NSObject {
         self.observeCurrentItemChanges()
         self.observePlayerStatusChange()
         self.observePlayerRateChange()
+    }
+    
+    deinit {
+        resumeManager?.finalSaveAndStop()
     }
     
     private func observeCurrentItemChanges() {
@@ -149,6 +168,7 @@ class TPStreamPlayer: NSObject {
     
     @objc private func playerDidFinishPlaying(){
         status = "ended"
+        resumeManager?.deleteWatchedPosition()
     }
     
     private func handlePlaybackStatusChange(for player: TPAVPlayer) {
@@ -158,6 +178,7 @@ class TPStreamPlayer: NSObject {
         case .paused:
             if status == "ended" {return}
             status = "paused"
+            resumeManager?.saveWatchedPosition()
         case .waitingToPlayAtSpecifiedRate:
             break
         @unknown default:
@@ -184,6 +205,7 @@ class TPStreamPlayer: NSObject {
         switch player.status {
         case .readyToPlay:
             status = "ready"
+            resumeManager?.resumeFromLastPosition()
         case .failed:
             status = "failed"
         case .unknown:
@@ -199,6 +221,7 @@ class TPStreamPlayer: NSObject {
         let previousPlaybackSpeed = currentPlaybackSpeed
         player.play()
         player.rate = previousPlaybackSpeed.rawValue
+        resumeManager?.reset()
     }
     
     func pause(){
@@ -237,6 +260,7 @@ class TPStreamPlayer: NSObject {
         player?.seek(to: seekTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero){ [weak self] _ in
             guard let self = self else { return }
             self.isSeeking = false
+            self.resumeManager?.saveWatchedPosition()
         }
     }
     
