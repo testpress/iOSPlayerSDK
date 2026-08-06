@@ -36,21 +36,14 @@ class TPStreamPlayer: NSObject {
     private var playerRateObservation: NSKeyValueObservation?
     
     private var isSeeking: Bool = false
-    
-    private var _resumeManager: ResumePlaybackManager?
-    private var resumeManager: ResumePlaybackManager? {
-        if let resumeManager = _resumeManager {
-            return resumeManager
-        }
-        guard TPStreamsSDK.userId != nil,
-              let assetID = player.assetID,
-              let organizationId = TPStreamsSDK.orgCode,
-              !isLive else { return nil }
-        let resumeManager = ResumePlaybackManager(player: player, organizationId: organizationId, assetId: assetID) { [weak self] seconds in
-            self?.currentTime = NSNumber(value: seconds)
-        }
-        _resumeManager = resumeManager
-        return resumeManager
+
+    private let videoData = TpstreamsVideoData()
+    private var hasFetchedResumePosition = false
+    private var isResumePlaybackEnded = false
+    private var resumeSaveTimer: Timer?
+
+    private var resumePlaybackEnabled: Bool {
+        TPStreamsSDK.userId != nil && player.assetID != nil && TPStreamsSDK.orgCode != nil && !isLive
     }
     
     var availableVideoQualities: [VideoQuality] {
@@ -75,7 +68,7 @@ class TPStreamPlayer: NSObject {
     }
     
     deinit {
-        resumeManager?.finalSaveAndStop()
+        finalSaveAndStop()
     }
     
     private func observeCurrentItemChanges() {
@@ -169,7 +162,7 @@ class TPStreamPlayer: NSObject {
     
     @objc private func playerDidFinishPlaying(){
         status = "ended"
-        resumeManager?.deleteWatchedPosition()
+        deleteWatchedPosition()
     }
     
     private func handlePlaybackStatusChange(for player: TPAVPlayer) {
@@ -179,7 +172,7 @@ class TPStreamPlayer: NSObject {
         case .paused:
             if status == "ended" {return}
             status = "paused"
-            resumeManager?.saveWatchedPosition()
+            saveWatchedPosition()
         case .waitingToPlayAtSpecifiedRate:
             break
         @unknown default:
@@ -206,7 +199,7 @@ class TPStreamPlayer: NSObject {
         switch player.status {
         case .readyToPlay:
             status = "ready"
-            resumeManager?.resumeFromLastPosition()
+            resumeFromLastPosition()
         case .failed:
             status = "failed"
         case .unknown:
@@ -215,6 +208,71 @@ class TPStreamPlayer: NSObject {
             break
         }
     }
+
+    private func resumeFromLastPosition() {
+        guard resumePlaybackEnabled,
+              !hasFetchedResumePosition,
+              let userId = TPStreamsSDK.userId,
+              let assetID = player.assetID else { return }
+        hasFetchedResumePosition = true
+        startPeriodicResumeSave()
+        videoData.getLastWatchedDuration(userId: userId, assetID: assetID) { [weak self] seconds in
+            guard let self = self, let seconds = seconds, seconds > 0 else { return }
+            DispatchQueue.main.async {
+                self.player.seek(to: CMTime(seconds: seconds, preferredTimescale: 600),
+                                 toleranceBefore: CMTime.zero,
+                                 toleranceAfter: CMTime.zero) { _ in
+                    self.currentTime = NSNumber(value: seconds)
+                }
+            }
+        }
+    }
+
+    private func saveWatchedPosition() {
+        guard resumePlaybackEnabled,
+              !isResumePlaybackEnded,
+              player.currentItem?.status != .failed else { return }
+        let seconds = Int(round(player.currentTimeInSeconds))
+        guard seconds > 0,
+              let userId = TPStreamsSDK.userId,
+              let assetID = player.assetID else { return }
+        videoData.setLastWatchedDuration(Double(seconds), userId: userId, assetID: assetID)
+    }
+
+    private func deleteWatchedPosition() {
+        guard resumePlaybackEnabled,
+              let userId = TPStreamsSDK.userId,
+              let assetID = player.assetID else { return }
+        isResumePlaybackEnded = true
+        stopPeriodicResumeSave()
+        videoData.deleteLastWatchedDuration(userId: userId, assetID: assetID)
+    }
+
+    private func resetResumePlayback() {
+        isResumePlaybackEnded = false
+        startPeriodicResumeSave()
+    }
+
+    private func finalSaveAndStop() {
+        saveWatchedPosition()
+        stopPeriodicResumeSave()
+    }
+
+    private func startPeriodicResumeSave() {
+        guard resumePlaybackEnabled else { return }
+        resumeSaveTimer?.invalidate()
+        let timer = Timer(timeInterval: 120, repeats: true) { [weak self] _ in
+            guard let self = self, self.player.timeControlStatus == .playing else { return }
+            self.saveWatchedPosition()
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        resumeSaveTimer = timer
+    }
+
+    private func stopPeriodicResumeSave() {
+        resumeSaveTimer?.invalidate()
+        resumeSaveTimer = nil
+    }
     
     func play(){
         // When resuming playback, AVPlayer resets the rate to 1.0. We need to capture the current speed 
@@ -222,7 +280,7 @@ class TPStreamPlayer: NSObject {
         let previousPlaybackSpeed = currentPlaybackSpeed
         player.play()
         player.rate = previousPlaybackSpeed.rawValue
-        resumeManager?.reset()
+        resetResumePlayback()
     }
     
     func pause(){
@@ -261,7 +319,7 @@ class TPStreamPlayer: NSObject {
         player?.seek(to: seekTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero){ [weak self] _ in
             guard let self = self else { return }
             self.isSeeking = false
-            self.resumeManager?.saveWatchedPosition()
+            self.saveWatchedPosition()
         }
     }
     
