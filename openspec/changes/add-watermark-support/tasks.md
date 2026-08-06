@@ -3,13 +3,12 @@
 - [ ] 1.1 Add `WatermarkConfig` struct with `text: String`, `x: Int64` (default 0), `y: Int64` (default 0), `color: Int64` (ARGB, default 0xFFFFFFFF), `textSize: Double` (default 14), `opacity: Double` (default 0.3), `animation: WatermarkAnimation?` (default nil) — matching the Pigeon contract
 - [ ] 1.2 Add `WatermarkAnimation` struct with `type: WatermarkAnimationType` and `duration: Int64` (milliseconds, default 10000)
 - [ ] 1.3 Add `WatermarkAnimationType` enum with a single `.pingPong` case (nil animation = static, matching Flutter/Android)
-- [ ] 1.4 Add pure validation/normalization (`validated()`) applying the documented rules: pass empty text through (do not drop), clamp x/y to 0-100, clamp opacity to 0.0-1.0, floor duration at 100 ms, pass textSize and color through
 
 ## 2. Static Watermark Rendering
 
 - [ ] 2.1 Add `WatermarkOverlayView` (UIKit) rendering one label per watermark with configurable text, color, opacity, and text size
 - [ ] 2.2 Implement percentage positioning against the overlay bounds (player view bounds), keeping each watermark fully visible with a fixed inset (16pt), recomputed in `layoutSubviews`
-- [ ] 2.3 Add `setWatermarks(_:)` and `clearWatermarks()` to `TPAVPlayer`, validating once and storing configs, forwarding to the overlay
+- [ ] 2.3 Add `setWatermarks(_:)` and `clearWatermarks()` to `TPAVPlayer`, normalizing once and storing configs, forwarding to the overlay
 - [ ] 2.4 Expose public `setWatermarks(_:)` and `clearWatermarks()` on `TPStreamPlayerViewController` forwarding to the player
 - [ ] 2.5 Expose public `setWatermarks(_:)` and `clearWatermarks()` on `TPStreamPlayerView` (SwiftUI) forwarding to the player
 - [ ] 2.6 Wire overlay into `TPStreamPlayerViewController`'s `containerView` between `subtitleView` and `controlsView` (above video and subtitles, below controls)
@@ -28,7 +27,7 @@
 - [ ] 4.2 Clean up watermark overlay and animations when the player is released or deinitialized
 - [ ] 4.3 Verify watermarks persist through play, pause, seek, buffering, fullscreen, and rotation without regression; verify animation pauses/resumes with playback state
 - [ ] 4.4 Verify z-order: overlapping watermarks render with earlier list entries on top (Android/Flutter visual parity)
-- [ ] 4.5 Verify validation: out-of-range x/y/opacity clamp, duration below 100 ms floors, empty text still rendered — without crashing
+- [ ] 4.5 Verify normalization: out-of-range x/y/opacity clamp, duration below 100 ms floors, empty text still rendered — without crashing
 - [ ] 4.6 Update the sample application with static and animated watermark examples mirroring the Android/Flutter example (pingPong at x=0/y=50 and static entries)
 - [ ] 4.7 Update SDK documentation with the watermark API reference, configuration defaults, and the note that animated watermarks ignore the x coordinate
 

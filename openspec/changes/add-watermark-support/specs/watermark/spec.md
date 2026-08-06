@@ -9,7 +9,7 @@ The system SHALL allow applications to set one or more text watermarks on a play
 
 #### Scenario: Set watermarks on a player
 - **WHEN** an application calls the watermark API with a list of watermark configurations
-- **THEN** the player displays all valid configured watermarks over the video content
+- **THEN** the player displays all configured watermarks over the video content
 
 #### Scenario: Replace existing watermarks
 - **WHEN** an application sets a new watermark list while watermarks are already displayed
@@ -90,8 +90,8 @@ The system SHALL keep watermarks visible throughout playback events including pl
 - **WHEN** the player is released or deinitialized
 - **THEN** all watermarks are removed and all animation resources are cleaned up
 
-### Requirement: Watermark configuration validation
-The system SHALL validate watermark configuration values before rendering and SHALL apply documented defaults, without crashing on invalid input and without interrupting video playback.
+### Requirement: Watermark configuration normalization
+The system SHALL apply documented normalization defaults to watermark configuration values when they are set, without crashing on invalid input and without interrupting video playback. The watermark models are plain data and carry no validation, matching the codebase convention.
 
 The following defaults SHALL apply:
 - x or y outside `0-100`: clamp to the nearest bound
@@ -108,9 +108,9 @@ The following defaults SHALL apply to omitted optional values (matching the Flut
 - animation: static (none)
 - animation duration: `10000` milliseconds
 
-#### Scenario: Invalid configuration values
+#### Scenario: Out-of-range configuration values
 - **WHEN** a watermark configuration contains out-of-range coordinates or opacity, or an animation duration below the minimum
-- **THEN** the system clamps the invalid values to the documented bounds and renders the watermark
+- **THEN** the system clamps the out-of-range values to the documented bounds and renders the watermark
 
 #### Scenario: Mixed in-range and out-of-range entries
 - **WHEN** a watermark list contains both in-range and out-of-range configurations
