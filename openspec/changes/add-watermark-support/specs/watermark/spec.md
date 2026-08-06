@@ -4,19 +4,23 @@ Lets applications display one or more text watermarks over video playback with p
 
 ## ADDED Requirements
 
-### Requirement: Configure watermarks on a player
-The system SHALL allow applications to set one or more text watermarks on a player instance by providing a list of watermark configurations, and SHALL provide a way to remove all watermarks. Setting a new list MUST replace all currently displayed watermarks. Setting an empty list, or calling the clear API, MUST remove all watermarks without interrupting playback. Empty-text configurations MUST still be accepted and rendered (matching Android/Flutter; an empty label may occupy negligible space).
+### Requirement: Configure watermarks in the player configuration
+The system SHALL allow applications to configure one or more text watermarks through the player configuration (`TPStreamPlayerConfiguration.watermarks`, builder `setWatermarks(_:)`), and SHALL remove all watermarks when an empty list is configured. Setting a new list MUST replace all currently displayed watermarks without interrupting playback. On the UIKit path, updating `config.watermarks` at runtime MUST re-apply the overlay (the `config` property already re-applies via `didSet`). Empty-text configurations MUST still be accepted and rendered (matching Android/Flutter; an empty label may occupy negligible space).
 
-#### Scenario: Set watermarks on a player
-- **WHEN** an application calls the watermark API with a list of watermark configurations
+#### Scenario: Configure watermarks
+- **WHEN** an application configures watermarks in the player configuration
 - **THEN** the player displays all configured watermarks over the video content
 
 #### Scenario: Replace existing watermarks
 - **WHEN** an application sets a new watermark list while watermarks are already displayed
 - **THEN** the currently displayed watermarks are replaced by the new list without player recreation or playback restart
 
+#### Scenario: Runtime config update on the UIKit path
+- **WHEN** an application updates `config.watermarks` on `TPStreamPlayerViewController` during playback
+- **THEN** the overlay re-applies the new list without player recreation or playback restart
+
 #### Scenario: Clear all watermarks
-- **WHEN** an application sets an empty watermark list or calls the clear-watermarks API
+- **WHEN** an application configures an empty watermark list
 - **THEN** all displayed watermarks are removed and playback continues unaffected
 
 ### Requirement: Render multiple watermarks simultaneously
@@ -76,7 +80,7 @@ The system SHALL support static watermarks (no animation) and a pingPong animati
 - **THEN** the watermark remains visible, its animation pauses while playback is not active, and resumes from the paused position when playback resumes
 
 ### Requirement: Watermark lifecycle
-The system SHALL keep watermarks visible throughout playback events including play, pause, seek, buffering, fullscreen transitions, and orientation changes, rendering them above the video content (and subtitles) and below player controls. The system SHALL remove all watermarks and stop all animations when the player is released or deinitialized.
+The system SHALL keep watermarks visible throughout playback events including play, pause, seek, buffering, fullscreen transitions, and orientation changes, rendering them above the video content (and subtitles) and below player controls. The system SHALL remove all watermarks and stop all animations when the player view is released or deinitialized.
 
 #### Scenario: Watermarks persist through playback events
 - **WHEN** the player pauses, seeks, buffers, enters or exits fullscreen, or the device rotates during playback
@@ -86,12 +90,12 @@ The system SHALL keep watermarks visible throughout playback events including pl
 - **WHEN** watermarks, subtitles, and player controls are displayed during playback
 - **THEN** watermarks render above the video content and subtitles, and below player controls
 
-#### Scenario: Player release cleanup
-- **WHEN** the player is released or deinitialized
+#### Scenario: Player view release cleanup
+- **WHEN** the player view is released or deinitialized
 - **THEN** all watermarks are removed and all animation resources are cleaned up
 
 ### Requirement: Watermark configuration normalization
-The system SHALL apply documented normalization defaults to watermark configuration values when they are set, without crashing on invalid input and without interrupting video playback. The watermark models are plain data and carry no validation, matching the codebase convention.
+The system SHALL apply documented normalization defaults to watermark configuration values when the configuration is applied to the overlay, without crashing on invalid input and without interrupting video playback. The watermark models are plain data and carry no validation, matching the codebase convention.
 
 The following defaults SHALL apply:
 - x or y outside `0-100`: clamp to the nearest bound
@@ -117,8 +121,8 @@ The following defaults SHALL apply to omitted optional values (matching the Flut
 - **THEN** all entries render, with out-of-range values clamped, without interrupting playback
 
 ### Requirement: Cross-platform API consistency
-The system SHALL expose watermark functionality through the SDK public API matching the Flutter Pigeon contract (model names, field names, types, and defaults), such that the existing Flutter SDK bridge can consume it without platform-specific changes, and SHALL behave consistently with the Android Player SDK for equivalent watermark configurations.
+The system SHALL expose watermark functionality through the SDK public API with model names, field names, types, and defaults matching the Flutter Pigeon contract. On iOS the surface is the player configuration (`TPStreamPlayerConfiguration.watermarks`) rather than the imperative Pigeon methods: the Flutter bridge maps `setWatermarks`/`clearWatermarks` onto `TPStreamPlayerViewController.config.watermarks`. Behavior SHALL be consistent with the Android Player SDK for equivalent watermark configurations.
 
 #### Scenario: Flutter SDK parity
-- **WHEN** the Flutter SDK applies a watermark configuration to the iOS player through the Pigeon `NativePlayerApi`
-- **THEN** the watermark renders with behavior matching the Android SDK for the same configuration, without requiring platform-specific API changes
+- **WHEN** the Flutter SDK applies a watermark configuration to the iOS player (via `TPStreamPlayerViewController.config.watermarks`)
+- **THEN** the watermark renders with behavior matching the Android SDK for the same configuration

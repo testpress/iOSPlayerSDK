@@ -8,9 +8,9 @@
 
 - [ ] 2.1 Add `WatermarkOverlayView` (UIKit) rendering one label per watermark with configurable text, color, opacity, and text size
 - [ ] 2.2 Implement percentage positioning against the overlay bounds (player view bounds), keeping each watermark fully visible with a fixed inset (16pt), recomputed in `layoutSubviews`
-- [ ] 2.3 Add `setWatermarks(_:)` and `clearWatermarks()` to `TPAVPlayer`, normalizing once and storing configs, forwarding to the overlay
-- [ ] 2.4 Expose public `setWatermarks(_:)` and `clearWatermarks()` on `TPStreamPlayerViewController` forwarding to the player
-- [ ] 2.5 Expose public `setWatermarks(_:)` and `clearWatermarks()` on `TPStreamPlayerView` (SwiftUI) forwarding to the player
+- [ ] 2.3 Add `watermarks: [WatermarkConfig]` to `TPStreamPlayerConfiguration` with builder `setWatermarks(_:)` (default empty); normalize once when the config is applied to the overlay
+- [ ] 2.4 Extend `TPStreamPlayerViewController.config.didSet` to re-apply the watermark overlay (runtime config changes on the UIKit path)
+- [ ] 2.5 Apply `playerViewConfig.watermarks` to the overlay when `TPStreamPlayerView` is set up (init-time, matching its other config fields)
 - [ ] 2.6 Wire overlay into `TPStreamPlayerViewController`'s `containerView` between `subtitleView` and `controlsView` (above video and subtitles, below controls)
 - [ ] 2.7 Wire overlay into `TPStreamPlayerView` (SwiftUI, via `UIViewRepresentable` in the ZStack between subtitles and controls)
 
@@ -18,18 +18,18 @@
 
 - [ ] 3.1 Implement pingPong animation with `CAKeyframeAnimation` on `transform.translation.x`, `autoreverses = true`, `repeatCount = .infinity`: one leg per configured duration, y constant, full-span traversal (x coordinate ignored while animating)
 - [ ] 3.2 Support independent animation per watermark layer
-- [ ] 3.3 Pause animations when playback is not active (paused, buffering, ended) and resume from the paused position when playback resumes; watermarks remain visible while paused
+- [ ] 3.3 Pause animations when playback is not active (paused, buffering, ended) and resume from the paused position when playback resumes; watermarks remain visible while paused. Playback state is observed by the presentation views (they already hold the player), not `TPAVPlayer`
 - [ ] 3.4 Preserve animation continuity on update via value equality: unchanged configs keep their layer/animation, changed configs are re-created
 
 ## 4. Player Lifecycle Integration
 
 - [ ] 4.1 Recalculate watermark positions on layout changes (rotation, fullscreen, view resize) using the overlay bounds
-- [ ] 4.2 Clean up watermark overlay and animations when the player is released or deinitialized
+- [ ] 4.2 Clean up watermark overlay and animations when the player view is released or deinitialized
 - [ ] 4.3 Verify watermarks persist through play, pause, seek, buffering, fullscreen, and rotation without regression; verify animation pauses/resumes with playback state
 - [ ] 4.4 Verify z-order: overlapping watermarks render with earlier list entries on top (Android/Flutter visual parity)
 - [ ] 4.5 Verify normalization: out-of-range x/y/opacity clamp, duration below 100 ms floors, empty text still rendered — without crashing
 - [ ] 4.6 Update the sample application with static and animated watermark examples mirroring the Android/Flutter example (pingPong at x=0/y=50 and static entries)
-- [ ] 4.7 Update SDK documentation with the watermark API reference, configuration defaults, and the note that animated watermarks ignore the x coordinate
+- [ ] 4.7 Update SDK documentation with the watermark configuration reference, configuration defaults, and the note that animated watermarks ignore the x coordinate
 
 ## 5. Verification
 
