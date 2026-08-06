@@ -37,7 +37,7 @@ class TPStreamPlayer: NSObject {
     
     private var isSeeking: Bool = false
 
-    private let videoData = TpstreamsVideoData()
+    private let assetData: TpstreamsAssetData = TpstreamsAssetData()
     private var hasRestoredLastWatchedPosition = false
     private var didClearLastWatchedPosition = false
     private var lastWatchedPositionSyncTimer: Timer?
@@ -224,7 +224,7 @@ class TPStreamPlayer: NSObject {
               let assetID = player.assetID else { return }
         hasRestoredLastWatchedPosition = true
         startLastWatchedPositionSync()
-        videoData.fetchLastWatchedPosition(userId: userId, assetID: assetID) { [weak self] seconds in
+        assetData.fetchLastWatchedPosition(userId: userId, assetID: assetID) { [weak self] seconds in
             guard let self = self, let seconds = seconds, seconds > 0 else { return }
             DispatchQueue.main.async {
                 self.player.seek(to: CMTime(seconds: seconds, preferredTimescale: 600),
@@ -244,7 +244,7 @@ class TPStreamPlayer: NSObject {
         guard seconds > 0,
               let userId = userId,
               let assetID = player.assetID else { return }
-        videoData.updateLastWatchedPosition(Double(seconds), userId: userId, assetID: assetID)
+        assetData.updateLastWatchedPosition(Double(seconds), userId: userId, assetID: assetID)
     }
 
     private func deleteLastWatchedPosition() {
@@ -253,7 +253,7 @@ class TPStreamPlayer: NSObject {
               let assetID = player.assetID else { return }
         didClearLastWatchedPosition = true
         stopLastWatchedPositionSync()
-        videoData.deleteLastWatchedPosition(userId: userId, assetID: assetID)
+        assetData.deleteLastWatchedPosition(userId: userId, assetID: assetID)
     }
 
     private func startLastWatchedPositionSync() {

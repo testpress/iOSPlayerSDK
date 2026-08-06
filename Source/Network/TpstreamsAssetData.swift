@@ -1,6 +1,6 @@
 import Foundation
 
-final class TpstreamsVideoData {
+final class TpstreamsAssetData {
     private static let baseURL = "https://data.tpstreams.com"
 
     private enum Endpoint {
@@ -45,9 +45,9 @@ final class TpstreamsVideoData {
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                debugPrint("TpstreamsVideoData request failed: \(error)")
+                debugPrint("TpstreamsAssetData request failed: \(error)")
             } else if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
-                debugPrint("TpstreamsVideoData request failed: HTTP \(http.statusCode)")
+                debugPrint("TpstreamsAssetData request failed: HTTP \(http.statusCode)")
             }
             completion?(data)
         }.resume()
