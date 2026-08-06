@@ -8,7 +8,7 @@ final class TpstreamsVideoData {
         static let updateWatchedPosition = "api/player/update-watched-position/"
     }
 
-    func getLastWatchedDuration(userId: String, assetID: String, completion: @escaping (Double?) -> Void) {
+    func fetchLastWatchedPosition(userId: String, assetID: String, completion: @escaping (Double?) -> Void) {
         request(method: "POST", endpoint: Endpoint.lastWatchedPosition, body: body(userId: userId, assetID: assetID)) { data in
             guard let data = data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
@@ -21,13 +21,13 @@ final class TpstreamsVideoData {
         }
     }
 
-    func updateLastWatchedDuration(_ duration: Double, userId: String, assetID: String) {
+    func updateLastWatchedPosition(_ position: Double, userId: String, assetID: String) {
         var body = body(userId: userId, assetID: assetID)
-        body["watched_seconds"] = Int(round(duration))
+        body["watched_seconds"] = Int(round(position))
         request(method: "POST", endpoint: Endpoint.updateWatchedPosition, body: body)
     }
 
-    func deleteLastWatchedDuration(userId: String, assetID: String) {
+    func deleteLastWatchedPosition(userId: String, assetID: String) {
         request(method: "DELETE", endpoint: Endpoint.lastWatchedPosition, body: body(userId: userId, assetID: assetID))
     }
 
