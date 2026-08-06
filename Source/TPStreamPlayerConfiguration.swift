@@ -23,6 +23,7 @@ public struct TPStreamPlayerConfiguration {
     public var enableSeekButtons: Bool = true
     public var enableCaptions: Bool = false
     public var autoSelectFirstSubtitle: Bool = false
+    public var userId: String? = nil
     
     public var showSettingsButton: Bool {
         return enablePlaybackSpeed || showResolutionOptions || showDownloadOption || enableCaptions
@@ -104,6 +105,11 @@ public class TPStreamPlayerConfigurationBuilder {
     
     public func autoSelectFirstSubtitle(_ enable: Bool) -> Self {
         configuration.autoSelectFirstSubtitle = enable
+        return self
+    }
+    
+    public func setUserId(_ userId: String?) -> Self {
+        configuration.userId = userId
         return self
     }
     

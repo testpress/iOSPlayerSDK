@@ -68,7 +68,7 @@ public class TPStreamPlayerViewController: UIViewController {
         guard let view = bundle.loadNibNamed("PlayerControls", owner: nil, options: nil)?.first as? PlayerControlsUIView else {
             fatalError("Could not load PlayerControls view from nib.")
         }
-        view.player = TPStreamPlayer(player: self.player!)
+        view.player = TPStreamPlayer(player: self.player!, userId: config.userId)
         view.playerConfig = config
         view.frame = view.bounds
         view.isHidden = true

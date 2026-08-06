@@ -36,6 +36,21 @@ class TPStreamPlayer: NSObject {
     private var playerRateObservation: NSKeyValueObservation?
     
     private var isSeeking: Bool = false
+
+    private let assetData: TpstreamsAssetData = TpstreamsAssetData()
+    private var hasRestoredLastWatchedPosition = false
+    private var didClearLastWatchedPosition = false
+    private var lastWatchedPositionSyncTimer: Timer?
+    private let userId: String?
+
+    /// `true` when the SDK can synchronize and restore the user's last watched position.
+    /// The resume state is synced using the provided `userId` and the asset ID,
+    /// allowing playback to continue from the last watched position whenever the
+    /// user plays the asset again. Requires a non-empty `userId`, an asset ID, and a non-live stream.
+    private var isAutoResumeEnabled: Bool {
+        guard let userId = userId, !userId.isEmpty else { return false }
+        return player.assetID != nil && TPStreamsSDK.orgCode != nil && !isLive
+    }
     
     var availableVideoQualities: [VideoQuality] {
         return self.player.availableVideoQualities
@@ -48,14 +63,20 @@ class TPStreamPlayer: NSObject {
         return self.player.asset
     }
     
-    init(player: TPAVPlayer){
+    init(player: TPAVPlayer, userId: String? = nil) {
         self.player = player
+        self.userId = userId
         super.init()
         self.observePlaybackStatusChange()
         self.observePlayerCurrentTimeChange()
         self.observeCurrentItemChanges()
         self.observePlayerStatusChange()
         self.observePlayerRateChange()
+    }
+    
+    deinit {
+        updateLastWatchedPosition()
+        stopLastWatchedPositionSync()
     }
     
     private func observeCurrentItemChanges() {
@@ -149,6 +170,7 @@ class TPStreamPlayer: NSObject {
     
     @objc private func playerDidFinishPlaying(){
         status = "ended"
+        deleteLastWatchedPosition()
     }
     
     private func handlePlaybackStatusChange(for player: TPAVPlayer) {
@@ -158,6 +180,7 @@ class TPStreamPlayer: NSObject {
         case .paused:
             if status == "ended" {return}
             status = "paused"
+            updateLastWatchedPosition()
         case .waitingToPlayAtSpecifiedRate:
             break
         @unknown default:
@@ -184,6 +207,7 @@ class TPStreamPlayer: NSObject {
         switch player.status {
         case .readyToPlay:
             status = "ready"
+            restoreLastWatchedPosition()
         case .failed:
             status = "failed"
         case .unknown:
@@ -192,6 +216,61 @@ class TPStreamPlayer: NSObject {
             break
         }
     }
+
+    private func restoreLastWatchedPosition() {
+        guard isAutoResumeEnabled,
+              !hasRestoredLastWatchedPosition,
+              let userId = userId,
+              let assetID = player.assetID else { return }
+        hasRestoredLastWatchedPosition = true
+        startLastWatchedPositionSync()
+        assetData.fetchLastWatchedPosition(userId: userId, assetID: assetID) { [weak self] seconds in
+            guard let self = self, let seconds = seconds, seconds > 0 else { return }
+            DispatchQueue.main.async {
+                self.player.seek(to: CMTime(seconds: seconds, preferredTimescale: 600),
+                                 toleranceBefore: CMTime.zero,
+                                 toleranceAfter: CMTime.zero) { _ in
+                    self.currentTime = NSNumber(value: seconds)
+                }
+            }
+        }
+    }
+
+    private func updateLastWatchedPosition() {
+        guard isAutoResumeEnabled,
+              !didClearLastWatchedPosition,
+              player.currentItem?.status != .failed else { return }
+        let seconds = Int(round(player.currentTimeInSeconds))
+        guard seconds > 0,
+              let userId = userId,
+              let assetID = player.assetID else { return }
+        assetData.updateLastWatchedPosition(Double(seconds), userId: userId, assetID: assetID)
+    }
+
+    private func deleteLastWatchedPosition() {
+        guard isAutoResumeEnabled,
+              let userId = userId,
+              let assetID = player.assetID else { return }
+        didClearLastWatchedPosition = true
+        stopLastWatchedPositionSync()
+        assetData.deleteLastWatchedPosition(userId: userId, assetID: assetID)
+    }
+
+    private func startLastWatchedPositionSync() {
+        guard isAutoResumeEnabled else { return }
+        lastWatchedPositionSyncTimer?.invalidate()
+        let timer = Timer(timeInterval: 120, repeats: true) { [weak self] _ in
+            guard let self = self, self.player.timeControlStatus == .playing else { return }
+            self.updateLastWatchedPosition()
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        lastWatchedPositionSyncTimer = timer
+    }
+
+    private func stopLastWatchedPositionSync() {
+        lastWatchedPositionSyncTimer?.invalidate()
+        lastWatchedPositionSyncTimer = nil
+    }
     
     func play(){
         // When resuming playback, AVPlayer resets the rate to 1.0. We need to capture the current speed 
@@ -199,6 +278,8 @@ class TPStreamPlayer: NSObject {
         let previousPlaybackSpeed = currentPlaybackSpeed
         player.play()
         player.rate = previousPlaybackSpeed.rawValue
+        didClearLastWatchedPosition = false
+        startLastWatchedPositionSync()
     }
     
     func pause(){
@@ -237,6 +318,7 @@ class TPStreamPlayer: NSObject {
         player?.seek(to: seekTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero){ [weak self] _ in
             guard let self = self else { return }
             self.isSeeking = false
+            self.updateLastWatchedPosition()
         }
     }
     
@@ -291,10 +373,10 @@ class TPStreamPlayerObservable: TPStreamPlayer, ObservableObject {
     }
     
     
-    override init(player: TPAVPlayer) {
+    override init(player: TPAVPlayer, userId: String? = nil) {
         observedStatus = "paused"
         observedCurrentTime = nil
         observedCurrentPlaybackSpeed = PlaybackSpeed(rawValue: 1)!
-        super.init(player: player)
+        super.init(player: player, userId: userId)
     }
 }
