@@ -17,7 +17,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         TPStreamsSDK.initialize(withOrgCode: "9q94nm")
-        TPStreamsSDK.userId = "storyboard-example-user"
         return true
     }
 

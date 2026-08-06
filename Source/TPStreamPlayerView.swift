@@ -16,7 +16,7 @@ public struct TPStreamPlayerView: View {
     
     public init(player: TPAVPlayer, playerViewConfig: TPStreamPlayerConfiguration = TPStreamPlayerConfigurationBuilder().build()) {
         _viewModel = StateObject(wrappedValue: TPStreamPlayerViewModel(player: player))
-        _playerObservable = StateObject(wrappedValue: TPStreamPlayerObservable(player: player))
+        _playerObservable = StateObject(wrappedValue: TPStreamPlayerObservable(player: player, userId: playerViewConfig.userId))
         self.playerViewConfig = playerViewConfig
     }
     

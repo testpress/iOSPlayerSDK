@@ -70,6 +70,7 @@ class PlayerViewController: UIViewController {
             .showDownloadOption()
             .enableCaptions(true)
             .autoSelectFirstSubtitle(true)
+            .setUserId("storyboard-example-user")
             .build()
         
         playerViewController?.config = config

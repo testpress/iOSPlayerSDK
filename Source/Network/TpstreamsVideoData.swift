@@ -21,7 +21,7 @@ final class TpstreamsVideoData {
         }
     }
 
-    func setLastWatchedDuration(_ duration: Double, userId: String, assetID: String) {
+    func updateLastWatchedDuration(_ duration: Double, userId: String, assetID: String) {
         var body = body(userId: userId, assetID: assetID)
         body["watched_seconds"] = Int(round(duration))
         request(method: "POST", endpoint: Endpoint.updateWatchedPosition, body: body)

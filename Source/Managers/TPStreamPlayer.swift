@@ -38,12 +38,14 @@ class TPStreamPlayer: NSObject {
     private var isSeeking: Bool = false
 
     private let videoData = TpstreamsVideoData()
-    private var hasFetchedResumePosition = false
-    private var isResumePlaybackEnded = false
-    private var resumeSaveTimer: Timer?
+    private var hasRestoredLastWatchedPosition = false
+    private var didClearLastWatchedPosition = false
+    private var lastWatchedPositionSyncTimer: Timer?
+    private let userId: String?
 
-    private var resumePlaybackEnabled: Bool {
-        TPStreamsSDK.userId != nil && player.assetID != nil && TPStreamsSDK.orgCode != nil && !isLive
+    private var isLastWatchedPositionEnabled: Bool {
+        guard let userId = userId, !userId.isEmpty else { return false }
+        return player.assetID != nil && TPStreamsSDK.orgCode != nil && !isLive
     }
     
     var availableVideoQualities: [VideoQuality] {
@@ -57,8 +59,9 @@ class TPStreamPlayer: NSObject {
         return self.player.asset
     }
     
-    init(player: TPAVPlayer){
+    init(player: TPAVPlayer, userId: String? = nil) {
         self.player = player
+        self.userId = userId
         super.init()
         self.observePlaybackStatusChange()
         self.observePlayerCurrentTimeChange()
@@ -68,8 +71,8 @@ class TPStreamPlayer: NSObject {
     }
     
     deinit {
-        saveWatchedPosition()
-        stopPeriodicResumeSave()
+        updateLastWatchedPosition()
+        stopLastWatchedPositionSync()
     }
     
     private func observeCurrentItemChanges() {
@@ -163,7 +166,7 @@ class TPStreamPlayer: NSObject {
     
     @objc private func playerDidFinishPlaying(){
         status = "ended"
-        deleteWatchedPosition()
+        deleteLastWatchedPosition()
     }
     
     private func handlePlaybackStatusChange(for player: TPAVPlayer) {
@@ -173,7 +176,7 @@ class TPStreamPlayer: NSObject {
         case .paused:
             if status == "ended" {return}
             status = "paused"
-            saveWatchedPosition()
+            updateLastWatchedPosition()
         case .waitingToPlayAtSpecifiedRate:
             break
         @unknown default:
@@ -200,7 +203,7 @@ class TPStreamPlayer: NSObject {
         switch player.status {
         case .readyToPlay:
             status = "ready"
-            resumeFromLastPosition()
+            restoreLastWatchedPosition()
         case .failed:
             status = "failed"
         case .unknown:
@@ -210,13 +213,13 @@ class TPStreamPlayer: NSObject {
         }
     }
 
-    private func resumeFromLastPosition() {
-        guard resumePlaybackEnabled,
-              !hasFetchedResumePosition,
-              let userId = TPStreamsSDK.userId,
+    private func restoreLastWatchedPosition() {
+        guard isLastWatchedPositionEnabled,
+              !hasRestoredLastWatchedPosition,
+              let userId = userId,
               let assetID = player.assetID else { return }
-        hasFetchedResumePosition = true
-        startPeriodicResumeSave()
+        hasRestoredLastWatchedPosition = true
+        startLastWatchedPositionSync()
         videoData.getLastWatchedDuration(userId: userId, assetID: assetID) { [weak self] seconds in
             guard let self = self, let seconds = seconds, seconds > 0 else { return }
             DispatchQueue.main.async {
@@ -229,40 +232,40 @@ class TPStreamPlayer: NSObject {
         }
     }
 
-    private func saveWatchedPosition() {
-        guard resumePlaybackEnabled,
-              !isResumePlaybackEnded,
+    private func updateLastWatchedPosition() {
+        guard isLastWatchedPositionEnabled,
+              !didClearLastWatchedPosition,
               player.currentItem?.status != .failed else { return }
         let seconds = Int(round(player.currentTimeInSeconds))
         guard seconds > 0,
-              let userId = TPStreamsSDK.userId,
+              let userId = userId,
               let assetID = player.assetID else { return }
-        videoData.setLastWatchedDuration(Double(seconds), userId: userId, assetID: assetID)
+        videoData.updateLastWatchedDuration(Double(seconds), userId: userId, assetID: assetID)
     }
 
-    private func deleteWatchedPosition() {
-        guard resumePlaybackEnabled,
-              let userId = TPStreamsSDK.userId,
+    private func deleteLastWatchedPosition() {
+        guard isLastWatchedPositionEnabled,
+              let userId = userId,
               let assetID = player.assetID else { return }
-        isResumePlaybackEnded = true
-        stopPeriodicResumeSave()
+        didClearLastWatchedPosition = true
+        stopLastWatchedPositionSync()
         videoData.deleteLastWatchedDuration(userId: userId, assetID: assetID)
     }
 
-    private func startPeriodicResumeSave() {
-        guard resumePlaybackEnabled else { return }
-        resumeSaveTimer?.invalidate()
+    private func startLastWatchedPositionSync() {
+        guard isLastWatchedPositionEnabled else { return }
+        lastWatchedPositionSyncTimer?.invalidate()
         let timer = Timer(timeInterval: 120, repeats: true) { [weak self] _ in
             guard let self = self, self.player.timeControlStatus == .playing else { return }
-            self.saveWatchedPosition()
+            self.updateLastWatchedPosition()
         }
         RunLoop.main.add(timer, forMode: .common)
-        resumeSaveTimer = timer
+        lastWatchedPositionSyncTimer = timer
     }
 
-    private func stopPeriodicResumeSave() {
-        resumeSaveTimer?.invalidate()
-        resumeSaveTimer = nil
+    private func stopLastWatchedPositionSync() {
+        lastWatchedPositionSyncTimer?.invalidate()
+        lastWatchedPositionSyncTimer = nil
     }
     
     func play(){
@@ -271,8 +274,8 @@ class TPStreamPlayer: NSObject {
         let previousPlaybackSpeed = currentPlaybackSpeed
         player.play()
         player.rate = previousPlaybackSpeed.rawValue
-        isResumePlaybackEnded = false
-        startPeriodicResumeSave()
+        didClearLastWatchedPosition = false
+        startLastWatchedPositionSync()
     }
     
     func pause(){
@@ -311,7 +314,7 @@ class TPStreamPlayer: NSObject {
         player?.seek(to: seekTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero){ [weak self] _ in
             guard let self = self else { return }
             self.isSeeking = false
-            self.saveWatchedPosition()
+            self.updateLastWatchedPosition()
         }
     }
     
@@ -366,10 +369,10 @@ class TPStreamPlayerObservable: TPStreamPlayer, ObservableObject {
     }
     
     
-    override init(player: TPAVPlayer) {
+    override init(player: TPAVPlayer, userId: String? = nil) {
         observedStatus = "paused"
         observedCurrentTime = nil
         observedCurrentPlaybackSpeed = PlaybackSpeed(rawValue: 1)!
-        super.init(player: player)
+        super.init(player: player, userId: userId)
     }
 }
