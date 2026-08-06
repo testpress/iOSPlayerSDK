@@ -1,4 +1,14 @@
 
+## 1.2.37 - 2026-08-06
+
+
+
+### Features
+
+- Add resume playback support, restoring the last watched position when playback starts, periodically saving progress during playback, and clearing the saved position after the video is completed (#157)
+
+
+
 ## 1.2.36 - 2026-08-04
 
 
