@@ -43,7 +43,9 @@ class TPStreamPlayer: NSObject {
     private var lastWatchedPositionSyncTimer: Timer?
     private let userId: String?
 
-    private var isLastWatchedPositionEnabled: Bool {
+    /// `true` when a non-empty `userId` is available and the current asset can sync
+    /// watched position to the server (org configured, asset id present, not live).
+    private var isAutoResumeEnabled: Bool {
         guard let userId = userId, !userId.isEmpty else { return false }
         return player.assetID != nil && TPStreamsSDK.orgCode != nil && !isLive
     }
@@ -214,7 +216,7 @@ class TPStreamPlayer: NSObject {
     }
 
     private func restoreLastWatchedPosition() {
-        guard isLastWatchedPositionEnabled,
+        guard isAutoResumeEnabled,
               !hasRestoredLastWatchedPosition,
               let userId = userId,
               let assetID = player.assetID else { return }
@@ -233,7 +235,7 @@ class TPStreamPlayer: NSObject {
     }
 
     private func updateLastWatchedPosition() {
-        guard isLastWatchedPositionEnabled,
+        guard isAutoResumeEnabled,
               !didClearLastWatchedPosition,
               player.currentItem?.status != .failed else { return }
         let seconds = Int(round(player.currentTimeInSeconds))
@@ -244,7 +246,7 @@ class TPStreamPlayer: NSObject {
     }
 
     private func deleteLastWatchedPosition() {
-        guard isLastWatchedPositionEnabled,
+        guard isAutoResumeEnabled,
               let userId = userId,
               let assetID = player.assetID else { return }
         didClearLastWatchedPosition = true
@@ -253,7 +255,7 @@ class TPStreamPlayer: NSObject {
     }
 
     private func startLastWatchedPositionSync() {
-        guard isLastWatchedPositionEnabled else { return }
+        guard isAutoResumeEnabled else { return }
         lastWatchedPositionSyncTimer?.invalidate()
         let timer = Timer(timeInterval: 120, repeats: true) { [weak self] _ in
             guard let self = self, self.player.timeControlStatus == .playing else { return }
