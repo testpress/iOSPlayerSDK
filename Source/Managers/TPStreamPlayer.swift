@@ -43,8 +43,10 @@ class TPStreamPlayer: NSObject {
     private var lastWatchedPositionSyncTimer: Timer?
     private let userId: String?
 
-    /// `true` when a non-empty `userId` is available and the current asset can sync
-    /// watched position to the server (org configured, asset id present, not live).
+    /// `true` when the SDK can synchronize and restore the user's last watched position.
+    /// The resume state is synced using the provided `userId` and the asset ID,
+    /// allowing playback to continue from the last watched position whenever the
+    /// user plays the asset again. Requires a non-empty `userId`, an asset ID, and a non-live stream.
     private var isAutoResumeEnabled: Bool {
         guard let userId = userId, !userId.isEmpty else { return false }
         return player.assetID != nil && TPStreamsSDK.orgCode != nil && !isLive
