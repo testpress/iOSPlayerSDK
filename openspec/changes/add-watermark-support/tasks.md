@@ -1,7 +1,7 @@
 ## 1. Watermark Models
 
-- [ ] 1.1 Add `WatermarkConfig` struct with `text: String`, `x: Int` (default 0), `y: Int` (default 0), `color: UInt32` (ARGB, default 0xFFFFFFFF), `textSize: Double` (default 14), `opacity: Double` (default 0.3), `animation: WatermarkAnimation?` (default nil) — matching the Pigeon contract
-- [ ] 1.2 Add `WatermarkAnimation` struct with `type: WatermarkAnimationType` and `duration: Int` (milliseconds, default 10000)
+- [ ] 1.1 Add `WatermarkConfig` struct with `text: String`, `x: Int64` (default 0), `y: Int64` (default 0), `color: Int64` (ARGB, default 0xFFFFFFFF), `textSize: Double` (default 14), `opacity: Double` (default 0.3), `animation: WatermarkAnimation?` (default nil) — matching the Pigeon contract
+- [ ] 1.2 Add `WatermarkAnimation` struct with `type: WatermarkAnimationType` and `duration: Int64` (milliseconds, default 10000)
 - [ ] 1.3 Add `WatermarkAnimationType` enum with a single `.pingPong` case (nil animation = static, matching Flutter/Android)
 - [ ] 1.4 Add pure validation/normalization (`validated()`) applying the documented rules: pass empty text through (do not drop), clamp x/y to 0-100, clamp opacity to 0.0-1.0, floor duration at 100 ms, pass textSize and color through
 

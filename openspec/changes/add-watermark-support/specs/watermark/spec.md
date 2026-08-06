@@ -57,7 +57,7 @@ The system SHALL allow each watermark to define its display text, opacity, text 
 - **THEN** the watermark renders with the configured appearance
 
 ### Requirement: Watermark animation
-The system SHALL support static watermarks (no animation) and a pingPong animation. The pingPong animation SHALL move the watermark horizontally across the full available span — from the left edge to the right edge and back — taking the configured duration for each leg, while keeping the y position constant. The x coordinate of an animated watermark MUST be ignored in favor of the animation's position. Static and animated watermarks MUST be able to coexist. The animation MUST pause when playback is not active (paused, buffering, ended) and resume when playback resumes, while the watermark itself remains visible.
+The system SHALL support static watermarks (no animation) and a pingPong animation. The pingPong animation SHALL move the watermark horizontally across the full available span — from the left edge to the right edge and back — taking the configured duration for each leg, while keeping the y position constant. The x coordinate of an animated watermark MUST be ignored in favor of the animation's position. Static and animated watermarks MUST be able to coexist. The animation MUST pause when playback is not active (not ready, paused, buffering, ended) and resume when playback resumes, while the watermark itself remains visible.
 
 #### Scenario: Static watermark
 - **WHEN** an application configures a watermark without an animation
@@ -72,7 +72,7 @@ The system SHALL support static watermarks (no animation) and a pingPong animati
 - **THEN** both render simultaneously without interfering with each other
 
 #### Scenario: Animation pauses and resumes with playback
-- **WHEN** playback pauses, buffers, or ends while a pingPong watermark is displayed, and then resumes
+- **WHEN** playback is not ready, pauses, buffers, or ends while a pingPong watermark is displayed, and then resumes
 - **THEN** the watermark remains visible, its animation pauses while playback is not active, and resumes from the paused position when playback resumes
 
 ### Requirement: Watermark lifecycle
