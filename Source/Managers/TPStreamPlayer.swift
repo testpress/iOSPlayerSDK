@@ -68,7 +68,8 @@ class TPStreamPlayer: NSObject {
     }
     
     deinit {
-        finalSaveAndStop()
+        saveWatchedPosition()
+        stopPeriodicResumeSave()
     }
     
     private func observeCurrentItemChanges() {
@@ -248,16 +249,6 @@ class TPStreamPlayer: NSObject {
         videoData.deleteLastWatchedDuration(userId: userId, assetID: assetID)
     }
 
-    private func resetResumePlayback() {
-        isResumePlaybackEnded = false
-        startPeriodicResumeSave()
-    }
-
-    private func finalSaveAndStop() {
-        saveWatchedPosition()
-        stopPeriodicResumeSave()
-    }
-
     private func startPeriodicResumeSave() {
         guard resumePlaybackEnabled else { return }
         resumeSaveTimer?.invalidate()
@@ -280,7 +271,8 @@ class TPStreamPlayer: NSObject {
         let previousPlaybackSpeed = currentPlaybackSpeed
         player.play()
         player.rate = previousPlaybackSpeed.rawValue
-        resetResumePlayback()
+        isResumePlaybackEnded = false
+        startPeriodicResumeSave()
     }
     
     func pause(){
