@@ -240,7 +240,10 @@ class TPStreamPlayer: NSObject {
         guard isAutoResumeEnabled,
               !didClearLastWatchedPosition,
               player.currentItem?.status != .failed else { return }
-        let seconds = Int(round(player.currentTimeInSeconds))
+        let currentTimeInSeconds = player.currentTimeInSeconds
+        // currentTime() is NaN when the item isn't ready yet (or was torn down), e.g. .unknown status
+        guard currentTimeInSeconds.isFinite else { return }
+        let seconds = Int(round(currentTimeInSeconds))
         guard seconds > 0,
               let userId = userId,
               let assetID = player.assetID else { return }
