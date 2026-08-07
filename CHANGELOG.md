@@ -1,4 +1,14 @@
 
+## 1.2.38 - 2026-08-07
+
+
+
+### Bug Fixes
+
+- Prevent a crash when saving the playback position while the player item is not ready yet, by skipping the save until a valid playback position is available
+
+
+
 ## 1.2.37 - 2026-08-06
 
 
