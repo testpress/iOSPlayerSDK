@@ -1,8 +1,8 @@
 ## 1. Watermark Models
 
-- [ ] 1.1 Add `WatermarkConfig` struct with `text: String`, `x: Int64` (default 0), `y: Int64` (default 0), `color: Int64` (ARGB, default 0xFFFFFFFF), `textSize: Double` (default 14), `opacity: Double` (default 0.3), `animation: WatermarkAnimation?` (default nil) — matching the Pigeon contract
-- [ ] 1.2 Add `WatermarkAnimation` struct with `type: WatermarkAnimationType` and `duration: Int64` (milliseconds, default 10000)
-- [ ] 1.3 Add `WatermarkAnimationType` enum with a single `.pingPong` case (nil animation = static, matching Flutter/Android)
+- [x] 1.1 Add `WatermarkConfig` struct with `text: String`, `x: Int64` (default 0), `y: Int64` (default 0), `color: Int64` (ARGB, default 0xFFFFFFFF), `textSize: Double` (default 14), `opacity: Double` (default 0.3), `animation: WatermarkAnimation?` (default nil) — matching the Pigeon contract
+- [x] 1.2 Add `WatermarkAnimation` struct with `type: WatermarkAnimationType` and `duration: Int64` (milliseconds, default 10000)
+- [x] 1.3 Add `WatermarkAnimationType` enum with a single `.pingPong` case (nil animation = static, matching Flutter/Android)
 
 ## 2. Static Watermark Rendering
 
