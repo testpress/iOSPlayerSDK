@@ -23,7 +23,9 @@ class WatermarkOverlayView: UIView {
     }
 
     func setWatermarks(_ configs: [WatermarkConfig]) {
-        watermarks = configs.map(clampingToDocumentedDefaults)
+        let clamped = configs.map(clampingToDocumentedDefaults)
+        guard clamped != watermarks else { return }
+        watermarks = clamped
         rebuildWatermarkLabels()
         setNeedsLayout()
     }
