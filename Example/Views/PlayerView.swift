@@ -24,6 +24,25 @@ struct PlayerView: View {
                     .enableCaptions(true)
                     .autoSelectFirstSubtitle(true)
                     .setUserId("example-user")
+                    .setWatermarks([
+                        WatermarkConfig(
+                            text: "example-user",
+                            x: 50,
+                            y: 50,
+                            color: 0xFFFFFFFF,
+                            textSize: 14,
+                            opacity: 0.3
+                        ),
+                        WatermarkConfig(
+                            text: "example-user",
+                            x: 200,
+                            y: 100,
+                            color: 0xFFFF0000,
+                            textSize: 20,
+                            opacity: 0.5,
+                            animation: WatermarkAnimation(type: .pingPong, duration: 10000)
+                        )
+                    ])
                     .build()
                 TPStreamPlayerView(player: player, playerViewConfig: playerViewConfig)
                     .frame(height: 240)
@@ -48,6 +67,25 @@ struct PlayerView: View {
                     .showResolutionOptions(false)
                     .enableSeekButtons(false)
                     .setUserId("example-user")
+                    .setWatermarks([
+                        WatermarkConfig(
+                            text: "example-user",
+                            x: 50,
+                            y: 50,
+                            color: 0xFFFFFFFF,
+                            textSize: 14,
+                            opacity: 0.3
+                        ),
+                        WatermarkConfig(
+                            text: "example-user",
+                            x: 200,
+                            y: 100,
+                            color: 0xFFFF0000,
+                            textSize: 20,
+                            opacity: 0.5,
+                            animation: WatermarkAnimation(type: .pingPong, duration: 10000)
+                        )
+                    ])
                     .build()
                 TPStreamPlayerView(player: player, playerViewConfig: playerViewConfig)
                     .frame(height: 240)

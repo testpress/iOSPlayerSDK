@@ -44,6 +44,7 @@ public class TPStreamPlayerViewController: UIViewController {
     public var config = TPStreamPlayerConfiguration(){
         didSet {
             controlsView.playerConfig = config
+            watermarkOverlayView.setWatermarks(config.watermarks)
         }
     }
     private var controlsVisibilityTimer: Timer?
@@ -87,6 +88,8 @@ public class TPStreamPlayerViewController: UIViewController {
         return view
     }()
     
+    private lazy var watermarkOverlayView = WatermarkOverlayView(frame: .zero)
+    
     private lazy var noticeView: UIView = {
         let view = UIView(frame: view.frame)
         view.isHidden = true
@@ -100,6 +103,7 @@ public class TPStreamPlayerViewController: UIViewController {
         view.backgroundColor = .black
         view.addSubview(videoView)
         view.addSubview(subtitleView)
+        view.addSubview(watermarkOverlayView)
         view.addSubview(controlsView)
         view.addSubview(noticeView)
         view.bringSubviewToFront(controlsView)
@@ -142,6 +146,7 @@ public class TPStreamPlayerViewController: UIViewController {
         containerView.frame = containerView.superview!.bounds
         videoView.frame = containerView.bounds
         subtitleView.frame = containerView.bounds
+        watermarkOverlayView.frame = containerView.bounds
         controlsView.frame = containerView.bounds
         noticeView.frame = containerView.bounds
         noticeMessageLabel.frame = noticeView.bounds

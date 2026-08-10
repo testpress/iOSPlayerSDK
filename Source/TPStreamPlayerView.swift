@@ -36,6 +36,8 @@ public struct TPStreamPlayerView: View {
                         )
                     }
                     
+                    WatermarkOverlayViewRepresentable(watermarks: playerViewConfig.watermarks)
+                    
                     PlayerControlsView(
                         isFullscreen: $viewModel.isFullScreen,
                         playerViewConfig: playerViewConfig,
