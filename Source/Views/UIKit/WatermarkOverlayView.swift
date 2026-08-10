@@ -23,7 +23,7 @@ class WatermarkOverlayView: UIView {
     }
 
     func setWatermarks(_ configs: [WatermarkConfig]) {
-        let clamped = configs.map(clampingToDocumentedDefaults)
+        let clamped = configs.map(clampedToValidBounds)
         guard clamped != watermarks else { return }
         watermarks = clamped
         rebuildWatermarkLabels()
@@ -37,11 +37,8 @@ class WatermarkOverlayView: UIView {
         }
     }
 
-    /// Clamps out-of-range values to the bounds pinned by the Flutter/Android
-    /// contract (x/y 0-100, opacity 0-1) so invalid configs render instead of
-    /// crashing — Android's `require()` crash is a documented upstream bug we
-    /// deliberately don't reproduce.
-    private func clampingToDocumentedDefaults(_ config: WatermarkConfig) -> WatermarkConfig {
+    /// Clamps out-of-range values to valid bounds for watermark configuration.
+    private func clampedToValidBounds(_ config: WatermarkConfig) -> WatermarkConfig {
         var config = config
         config.x = min(max(config.x, 0), 100)
         config.y = min(max(config.y, 0), 100)
@@ -51,11 +48,11 @@ class WatermarkOverlayView: UIView {
 
     private func rebuildWatermarkLabels() {
         labels.forEach { $0.removeFromSuperview() }
-        labels = watermarks.map(makeLabel)
+        labels = watermarks.map(watermarkLabel(for:))
         labels.reversed().forEach(addSubview)
     }
 
-    private func makeLabel(for config: WatermarkConfig) -> UILabel {
+    private func watermarkLabel(for config: WatermarkConfig) -> UILabel {
         let label = UILabel()
         label.text = config.text
         label.font = UIFont.systemFont(ofSize: CGFloat(config.textSize))
