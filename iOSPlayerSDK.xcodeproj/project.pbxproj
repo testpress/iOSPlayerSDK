@@ -56,6 +56,7 @@
 		2D3CE81F2F5957EE0011CAB7 /* VideoQualityUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3CE81E2F5957EE0011CAB7 /* VideoQualityUtils.swift */; };
 		2D46EC6A2EE856BB008B559A /* M3U8Kit in Frameworks */ = {isa = PBXBuildFile; productRef = 2D46EC692EE856BB008B559A /* M3U8Kit */; };
 		2D9798C02FC966D800593EAC /* SubtitleTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9798BF2FC966D800593EAC /* SubtitleTrack.swift */; };
+		2DA51C0A2F60000100AB0C1A /* WatermarkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA51C0A2F60000100AB0C1B /* WatermarkConfig.swift */; };
 		2DC08F892F448BB900AABC60 /* EncryptionKeyDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC08F872F448BB900AABC60 /* EncryptionKeyDelegate.swift */; };
 		2DD12A212D4CF75400272433 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D92E48F22CB0226A00B1FAC3 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		2DF3CE142FED6494001872ED /* SubtitleTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF3CE132FED6494001872ED /* SubtitleTextView.swift */; };
@@ -212,6 +213,7 @@
 		2D2BA5782F5FEB2400D53996 /* KeychainUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtil.swift; sourceTree = "<group>"; };
 		2D3CE81E2F5957EE0011CAB7 /* VideoQualityUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoQualityUtils.swift; sourceTree = "<group>"; };
 		2D9798BF2FC966D800593EAC /* SubtitleTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleTrack.swift; sourceTree = "<group>"; };
+		2DA51C0A2F60000100AB0C1B /* WatermarkConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatermarkConfig.swift; sourceTree = "<group>"; };
 		2DC08F872F448BB900AABC60 /* EncryptionKeyDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionKeyDelegate.swift; sourceTree = "<group>"; };
 		2DF3CE132FED6494001872ED /* SubtitleTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleTextView.swift; sourceTree = "<group>"; };
 		3F02A7FA872249B68023A540 /* SubtitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleView.swift; sourceTree = "<group>"; };
@@ -411,6 +413,7 @@
 			children = (
 				03CC784B2A6BB6BE005E8F7E /* UIKit */,
 				03CC784A2A6BB68C005E8F7E /* SwiftUI */,
+				2DA51C0A2F60000100AB0C1B /* WatermarkConfig.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -804,6 +807,7 @@
 				0374E3722C1AD2A200CE9CF2 /* TestpressAPIParser.swift in Sources */,
 				8E6389DD2A27338F00306FA4 /* AVPlayerBridge.swift in Sources */,
 				2DF3CE142FED6494001872ED /* SubtitleTextView.swift in Sources */,
+				2DA51C0A2F60000100AB0C1A /* WatermarkConfig.swift in Sources */,
 				8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */,
 				035351A02A2EDAFA001E38F3 /* PlayerSettingsButton.swift in Sources */,
 				03913C482A850BF9002E7E0C /* ProgressBar.swift in Sources */,
