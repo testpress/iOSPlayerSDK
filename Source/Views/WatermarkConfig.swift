@@ -38,6 +38,6 @@ public struct WatermarkAnimation: Equatable {
     }
 }
 
-public enum WatermarkAnimationType {
+public enum WatermarkAnimationType: Equatable {
     case pingPong
 }
