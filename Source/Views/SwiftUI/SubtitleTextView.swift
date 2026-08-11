@@ -4,6 +4,7 @@ import SwiftUI
 struct SubtitleTextView: UIViewRepresentable {
     let track: SubtitleTrack
     let currentTime: Float64?
+    let isFullScreen: Bool
 
     func makeUIView(context: Context) -> SubtitleView {
         let view = SubtitleView(frame: .zero)
@@ -12,6 +13,7 @@ struct SubtitleTextView: UIViewRepresentable {
 
     func updateUIView(_ uiView: SubtitleView, context: Context) {
         uiView.setTrack(track)
+        uiView.isFullScreen = isFullScreen
 
         if let currentTime = currentTime {
             uiView.updateSubtitle(at: currentTime)

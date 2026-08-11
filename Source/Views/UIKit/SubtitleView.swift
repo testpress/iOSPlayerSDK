@@ -3,12 +3,22 @@ import SwiftSubtitles
 
 class SubtitleView: UIView {
 
+    static let subtitleFontSize: CGFloat = 14
+    static let fullScreenSubtitleFontSize: CGFloat = subtitleFontSize + 1
+
     private let container = UIView()
     private let label = UILabel()
     private var currentTrack: SubtitleTrack?
     private var downloadTask: URLSessionDataTask?
     private var subtitles: Subtitles?
     private var lastUpdateTime: TimeInterval?
+
+    var isFullScreen = false {
+        didSet {
+            guard isFullScreen != oldValue else { return }
+            updateFontSize()
+        }
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -46,11 +56,15 @@ class SubtitleView: UIView {
 
     private func createLabel() {
         label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = UIFont.systemFont(ofSize: isFullScreen ? Self.fullScreenSubtitleFontSize : Self.subtitleFontSize)
         label.numberOfLines = 0
         label.textAlignment = .center
         label.lineBreakMode = .byWordWrapping
         label.translatesAutoresizingMaskIntoConstraints = false
+    }
+
+    private func updateFontSize() {
+        label.font = UIFont.systemFont(ofSize: isFullScreen ? Self.fullScreenSubtitleFontSize : Self.subtitleFontSize)
     }
 
     private func setupConstraints() {
