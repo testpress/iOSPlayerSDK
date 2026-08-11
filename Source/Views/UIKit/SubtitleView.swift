@@ -6,6 +6,16 @@ class SubtitleView: UIView {
     static let subtitleFontSize: CGFloat = 14
     static let fullScreenSubtitleFontSize: CGFloat = 16
 
+    static let maxSubtitleLines = 2
+    static let subtitleVerticalPadding: CGFloat = 3
+    static let subtitleBottomInset: CGFloat = 20
+
+    static var reservedBottomBandHeight: CGFloat {
+        CGFloat(maxSubtitleLines) * UIFont.systemFont(ofSize: fullScreenSubtitleFontSize).lineHeight
+            + 2 * subtitleVerticalPadding
+            + subtitleBottomInset
+    }
+
     private let container = UIView()
     private let label = UILabel()
     private var currentTrack: SubtitleTrack?
@@ -57,7 +67,7 @@ class SubtitleView: UIView {
     private func createLabel() {
         label.textColor = .white
         updateFontSize()
-        label.numberOfLines = 0
+        label.numberOfLines = SubtitleView.maxSubtitleLines
         label.textAlignment = .center
         label.lineBreakMode = .byWordWrapping
         label.translatesAutoresizingMaskIntoConstraints = false
