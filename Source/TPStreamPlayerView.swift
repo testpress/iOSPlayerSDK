@@ -28,6 +28,8 @@ public struct TPStreamPlayerView: View {
                 } else if viewModel.player.initializationStatus == "ready" {
                     AVPlayerBridge(player: viewModel.player)
                     
+                    WatermarkOverlayViewRepresentable(watermarks: playerViewConfig.watermarks)
+                    
                     if playerViewConfig.enableCaptions, let activeSubtitleTrack = activeSubtitleTrack {
                         SubtitleTextView(
                             track: activeSubtitleTrack,
@@ -35,8 +37,6 @@ public struct TPStreamPlayerView: View {
                             isFullScreen: viewModel.isFullScreen
                         )
                     }
-                    
-                    WatermarkOverlayViewRepresentable(watermarks: playerViewConfig.watermarks)
                     
                     PlayerControlsView(
                         isFullscreen: $viewModel.isFullScreen,

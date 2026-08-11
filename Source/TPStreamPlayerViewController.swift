@@ -102,8 +102,8 @@ public class TPStreamPlayerViewController: UIViewController {
         let view = UIView(frame: view.bounds)
         view.backgroundColor = .black
         view.addSubview(videoView)
-        view.addSubview(subtitleView)
         view.addSubview(watermarkOverlayView)
+        view.addSubview(subtitleView)
         view.addSubview(controlsView)
         view.addSubview(noticeView)
         view.bringSubviewToFront(controlsView)
