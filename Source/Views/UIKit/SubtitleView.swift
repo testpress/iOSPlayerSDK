@@ -4,7 +4,7 @@ import SwiftSubtitles
 class SubtitleView: UIView {
 
     static let subtitleFontSize: CGFloat = 14
-    static let fullScreenSubtitleFontSize: CGFloat = subtitleFontSize + 1
+    static let fullScreenSubtitleFontSize: CGFloat = 16
 
     private let container = UIView()
     private let label = UILabel()
@@ -56,7 +56,7 @@ class SubtitleView: UIView {
 
     private func createLabel() {
         label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: isFullScreen ? Self.fullScreenSubtitleFontSize : Self.subtitleFontSize)
+        updateFontSize()
         label.numberOfLines = 0
         label.textAlignment = .center
         label.lineBreakMode = .byWordWrapping
