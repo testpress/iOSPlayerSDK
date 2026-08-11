@@ -4,8 +4,11 @@ import SwiftUI
 class WatermarkOverlayView: UIView {
 
     private let inset: CGFloat = 16
+    /// Minimum gap kept between the watermark and the reserved bottom band.
+    private let reservedBandGap: CGFloat = 4
     private var watermarks: [WatermarkConfig] = []
     private var labels: [UILabel] = []
+    private var reservedBottomHeight: CGFloat = 0
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -27,6 +30,16 @@ class WatermarkOverlayView: UIView {
         guard clamped != watermarks else { return }
         watermarks = clamped
         rebuildWatermarkLabels()
+        setNeedsLayout()
+    }
+
+    /// Reserves a band of `height` at the bottom (e.g. for subtitles) that watermarks
+    /// must stay above. Watermark positions are then mapped to the remaining space
+    /// above the band, keeping a small gap. Pass 0 to disable.
+    func setReservedBottomHeight(_ height: CGFloat) {
+        let clamped = max(height, 0)
+        guard clamped != reservedBottomHeight else { return }
+        reservedBottomHeight = clamped
         setNeedsLayout()
     }
 
@@ -58,6 +71,7 @@ class WatermarkOverlayView: UIView {
         label.font = UIFont.systemFont(ofSize: CGFloat(config.textSize))
         label.textColor = color(for: config)
         label.numberOfLines = 0
+        label.clipsToBounds = true
         return label
     }
 
@@ -65,9 +79,17 @@ class WatermarkOverlayView: UIView {
         let maxWidth = max(bounds.width - 2 * inset, 0)
         let size = label.sizeThatFits(CGSize(width: maxWidth, height: .greatestFiniteMagnitude))
         let horizontalSpan = max(bounds.width - size.width - 2 * inset, 0)
-        let verticalSpan = max(bounds.height - size.height - 2 * inset, 0)
         let x = inset + horizontalSpan * CGFloat(config.x) / 100
-        let y = inset + verticalSpan * CGFloat(config.y) / 100
+
+        let top = inset
+        let bottomLimit: CGFloat
+        if reservedBottomHeight > 0 {
+            // Stay just above the reserved band instead of applying the full inset.
+            bottomLimit = max(bounds.height - size.height - reservedBottomHeight - reservedBandGap, top)
+        } else {
+            bottomLimit = bounds.height - size.height - inset
+        }
+        let y = top + (bottomLimit - top) * CGFloat(config.y) / 100
         return CGRect(origin: CGPoint(x: x, y: y), size: size)
     }
 
@@ -84,6 +106,7 @@ class WatermarkOverlayView: UIView {
 @available(iOS 14.0, *)
 struct WatermarkOverlayViewRepresentable: UIViewRepresentable {
     let watermarks: [WatermarkConfig]
+    let reservedBottomHeight: CGFloat
 
     func makeUIView(context: Context) -> WatermarkOverlayView {
         WatermarkOverlayView(frame: .zero)
@@ -91,5 +114,6 @@ struct WatermarkOverlayViewRepresentable: UIViewRepresentable {
 
     func updateUIView(_ uiView: WatermarkOverlayView, context: Context) {
         uiView.setWatermarks(watermarks)
+        uiView.setReservedBottomHeight(reservedBottomHeight)
     }
 }

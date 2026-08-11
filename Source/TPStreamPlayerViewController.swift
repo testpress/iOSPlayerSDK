@@ -35,8 +35,15 @@ public class TPStreamPlayerViewController: UIViewController {
             subtitleView.setTrack(activeSubtitleTrack)
             if isViewLoaded {
                 controlsView.selectedSubtitleTrack = activeSubtitleTrack
+                watermarkOverlayView.setReservedBottomHeight(subtitleReservedHeight)
             }
         }
+    }
+
+    /// Height of the bottom band reserved for subtitles, when captions are enabled
+    /// and a track is selected. Otherwise no space is reserved.
+    private var subtitleReservedHeight: CGFloat {
+        config.enableCaptions && activeSubtitleTrack != nil ? SubtitleView.reservedBottomBandHeight : 0
     }
     
     public var delegate: TPStreamPlayerViewControllerDelegate?
@@ -147,6 +154,7 @@ public class TPStreamPlayerViewController: UIViewController {
         videoView.frame = containerView.bounds
         subtitleView.frame = containerView.bounds
         watermarkOverlayView.frame = containerView.bounds
+        watermarkOverlayView.setReservedBottomHeight(subtitleReservedHeight)
         controlsView.frame = containerView.bounds
         noticeView.frame = containerView.bounds
         noticeMessageLabel.frame = noticeView.bounds

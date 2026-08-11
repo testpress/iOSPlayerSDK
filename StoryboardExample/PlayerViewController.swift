@@ -82,8 +82,8 @@ class PlayerViewController: UIViewController {
                 ),
                 WatermarkConfig(
                     text: "storyboard-example-user",
-                    x: 150,
-                    y: 150,
+                    x: 50,
+                    y: 100,
                     color: 0xFFFF0000,
                     textSize: 20,
                     opacity: 0.5,

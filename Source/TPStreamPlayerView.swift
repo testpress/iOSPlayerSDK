@@ -28,7 +28,12 @@ public struct TPStreamPlayerView: View {
                 } else if viewModel.player.initializationStatus == "ready" {
                     AVPlayerBridge(player: viewModel.player)
                     
-                    WatermarkOverlayViewRepresentable(watermarks: playerViewConfig.watermarks)
+                    WatermarkOverlayViewRepresentable(
+                        watermarks: playerViewConfig.watermarks,
+                        reservedBottomHeight: playerViewConfig.enableCaptions && activeSubtitleTrack != nil
+                            ? SubtitleView.reservedBottomBandHeight
+                            : 0
+                    )
                     
                     if playerViewConfig.enableCaptions, let activeSubtitleTrack = activeSubtitleTrack {
                         SubtitleTextView(
