@@ -31,7 +31,8 @@ public struct TPStreamPlayerView: View {
                     if playerViewConfig.enableCaptions, let activeSubtitleTrack = activeSubtitleTrack {
                         SubtitleTextView(
                             track: activeSubtitleTrack,
-                            currentTime: playerObservable.observedCurrentTime
+                            currentTime: playerObservable.observedCurrentTime,
+                            isFullScreen: viewModel.isFullScreen
                         )
                     }
                     

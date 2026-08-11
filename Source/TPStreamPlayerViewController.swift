@@ -50,6 +50,7 @@ public class TPStreamPlayerViewController: UIViewController {
     public private(set) var isFullScreen: Bool = false {
         didSet {
             controlsView.isFullScreen = isFullScreen
+            subtitleView.isFullScreen = isFullScreen
             setNeedsStatusBarAppearanceUpdate()
         }
     }
