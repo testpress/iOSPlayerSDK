@@ -35,8 +35,15 @@ public class TPStreamPlayerViewController: UIViewController {
             subtitleView.setTrack(activeSubtitleTrack)
             if isViewLoaded {
                 controlsView.selectedSubtitleTrack = activeSubtitleTrack
+                watermarkOverlayView.setReservedBottomHeight(subtitleReservedHeight)
             }
         }
+    }
+
+    /// Height of the bottom band reserved for subtitles, when captions are enabled
+    /// and a track is selected. Otherwise no space is reserved.
+    private var subtitleReservedHeight: CGFloat {
+        config.enableCaptions && activeSubtitleTrack != nil ? SubtitleView.reservedBottomBandHeight : 0
     }
     
     public var delegate: TPStreamPlayerViewControllerDelegate?
@@ -44,6 +51,7 @@ public class TPStreamPlayerViewController: UIViewController {
     public var config = TPStreamPlayerConfiguration(){
         didSet {
             controlsView.playerConfig = config
+            watermarkOverlayView.setWatermarks(config.watermarks)
         }
     }
     private var controlsVisibilityTimer: Timer?
@@ -87,6 +95,8 @@ public class TPStreamPlayerViewController: UIViewController {
         return view
     }()
     
+    private lazy var watermarkOverlayView = WatermarkOverlayView(frame: .zero)
+    
     private lazy var noticeView: UIView = {
         let view = UIView(frame: view.frame)
         view.isHidden = true
@@ -99,6 +109,7 @@ public class TPStreamPlayerViewController: UIViewController {
         let view = UIView(frame: view.bounds)
         view.backgroundColor = .black
         view.addSubview(videoView)
+        view.addSubview(watermarkOverlayView)
         view.addSubview(subtitleView)
         view.addSubview(controlsView)
         view.addSubview(noticeView)
@@ -142,6 +153,8 @@ public class TPStreamPlayerViewController: UIViewController {
         containerView.frame = containerView.superview!.bounds
         videoView.frame = containerView.bounds
         subtitleView.frame = containerView.bounds
+        watermarkOverlayView.frame = containerView.bounds
+        watermarkOverlayView.setReservedBottomHeight(subtitleReservedHeight)
         controlsView.frame = containerView.bounds
         noticeView.frame = containerView.bounds
         noticeMessageLabel.frame = noticeView.bounds

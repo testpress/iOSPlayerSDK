@@ -80,7 +80,7 @@ The system SHALL support static watermarks (no animation) and a pingPong animati
 - **THEN** the watermark remains visible, its animation pauses while playback is not active, and resumes from the paused position when playback resumes
 
 ### Requirement: Watermark lifecycle
-The system SHALL keep watermarks visible throughout playback events including play, pause, seek, buffering, fullscreen transitions, and orientation changes, rendering them above the video content (and subtitles) and below player controls. The system SHALL remove all watermarks and stop all animations when the player view is released or deinitialized.
+The system SHALL keep watermarks visible throughout playback events including play, pause, seek, buffering, fullscreen transitions, and orientation changes, rendering them above the video content and below both subtitles and player controls. Watermarks SHALL be positioned to stay above the subtitle reserved bottom band when subtitles are active, preventing visual overlap between watermarks and subtitle text. The system SHALL remove all watermarks and stop all animations when the player view is released or deinitialized.
 
 #### Scenario: Watermarks persist through playback events
 - **WHEN** the player pauses, seeks, buffers, enters or exits fullscreen, or the device rotates during playback
@@ -88,7 +88,11 @@ The system SHALL keep watermarks visible throughout playback events including pl
 
 #### Scenario: Layer ordering
 - **WHEN** watermarks, subtitles, and player controls are displayed during playback
-- **THEN** watermarks render above the video content and subtitles, and below player controls
+- **THEN** watermarks render above the video content and below both subtitles and player controls
+
+#### Scenario: Watermarks respect the subtitle reserved band
+- **WHEN** subtitles are active and a watermark is positioned near the bottom of the view
+- **THEN** the watermark is constrained to stay above the area reserved by the subtitle view, without overlapping subtitle text
 
 #### Scenario: Player view release cleanup
 - **WHEN** the player view is released or deinitialized

@@ -60,6 +60,7 @@
 		2DC08F892F448BB900AABC60 /* EncryptionKeyDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC08F872F448BB900AABC60 /* EncryptionKeyDelegate.swift */; };
 		2DD12A212D4CF75400272433 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D92E48F22CB0226A00B1FAC3 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		2DF3CE142FED6494001872ED /* SubtitleTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF3CE132FED6494001872ED /* SubtitleTextView.swift */; };
+		2DA51C0B2F60000200AB0C1A /* WatermarkOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA51C0B2F60000200AB0C1B /* WatermarkOverlayView.swift */; };
 		4F02A7FA872249B68023A541 /* SubtitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F02A7FA872249B68023A540 /* SubtitleView.swift */; };
 		70D42E0B2E6075F3002AC32C /* AnyRealmValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D42E0A2E6075F3002AC32C /* AnyRealmValue.swift */; };
 		8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */; };
@@ -216,6 +217,7 @@
 		2DA51C0A2F60000100AB0C1B /* WatermarkConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatermarkConfig.swift; sourceTree = "<group>"; };
 		2DC08F872F448BB900AABC60 /* EncryptionKeyDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionKeyDelegate.swift; sourceTree = "<group>"; };
 		2DF3CE132FED6494001872ED /* SubtitleTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleTextView.swift; sourceTree = "<group>"; };
+		2DA51C0B2F60000200AB0C1B /* WatermarkOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatermarkOverlayView.swift; sourceTree = "<group>"; };
 		3F02A7FA872249B68023A540 /* SubtitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleView.swift; sourceTree = "<group>"; };
 		70D42E0A2E6075F3002AC32C /* AnyRealmValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyRealmValue.swift; sourceTree = "<group>"; };
 		8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayerView.swift; sourceTree = "<group>"; };
@@ -384,6 +386,7 @@
 				03913C472A850BF9002E7E0C /* ProgressBar.swift */,
 				03D7F4242C21C64D00DF3597 /* LiveIndicatorView.swift */,
 				3F02A7FA872249B68023A540 /* SubtitleView.swift */,
+				2DA51C0B2F60000200AB0C1B /* WatermarkOverlayView.swift */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -850,6 +853,7 @@
 				03CC784D2A6BB6E5005E8F7E /* VideoPlayerView.swift in Sources */,
 				2D2BA5792F5FEB2400D53996 /* KeychainUtil.swift in Sources */,
 				4F02A7FA872249B68023A541 /* SubtitleView.swift in Sources */,
+				2DA51C0B2F60000200AB0C1A /* WatermarkOverlayView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

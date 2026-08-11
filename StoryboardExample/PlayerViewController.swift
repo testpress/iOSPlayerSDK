@@ -71,6 +71,25 @@ class PlayerViewController: UIViewController {
             .enableCaptions(true)
             .autoSelectFirstSubtitle(true)
             .setUserId("storyboard-example-user")
+            .setWatermarks([
+                WatermarkConfig(
+                    text: "storyboard-example-user",
+                    x: 0,
+                    y: 50,
+                    color: 0xFFFFFFFF,
+                    textSize: 14,
+                    opacity: 0.3
+                ),
+                WatermarkConfig(
+                    text: "storyboard-example-user",
+                    x: 50,
+                    y: 100,
+                    color: 0xFFFF0000,
+                    textSize: 20,
+                    opacity: 0.5,
+                    animation: WatermarkAnimation(type: .pingPong, duration: 10000)
+                )
+            ])
             .build()
         
         playerViewController?.config = config
