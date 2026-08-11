@@ -11,8 +11,8 @@
 - [x] 2.3 Add `watermarks: [WatermarkConfig]` to `TPStreamPlayerConfiguration` with builder `setWatermarks(_:)` (default empty); normalize once when the config is applied to the overlay
 - [x] 2.4 Extend `TPStreamPlayerViewController.config.didSet` to re-apply the watermark overlay (runtime config changes on the UIKit path)
 - [x] 2.5 Apply `playerViewConfig.watermarks` to the overlay when `TPStreamPlayerView` is set up (init-time, matching its other config fields)
-- [x] 2.6 Wire overlay into `TPStreamPlayerViewController`'s `containerView` between `subtitleView` and `controlsView` (above video and subtitles, below controls)
-- [x] 2.7 Wire overlay into `TPStreamPlayerView` (SwiftUI, via `UIViewRepresentable` in the ZStack between subtitles and controls)
+- [x] 2.6 Wire overlay into `TPStreamPlayerViewController`'s `containerView` between `videoView` and `subtitleView` (above video, below subtitles and controls). Pass `SubtitleView.reservedBottomBandHeight` as the reserved bottom height so watermarks stay above the subtitle band.
+- [x] 2.7 Wire overlay into `TPStreamPlayerView` (SwiftUI, via `UIViewRepresentable` in the ZStack before the subtitle view — above video, below subtitles and controls). Pass reserved bottom height when subtitles are active.
 
 ## 3. Animation Support
 
