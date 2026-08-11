@@ -69,7 +69,7 @@ class SubtitleView: UIView {
         updateFontSize()
         label.numberOfLines = SubtitleView.maxSubtitleLines
         label.textAlignment = .center
-        label.lineBreakMode = .byWordWrapping
+        label.lineBreakMode = .byTruncatingTail
         label.translatesAutoresizingMaskIntoConstraints = false
     }
 
