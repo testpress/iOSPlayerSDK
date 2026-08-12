@@ -10,8 +10,8 @@ class WatermarkOverlayView: UIView {
     private var labels: [UILabel] = []
     private var reservedBottomHeight: CGFloat = 0
     private var labelsAreFrozen = false
-    private var animationProgress: [ObjectIdentifier: Double] = [:]
-    private var lastSpan: [ObjectIdentifier: CGFloat] = [:]
+    private var animationStartTimeByLabelID: [ObjectIdentifier: CFTimeInterval] = [:]
+    private var horizontalSpanByLabelID: [ObjectIdentifier: CGFloat] = [:]
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -50,12 +50,6 @@ class WatermarkOverlayView: UIView {
         guard !labelsAreFrozen else { return }
         labelsAreFrozen = true
         for (label, config) in zip(labels, watermarks) where config.animation != nil {
-            let labelID = ObjectIdentifier(label)
-            let anim = label.layer.animation(forKey: "watermarkAnimation")
-            if let anim = anim {
-                let elapsed = anim.timeOffset
-                animationProgress[labelID] = elapsed / anim.duration
-            }
             pauseLayer(label.layer)
         }
     }
@@ -70,29 +64,39 @@ class WatermarkOverlayView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        let now = CACurrentMediaTime()
         for (label, config) in zip(labels, watermarks) {
             label.layer.transform = CATransform3DIdentity
             label.frame = positionedFrame(for: label, at: config)
             if let animation = config.animation {
-                let span = max(bounds.width - label.frame.width - 2 * inset, 0)
-                let labelID = ObjectIdentifier(label)
-                let previousSpan = lastSpan[labelID]
-                lastSpan[labelID] = span
-                let anim = makeAnimation(for: animation, span: span)
-                if let previousSpan = previousSpan, previousSpan > 0 {
-                    let currentProgress = animationProgress[labelID] ?? 0
-                    anim.timeOffset = anim.duration * currentProgress
-                }
-                label.layer.removeAllAnimations()
-                label.layer.add(anim, forKey: "watermarkAnimation")
-                if labelsAreFrozen {
-                    pauseLayer(label.layer)
-                }
+                applyAnimation(animation, to: label, now: now)
             } else {
                 let labelID = ObjectIdentifier(label)
-                animationProgress.removeValue(forKey: labelID)
-                lastSpan.removeValue(forKey: labelID)
+                animationStartTimeByLabelID.removeValue(forKey: labelID)
+                horizontalSpanByLabelID.removeValue(forKey: labelID)
             }
+        }
+    }
+
+    private func applyAnimation(_ animation: WatermarkAnimation, to label: UILabel, now: CFTimeInterval) {
+        let horizontalSpan = max(bounds.width - label.frame.width - 2 * inset, 0)
+        let labelID = ObjectIdentifier(label)
+        let storedStartTime = animationStartTimeByLabelID[labelID]
+        let storedHorizontalSpan = horizontalSpanByLabelID[labelID]
+        horizontalSpanByLabelID[labelID] = horizontalSpan
+
+        let layerAnimation = makeAnimation(for: animation, horizontalSpan: horizontalSpan)
+        if let storedStartTime, let storedHorizontalSpan, storedHorizontalSpan > 0 {
+            let elapsedSinceStart = now - storedStartTime
+            let roundTripDuration = layerAnimation.duration * 2
+            layerAnimation.timeOffset = elapsedSinceStart.truncatingRemainder(dividingBy: roundTripDuration)
+        }
+
+        label.layer.removeAllAnimations()
+        label.layer.add(layerAnimation, forKey: "watermarkAnimation")
+        animationStartTimeByLabelID[labelID] = now
+        if labelsAreFrozen {
+            pauseLayer(label.layer)
         }
     }
 
@@ -112,8 +116,8 @@ class WatermarkOverlayView: UIView {
     private func rebuildWatermarkLabels() {
         labels.forEach { $0.removeFromSuperview() }
         labels = watermarks.map(watermarkLabel(for:))
-        animationProgress.removeAll()
-        lastSpan.removeAll()
+        animationStartTimeByLabelID.removeAll()
+        horizontalSpanByLabelID.removeAll()
         labels.reversed().forEach(addSubview)
     }
 
@@ -161,16 +165,16 @@ class WatermarkOverlayView: UIView {
         layer.beginTime = timeSincePause
     }
 
-    private func makeAnimation(for animation: WatermarkAnimation, span: CGFloat) -> CAAnimation {
+    private func makeAnimation(for animation: WatermarkAnimation, horizontalSpan: CGFloat) -> CAAnimation {
         switch animation.type {
         case .pingPong:
-            return makePingPongAnimation(span: span, duration: animation.duration)
+            return makePingPongAnimation(horizontalSpan: horizontalSpan, duration: animation.duration)
         }
     }
 
-    private func makePingPongAnimation(span: CGFloat, duration: Int64) -> CAKeyframeAnimation {
+    private func makePingPongAnimation(horizontalSpan: CGFloat, duration: Int64) -> CAKeyframeAnimation {
         let keyframe = CAKeyframeAnimation(keyPath: "transform.translation.x")
-        keyframe.values = [0, span]
+        keyframe.values = [0, horizontalSpan]
         keyframe.keyTimes = [0, 1]
         keyframe.duration = Double(duration) / 1000
         keyframe.autoreverses = true
