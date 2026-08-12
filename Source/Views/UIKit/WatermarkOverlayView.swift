@@ -6,9 +6,13 @@ class WatermarkOverlayView: UIView {
     private let inset: CGFloat = 16
     /// Minimum gap kept between the watermark and the reserved bottom band.
     private let reservedBandGap: CGFloat = 4
+    private static let animationKey = "watermarkAnimation"
+
     private var watermarks: [WatermarkConfig] = []
     private var labels: [UILabel] = []
     private var reservedBottomHeight: CGFloat = 0
+    private var labelsAreFrozen = false
+    private var watermarkSpans: [ObjectIdentifier: CGFloat] = [:]
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -43,25 +47,54 @@ class WatermarkOverlayView: UIView {
         setNeedsLayout()
     }
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        for (label, config) in zip(labels, watermarks) {
-            label.frame = positionedFrame(for: label, at: config)
+    func pauseWatermarks() {
+        guard !labelsAreFrozen else { return }
+        labelsAreFrozen = true
+        for (label, config) in zip(labels, watermarks) where config.animation != nil {
+            pauseLayer(label.layer)
         }
     }
 
-    /// Clamps out-of-range values to valid bounds for watermark configuration.
+    func resumeWatermarks() {
+        guard labelsAreFrozen else { return }
+        labelsAreFrozen = false
+        for (label, config) in zip(labels, watermarks) where config.animation != nil {
+            resumeLayer(label.layer)
+        }
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        for (label, config) in zip(labels, watermarks) {
+            label.layer.transform = CATransform3DIdentity
+            label.frame = positionedFrame(for: label, at: config)
+            if let animation = config.animation {
+                restartAnimationIfSpanChanged(animation, on: label)
+                if labelsAreFrozen {
+                    pauseLayer(label.layer)
+                }
+            } else {
+                watermarkSpans.removeValue(forKey: ObjectIdentifier(label))
+            }
+        }
+    }
+
     private func clampedToValidBounds(_ config: WatermarkConfig) -> WatermarkConfig {
         var config = config
         config.x = min(max(config.x, 0), 100)
         config.y = min(max(config.y, 0), 100)
         config.opacity = min(max(config.opacity, 0), 1)
+        if var animation = config.animation, animation.duration < 100 {
+            animation.duration = 100
+            config.animation = animation
+        }
         return config
     }
 
     private func rebuildWatermarkLabels() {
         labels.forEach { $0.removeFromSuperview() }
         labels = watermarks.map(watermarkLabel(for:))
+        watermarkSpans.removeAll()
         labels.reversed().forEach(addSubview)
     }
 
@@ -79,7 +112,8 @@ class WatermarkOverlayView: UIView {
         let maxWidth = max(bounds.width - 2 * inset, 0)
         let size = label.sizeThatFits(CGSize(width: maxWidth, height: .greatestFiniteMagnitude))
         let horizontalSpan = max(bounds.width - size.width - 2 * inset, 0)
-        let x = inset + horizontalSpan * CGFloat(config.x) / 100
+        let isPingPongAnimation = config.animation?.type == .pingPong
+        let x = isPingPongAnimation ? inset : inset + horizontalSpan * CGFloat(config.x) / 100
 
         let top = inset
         let bottomLimit: CGFloat
@@ -91,6 +125,48 @@ class WatermarkOverlayView: UIView {
         }
         let y = top + (bottomLimit - top) * CGFloat(config.y) / 100
         return CGRect(origin: CGPoint(x: x, y: y), size: size)
+    }
+
+    private func restartAnimationIfSpanChanged(_ animation: WatermarkAnimation, on label: UILabel) {
+        let span = max(bounds.width - label.frame.width - 2 * inset, 0)
+        let labelID = ObjectIdentifier(label)
+        // Rebuild if the travel distance changed, or if the animation was dropped
+        // (e.g. when the view is detached from the window during a fullscreen transition).
+        let hasAnimation = label.layer.animation(forKey: Self.animationKey) != nil
+        guard watermarkSpans[labelID] != span || !hasAnimation else { return }
+        watermarkSpans[labelID] = span
+        label.layer.transform = CATransform3DIdentity
+        label.layer.removeAllAnimations()
+        label.layer.add(makeAnimation(for: animation, span: span), forKey: Self.animationKey)
+    }
+
+    private func pauseLayer(_ layer: CALayer) {
+        let pausedTime = layer.convertTime(CACurrentMediaTime(), from: nil)
+        layer.speed = 0
+        layer.timeOffset = pausedTime
+    }
+
+    private func resumeLayer(_ layer: CALayer) {
+        layer.speed = 1
+        layer.timeOffset = 0
+        layer.beginTime = 0
+    }
+
+    private func makeAnimation(for animation: WatermarkAnimation, span: CGFloat) -> CAAnimation {
+        switch animation.type {
+        case .pingPong:
+            return makePingPongAnimation(span: span, duration: animation.duration)
+        }
+    }
+
+    private func makePingPongAnimation(span: CGFloat, duration: Int64) -> CAKeyframeAnimation {
+        let keyframe = CAKeyframeAnimation(keyPath: "transform.translation.x")
+        keyframe.values = [0, span]
+        keyframe.keyTimes = [0, 1]
+        keyframe.duration = Double(duration) / 1000
+        keyframe.autoreverses = true
+        keyframe.repeatCount = .infinity
+        return keyframe
     }
 
     private func color(for config: WatermarkConfig) -> UIColor {
@@ -107,13 +183,25 @@ class WatermarkOverlayView: UIView {
 struct WatermarkOverlayViewRepresentable: UIViewRepresentable {
     let watermarks: [WatermarkConfig]
     let reservedBottomHeight: CGFloat
+    let labelsAreFrozen: Bool
 
     func makeUIView(context: Context) -> WatermarkOverlayView {
-        WatermarkOverlayView(frame: .zero)
+        let view = WatermarkOverlayView(frame: .zero)
+        view.setWatermarks(watermarks)
+        view.setReservedBottomHeight(reservedBottomHeight)
+        if labelsAreFrozen {
+            view.pauseWatermarks()
+        }
+        return view
     }
 
     func updateUIView(_ uiView: WatermarkOverlayView, context: Context) {
         uiView.setWatermarks(watermarks)
         uiView.setReservedBottomHeight(reservedBottomHeight)
+        if labelsAreFrozen {
+            uiView.pauseWatermarks()
+        } else {
+            uiView.resumeWatermarks()
+        }
     }
 }

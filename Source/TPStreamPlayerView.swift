@@ -32,7 +32,8 @@ public struct TPStreamPlayerView: View {
                         watermarks: playerViewConfig.watermarks,
                         reservedBottomHeight: playerViewConfig.enableCaptions && activeSubtitleTrack != nil
                             ? SubtitleView.reservedBottomBandHeight
-                            : 0
+                            : 0,
+                        labelsAreFrozen: playerObservable.observedStatus != "playing"
                     )
                     
                     if playerViewConfig.enableCaptions, let activeSubtitleTrack = activeSubtitleTrack {

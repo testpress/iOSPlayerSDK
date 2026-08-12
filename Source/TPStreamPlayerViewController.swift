@@ -22,12 +22,14 @@ public class TPStreamPlayerViewController: UIViewController {
                 handlePlayerInitializationError()
             }
             setupPlayerStatusObserver(for: player)
+            setupPlayerTimeControlObserver(for: player)
             setupPlayerTimeObserver()
             showLiveStreamNotice()
             player.onError = showError
         }
     }
     private var playerStatusObservation: NSKeyValueObservation?
+    private var playerTimeControlObservation: NSKeyValueObservation?
     private var playerTimeObserver: Any?
     
     public var activeSubtitleTrack: SubtitleTrack? {
@@ -127,6 +129,7 @@ public class TPStreamPlayerViewController: UIViewController {
     
     deinit {
         playerStatusObservation = nil
+        playerTimeControlObservation = nil
         if let observer = playerTimeObserver, let player = player {
             player.removeTimeObserver(observer)
         }
@@ -192,6 +195,22 @@ public class TPStreamPlayerViewController: UIViewController {
                     break
                 }
             }
+        }
+    }
+    
+    private func setupPlayerTimeControlObserver(for player: TPAVPlayer) {
+        playerTimeControlObservation = player.observe(\.timeControlStatus, options: [.new]) { [weak self] player, _ in
+            guard let self = self else { return }
+            if player.timeControlStatus == .playing {
+                self.watermarkOverlayView.resumeWatermarks()
+            } else {
+                self.watermarkOverlayView.pauseWatermarks()
+            }
+        }
+        if player.timeControlStatus == .playing {
+            watermarkOverlayView.resumeWatermarks()
+        } else {
+            watermarkOverlayView.pauseWatermarks()
         }
     }
     
