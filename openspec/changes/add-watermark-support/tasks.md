@@ -16,10 +16,10 @@
 
 ## 3. Animation Support
 
-- [ ] 3.1 Implement pingPong animation with `CAKeyframeAnimation` on `transform.translation.x`, `autoreverses = true`, `repeatCount = .infinity`: one leg per configured duration, y constant, full-span traversal (x coordinate ignored while animating)
-- [ ] 3.2 Support independent animation per watermark layer
-- [ ] 3.3 Pause animations when playback is not active (paused, buffering, ended) and resume from the paused position when playback resumes; watermarks remain visible while paused. Playback state is observed by the presentation views (they already hold the player), not `TPAVPlayer`
-- [ ] 3.4 Preserve animation continuity on update via value equality: unchanged configs keep their layer/animation, changed configs are re-created
+- [x] 3.1 Implement pingPong animation with `CAKeyframeAnimation` on `transform.translation.x`, `autoreverses = true`, `repeatCount = .infinity`: one leg per configured duration, y constant, full-span traversal (x coordinate ignored while animating)
+- [x] 3.2 Support independent animation per watermark layer
+- [x] 3.3 Pause animations when playback is not active (paused, buffering, ended) and resume from the paused position when playback resumes; watermarks remain visible while paused. Playback state is observed by the presentation views (they already hold the player), not `TPAVPlayer`
+- [x] 3.4 Preserve animation continuity on update via value equality: unchanged configs keep their layer/animation, changed configs are re-created
 
 ## 4. Player Lifecycle Integration
 
