@@ -31,8 +31,8 @@ public class TPAVPlayer: AVPlayer {
     private var reachability: Reachability?
     internal var isPlaybackOffline: Bool = false
     
-    private let contentKeySession: AVContentKeySession
-    private let contentKeyDelegate: ContentKeyDelegate
+    private var contentKeySession: AVContentKeySession?
+    private var contentKeyDelegate: ContentKeyDelegate?
     private let contentKeyDelegateQueue = DispatchQueue(label: "com.tpstreams.iOSPlayerSDK.ContentKeyDelegateQueue")
     
     public var availableVideoQualities: [VideoQuality] = [VideoQuality(resolution:"Auto", bitrate: 0)]
@@ -56,12 +56,9 @@ public class TPAVPlayer: AVPlayer {
             accessToken: accessToken,
             assetId: assetID
         )
-        contentKeySession = AVContentKeySession(keySystem: .fairPlayStreaming)
-        contentKeyDelegate = ContentKeyDelegate()
-        
         super.init()
         
-        contentKeySession.setDelegate(contentKeyDelegate, queue: contentKeyDelegateQueue)
+        setupContentKeySession()
         fetchAsset()
         isPlaybackOffline = false
     }
@@ -69,16 +66,21 @@ public class TPAVPlayer: AVPlayer {
     public init(offlineAssetId: String, completion: SetupCompletion? = nil) {
         self.setupCompletion = completion
         self.assetID = offlineAssetId
-        contentKeySession = AVContentKeySession(keySystem: .fairPlayStreaming)
-        contentKeyDelegate = ContentKeyDelegate()
         super.init()
         
-        contentKeySession.setDelegate(contentKeyDelegate, queue: contentKeyDelegateQueue)
+        setupContentKeySession()
         
         guard let localOfflineAsset = LocalOfflineAsset.manager.get(id: offlineAssetId) else {
             self.processInitializationFailure(TPStreamPlayerError.resourceNotFound)
             return
         }
+        
+        #if targetEnvironment(simulator)
+        if let drmContentId = localOfflineAsset.drmContentId, !drmContentId.isEmpty {
+            self.processInitializationFailure(TPStreamPlayerError.drmSimulatorError)
+            return
+        }
+        #endif
 
         self.isPlaybackOffline = true
         self.resourceLoaderDelegate = ResourceLoaderDelegate(
@@ -194,7 +196,19 @@ public class TPAVPlayer: AVPlayer {
         self.replaceCurrentItem(with: playerItem)
     }
     
+    private func setupContentKeySession() {
+        #if !targetEnvironment(simulator)
+        contentKeySession = AVContentKeySession(keySystem: .fairPlayStreaming)
+        contentKeyDelegate = ContentKeyDelegate()
+        contentKeySession?.setDelegate(contentKeyDelegate, queue: contentKeyDelegateQueue)
+        #endif
+    }
+    
     private func setupDRM(_ avURLAsset: AVURLAsset) {
+        guard let contentKeySession = contentKeySession,
+              let contentKeyDelegate = contentKeyDelegate else {
+            return
+        }
         contentKeyDelegate.onRequestOfflineLicenseRenewal = { [weak self] assetId, completion in
             self?.onRequestOfflineLicenseRenewal?(assetId, completion)
         }

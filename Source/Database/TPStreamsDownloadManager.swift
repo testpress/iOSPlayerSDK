@@ -380,10 +380,11 @@ public final class TPStreamsDownloadManager {
             do {
                 try FileManager.default.removeItem(at: downloadedFileURL)
 
-                if let drmContentId = drmContentId, !drmContentId.isEmpty {
+                if let drmContentId = drmContentId, !drmContentId.isEmpty,
+                   let contentKeyDelegate = self.contentKeyDelegate {
                     // Deleting directly avoids touching the shared delegate's mutable
                     // contentID/assetID, which in-flight key requests read.
-                    let keyURL = self.contentKeyDelegate.contentKeyDirectory.appendingPathComponent(ContentKeyDelegate.persistentContentKeyFileName(for: drmContentId))
+                    let keyURL = contentKeyDelegate.contentKeyDirectory.appendingPathComponent(ContentKeyDelegate.persistentContentKeyFileName(for: drmContentId))
                     try? FileManager.default.removeItem(at: keyURL)
                     self.updateOfflineLicenseExpiry(assetId, expiryDate: nil)
                 }
