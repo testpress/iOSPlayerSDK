@@ -6,13 +6,10 @@ class WatermarkOverlayView: UIView {
     private let inset: CGFloat = 16
     /// Minimum gap kept between the watermark and the reserved bottom band.
     private let reservedBandGap: CGFloat = 4
-    private static let animationKey = "watermarkAnimation"
-
     private var watermarks: [WatermarkConfig] = []
     private var labels: [UILabel] = []
     private var reservedBottomHeight: CGFloat = 0
     private var labelsAreFrozen = false
-    private var watermarkSpans: [ObjectIdentifier: CGFloat] = [:]
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -69,12 +66,12 @@ class WatermarkOverlayView: UIView {
             label.layer.transform = CATransform3DIdentity
             label.frame = positionedFrame(for: label, at: config)
             if let animation = config.animation {
-                restartAnimationIfSpanChanged(animation, on: label)
+                let span = max(bounds.width - label.frame.width - 2 * inset, 0)
+                label.layer.removeAllAnimations()
+                label.layer.add(makeAnimation(for: animation, span: span), forKey: "watermarkAnimation")
                 if labelsAreFrozen {
                     pauseLayer(label.layer)
                 }
-            } else {
-                watermarkSpans.removeValue(forKey: ObjectIdentifier(label))
             }
         }
     }
@@ -94,7 +91,6 @@ class WatermarkOverlayView: UIView {
     private func rebuildWatermarkLabels() {
         labels.forEach { $0.removeFromSuperview() }
         labels = watermarks.map(watermarkLabel(for:))
-        watermarkSpans.removeAll()
         labels.reversed().forEach(addSubview)
     }
 
@@ -125,19 +121,6 @@ class WatermarkOverlayView: UIView {
         }
         let y = top + (bottomLimit - top) * CGFloat(config.y) / 100
         return CGRect(origin: CGPoint(x: x, y: y), size: size)
-    }
-
-    private func restartAnimationIfSpanChanged(_ animation: WatermarkAnimation, on label: UILabel) {
-        let span = max(bounds.width - label.frame.width - 2 * inset, 0)
-        let labelID = ObjectIdentifier(label)
-        // Rebuild if the travel distance changed, or if the animation was dropped
-        // (e.g. when the view is detached from the window during a fullscreen transition).
-        let hasAnimation = label.layer.animation(forKey: Self.animationKey) != nil
-        guard watermarkSpans[labelID] != span || !hasAnimation else { return }
-        watermarkSpans[labelID] = span
-        label.layer.transform = CATransform3DIdentity
-        label.layer.removeAllAnimations()
-        label.layer.add(makeAnimation(for: animation, span: span), forKey: Self.animationKey)
     }
 
     private func pauseLayer(_ layer: CALayer) {
