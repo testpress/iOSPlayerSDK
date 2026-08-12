@@ -23,15 +23,15 @@
 
 ## 4. Player Lifecycle Integration
 
-- [ ] 4.1 Recalculate watermark positions on layout changes (rotation, fullscreen, view resize) using the overlay bounds
-- [ ] 4.2 Clean up watermark overlay and animations when the player view is released or deinitialized
-- [ ] 4.3 Verify watermarks persist through play, pause, seek, buffering, fullscreen, and rotation without regression; verify animation pauses/resumes with playback state
-- [ ] 4.4 Verify z-order: overlapping watermarks render with earlier list entries on top (Android/Flutter visual parity)
-- [ ] 4.5 Verify normalization: out-of-range x/y/opacity clamp, duration below 100 ms floors, empty text still rendered — without crashing
-- [ ] 4.6 Update the sample application with static and animated watermark examples mirroring the Android/Flutter example (pingPong at x=0/y=50 and static entries)
-- [ ] 4.7 Update SDK documentation with the watermark configuration reference, configuration defaults, and the note that animated watermarks ignore the x coordinate
+- [x] 4.1 Recalculate watermark positions on layout changes (rotation, fullscreen, view resize) using the overlay bounds
+- [x] 4.2 Clean up watermark overlay and animations when the player view is released or deinitialized
+- [x] 4.3 Verify watermarks persist through play, pause, seek, buffering, fullscreen, and rotation without regression; verify animation pauses/resumes with playback state
+- [x] 4.4 Verify z-order: overlapping watermarks render with earlier list entries on top (Android/Flutter visual parity)
+- [x] 4.5 Verify normalization: out-of-range x/y/opacity clamp, duration below 100 ms floors, empty text still rendered — without crashing
+- [x] 4.6 Update the sample application with static and animated watermark examples mirroring the Android/Flutter example (pingPong at x=0/y=50 and static entries)
+- [x] 4.7 Update SDK documentation with the watermark configuration reference, configuration defaults, and the note that animated watermarks ignore the x coordinate
 
 ## 5. Verification
 
-- [ ] 5.1 Build — `xcodebuild build -project iOSPlayerSDK.xcodeproj -scheme TPStreamsSDK`
-- [ ] 5.2 Cross-check model shapes, defaults, and animation semantics against the Flutter Pigeon contract (`pigeons/native_player_api.dart`) and the Android implementation (`WatermarkConfig.kt`, `WatermarkController.kt`)
+- [x] 5.1 Build — `xcodebuild build -project iOSPlayerSDK.xcodeproj -scheme TPStreamsSDK`
+- [x] 5.2 Cross-check model shapes, defaults, and animation semantics against the Flutter Pigeon contract (`pigeons/native_player_api.dart`) and the Android implementation (`WatermarkConfig.kt`, `WatermarkController.kt`)
