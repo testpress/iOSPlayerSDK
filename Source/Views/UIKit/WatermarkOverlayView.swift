@@ -76,6 +76,7 @@ class WatermarkOverlayView: UIView {
         }
     }
 
+    /// Clamps out-of-range values to valid bounds for watermark configuration.
     private func clampedToValidBounds(_ config: WatermarkConfig) -> WatermarkConfig {
         var config = config
         config.x = min(max(config.x, 0), 100)
