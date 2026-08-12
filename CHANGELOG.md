@@ -1,4 +1,22 @@
 
+## 1.2.39 - 2026-08-12
+
+
+
+### Features
+
+- Add text watermark support, letting apps display one or more configurable watermarks over the video with percentage-based positioning, color, size, and opacity (#159, #160)
+- Add animated pingPong watermark support that sweeps watermarks horizontally and pauses/resumes with playback state (#165)
+- Increase subtitle font size in fullscreen and reserve layout space for two-line subtitles (#162, #163)
+
+
+
+### Bug Fixes
+
+- Prevent a simulator crash during player initialization (#166)
+
+
+
 ## 1.2.38 - 2026-08-07
 
 
