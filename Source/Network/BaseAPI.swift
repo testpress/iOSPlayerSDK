@@ -9,6 +9,10 @@ import Foundation
 import Alamofire
 
 class BaseAPI {
+    /// The Alamofire Session used for all requests.
+    /// Tests can override this to inject a mock session with custom URLProtocol.
+    static var session: Session = AF
+    
     class var VIDEO_DETAIL_API: String {
         fatalError("VIDEO_DETAIL_API must be implemented by subclasses.")
     }
@@ -41,7 +45,7 @@ class BaseAPI {
         var headers: HTTPHeaders = (TPStreamsSDK.authToken?.isEmpty == false) ? ["Authorization": "JWT \(TPStreamsSDK.authToken!)"] : [:]
         headers.update(name: "User-Agent", value: Self.customUserAgent)
         
-        AF.request(url, headers: headers)
+        Self.session.request(url, headers: headers)
             .responseData { response in
                 switch response.result {
                 case .success(let data):
@@ -79,7 +83,7 @@ class BaseAPI {
         }
         
         headers.update(name: "User-Agent", value: Self.customUserAgent)       
-        AF.request(url, method: .post, parameters: parameters, encoder: JSONParameterEncoder.prettyPrinted, headers: headers).responseData { response in
+        Self.session.request(url, method: .post, parameters: parameters, encoder: JSONParameterEncoder.prettyPrinted, headers: headers).responseData { response in
             switch response.result {
             case .success(let data):
                 if response.response?.statusCode == 200 {

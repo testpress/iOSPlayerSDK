@@ -37,7 +37,7 @@ import RealmSwift
 
 
 public class TPStreamsSDK {
-    internal static let realmConfig: Realm.Configuration = buildRealmConfig()
+    internal static var realmConfig: Realm.Configuration = buildRealmConfig()
     internal static var orgCode: String?
     internal static var provider: Provider = .tpstreams
     internal static var authToken: String?

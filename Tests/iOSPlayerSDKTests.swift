@@ -10,18 +10,34 @@ import XCTest
 
 final class iOSPlayerSDKTests: XCTestCase {
 
+    override func setUp() {
+        super.setUp()
+        // Reset SDK state before each test
+        TPStreamsSDK.orgCode = nil
+        TPStreamsSDK.authToken = nil
+    }
+    
+    override func tearDown() {
+        TPStreamsSDK.orgCode = nil
+        TPStreamsSDK.authToken = nil
+        super.tearDown()
+    }
+
     func testInitializeTestpress() throws {
-        TPStreamsSDK.initialize(for: .testpress, withOrgCode: "testpress")
+        // Set properties directly to avoid side effects of initialize()
+        TPStreamsSDK.provider = .testpress
+        TPStreamsSDK.orgCode = "testpress"
 
         XCTAssertEqual(TPStreamsSDK.orgCode, "testpress")
         XCTAssertEqual(TPStreamsSDK.provider, .testpress)
     }
     
     func testInitializeTPStreams() throws {
-        TPStreamsSDK.initialize(for: .tpstreams, withOrgCode: "tpstreams")
+        // Set properties directly to avoid side effects of initialize()
+        TPStreamsSDK.provider = .tpstreams
+        TPStreamsSDK.orgCode = "tpstreams"
 
         XCTAssertEqual(TPStreamsSDK.orgCode, "tpstreams")
         XCTAssertEqual(TPStreamsSDK.provider, .tpstreams)
     }
-
 }

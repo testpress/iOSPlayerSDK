@@ -8,7 +8,7 @@
 import Foundation
 
 func timeStringFromSeconds(_ seconds: Float64) -> String {
-    guard seconds.isFinite || !seconds.isNaN else {
+    guard seconds.isFinite, !seconds.isNaN else {
         return "00:00"
     }
 
