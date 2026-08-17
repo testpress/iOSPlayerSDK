@@ -21,9 +21,16 @@ class BaseAPI {
     class var parser: APIParser {
         fatalError("parser must be implemented by subclasses.")
     }
-    
+
     class var userAgentPrefix: String? {
         return nil
+    }
+
+    // Only StreamsAPI (TPStreams) overrides this: the legacy TestPress
+    // provider has no presence/live-viewer-count support, so viewer_id has
+    // nothing to bind there and must not leak into that URL.
+    class var supportsPresence: Bool {
+        return false
     }
     
     private static let systemUserAgent = HTTPHeaders.default.value(for: "User-Agent") ?? ""
@@ -36,8 +43,16 @@ class BaseAPI {
     }
     
     static func getAsset(_ assetID: String, _ accessToken: String?, completion: @escaping (Asset?, Error?) -> Void) {
-        let url = URL(string: String(format: VIDEO_DETAIL_API, TPStreamsSDK.orgCode!, assetID, accessToken ?? ""))!
-        
+        var urlString = String(format: VIDEO_DETAIL_API, TPStreamsSDK.orgCode!, assetID, accessToken ?? "")
+        if supportsPresence {
+            // Without this the server mints a fresh anonymous id per request,
+            // and the presence token it hands back could never pass device
+            // binding at all — see PresenceViewerIdStore.
+            let viewerId = PresenceViewerIdStore().getOrCreate()
+            urlString += "&viewer_id=\(viewerId)"
+        }
+        let url = URL(string: urlString)!
+
         var headers: HTTPHeaders = (TPStreamsSDK.authToken?.isEmpty == false) ? ["Authorization": "JWT \(TPStreamsSDK.authToken!)"] : [:]
         headers.update(name: "User-Agent", value: Self.customUserAgent)
         

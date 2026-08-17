@@ -80,6 +80,17 @@ public class TPStreamPlayerViewController: UIViewController {
             fatalError("Could not load PlayerControls view from nib.")
         }
         view.player = TPStreamPlayer(player: self.player!, userId: config.userId)
+        // Reads self.delegate fresh on every call rather than capturing it now,
+        // so this still works correctly if delegate is assigned after this
+        // lazy var's first access (a common ordering: init, then set delegate,
+        // then present).
+        view.player?.onPresenceTokenExpired = { [weak self] videoId, completion in
+            guard let self = self, let delegate = self.delegate else {
+                completion(nil)
+                return
+            }
+            delegate.presenceTokenExpired(forVideo: videoId, completion: completion)
+        }
         view.playerConfig = config
         view.frame = view.bounds
         view.isHidden = true
@@ -333,8 +344,21 @@ public protocol TPStreamPlayerViewControllerDelegate {
     func willExitFullScreenMode()
     func didExitFullScreenMode()
     func didTapReplay()
+    // Called on a 401 from the presence heartbeat loop — an expired token and
+    // a device-binding mismatch look identical from here, and both are
+    // resolved the same way: fetch a fresh playback config and call
+    // completion with its presence token, or with nil if none could be
+    // obtained. Mirrors the shape Android integrators already know from
+    // onAccessTokenExpired(videoId, callback).
+    func presenceTokenExpired(forVideo videoId: String, completion: @escaping (String?) -> Void)
 }
 
 public extension TPStreamPlayerViewControllerDelegate {
     func didTapReplay() {}
+    // Optional (default no-op): presence is still rollout-gated to a handful
+    // of organizations, and a required override would break every existing
+    // integrator for a feature almost none of them have enabled. An app that
+    // doesn't override this simply never has its heartbeat loop resume after
+    // a 401 — it just quietly stops, the same as if presence were disabled.
+    func presenceTokenExpired(forVideo videoId: String, completion: @escaping (String?) -> Void) {}
 }

@@ -43,6 +43,13 @@ class TPStreamPlayer: NSObject {
     private var lastWatchedPositionSyncTimer: Timer?
     private let userId: String?
 
+    // Set by TPStreamPlayerViewController right after construction, wired
+    // through to the app's presenceTokenExpired delegate method. Reads the
+    // delegate fresh on every call rather than being handed a snapshot of it.
+    var onPresenceTokenExpired: ((String, @escaping (String?) -> Void) -> Void)?
+    private var presenceHeartbeatManager: PresenceHeartbeatManager?
+    private lazy var presenceViewerIdStore = PresenceViewerIdStore()
+
     /// `true` when the SDK can synchronize and restore the user's last watched position.
     /// The resume state is synced using the provided `userId` and the asset ID,
     /// allowing playback to continue from the last watched position whenever the
@@ -77,6 +84,7 @@ class TPStreamPlayer: NSObject {
     deinit {
         updateLastWatchedPosition()
         stopLastWatchedPositionSync()
+        presenceHeartbeatManager?.stop()
     }
     
     private func observeCurrentItemChanges() {
@@ -171,21 +179,51 @@ class TPStreamPlayer: NSObject {
     @objc private func playerDidFinishPlaying(){
         status = "ended"
         deleteLastWatchedPosition()
+        stopPresenceHeartbeat()
     }
-    
+
     private func handlePlaybackStatusChange(for player: TPAVPlayer) {
         switch player.timeControlStatus {
         case .playing:
             status = "playing"
+            startPresenceHeartbeat()
         case .paused:
             if status == "ended" {return}
             status = "paused"
             updateLastWatchedPosition()
+            stopPresenceHeartbeat()
         case .waitingToPlayAtSpecifiedRate:
             break
         @unknown default:
             break
         }
+    }
+
+    // Reads the current asset's presence config fresh on every call rather
+    // than caching it at load time, so a reload that picks up a renewed token
+    // is used without any extra plumbing.
+    private func startPresenceHeartbeat() {
+        guard let presence = player.asset?.liveStream?.presence, let videoId = player.assetID else { return }
+        if presenceHeartbeatManager == nil {
+            presenceHeartbeatManager = PresenceHeartbeatManager(
+                viewerId: presenceViewerIdStore.getOrCreate(),
+                scheduler: DispatchPresenceScheduler(),
+                onTokenExpired: { [weak self] callback in
+                    guard let self = self, let onPresenceTokenExpired = self.onPresenceTokenExpired else {
+                        callback("")
+                        return
+                    }
+                    onPresenceTokenExpired(videoId) { newToken in
+                        callback(newToken ?? "")
+                    }
+                }
+            )
+        }
+        presenceHeartbeatManager?.start(baseUrl: presence.baseUrl, token: presence.token)
+    }
+
+    private func stopPresenceHeartbeat() {
+        presenceHeartbeatManager?.stop()
     }
     
     private func handleBufferStatusChange(of playerItem: AVPlayerItem, keyPath: String) {
