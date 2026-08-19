@@ -18,6 +18,13 @@ struct Asset {
     
     var playbackURL: String? {
         if let video = video {
+            if let liveStream = liveStream, video.status.lowercased() == "completed" && liveStream.transcodeRecordedVideo == false, liveStream.isStreaming {
+                return liveStream.hlsUrl
+            }
+            if video.status.lowercased() != "completed",
+               let liveStream = liveStream {
+                return liveStream.hlsUrl
+            }
             return video.playbackURL
         } else if let liveStream = liveStream {
             return liveStream.hlsUrl
