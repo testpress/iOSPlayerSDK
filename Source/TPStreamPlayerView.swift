@@ -22,6 +22,15 @@ public struct TPStreamPlayerView: View {
     
     public var body: some View {
         GeometryReader { geometry in
+            let isFullScreen = viewModel.isFullScreen
+            let horizontalPadding: CGFloat = isFullScreen ? 48 : 0
+            let contentWidth = (isFullScreen
+                ? UIScreen.main.fixedCoordinateSpace.bounds.height
+                : geometry.size.width) - horizontalPadding * 2
+            let contentHeight = isFullScreen
+                ? UIScreen.main.fixedCoordinateSpace.bounds.width
+                : geometry.size.height
+
             ZStack {
                 if let message = viewModel.noticeMessage {
                     NoticeView(message: message)
@@ -33,7 +42,11 @@ public struct TPStreamPlayerView: View {
                         reservedBottomHeight: playerViewConfig.enableCaptions && activeSubtitleTrack != nil
                             ? SubtitleView.reservedBottomBandHeight
                             : 0,
-                        labelsAreFrozen: playerObservable.observedStatus != "playing"
+                        labelsAreFrozen: playerObservable.observedStatus != "playing",
+                        videoRect: Self.calculateVideoRect(
+                            player: viewModel.player,
+                            containerSize: CGSize(width: contentWidth, height: contentHeight)
+                        )
                     )
                     
                     if playerViewConfig.enableCaptions, let activeSubtitleTrack = activeSubtitleTrack {
@@ -52,9 +65,9 @@ public struct TPStreamPlayerView: View {
                     .environmentObject(playerObservable)
                 }
             }
-            .padding(.horizontal, viewModel.isFullScreen ? 48 : 0)
-            .frame(width: viewModel.isFullScreen ? UIScreen.main.fixedCoordinateSpace.bounds.height : geometry.size.width,
-                   height: viewModel.isFullScreen ? UIScreen.main.fixedCoordinateSpace.bounds.width : geometry.size.height)
+            .padding(.horizontal, horizontalPadding)
+            .frame(width: contentWidth + horizontalPadding * 2,
+                   height: contentHeight)
             .background(Color.black)
             .edgesIgnoringSafeArea(viewModel.isFullScreen ? .all : [])
             .statusBarHidden(viewModel.isFullScreen)
@@ -90,5 +103,42 @@ public struct TPStreamPlayerView: View {
         } else {
             UIDevice.current.setValue(orientation.toUIInterfaceOrientation.rawValue, forKey: "orientation")
         }
+    }
+
+    private static func calculateVideoRect(player: TPAVPlayer, containerSize: CGSize) -> CGRect {
+        guard containerSize.width > 0, containerSize.height > 0 else {
+            return .zero
+        }
+        guard let item = player.currentItem,
+              let track = item.asset.tracks(withMediaType: .video).first else {
+            return .zero
+        }
+        let naturalSize = track.naturalSize
+        let transform = track.preferredTransform
+        let transformedSize = naturalSize.applying(transform)
+        let displayedSize = CGSize(width: abs(transformedSize.width), height: abs(transformedSize.height))
+
+        guard displayedSize.width > 0, displayedSize.height > 0 else { return .zero }
+
+        let videoAspect = displayedSize.width / displayedSize.height
+        let containerAspect = containerSize.width / containerSize.height
+
+        let renderedSize: CGSize
+        if videoAspect > containerAspect {
+            renderedSize = CGSize(
+                width: containerSize.width,
+                height: containerSize.width / videoAspect
+            )
+        } else {
+            renderedSize = CGSize(
+                width: containerSize.height * videoAspect,
+                height: containerSize.height
+            )
+        }
+        let origin = CGPoint(
+            x: (containerSize.width - renderedSize.width) / 2,
+            y: (containerSize.height - renderedSize.height) / 2
+        )
+        return CGRect(origin: origin, size: renderedSize)
     }
 }

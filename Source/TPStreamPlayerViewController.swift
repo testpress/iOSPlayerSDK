@@ -72,6 +72,9 @@ public class TPStreamPlayerViewController: UIViewController {
         let view = TPVideoPlayerUIView(frame: view.frame)
         view.backgroundColor = .black
         view.player = player
+        view.onVideoRectChanged = { [weak self] rect in
+            self?.watermarkOverlayView.setVideoRect(rect)
+        }
         return view
     }()
     
@@ -153,10 +156,15 @@ public class TPStreamPlayerViewController: UIViewController {
     
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        layoutContainerSubviews()
+    }
+
+    private func layoutContainerSubviews() {
         containerView.frame = containerView.superview!.bounds
         videoView.frame = containerView.bounds
         subtitleView.frame = containerView.bounds
         watermarkOverlayView.frame = containerView.bounds
+        watermarkOverlayView.setVideoRect(videoView.videoRect)
         watermarkOverlayView.setReservedBottomHeight(subtitleReservedHeight)
         controlsView.frame = containerView.bounds
         noticeView.frame = containerView.bounds
@@ -302,6 +310,9 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
             window.addSubview(containerView)
             containerView.frame = window.bounds
             isFullScreen = true
+            DispatchQueue.main.async { [weak self] in
+                self?.layoutContainerSubviews()
+            }
         }
     }
     
@@ -310,6 +321,9 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
         view.addSubview(containerView)
         containerView.frame = view.bounds
         isFullScreen = false
+        DispatchQueue.main.async { [weak self] in
+            self?.layoutContainerSubviews()
+        }
     }
     
     func changeOrientation(orientation: UIInterfaceOrientationMask) {
