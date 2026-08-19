@@ -18,6 +18,11 @@ struct Asset {
     
     var playbackURL: String? {
         if let video = video {
+            // Backend keeps live hls_url playable after the stream ends; we use it until transcoding completes.
+            if video.status.lowercased() != "completed",
+               let liveStream = liveStream {
+                return liveStream.hlsUrl
+            }
             return video.playbackURL
         } else if let liveStream = liveStream {
             return liveStream.hlsUrl
