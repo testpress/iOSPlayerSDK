@@ -1,4 +1,15 @@
 
+## 1.2.40 - 2026-08-20
+
+
+
+### Bug Fixes
+
+- Anchor watermark to the video content rect instead of the full player view (#171)
+- Enable live video playback while transcoding is in progress (#172)
+
+
+
 ## 1.2.39 - 2026-08-12
 
 
