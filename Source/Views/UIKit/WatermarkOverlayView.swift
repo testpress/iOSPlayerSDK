@@ -9,6 +9,7 @@ class WatermarkOverlayView: UIView {
     private var watermarks: [WatermarkConfig] = []
     private var labels: [UILabel] = []
     private var reservedBottomHeight: CGFloat = 0
+    private var watermarkContentRect: CGRect?
     private var labelsAreFrozen = false
     private var animationStartTimeByLabelID: [ObjectIdentifier: CFTimeInterval] = [:]
     private var horizontalSpanByLabelID: [ObjectIdentifier: CGFloat] = [:]
@@ -46,6 +47,16 @@ class WatermarkOverlayView: UIView {
         setNeedsLayout()
     }
 
+    /// Sets the rect within this view where the actual video content is rendered.
+    /// Watermarks are positioned relative to this rect instead of the full view bounds,
+    /// preventing them from overlapping letterbox/pillarbox bars.
+    func setWatermarkContentRect(_ rect: CGRect) {
+        let effective = rect.isNull || rect.isEmpty ? nil : rect
+        guard effective != watermarkContentRect else { return }
+        watermarkContentRect = effective
+        setNeedsLayout()
+    }
+
     func pauseWatermarks() {
         guard !labelsAreFrozen else { return }
         labelsAreFrozen = true
@@ -66,8 +77,13 @@ class WatermarkOverlayView: UIView {
         super.layoutSubviews()
         let now = CACurrentMediaTime()
         for (label, config) in zip(labels, watermarks) {
+            guard let watermarkContentRect else {
+                label.isHidden = true
+                continue
+            }
+            label.isHidden = false
             label.layer.transform = CATransform3DIdentity
-            label.frame = positionedFrame(for: label, at: config)
+            label.frame = positionedFrame(for: label, at: config, in: watermarkContentRect)
             if let animation = config.animation {
                 applyAnimation(animation, to: label, now: now)
             } else {
@@ -79,7 +95,8 @@ class WatermarkOverlayView: UIView {
     }
 
     private func applyAnimation(_ animation: WatermarkAnimation, to label: UILabel, now: CFTimeInterval) {
-        let horizontalSpan = max(bounds.width - label.frame.width - 2 * inset, 0)
+        guard let area = watermarkContentRect else { return }
+        let horizontalSpan = max(area.width - label.frame.width - 2 * inset, 0)
         let labelID = ObjectIdentifier(label)
         let storedStartTime = animationStartTimeByLabelID[labelID]
         let storedHorizontalSpan = horizontalSpanByLabelID[labelID]
@@ -131,20 +148,19 @@ class WatermarkOverlayView: UIView {
         return label
     }
 
-    private func positionedFrame(for label: UILabel, at config: WatermarkConfig) -> CGRect {
-        let maxWidth = max(bounds.width - 2 * inset, 0)
+    private func positionedFrame(for label: UILabel, at config: WatermarkConfig, in area: CGRect) -> CGRect {
+        let maxWidth = max(area.width - 2 * inset, 0)
         let size = label.sizeThatFits(CGSize(width: maxWidth, height: .greatestFiniteMagnitude))
-        let horizontalSpan = max(bounds.width - size.width - 2 * inset, 0)
+        let horizontalSpan = max(area.width - size.width - 2 * inset, 0)
         let isPingPongAnimation = config.animation?.type == .pingPong
-        let x = isPingPongAnimation ? inset : inset + horizontalSpan * CGFloat(config.x) / 100
+        let x = area.origin.x + (isPingPongAnimation ? inset : inset + horizontalSpan * CGFloat(config.x) / 100)
 
-        let top = inset
+        let top = area.origin.y + inset
         let bottomLimit: CGFloat
         if reservedBottomHeight > 0 {
-            // Stay just above the reserved band instead of applying the full inset.
-            bottomLimit = max(bounds.height - size.height - reservedBottomHeight - reservedBandGap, top)
+            bottomLimit = max(area.origin.y + area.height - size.height - reservedBottomHeight - reservedBandGap, top)
         } else {
-            bottomLimit = bounds.height - size.height - inset
+            bottomLimit = area.origin.y + area.height - size.height - inset
         }
         let y = top + (bottomLimit - top) * CGFloat(config.y) / 100
         return CGRect(origin: CGPoint(x: x, y: y), size: size)
@@ -197,11 +213,13 @@ struct WatermarkOverlayViewRepresentable: UIViewRepresentable {
     let watermarks: [WatermarkConfig]
     let reservedBottomHeight: CGFloat
     let labelsAreFrozen: Bool
+    let watermarkContentRect: CGRect
 
     func makeUIView(context: Context) -> WatermarkOverlayView {
         let view = WatermarkOverlayView(frame: .zero)
         view.setWatermarks(watermarks)
         view.setReservedBottomHeight(reservedBottomHeight)
+        view.setWatermarkContentRect(watermarkContentRect)
         if labelsAreFrozen {
             view.pauseWatermarks()
         }
@@ -211,6 +229,7 @@ struct WatermarkOverlayViewRepresentable: UIViewRepresentable {
     func updateUIView(_ uiView: WatermarkOverlayView, context: Context) {
         uiView.setWatermarks(watermarks)
         uiView.setReservedBottomHeight(reservedBottomHeight)
+        uiView.setWatermarkContentRect(watermarkContentRect)
         if labelsAreFrozen {
             uiView.pauseWatermarks()
         } else {

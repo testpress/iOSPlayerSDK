@@ -22,6 +22,15 @@ public struct TPStreamPlayerView: View {
     
     public var body: some View {
         GeometryReader { geometry in
+            let isFullScreen = viewModel.isFullScreen
+            let horizontalPadding: CGFloat = isFullScreen ? 48 : 0
+            let contentWidth = (isFullScreen
+                ? UIScreen.main.fixedCoordinateSpace.bounds.height
+                : geometry.size.width) - horizontalPadding * 2
+            let contentHeight = isFullScreen
+                ? UIScreen.main.fixedCoordinateSpace.bounds.width
+                : geometry.size.height
+
             ZStack {
                 if let message = viewModel.noticeMessage {
                     NoticeView(message: message)
@@ -33,7 +42,11 @@ public struct TPStreamPlayerView: View {
                         reservedBottomHeight: playerViewConfig.enableCaptions && activeSubtitleTrack != nil
                             ? SubtitleView.reservedBottomBandHeight
                             : 0,
-                        labelsAreFrozen: playerObservable.observedStatus != "playing"
+                        labelsAreFrozen: playerObservable.observedStatus != "playing",
+                        watermarkContentRect: Self.calculateVideoRect(
+                            player: viewModel.player,
+                            containerSize: CGSize(width: contentWidth, height: contentHeight)
+                        )
                     )
                     
                     if playerViewConfig.enableCaptions, let activeSubtitleTrack = activeSubtitleTrack {
@@ -52,9 +65,9 @@ public struct TPStreamPlayerView: View {
                     .environmentObject(playerObservable)
                 }
             }
-            .padding(.horizontal, viewModel.isFullScreen ? 48 : 0)
-            .frame(width: viewModel.isFullScreen ? UIScreen.main.fixedCoordinateSpace.bounds.height : geometry.size.width,
-                   height: viewModel.isFullScreen ? UIScreen.main.fixedCoordinateSpace.bounds.width : geometry.size.height)
+            .padding(.horizontal, horizontalPadding)
+            .frame(width: contentWidth + horizontalPadding * 2,
+                   height: contentHeight)
             .background(Color.black)
             .edgesIgnoringSafeArea(viewModel.isFullScreen ? .all : [])
             .statusBarHidden(viewModel.isFullScreen)
@@ -90,5 +103,22 @@ public struct TPStreamPlayerView: View {
         } else {
             UIDevice.current.setValue(orientation.toUIInterfaceOrientation.rawValue, forKey: "orientation")
         }
+    }
+
+    private static func calculateVideoRect(
+        player: TPAVPlayer,
+        containerSize: CGSize
+    ) -> CGRect {
+        guard let videoSize = extractVideoSize(from: player) else { return .zero }
+        return VideoRectCalculator.calculate(videoSize: videoSize, containerSize: containerSize)
+    }
+
+    private static func extractVideoSize(from player: TPAVPlayer) -> CGSize? {
+        guard let track = player.currentItem?.asset.tracks(withMediaType: .video).first else {
+            return nil
+        }
+        let transformed = track.naturalSize.applying(track.preferredTransform)
+        let size = CGSize(width: abs(transformed.width), height: abs(transformed.height))
+        return (size.width > 0 && size.height > 0) ? size : nil
     }
 }
