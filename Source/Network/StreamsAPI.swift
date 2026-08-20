@@ -23,4 +23,8 @@ class StreamsAPI: BaseAPI {
     override class var parser: APIParser {
         return StreamsAPIParser()
     }
+
+    class override var supportsPresence: Bool {
+        return true
+    }
 }

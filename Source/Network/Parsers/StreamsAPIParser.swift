@@ -56,7 +56,21 @@ class StreamsAPIParser: APIParser {
         }
         let noticeMessage = liveStreamDict["notice_message"] as? String
         let enableDRM = liveStreamDict["enable_drm"] as? Bool ?? false
-   
-        return LiveStream(status: status, hlsUrl: hlsUrl, transcodeRecordedVideo: transcodeRecordedVideo, chatEmbedUrl: chatEmbedUrl, noticeMessage: noticeMessage, enableDRM: enableDRM)
+        let presence = parsePresence(from: liveStreamDict["presence"] as? [String: Any])
+
+        return LiveStream(status: status, hlsUrl: hlsUrl, transcodeRecordedVideo: transcodeRecordedVideo, chatEmbedUrl: chatEmbedUrl, noticeMessage: noticeMessage, enableDRM: enableDRM, presence: presence)
+    }
+
+    // A malformed or absent presence payload is treated as no presence at
+    // all, rather than propagating a half-populated config further — presence
+    // is a bolt-on feature that must never be able to break asset parsing.
+    func parsePresence(from dictionary: [String: Any]?) -> Presence? {
+        guard let presenceDict = dictionary,
+              let token = presenceDict["token"] as? String,
+              let baseUrl = presenceDict["base_url"] as? String,
+              !token.isEmpty, !baseUrl.isEmpty else {
+            return nil
+        }
+        return Presence(token: token, baseUrl: baseUrl)
     }
 }
