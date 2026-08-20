@@ -73,7 +73,7 @@ public class TPStreamPlayerViewController: UIViewController {
         view.backgroundColor = .black
         view.player = player
         view.onVideoRectChanged = { [weak self] rect in
-            self?.watermarkOverlayView.setVideoRect(rect)
+            self?.watermarkOverlayView.setWatermarkContentRect(rect)
         }
         return view
     }()
@@ -164,7 +164,7 @@ public class TPStreamPlayerViewController: UIViewController {
         videoView.frame = containerView.bounds
         subtitleView.frame = containerView.bounds
         watermarkOverlayView.frame = containerView.bounds
-        watermarkOverlayView.setVideoRect(videoView.videoRect)
+        watermarkOverlayView.setWatermarkContentRect(videoView.videoRect)
         watermarkOverlayView.setReservedBottomHeight(subtitleReservedHeight)
         controlsView.frame = containerView.bounds
         noticeView.frame = containerView.bounds

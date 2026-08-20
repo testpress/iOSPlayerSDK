@@ -9,7 +9,7 @@ class WatermarkOverlayView: UIView {
     private var watermarks: [WatermarkConfig] = []
     private var labels: [UILabel] = []
     private var reservedBottomHeight: CGFloat = 0
-    private var videoRect: CGRect?
+    private var watermarkContentRect: CGRect?
     private var labelsAreFrozen = false
     private var animationStartTimeByLabelID: [ObjectIdentifier: CFTimeInterval] = [:]
     private var horizontalSpanByLabelID: [ObjectIdentifier: CGFloat] = [:]
@@ -50,10 +50,10 @@ class WatermarkOverlayView: UIView {
     /// Sets the rect within this view where the actual video content is rendered.
     /// Watermarks are positioned relative to this rect instead of the full view bounds,
     /// preventing them from overlapping letterbox/pillarbox bars.
-    func setVideoRect(_ rect: CGRect) {
+    func setWatermarkContentRect(_ rect: CGRect) {
         let effective = rect.isNull || rect.isEmpty ? nil : rect
-        guard effective != videoRect else { return }
-        videoRect = effective
+        guard effective != watermarkContentRect else { return }
+        watermarkContentRect = effective
         setNeedsLayout()
     }
 
@@ -77,13 +77,13 @@ class WatermarkOverlayView: UIView {
         super.layoutSubviews()
         let now = CACurrentMediaTime()
         for (label, config) in zip(labels, watermarks) {
-            guard let videoRect else {
+            guard let watermarkContentRect else {
                 label.isHidden = true
                 continue
             }
             label.isHidden = false
             label.layer.transform = CATransform3DIdentity
-            label.frame = positionedFrame(for: label, at: config, in: videoRect)
+            label.frame = positionedFrame(for: label, at: config, in: watermarkContentRect)
             if let animation = config.animation {
                 applyAnimation(animation, to: label, now: now)
             } else {
@@ -95,7 +95,7 @@ class WatermarkOverlayView: UIView {
     }
 
     private func applyAnimation(_ animation: WatermarkAnimation, to label: UILabel, now: CFTimeInterval) {
-        guard let area = videoRect else { return }
+        guard let area = watermarkContentRect else { return }
         let horizontalSpan = max(area.width - label.frame.width - 2 * inset, 0)
         let labelID = ObjectIdentifier(label)
         let storedStartTime = animationStartTimeByLabelID[labelID]
@@ -213,13 +213,13 @@ struct WatermarkOverlayViewRepresentable: UIViewRepresentable {
     let watermarks: [WatermarkConfig]
     let reservedBottomHeight: CGFloat
     let labelsAreFrozen: Bool
-    let videoRect: CGRect
+    let watermarkContentRect: CGRect
 
     func makeUIView(context: Context) -> WatermarkOverlayView {
         let view = WatermarkOverlayView(frame: .zero)
         view.setWatermarks(watermarks)
         view.setReservedBottomHeight(reservedBottomHeight)
-        view.setVideoRect(videoRect)
+        view.setWatermarkContentRect(watermarkContentRect)
         if labelsAreFrozen {
             view.pauseWatermarks()
         }
@@ -229,7 +229,7 @@ struct WatermarkOverlayViewRepresentable: UIViewRepresentable {
     func updateUIView(_ uiView: WatermarkOverlayView, context: Context) {
         uiView.setWatermarks(watermarks)
         uiView.setReservedBottomHeight(reservedBottomHeight)
-        uiView.setVideoRect(videoRect)
+        uiView.setWatermarkContentRect(watermarkContentRect)
         if labelsAreFrozen {
             uiView.pauseWatermarks()
         } else {

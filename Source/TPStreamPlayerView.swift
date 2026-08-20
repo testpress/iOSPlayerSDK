@@ -43,7 +43,7 @@ public struct TPStreamPlayerView: View {
                             ? SubtitleView.reservedBottomBandHeight
                             : 0,
                         labelsAreFrozen: playerObservable.observedStatus != "playing",
-                        videoRect: Self.calculateVideoRect(
+                        watermarkContentRect: Self.calculateVideoRect(
                             player: viewModel.player,
                             containerSize: CGSize(width: contentWidth, height: contentHeight)
                         )
@@ -105,40 +105,20 @@ public struct TPStreamPlayerView: View {
         }
     }
 
-    private static func calculateVideoRect(player: TPAVPlayer, containerSize: CGSize) -> CGRect {
-        guard containerSize.width > 0, containerSize.height > 0 else {
-            return .zero
-        }
-        guard let item = player.currentItem,
-              let track = item.asset.tracks(withMediaType: .video).first else {
-            return .zero
-        }
-        let naturalSize = track.naturalSize
-        let transform = track.preferredTransform
-        let transformedSize = naturalSize.applying(transform)
-        let displayedSize = CGSize(width: abs(transformedSize.width), height: abs(transformedSize.height))
+    private static func calculateVideoRect(
+        player: TPAVPlayer,
+        containerSize: CGSize
+    ) -> CGRect {
+        guard let videoSize = extractVideoSize(from: player) else { return .zero }
+        return VideoRectCalculator.calculate(videoSize: videoSize, containerSize: containerSize)
+    }
 
-        guard displayedSize.width > 0, displayedSize.height > 0 else { return .zero }
-
-        let videoAspect = displayedSize.width / displayedSize.height
-        let containerAspect = containerSize.width / containerSize.height
-
-        let renderedSize: CGSize
-        if videoAspect > containerAspect {
-            renderedSize = CGSize(
-                width: containerSize.width,
-                height: containerSize.width / videoAspect
-            )
-        } else {
-            renderedSize = CGSize(
-                width: containerSize.height * videoAspect,
-                height: containerSize.height
-            )
+    private static func extractVideoSize(from player: TPAVPlayer) -> CGSize? {
+        guard let track = player.currentItem?.asset.tracks(withMediaType: .video).first else {
+            return nil
         }
-        let origin = CGPoint(
-            x: (containerSize.width - renderedSize.width) / 2,
-            y: (containerSize.height - renderedSize.height) / 2
-        )
-        return CGRect(origin: origin, size: renderedSize)
+        let transformed = track.naturalSize.applying(track.preferredTransform)
+        let size = CGSize(width: abs(transformed.width), height: abs(transformed.height))
+        return (size.width > 0 && size.height > 0) ? size : nil
     }
 }
