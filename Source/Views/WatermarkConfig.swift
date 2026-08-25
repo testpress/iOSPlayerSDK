@@ -1,5 +1,11 @@
 import Foundation
 
+/// Configuration for displaying a text watermark over video playback.
+///
+/// Note: The `x` and `y` coordinates are ignored when `.random` animation is used
+/// because both X and Y coordinates are randomized across the full video area.
+/// When `.pingPong` animation is used, the `x` coordinate is ignored because the animation
+/// spans horizontally from edge to edge.
 public struct WatermarkConfig: Equatable {
     public var text: String
     public var x: Int64
@@ -28,8 +34,10 @@ public struct WatermarkConfig: Equatable {
     }
 }
 
+/// Configuration for watermark animations.
 public struct WatermarkAnimation: Equatable {
     public var type: WatermarkAnimationType
+    /// Duration in milliseconds for the animation cycle or random position dwell time.
     public var duration: Int64
 
     public init(type: WatermarkAnimationType, duration: Int64 = 10000) {
@@ -38,6 +46,11 @@ public struct WatermarkAnimation: Equatable {
     }
 }
 
+/// Supported watermark animation types.
 public enum WatermarkAnimationType: Equatable {
+    /// Bounces horizontally from edge to edge (ignoring configured `x` coordinate).
     case pingPong
+    /// Periodically places the watermark at an unpredictable random position within the visible video area
+    /// (ignoring both `x` and `y` coordinates).
+    case random
 }

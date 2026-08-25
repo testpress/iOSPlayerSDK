@@ -83,6 +83,11 @@ private class WatermarkLabel: UILabel {
     private var isFrozen = false
     private var animationStartTime: CFTimeInterval?
     private var lastHorizontalSpan: CGFloat?
+    private var timer: Timer?
+    private var timeRemaining: TimeInterval = 0
+    private var lastMoveTimestamp: CFTimeInterval = 0
+    private var lastContentArea: CGRect = .zero
+    private var lastReservedBottom: CGFloat = 0
 
     init(config: WatermarkConfig) {
         self.config = config
@@ -95,6 +100,10 @@ private class WatermarkLabel: UILabel {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        timer?.invalidate()
+    }
+
     private func setupAppearance() {
         text = config.text
         font = UIFont.systemFont(ofSize: CGFloat(config.textSize))
@@ -104,7 +113,13 @@ private class WatermarkLabel: UILabel {
     }
 
     private func initCoordinates() {
+        let duration = Double(max(config.animation?.duration ?? 10000, 100)) / 1000.0
+        timeRemaining = duration
+
         switch config.animation?.type {
+        case .random:
+            xFrac = .random(in: 0...1)
+            yFrac = .random(in: 0...1)
         case .pingPong:
             xFrac = 0
             yFrac = CGFloat(min(max(config.y, 0), 100)) / 100.0
@@ -115,6 +130,8 @@ private class WatermarkLabel: UILabel {
     }
 
     func layoutIn(area: CGRect, reservedBottom: CGFloat, isPaused: Bool) {
+        self.lastContentArea = area
+        self.lastReservedBottom = reservedBottom
         self.isFrozen = isPaused
 
         layer.transform = CATransform3DIdentity
@@ -124,6 +141,10 @@ private class WatermarkLabel: UILabel {
             switch animation.type {
             case .pingPong:
                 setupPingPongAnimation(duration: max(animation.duration, 100), area: area)
+            case .random:
+                if !isPaused && timer == nil {
+                    scheduleRandomTimer(interval: timeRemaining)
+                }
             }
         }
     }
@@ -131,6 +152,12 @@ private class WatermarkLabel: UILabel {
     func pause() {
         guard !isFrozen else { return }
         isFrozen = true
+        if config.animation?.type == .random {
+            timer?.invalidate()
+            timer = nil
+            let elapsed = CACurrentMediaTime() - lastMoveTimestamp
+            timeRemaining = max(0, timeRemaining - elapsed)
+        }
         pauseLayer(layer)
     }
 
@@ -138,6 +165,11 @@ private class WatermarkLabel: UILabel {
         guard isFrozen else { return }
         isFrozen = false
         resumeLayer(layer)
+        if config.animation?.type == .random {
+            let duration = Double(max(config.animation?.duration ?? 10000, 100)) / 1000.0
+            let interval = timeRemaining > 0 ? timeRemaining : duration
+            scheduleRandomTimer(interval: interval)
+        }
     }
 
     private func calculateFrame(in area: CGRect, reservedBottom: CGFloat) -> CGRect {
@@ -155,6 +187,36 @@ private class WatermarkLabel: UILabel {
             width: size.width,
             height: size.height
         )
+    }
+
+    private func scheduleRandomTimer(interval: TimeInterval) {
+        timer?.invalidate()
+        lastMoveTimestamp = CACurrentMediaTime()
+        timeRemaining = interval
+
+        timer = Timer.scheduledTimer(withTimeInterval: max(interval, 0.05), repeats: false) { [weak self] _ in
+            self?.moveToNextRandomPosition()
+        }
+    }
+
+    private func moveToNextRandomPosition() {
+        guard let animation = config.animation, !isFrozen else { return }
+        guard lastContentArea.width > 0 else {
+            // Content area transiently unavailable; retry shortly to maintain the animation chain
+            scheduleRandomTimer(interval: 0.5)
+            return
+        }
+
+        xFrac = .random(in: 0...1)
+        yFrac = .random(in: 0...1)
+
+        let duration = Double(max(animation.duration, 100)) / 1000.0
+        let newFrame = calculateFrame(in: lastContentArea, reservedBottom: lastReservedBottom)
+
+        UIView.animate(withDuration: 0.5, delay: 0, options: [.curveEaseInOut, .allowUserInteraction]) { [weak self] in
+            self?.frame = newFrame
+        }
+        scheduleRandomTimer(interval: duration)
     }
 
     private func setupPingPongAnimation(duration: Int64, area: CGRect) {
