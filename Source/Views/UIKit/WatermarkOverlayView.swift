@@ -200,7 +200,13 @@ private class WatermarkLabel: UILabel {
     }
 
     private func moveToNextRandomPosition() {
-        guard let animation = config.animation, lastContentArea.width > 0, !isFrozen else { return }
+        guard let animation = config.animation, !isFrozen else { return }
+        guard lastContentArea.width > 0 else {
+            // Content area transiently unavailable; retry shortly to maintain the animation chain
+            scheduleRandomTimer(interval: 0.5)
+            return
+        }
+
         xFrac = .random(in: 0...1)
         yFrac = .random(in: 0...1)
 
