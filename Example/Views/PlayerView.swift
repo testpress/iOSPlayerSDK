@@ -41,6 +41,13 @@ struct PlayerView: View {
                             textSize: 20,
                             opacity: 0.5,
                             animation: WatermarkAnimation(type: .pingPong, duration: 10000)
+                        ),
+                        WatermarkConfig(
+                            text: "random-id",
+                            color: 0xFF00FF00,
+                            textSize: 14,
+                            opacity: 0.6,
+                            animation: WatermarkAnimation(type: .random, duration: 4000)
                         )
                     ])
                     .build()
@@ -84,6 +91,13 @@ struct PlayerView: View {
                             textSize: 20,
                             opacity: 0.5,
                             animation: WatermarkAnimation(type: .pingPong, duration: 10000)
+                        ),
+                        WatermarkConfig(
+                            text: "random-id",
+                            color: 0xFF00FF00,
+                            textSize: 14,
+                            opacity: 0.6,
+                            animation: WatermarkAnimation(type: .random, duration: 4000)
                         )
                     ])
                     .build()
