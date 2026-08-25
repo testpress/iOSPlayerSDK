@@ -1,45 +1,33 @@
 import UIKit
 import SwiftUI
 
-class WatermarkOverlayView: UIView {
+// MARK: - WatermarkOverlayView
 
-    private let inset: CGFloat = 16
-    /// Minimum gap kept between the watermark and the reserved bottom band.
-    private let reservedBandGap: CGFloat = 4
-    private var watermarks: [WatermarkConfig] = []
-    private var labels: [UILabel] = []
+class WatermarkOverlayView: UIView {
+    private var watermarkLabels: [WatermarkLabel] = []
     private var reservedBottomHeight: CGFloat = 0
     private var watermarkContentRect: CGRect?
-    private var labelsAreFrozen = false
-    private var animationStartTimeByLabelID: [ObjectIdentifier: CFTimeInterval] = [:]
-    private var horizontalSpanByLabelID: [ObjectIdentifier: CGFloat] = [:]
+    private var isPaused = false
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupView()
+        backgroundColor = .clear
+        isUserInteractionEnabled = false
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupView()
-    }
-
-    private func setupView() {
         backgroundColor = .clear
         isUserInteractionEnabled = false
     }
 
     func setWatermarks(_ configs: [WatermarkConfig]) {
-        let clamped = configs.map(clampedToValidBounds)
-        guard clamped != watermarks else { return }
-        watermarks = clamped
-        rebuildWatermarkLabels()
+        watermarkLabels.forEach { $0.removeFromSuperview() }
+        watermarkLabels = configs.map { WatermarkLabel(config: $0) }
+        watermarkLabels.reversed().forEach(addSubview)
         setNeedsLayout()
     }
 
-    /// Reserves a band of `height` at the bottom (e.g. for subtitles) that watermarks
-    /// must stay above. Watermark positions are then mapped to the remaining space
-    /// above the band, keeping a small gap. Pass 0 to disable.
     func setReservedBottomHeight(_ height: CGFloat) {
         let clamped = max(height, 0)
         guard clamped != reservedBottomHeight else { return }
@@ -47,9 +35,6 @@ class WatermarkOverlayView: UIView {
         setNeedsLayout()
     }
 
-    /// Sets the rect within this view where the actual video content is rendered.
-    /// Watermarks are positioned relative to this rect instead of the full view bounds,
-    /// preventing them from overlapping letterbox/pillarbox bars.
     func setWatermarkContentRect(_ rect: CGRect) {
         let effective = rect.isNull || rect.isEmpty ? nil : rect
         guard effective != watermarkContentRect else { return }
@@ -58,112 +43,141 @@ class WatermarkOverlayView: UIView {
     }
 
     func pauseWatermarks() {
-        guard !labelsAreFrozen else { return }
-        labelsAreFrozen = true
-        for (label, config) in zip(labels, watermarks) where config.animation != nil {
-            pauseLayer(label.layer)
-        }
+        guard !isPaused else { return }
+        isPaused = true
+        watermarkLabels.forEach { $0.pause() }
     }
 
     func resumeWatermarks() {
-        guard labelsAreFrozen else { return }
-        labelsAreFrozen = false
-        for (label, config) in zip(labels, watermarks) where config.animation != nil {
-            resumeLayer(label.layer)
-        }
+        guard isPaused else { return }
+        isPaused = false
+        watermarkLabels.forEach { $0.resume() }
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        let now = CACurrentMediaTime()
-        for (label, config) in zip(labels, watermarks) {
-            guard let watermarkContentRect else {
-                label.isHidden = true
-                continue
-            }
+        let area = watermarkContentRect ?? (bounds.isEmpty ? nil : bounds)
+        guard let area = area, !area.isEmpty else {
+            watermarkLabels.forEach { $0.isHidden = true }
+            return
+        }
+        for label in watermarkLabels {
             label.isHidden = false
-            label.layer.transform = CATransform3DIdentity
-            label.frame = positionedFrame(for: label, at: config, in: watermarkContentRect)
-            if let animation = config.animation {
-                applyAnimation(animation, to: label, now: now)
-            } else {
-                let labelID = ObjectIdentifier(label)
-                animationStartTimeByLabelID.removeValue(forKey: labelID)
-                horizontalSpanByLabelID.removeValue(forKey: labelID)
+            label.layoutIn(area: area, reservedBottom: reservedBottomHeight, isPaused: isPaused)
+        }
+    }
+}
+
+// MARK: - WatermarkLabel
+
+private class WatermarkLabel: UILabel {
+    static let inset: CGFloat = 16
+    static let reservedBandGap: CGFloat = 4
+
+    let config: WatermarkConfig
+    private var xFrac: CGFloat = 0
+    private var yFrac: CGFloat = 0
+    private var isFrozen = false
+    private var animationStartTime: CFTimeInterval?
+    private var lastHorizontalSpan: CGFloat?
+
+    init(config: WatermarkConfig) {
+        self.config = config
+        super.init(frame: .zero)
+        setupAppearance()
+        initCoordinates()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setupAppearance() {
+        text = config.text
+        font = UIFont.systemFont(ofSize: CGFloat(config.textSize))
+        textColor = UIColor(argb: config.color, opacity: min(max(config.opacity, 0), 1))
+        numberOfLines = 0
+        clipsToBounds = true
+    }
+
+    private func initCoordinates() {
+        switch config.animation?.type {
+        case .pingPong:
+            xFrac = 0
+            yFrac = CGFloat(min(max(config.y, 0), 100)) / 100.0
+        case .none:
+            xFrac = CGFloat(min(max(config.x, 0), 100)) / 100.0
+            yFrac = CGFloat(min(max(config.y, 0), 100)) / 100.0
+        }
+    }
+
+    func layoutIn(area: CGRect, reservedBottom: CGFloat, isPaused: Bool) {
+        self.isFrozen = isPaused
+
+        layer.transform = CATransform3DIdentity
+        frame = calculateFrame(in: area, reservedBottom: reservedBottom)
+
+        if let animation = config.animation {
+            switch animation.type {
+            case .pingPong:
+                setupPingPongAnimation(duration: max(animation.duration, 100), area: area)
             }
         }
     }
 
-    private func applyAnimation(_ animation: WatermarkAnimation, to label: UILabel, now: CFTimeInterval) {
-        guard let area = watermarkContentRect else { return }
-        let horizontalSpan = max(area.width - label.frame.width - 2 * inset, 0)
-        let labelID = ObjectIdentifier(label)
-        let storedStartTime = animationStartTimeByLabelID[labelID]
-        let storedHorizontalSpan = horizontalSpanByLabelID[labelID]
-        horizontalSpanByLabelID[labelID] = horizontalSpan
-
-        let layerAnimation = makeAnimation(for: animation, horizontalSpan: horizontalSpan)
-        if let storedStartTime, let storedHorizontalSpan, storedHorizontalSpan > 0 {
-            let elapsedSinceStart = now - storedStartTime
-            let roundTripDuration = layerAnimation.duration * 2
-            layerAnimation.timeOffset = elapsedSinceStart.truncatingRemainder(dividingBy: roundTripDuration)
-        }
-
-        label.layer.removeAllAnimations()
-        label.layer.add(layerAnimation, forKey: "watermarkAnimation")
-        animationStartTimeByLabelID[labelID] = now
-        if labelsAreFrozen {
-            pauseLayer(label.layer)
-        }
+    func pause() {
+        guard !isFrozen else { return }
+        isFrozen = true
+        pauseLayer(layer)
     }
 
-    /// Clamps out-of-range values to valid bounds for watermark configuration.
-    private func clampedToValidBounds(_ config: WatermarkConfig) -> WatermarkConfig {
-        var config = config
-        config.x = min(max(config.x, 0), 100)
-        config.y = min(max(config.y, 0), 100)
-        config.opacity = min(max(config.opacity, 0), 1)
-        if var animation = config.animation, animation.duration < 100 {
-            animation.duration = 100
-            config.animation = animation
-        }
-        return config
+    func resume() {
+        guard isFrozen else { return }
+        isFrozen = false
+        resumeLayer(layer)
     }
 
-    private func rebuildWatermarkLabels() {
-        labels.forEach { $0.removeFromSuperview() }
-        labels = watermarks.map(watermarkLabel(for:))
-        animationStartTimeByLabelID.removeAll()
-        horizontalSpanByLabelID.removeAll()
-        labels.reversed().forEach(addSubview)
+    private func calculateFrame(in area: CGRect, reservedBottom: CGFloat) -> CGRect {
+        let maxWidth = max(area.width - 2 * Self.inset, 0)
+        let size = sizeThatFits(CGSize(width: maxWidth, height: .greatestFiniteMagnitude))
+        let minX = area.origin.x + Self.inset
+        let maxX = max(area.origin.x + area.width - size.width - Self.inset, minX)
+        let minY = area.origin.y + Self.inset
+        let bottomInset = reservedBottom > 0 ? reservedBottom + Self.reservedBandGap : Self.inset
+        let maxY = max(area.origin.y + area.height - size.height - bottomInset, minY)
+
+        return CGRect(
+            x: minX + (maxX - minX) * xFrac,
+            y: minY + (maxY - minY) * yFrac,
+            width: size.width,
+            height: size.height
+        )
     }
 
-    private func watermarkLabel(for config: WatermarkConfig) -> UILabel {
-        let label = UILabel()
-        label.text = config.text
-        label.font = UIFont.systemFont(ofSize: CGFloat(config.textSize))
-        label.textColor = color(for: config)
-        label.numberOfLines = 0
-        label.clipsToBounds = true
-        return label
-    }
+    private func setupPingPongAnimation(duration: Int64, area: CGRect) {
+        let horizontalSpan = max(area.width - frame.width - 2 * Self.inset, 0)
+        let anim = CAKeyframeAnimation(keyPath: "transform.translation.x")
+        anim.values = [0, horizontalSpan]
+        anim.keyTimes = [0, 1]
+        anim.duration = Double(duration) / 1000.0
+        anim.autoreverses = true
+        anim.repeatCount = .infinity
 
-    private func positionedFrame(for label: UILabel, at config: WatermarkConfig, in area: CGRect) -> CGRect {
-        let maxWidth = max(area.width - 2 * inset, 0)
-        let size = label.sizeThatFits(CGSize(width: maxWidth, height: .greatestFiniteMagnitude))
-        let horizontalSpan = max(area.width - size.width - 2 * inset, 0)
-        let isPingPongAnimation = config.animation?.type == .pingPong
-        let x = area.origin.x + (isPingPongAnimation ? inset : inset + horizontalSpan * CGFloat(config.x) / 100)
-
-        let top = area.origin.y + inset
-        let bottomLimit: CGFloat
-        if reservedBottomHeight > 0 {
-            bottomLimit = max(area.origin.y + area.height - size.height - reservedBottomHeight - reservedBandGap, top)
+        let now = CACurrentMediaTime()
+        if let storedStartTime = animationStartTime, let storedSpan = lastHorizontalSpan, storedSpan > 0 {
+            let elapsed = now - storedStartTime
+            let roundTrip = anim.duration * 2
+            anim.timeOffset = elapsed.truncatingRemainder(dividingBy: roundTrip)
         } else {
-            bottomLimit = area.origin.y + area.height - size.height - inset
+            animationStartTime = now
         }
-        let y = top + (bottomLimit - top) * CGFloat(config.y) / 100
-        return CGRect(origin: CGPoint(x: x, y: y), size: size)
+        lastHorizontalSpan = horizontalSpan
+
+        layer.removeAllAnimations()
+        layer.add(anim, forKey: "watermarkAnimation")
+        if isFrozen {
+            pauseLayer(layer)
+        }
     }
 
     private func pauseLayer(_ layer: CALayer) {
@@ -180,33 +194,9 @@ class WatermarkOverlayView: UIView {
         let timeSincePause = layer.convertTime(CACurrentMediaTime(), from: nil) - pausedTime
         layer.beginTime = timeSincePause
     }
-
-    private func makeAnimation(for animation: WatermarkAnimation, horizontalSpan: CGFloat) -> CAAnimation {
-        switch animation.type {
-        case .pingPong:
-            return makePingPongAnimation(horizontalSpan: horizontalSpan, duration: animation.duration)
-        }
-    }
-
-    private func makePingPongAnimation(horizontalSpan: CGFloat, duration: Int64) -> CAKeyframeAnimation {
-        let keyframe = CAKeyframeAnimation(keyPath: "transform.translation.x")
-        keyframe.values = [0, horizontalSpan]
-        keyframe.keyTimes = [0, 1]
-        keyframe.duration = Double(duration) / 1000
-        keyframe.autoreverses = true
-        keyframe.repeatCount = .infinity
-        return keyframe
-    }
-
-    private func color(for config: WatermarkConfig) -> UIColor {
-        let value = UInt32(truncatingIfNeeded: config.color)
-        let alpha = CGFloat((value >> 24) & 0xFF) / 255
-        let red = CGFloat((value >> 16) & 0xFF) / 255
-        let green = CGFloat((value >> 8) & 0xFF) / 255
-        let blue = CGFloat(value & 0xFF) / 255
-        return UIColor(red: red, green: green, blue: blue, alpha: alpha * CGFloat(config.opacity))
-    }
 }
+
+// MARK: - SwiftUI Bridge
 
 @available(iOS 14.0, *)
 struct WatermarkOverlayViewRepresentable: UIViewRepresentable {
