@@ -4,6 +4,7 @@ import SwiftUI
 // MARK: - WatermarkOverlayView
 
 class WatermarkOverlayView: UIView {
+    private var watermarks: [WatermarkConfig] = []
     private var watermarkLabels: [WatermarkLabel] = []
     private var reservedBottomHeight: CGFloat = 0
     private var watermarkContentRect: CGRect?
@@ -22,6 +23,8 @@ class WatermarkOverlayView: UIView {
     }
 
     func setWatermarks(_ configs: [WatermarkConfig]) {
+        guard configs != watermarks else { return }
+        watermarks = configs
         watermarkLabels.forEach { $0.removeFromSuperview() }
         watermarkLabels = configs.map { WatermarkLabel(config: $0) }
         watermarkLabels.reversed().forEach(addSubview)
