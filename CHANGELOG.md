@@ -1,4 +1,22 @@
 
+## 1.2.41 - 2026-08-25
+
+
+
+### Features
+
+- Add `random` watermark animation support, periodically moving watermarks to unpredictable random positions within the visible video bounds (#174)
+
+
+
+### Improvements & Refactoring
+
+- Modularize `WatermarkOverlayView` architecture and extract `UIColor` ARGB parsing helper (#173)
+- Prevent redundant watermark overlay rebuilds on periodic SwiftUI time-observer updates (#173)
+- Preserve ping-pong animation phase across device orientation and layout changes (#173)
+
+
+
 ## 1.2.40 - 2026-08-20
 
 
