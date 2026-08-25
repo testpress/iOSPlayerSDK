@@ -200,21 +200,17 @@ private class WatermarkLabel: UILabel {
     }
 
     private func moveToNextRandomPosition() {
-        guard let animation = config.animation, lastContentArea.width > 0 else { return }
+        guard let animation = config.animation, lastContentArea.width > 0, !isFrozen else { return }
         xFrac = .random(in: 0...1)
         yFrac = .random(in: 0...1)
 
         let duration = Double(max(animation.duration, 100)) / 1000.0
         let newFrame = calculateFrame(in: lastContentArea, reservedBottom: lastReservedBottom)
 
-        if !isFrozen {
-            UIView.animate(withDuration: 0.5, delay: 0, options: [.curveEaseInOut, .allowUserInteraction]) {
-                self.frame = newFrame
-            }
-            scheduleRandomTimer(interval: duration)
-        } else {
-            frame = newFrame
+        UIView.animate(withDuration: 0.5, delay: 0, options: [.curveEaseInOut, .allowUserInteraction]) { [weak self] in
+            self?.frame = newFrame
         }
+        scheduleRandomTimer(interval: duration)
     }
 
     private func setupPingPongAnimation(duration: Int64, area: CGRect) {
