@@ -37,7 +37,7 @@ public class TPStreamPlayerViewController: UIViewController {
             subtitleView.setTrack(activeSubtitleTrack)
             if isViewLoaded {
                 controlsView.selectedSubtitleTrack = activeSubtitleTrack
-                watermarkOverlayView.setReservedBottomHeight(subtitleReservedHeight)
+                textWatermarkOverlayView.setReservedBottomHeight(subtitleReservedHeight)
             }
         }
     }
@@ -53,7 +53,8 @@ public class TPStreamPlayerViewController: UIViewController {
     public var config = TPStreamPlayerConfiguration(){
         didSet {
             controlsView.playerConfig = config
-            watermarkOverlayView.setWatermarks(config.watermarks)
+            textWatermarkOverlayView.setWatermarks(config.watermarks)
+            imageWatermarkOverlayView.setImageWatermarks(config.imageWatermarks)
         }
     }
     private var controlsVisibilityTimer: Timer?
@@ -73,7 +74,8 @@ public class TPStreamPlayerViewController: UIViewController {
         view.backgroundColor = .black
         view.player = player
         view.onVideoRectChanged = { [weak self] rect in
-            self?.watermarkOverlayView.setWatermarkContentRect(rect)
+            self?.textWatermarkOverlayView.setWatermarkContentRect(rect)
+            self?.imageWatermarkOverlayView.setWatermarkContentRect(rect)
         }
         return view
     }()
@@ -100,7 +102,8 @@ public class TPStreamPlayerViewController: UIViewController {
         return view
     }()
     
-    private lazy var watermarkOverlayView = WatermarkOverlayView(frame: .zero)
+    private lazy var textWatermarkOverlayView = TextWatermarkOverlayView(frame: .zero)
+    private lazy var imageWatermarkOverlayView = ImageWatermarkOverlayView(frame: .zero)
     
     private lazy var noticeView: UIView = {
         let view = UIView(frame: view.frame)
@@ -114,7 +117,8 @@ public class TPStreamPlayerViewController: UIViewController {
         let view = UIView(frame: view.bounds)
         view.backgroundColor = .black
         view.addSubview(videoView)
-        view.addSubview(watermarkOverlayView)
+        view.addSubview(textWatermarkOverlayView)
+        view.addSubview(imageWatermarkOverlayView)
         view.addSubview(subtitleView)
         view.addSubview(controlsView)
         view.addSubview(noticeView)
@@ -163,9 +167,11 @@ public class TPStreamPlayerViewController: UIViewController {
         containerView.frame = containerView.superview!.bounds
         videoView.frame = containerView.bounds
         subtitleView.frame = containerView.bounds
-        watermarkOverlayView.frame = containerView.bounds
-        watermarkOverlayView.setWatermarkContentRect(videoView.videoRect)
-        watermarkOverlayView.setReservedBottomHeight(subtitleReservedHeight)
+        textWatermarkOverlayView.frame = containerView.bounds
+        textWatermarkOverlayView.setWatermarkContentRect(videoView.videoRect)
+        textWatermarkOverlayView.setReservedBottomHeight(subtitleReservedHeight)
+        imageWatermarkOverlayView.frame = containerView.bounds
+        imageWatermarkOverlayView.setWatermarkContentRect(videoView.videoRect)
         controlsView.frame = containerView.bounds
         noticeView.frame = containerView.bounds
         noticeMessageLabel.frame = noticeView.bounds
@@ -210,15 +216,15 @@ public class TPStreamPlayerViewController: UIViewController {
         playerTimeControlObservation = player.observe(\.timeControlStatus, options: [.new]) { [weak self] player, _ in
             guard let self = self else { return }
             if player.timeControlStatus == .playing {
-                self.watermarkOverlayView.resumeWatermarks()
+                self.textWatermarkOverlayView.resumeWatermarks()
             } else {
-                self.watermarkOverlayView.pauseWatermarks()
+                self.textWatermarkOverlayView.pauseWatermarks()
             }
         }
         if player.timeControlStatus == .playing {
-            watermarkOverlayView.resumeWatermarks()
+            textWatermarkOverlayView.resumeWatermarks()
         } else {
-            watermarkOverlayView.pauseWatermarks()
+            textWatermarkOverlayView.pauseWatermarks()
         }
     }
     
@@ -250,12 +256,14 @@ public class TPStreamPlayerViewController: UIViewController {
     
     @objc private func toggleControlsVisibility() {
         controlsView.isHidden = !controlsView.isHidden
+        imageWatermarkOverlayView.setControlsVisible(!controlsView.isHidden)
         
         // Hide controls view after 10 seconds
         if !controlsView.isHidden {
             controlsVisibilityTimer?.invalidate()
             controlsVisibilityTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] _ in
                 self?.controlsView.isHidden = true
+                self?.imageWatermarkOverlayView.setControlsVisible(false)
             }
         }
     }

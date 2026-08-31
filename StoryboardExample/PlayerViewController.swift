@@ -90,6 +90,16 @@ class PlayerViewController: UIViewController {
                     animation: WatermarkAnimation(type: .pingPong, duration: 10000)
                 )
             ])
+            .setImageWatermarks([
+                ImageWatermarkConfig(
+                    imageUrl: "https://avatars.githubusercontent.com/u/10137",
+                    width: 50,
+                    height: 50,
+                    x: 100,
+                    y: 100,
+                    opacity: 0.9
+                )
+            ])
             .build()
         
         playerViewController?.config = config

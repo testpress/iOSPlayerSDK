@@ -25,6 +25,7 @@ public struct TPStreamPlayerConfiguration {
     public var autoSelectFirstSubtitle: Bool = false
     public var userId: String? = nil
     public var watermarks: [WatermarkConfig] = []
+    public var imageWatermarks: [ImageWatermarkConfig] = []
     
     public var showSettingsButton: Bool {
         return enablePlaybackSpeed || showResolutionOptions || showDownloadOption || enableCaptions
@@ -116,6 +117,11 @@ public class TPStreamPlayerConfigurationBuilder {
     
     public func setWatermarks(_ watermarks: [WatermarkConfig]) -> Self {
         configuration.watermarks = watermarks
+        return self
+    }
+    
+    public func setImageWatermarks(_ imageWatermarks: [ImageWatermarkConfig]) -> Self {
+        configuration.imageWatermarks = imageWatermarks
         return self
     }
     

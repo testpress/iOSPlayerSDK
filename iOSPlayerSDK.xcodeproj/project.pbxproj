@@ -59,7 +59,9 @@
 		2D46EC6A2EE856BB008B559A /* M3U8Kit in Frameworks */ = {isa = PBXBuildFile; productRef = 2D46EC692EE856BB008B559A /* M3U8Kit */; };
 		2D9798C02FC966D800593EAC /* SubtitleTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9798BF2FC966D800593EAC /* SubtitleTrack.swift */; };
 		2DA51C0A2F60000100AB0C1A /* WatermarkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA51C0A2F60000100AB0C1B /* WatermarkConfig.swift */; };
-		2DA51C0B2F60000200AB0C1A /* WatermarkOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA51C0B2F60000200AB0C1B /* WatermarkOverlayView.swift */; };
+		2DA51C0B2F60000200AB0C1A /* TextWatermarkOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA51C0B2F60000200AB0C1B /* TextWatermarkOverlayView.swift */; };
+		2DA51C0C2F60000300AB0C1A /* BaseWatermarkOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA51C0C2F60000300AB0C1B /* BaseWatermarkOverlayView.swift */; };
+		2DA51C0D2F60000400AB0C1A /* ImageWatermarkOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA51C0D2F60000400AB0C1B /* ImageWatermarkOverlayView.swift */; };
 		2DC08F892F448BB900AABC60 /* EncryptionKeyDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC08F872F448BB900AABC60 /* EncryptionKeyDelegate.swift */; };
 		2DD12A212D4CF75400272433 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D92E48F22CB0226A00B1FAC3 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		2DF3CE142FED6494001872ED /* SubtitleTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF3CE132FED6494001872ED /* SubtitleTextView.swift */; };
@@ -218,7 +220,9 @@
 		2D3CE81E2F5957EE0011CAB7 /* VideoQualityUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoQualityUtils.swift; sourceTree = "<group>"; };
 		2D9798BF2FC966D800593EAC /* SubtitleTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleTrack.swift; sourceTree = "<group>"; };
 		2DA51C0A2F60000100AB0C1B /* WatermarkConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatermarkConfig.swift; sourceTree = "<group>"; };
-		2DA51C0B2F60000200AB0C1B /* WatermarkOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatermarkOverlayView.swift; sourceTree = "<group>"; };
+		2DA51C0B2F60000200AB0C1B /* TextWatermarkOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextWatermarkOverlayView.swift; sourceTree = "<group>"; };
+		2DA51C0C2F60000300AB0C1B /* BaseWatermarkOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseWatermarkOverlayView.swift; sourceTree = "<group>"; };
+		2DA51C0D2F60000400AB0C1B /* ImageWatermarkOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageWatermarkOverlayView.swift; sourceTree = "<group>"; };
 		2DC08F872F448BB900AABC60 /* EncryptionKeyDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionKeyDelegate.swift; sourceTree = "<group>"; };
 		2DF3CE132FED6494001872ED /* SubtitleTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleTextView.swift; sourceTree = "<group>"; };
 		3F02A7FA872249B68023A540 /* SubtitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleView.swift; sourceTree = "<group>"; };
@@ -391,7 +395,9 @@
 				03913C472A850BF9002E7E0C /* ProgressBar.swift */,
 				03D7F4242C21C64D00DF3597 /* LiveIndicatorView.swift */,
 				3F02A7FA872249B68023A540 /* SubtitleView.swift */,
-				2DA51C0B2F60000200AB0C1B /* WatermarkOverlayView.swift */,
+				2DA51C0C2F60000300AB0C1B /* BaseWatermarkOverlayView.swift */,
+				2DA51C0B2F60000200AB0C1B /* TextWatermarkOverlayView.swift */,
+				2DA51C0D2F60000400AB0C1B /* ImageWatermarkOverlayView.swift */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -861,7 +867,9 @@
 				03CC784D2A6BB6E5005E8F7E /* VideoPlayerView.swift in Sources */,
 				2D2BA5792F5FEB2400D53996 /* KeychainUtil.swift in Sources */,
 				4F02A7FA872249B68023A541 /* SubtitleView.swift in Sources */,
-				2DA51C0B2F60000200AB0C1A /* WatermarkOverlayView.swift in Sources */,
+				2DA51C0C2F60000300AB0C1A /* BaseWatermarkOverlayView.swift in Sources */,
+				2DA51C0B2F60000200AB0C1A /* TextWatermarkOverlayView.swift in Sources */,
+				2DA51C0D2F60000400AB0C1A /* ImageWatermarkOverlayView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

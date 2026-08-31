@@ -3,24 +3,10 @@ import SwiftUI
 
 // MARK: - WatermarkOverlayView
 
-class WatermarkOverlayView: UIView {
+class TextWatermarkOverlayView: BaseWatermarkOverlayView {
     private var watermarks: [WatermarkConfig] = []
     private var watermarkLabels: [WatermarkLabel] = []
-    private var reservedBottomHeight: CGFloat = 0
-    private var watermarkContentRect: CGRect?
     private var isPaused = false
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        backgroundColor = .clear
-        isUserInteractionEnabled = false
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        backgroundColor = .clear
-        isUserInteractionEnabled = false
-    }
 
     func setWatermarks(_ configs: [WatermarkConfig]) {
         guard configs != watermarks else { return }
@@ -28,20 +14,6 @@ class WatermarkOverlayView: UIView {
         watermarkLabels.forEach { $0.removeFromSuperview() }
         watermarkLabels = configs.map { WatermarkLabel(config: $0) }
         watermarkLabels.reversed().forEach(addSubview)
-        setNeedsLayout()
-    }
-
-    func setReservedBottomHeight(_ height: CGFloat) {
-        let clamped = max(height, 0)
-        guard clamped != reservedBottomHeight else { return }
-        reservedBottomHeight = clamped
-        setNeedsLayout()
-    }
-
-    func setWatermarkContentRect(_ rect: CGRect) {
-        let effective = rect.isNull || rect.isEmpty ? nil : rect
-        guard effective != watermarkContentRect else { return }
-        watermarkContentRect = effective
         setNeedsLayout()
     }
 
@@ -59,8 +31,7 @@ class WatermarkOverlayView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        let area = watermarkContentRect ?? (bounds.isEmpty ? nil : bounds)
-        guard let area = area, !area.isEmpty else {
+        guard let area = effectiveArea else {
             watermarkLabels.forEach { $0.isHidden = true }
             return
         }
@@ -173,19 +144,14 @@ private class WatermarkLabel: UILabel {
     }
 
     private func calculateFrame(in area: CGRect, reservedBottom: CGFloat) -> CGRect {
-        let maxWidth = max(area.width - 2 * Self.inset, 0)
+        let maxWidth = max(area.width - 2 * BaseWatermarkOverlayView.inset, 0)
         let size = sizeThatFits(CGSize(width: maxWidth, height: .greatestFiniteMagnitude))
-        let minX = area.origin.x + Self.inset
-        let maxX = max(area.origin.x + area.width - size.width - Self.inset, minX)
-        let minY = area.origin.y + Self.inset
-        let bottomInset = reservedBottom > 0 ? reservedBottom + Self.reservedBandGap : Self.inset
-        let maxY = max(area.origin.y + area.height - size.height - bottomInset, minY)
-
-        return CGRect(
-            x: minX + (maxX - minX) * xFrac,
-            y: minY + (maxY - minY) * yFrac,
-            width: size.width,
-            height: size.height
+        return BaseWatermarkOverlayView.calculateFrame(
+            in: area,
+            size: size,
+            xFrac: xFrac,
+            yFrac: yFrac,
+            reservedBottom: reservedBottom
         )
     }
 
@@ -220,7 +186,7 @@ private class WatermarkLabel: UILabel {
     }
 
     private func setupPingPongAnimation(duration: Int64, area: CGRect) {
-        let horizontalSpan = max(area.width - frame.width - 2 * Self.inset, 0)
+        let horizontalSpan = max(area.width - frame.width - 2 * BaseWatermarkOverlayView.inset, 0)
         let anim = CAKeyframeAnimation(keyPath: "transform.translation.x")
         anim.values = [0, horizontalSpan]
         anim.keyTimes = [0, 1]
@@ -264,14 +230,14 @@ private class WatermarkLabel: UILabel {
 // MARK: - SwiftUI Bridge
 
 @available(iOS 14.0, *)
-struct WatermarkOverlayViewRepresentable: UIViewRepresentable {
+struct TextWatermarkOverlayViewRepresentable: UIViewRepresentable {
     let watermarks: [WatermarkConfig]
     let reservedBottomHeight: CGFloat
     let labelsAreFrozen: Bool
     let watermarkContentRect: CGRect
 
-    func makeUIView(context: Context) -> WatermarkOverlayView {
-        let view = WatermarkOverlayView(frame: .zero)
+    func makeUIView(context: Context) -> TextWatermarkOverlayView {
+        let view = TextWatermarkOverlayView(frame: .zero)
         view.setWatermarks(watermarks)
         view.setReservedBottomHeight(reservedBottomHeight)
         view.setWatermarkContentRect(watermarkContentRect)
@@ -281,7 +247,7 @@ struct WatermarkOverlayViewRepresentable: UIViewRepresentable {
         return view
     }
 
-    func updateUIView(_ uiView: WatermarkOverlayView, context: Context) {
+    func updateUIView(_ uiView: TextWatermarkOverlayView, context: Context) {
         uiView.setWatermarks(watermarks)
         uiView.setReservedBottomHeight(reservedBottomHeight)
         uiView.setWatermarkContentRect(watermarkContentRect)

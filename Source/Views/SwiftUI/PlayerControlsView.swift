@@ -8,11 +8,18 @@ struct PlayerControlsView: View {
     @Binding private var isFullscreen: Bool
     @Binding private var activeSubtitleTrack: SubtitleTrack?
     private var playerViewConfig: TPStreamPlayerConfiguration
+    var onControlsVisibilityChanged: ((Bool) -> Void)?
     
-    init(isFullscreen: Binding<Bool>, playerViewConfig: TPStreamPlayerConfiguration, activeSubtitleTrack: Binding<SubtitleTrack?>){
+    init(
+        isFullscreen: Binding<Bool>,
+        playerViewConfig: TPStreamPlayerConfiguration,
+        activeSubtitleTrack: Binding<SubtitleTrack?>,
+        onControlsVisibilityChanged: ((Bool) -> Void)? = nil
+    ){
         self.playerViewConfig = playerViewConfig
         _isFullscreen = isFullscreen
         _activeSubtitleTrack = activeSubtitleTrack
+        self.onControlsVisibilityChanged = onControlsVisibilityChanged
     }
     
     var body: some View {
@@ -35,6 +42,7 @@ struct PlayerControlsView: View {
         .background(showControls ? Color.black.opacity(0.3) : Color.black.opacity(0.0001))
         .onTapGesture {
             showControls.toggle()
+            onControlsVisibilityChanged?(showControls)
             if showControls {
                 scheduleTimerToHideControls()
             }
@@ -45,6 +53,7 @@ struct PlayerControlsView: View {
         controlsHideTimer?.invalidate()
         controlsHideTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { _ in
             showControls = false
+            onControlsVisibilityChanged?(false)
         }
     }
     

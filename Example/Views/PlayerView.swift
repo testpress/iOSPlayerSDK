@@ -50,6 +50,16 @@ struct PlayerView: View {
                             animation: WatermarkAnimation(type: .random, duration: 4000)
                         )
                     ])
+                    .setImageWatermarks([
+                        ImageWatermarkConfig(
+                            imageUrl: "https://cdn.tpstreams.com/wp-content/uploads/2025/09/cropped-cropped-Logo-1.png",
+                            width: 50,
+                            height: 50,
+                            x: 100,
+                            y: 100,
+                            opacity: 0.9
+                        )
+                    ])
                     .build()
                 TPStreamPlayerView(player: player, playerViewConfig: playerViewConfig)
                     .frame(height: 240)
@@ -98,6 +108,16 @@ struct PlayerView: View {
                             textSize: 14,
                             opacity: 0.6,
                             animation: WatermarkAnimation(type: .random, duration: 4000)
+                        )
+                    ])
+                    .setImageWatermarks([
+                        ImageWatermarkConfig(
+                            imageUrl: "https://cdn.tpstreams.com/wp-content/uploads/2025/09/cropped-cropped-Logo-1.png",
+                            width: 50,
+                            height: 50,
+                            x: 100,
+                            y: 100,
+                            opacity: 0.9
                         )
                     ])
                     .build()

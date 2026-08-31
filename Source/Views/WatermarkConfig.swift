@@ -54,3 +54,37 @@ public enum WatermarkAnimationType: Equatable {
     /// (ignoring both `x` and `y` coordinates).
     case random
 }
+
+/// Configuration for displaying an image watermark (e.g. instructor avatar or logo) over video playback.
+public struct ImageWatermarkConfig: Equatable {
+    public var imageUrl: String
+    public var width: Double
+    public var height: Double
+    public var x: Int64
+    public var y: Int64
+    public var opacity: Double
+
+    public init(
+        imageUrl: String,
+        width: Double = 48,
+        height: Double = 48,
+        x: Int64 = 92,
+        y: Int64 = 88,
+        opacity: Double = 1.0
+    ) {
+        precondition(!imageUrl.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, "imageUrl must not be empty")
+        precondition(width > 0, "width must be greater than 0")
+        precondition(height > 0, "height must be greater than 0")
+        precondition((0...100).contains(x), "x must be between 0 and 100")
+        precondition((0...100).contains(y), "y must be between 0 and 100")
+        precondition((0.0...1.0).contains(opacity), "opacity must be between 0.0 and 1.0")
+
+        self.imageUrl = imageUrl
+        self.width = width
+        self.height = height
+        self.x = x
+        self.y = y
+        self.opacity = opacity
+    }
+}
+

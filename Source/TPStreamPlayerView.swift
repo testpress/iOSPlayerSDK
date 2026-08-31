@@ -12,6 +12,7 @@ public struct TPStreamPlayerView: View {
     @StateObject private var viewModel: TPStreamPlayerViewModel
     @StateObject private var playerObservable: TPStreamPlayerObservable
     @State private var activeSubtitleTrack: SubtitleTrack?
+    @State private var areControlsVisible = false
     private var playerViewConfig: TPStreamPlayerConfiguration
     
     public init(player: TPAVPlayer, playerViewConfig: TPStreamPlayerConfiguration = TPStreamPlayerConfigurationBuilder().build()) {
@@ -37,12 +38,21 @@ public struct TPStreamPlayerView: View {
                 } else if viewModel.player.initializationStatus == "ready" {
                     AVPlayerBridge(player: viewModel.player)
                     
-                    WatermarkOverlayViewRepresentable(
+                    TextWatermarkOverlayViewRepresentable(
                         watermarks: playerViewConfig.watermarks,
                         reservedBottomHeight: playerViewConfig.enableCaptions && activeSubtitleTrack != nil
                             ? SubtitleView.reservedBottomBandHeight
                             : 0,
                         labelsAreFrozen: playerObservable.observedStatus != "playing",
+                        watermarkContentRect: Self.calculateVideoRect(
+                            player: viewModel.player,
+                            containerSize: CGSize(width: contentWidth, height: contentHeight)
+                        )
+                    )
+                    
+                    ImageWatermarkOverlayViewRepresentable(
+                        imageWatermarks: playerViewConfig.imageWatermarks,
+                        isControlsVisible: areControlsVisible,
                         watermarkContentRect: Self.calculateVideoRect(
                             player: viewModel.player,
                             containerSize: CGSize(width: contentWidth, height: contentHeight)
@@ -60,7 +70,10 @@ public struct TPStreamPlayerView: View {
                     PlayerControlsView(
                         isFullscreen: $viewModel.isFullScreen,
                         playerViewConfig: playerViewConfig,
-                        activeSubtitleTrack: $activeSubtitleTrack
+                        activeSubtitleTrack: $activeSubtitleTrack,
+                        onControlsVisibilityChanged: { isVisible in
+                            areControlsVisible = isVisible
+                        }
                     )
                     .environmentObject(playerObservable)
                 }
