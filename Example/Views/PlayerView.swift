@@ -48,6 +48,14 @@ struct PlayerView: View {
                             textSize: 14,
                             opacity: 0.6,
                             animation: WatermarkAnimation(type: .random, duration: 4000)
+                        ),
+                        ImageWatermarkConfig(
+                            imageUrl: "https://avatars.githubusercontent.com/u/10137",
+                            width: 50,
+                            height: 50,
+                            x: 100,
+                            y: 100,
+                            opacity: 0.9
                         )
                     ])
                     .build()
@@ -98,6 +106,14 @@ struct PlayerView: View {
                             textSize: 14,
                             opacity: 0.6,
                             animation: WatermarkAnimation(type: .random, duration: 4000)
+                        ),
+                        ImageWatermarkConfig(
+                            imageUrl: "https://avatars.githubusercontent.com/u/10137",
+                            width: 50,
+                            height: 50,
+                            x: 100,
+                            y: 100,
+                            opacity: 0.9
                         )
                     ])
                     .build()
