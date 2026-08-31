@@ -53,8 +53,8 @@ public class TPStreamPlayerViewController: UIViewController {
     public var config = TPStreamPlayerConfiguration(){
         didSet {
             controlsView.playerConfig = config
-            textWatermarkOverlayView.setWatermarks(config.watermarks)
-            imageWatermarkOverlayView.setImageWatermarks(config.imageWatermarks)
+            textWatermarkOverlayView.setWatermarks(config.watermarks.compactMap { $0 as? TextWatermarkConfig })
+            imageWatermarkOverlayView.setImageWatermarks(config.watermarks.compactMap { $0 as? ImageWatermarkConfig })
         }
     }
     private var controlsVisibilityTimer: Timer?

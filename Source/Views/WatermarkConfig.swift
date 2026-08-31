@@ -1,12 +1,19 @@
 import Foundation
 
+/// Base protocol for all watermark configurations.
+public protocol BaseWatermarkConfig {
+    var x: Int64 { get set }
+    var y: Int64 { get set }
+    var opacity: Double { get set }
+}
+
 /// Configuration for displaying a text watermark over video playback.
 ///
 /// Note: The `x` and `y` coordinates are ignored when `.random` animation is used
 /// because both X and Y coordinates are randomized across the full video area.
 /// When `.pingPong` animation is used, the `x` coordinate is ignored because the animation
 /// spans horizontally from edge to edge.
-public struct WatermarkConfig: Equatable {
+public struct TextWatermarkConfig: BaseWatermarkConfig, Equatable {
     public var text: String
     public var x: Int64
     public var y: Int64
@@ -34,6 +41,9 @@ public struct WatermarkConfig: Equatable {
     }
 }
 
+/// Typealias for 100% backward compatibility.
+public typealias WatermarkConfig = TextWatermarkConfig
+
 /// Configuration for watermark animations.
 public struct WatermarkAnimation: Equatable {
     public var type: WatermarkAnimationType
@@ -56,7 +66,7 @@ public enum WatermarkAnimationType: Equatable {
 }
 
 /// Configuration for displaying an image watermark (e.g. instructor avatar or logo) over video playback.
-public struct ImageWatermarkConfig: Equatable {
+public struct ImageWatermarkConfig: BaseWatermarkConfig, Equatable {
     public var imageUrl: String
     public var width: Double
     public var height: Double
@@ -80,4 +90,3 @@ public struct ImageWatermarkConfig: Equatable {
         self.opacity = min(max(opacity, 0.0), 1.0)
     }
 }
-

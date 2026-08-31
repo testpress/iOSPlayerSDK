@@ -39,7 +39,7 @@ public struct TPStreamPlayerView: View {
                     AVPlayerBridge(player: viewModel.player)
                     
                     TextWatermarkOverlayViewRepresentable(
-                        watermarks: playerViewConfig.watermarks,
+                        watermarks: playerViewConfig.watermarks.compactMap { $0 as? TextWatermarkConfig },
                         reservedBottomHeight: playerViewConfig.enableCaptions && activeSubtitleTrack != nil
                             ? SubtitleView.reservedBottomBandHeight
                             : 0,
@@ -51,7 +51,7 @@ public struct TPStreamPlayerView: View {
                     )
                     
                     ImageWatermarkOverlayViewRepresentable(
-                        imageWatermarks: playerViewConfig.imageWatermarks,
+                        imageWatermarks: playerViewConfig.watermarks.compactMap { $0 as? ImageWatermarkConfig },
                         isControlsVisible: areControlsVisible,
                         watermarkContentRect: Self.calculateVideoRect(
                             player: viewModel.player,
