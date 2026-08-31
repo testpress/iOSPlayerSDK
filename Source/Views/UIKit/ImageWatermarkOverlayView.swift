@@ -58,8 +58,6 @@ class ImageWatermarkOverlayView: BaseWatermarkOverlayView {
 // MARK: - ImageWatermarkItemView
 
 private class ImageWatermarkItemView: UIImageView {
-    static let imageCache = NSCache<NSString, UIImage>()
-
     let config: ImageWatermarkConfig
     private var dataTask: URLSessionDataTask?
 
@@ -86,14 +84,13 @@ private class ImageWatermarkItemView: UIImageView {
     }
 
     private func loadImage() {
-        let cacheKey = config.imageUrl as NSString
-        if let cachedImage = Self.imageCache.object(forKey: cacheKey) {
-            self.image = cachedImage
+        let trimmedUrl = config.imageUrl.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedUrl.isEmpty else {
             return
         }
 
-        guard let url = URL(string: config.imageUrl) else {
-            print("[ImageWatermark] Invalid image URL: \(config.imageUrl)")
+        guard let url = URL(string: trimmedUrl) else {
+            print("[ImageWatermark] Invalid image URL: \(trimmedUrl)")
             return
         }
 
@@ -109,8 +106,6 @@ private class ImageWatermarkItemView: UIImageView {
                 print("[ImageWatermark] Could not decode image data from \(url)")
                 return
             }
-
-            Self.imageCache.setObject(downloadedImage, forKey: cacheKey)
 
             DispatchQueue.main.async {
                 self?.image = downloadedImage

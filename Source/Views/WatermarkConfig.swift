@@ -72,19 +72,12 @@ public struct ImageWatermarkConfig: Equatable {
         y: Int64 = 88,
         opacity: Double = 1.0
     ) {
-        precondition(!imageUrl.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, "imageUrl must not be empty")
-        precondition(width > 0, "width must be greater than 0")
-        precondition(height > 0, "height must be greater than 0")
-        precondition((0...100).contains(x), "x must be between 0 and 100")
-        precondition((0...100).contains(y), "y must be between 0 and 100")
-        precondition((0.0...1.0).contains(opacity), "opacity must be between 0.0 and 1.0")
-
         self.imageUrl = imageUrl
-        self.width = width
-        self.height = height
-        self.x = x
-        self.y = y
-        self.opacity = opacity
+        self.width = max(width, 0)
+        self.height = max(height, 0)
+        self.x = min(max(x, 0), 100)
+        self.y = min(max(y, 0), 100)
+        self.opacity = min(max(opacity, 0.0), 1.0)
     }
 }
 
