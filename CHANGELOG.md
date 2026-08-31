@@ -1,4 +1,14 @@
 
+## 1.2.42 - 2026-08-31
+
+
+
+### Features
+
+- Add image watermark overlay support, allowing apps to display remote image watermarks over the video with configurable percentage positioning, size, opacity, caching, and auto-fade on controls toggle (#176)
+
+
+
 ## 1.2.41 - 2026-08-25
 
 
