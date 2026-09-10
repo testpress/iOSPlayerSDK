@@ -92,7 +92,11 @@ public class TPStreamPlayerViewController: UIViewController {
         view.controlsDelegate = self
         view.parentViewController = self
         view.onSubtitleTrackSelected = { [weak self] track in
-            self?.activeSubtitleTrack = track
+            guard let self = self else { return }
+            if self.activeSubtitleTrack != track {
+                self.activeSubtitleTrack = track
+                self.delegate?.subtitleStateChanged(enabled: track != nil, language: track?.language)
+            }
         }
         return view
     }()
@@ -355,8 +359,10 @@ public protocol TPStreamPlayerViewControllerDelegate {
     func willExitFullScreenMode()
     func didExitFullScreenMode()
     func didTapReplay()
+    func subtitleStateChanged(enabled: Bool, language: String?)
 }
 
 public extension TPStreamPlayerViewControllerDelegate {
     func didTapReplay() {}
+    func subtitleStateChanged(enabled: Bool, language: String?) {}
 }

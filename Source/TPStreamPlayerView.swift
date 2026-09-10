@@ -14,6 +14,8 @@ public struct TPStreamPlayerView: View {
     @State private var activeSubtitleTrack: SubtitleTrack?
     @State private var areControlsVisible = false
     private var playerViewConfig: TPStreamPlayerConfiguration
+    public var onSubtitleStateChanged: ((Bool, String?) -> Void)?
+    @State private var hasAppeared = false
     
     public init(player: TPAVPlayer, playerViewConfig: TPStreamPlayerConfiguration = TPStreamPlayerConfigurationBuilder().build()) {
         _viewModel = StateObject(wrappedValue: TPStreamPlayerViewModel(player: player))
@@ -100,6 +102,11 @@ public struct TPStreamPlayerView: View {
                     }
                 }
             }
+            .onChange(of: activeSubtitleTrack) { track in
+                guard hasAppeared || track != nil else { return }
+                onSubtitleStateChanged?(track != nil, track?.language)
+            }
+            .onAppear { hasAppeared = true }
         }
     }
     
