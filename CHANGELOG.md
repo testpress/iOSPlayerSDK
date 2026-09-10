@@ -1,4 +1,13 @@
 
+## 1.2.43 - 2026-09-10
+
+
+### Features
+
+- Expose subtitle state change event (`onSubtitleStateChanged`) in both SwiftUI and UIKit player APIs, allowing host apps to observe when the active subtitle track changes. The callback fires on user-initiated subtitle toggles and `autoSelectFirstSubtitle` selections, but not on the initial nil state.
+
+
+
 ## 1.2.42 - 2026-08-31
 
 
