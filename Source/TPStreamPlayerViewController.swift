@@ -40,7 +40,7 @@ public class TPStreamPlayerViewController: UIViewController {
                 controlsView.selectedSubtitleTrack = activeSubtitleTrack
                 textWatermarkOverlayView.setReservedBottomHeight(subtitleReservedHeight)
             }
-            delegate?.subtitleStateChanged(enabled: activeSubtitleTrack != nil, language: activeSubtitleTrack?.language)
+            delegate?.onSubtitleStateChanged(enabled: activeSubtitleTrack != nil, language: activeSubtitleTrack?.language)
         }
     }
 
@@ -357,10 +357,10 @@ public protocol TPStreamPlayerViewControllerDelegate {
     func willExitFullScreenMode()
     func didExitFullScreenMode()
     func didTapReplay()
-    func subtitleStateChanged(enabled: Bool, language: String?)
+    func onSubtitleStateChanged(enabled: Bool, language: String?)
 }
 
 public extension TPStreamPlayerViewControllerDelegate {
     func didTapReplay() {}
-    func subtitleStateChanged(enabled: Bool, language: String?) {}
+    func onSubtitleStateChanged(enabled: Bool, language: String?) {}
 }
