@@ -34,11 +34,13 @@ public class TPStreamPlayerViewController: UIViewController {
     
     public var activeSubtitleTrack: SubtitleTrack? {
         didSet {
+            guard activeSubtitleTrack != oldValue else { return }
             subtitleView.setTrack(activeSubtitleTrack)
             if isViewLoaded {
                 controlsView.selectedSubtitleTrack = activeSubtitleTrack
                 textWatermarkOverlayView.setReservedBottomHeight(subtitleReservedHeight)
             }
+            delegate?.subtitleStateChanged(enabled: activeSubtitleTrack != nil, language: activeSubtitleTrack?.language)
         }
     }
 
@@ -92,11 +94,7 @@ public class TPStreamPlayerViewController: UIViewController {
         view.controlsDelegate = self
         view.parentViewController = self
         view.onSubtitleTrackSelected = { [weak self] track in
-            guard let self = self else { return }
-            if self.activeSubtitleTrack != track {
-                self.activeSubtitleTrack = track
-                self.delegate?.subtitleStateChanged(enabled: track != nil, language: track?.language)
-            }
+            self?.activeSubtitleTrack = track
         }
         return view
     }()
