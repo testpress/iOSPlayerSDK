@@ -133,5 +133,9 @@ extension PlayerViewController: TPStreamPlayerViewControllerDelegate {
     func didTapReplay() {
         print("didTapReplay")
     }
+    
+    func onSubtitleStateChanged(enabled: Bool, language: String?) {
+        debugPrint("subtitleStateChanged enabled: \(enabled), language: \(language ?? "nil")")
+    }
 }
 
