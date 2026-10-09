@@ -1,22 +1,86 @@
 name: Publish to CocoaPods
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'TPStreamsSDK.podspec'
+      - 'CHANGELOG.md'
   workflow_dispatch:
+
+concurrency:
+  group: publish-cocoapods
+  cancel-in-progress: false
+
+permissions:
+  contents: write
 
 jobs:
   publish:
+    name: Publish Pod & Tag
     runs-on: macos-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from podspec
+        id: version
+        run: |
+          VERSION=$(ruby -e 'puts File.read("TPStreamsSDK.podspec")[/spec\.version\s*=\s*["\x27]([^"\x27]+)/, 1]')
+          if [ -z "$VERSION" ]; then
+            echo "Error: Could not extract version from TPStreamsSDK.podspec" >&2
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Detected version: $VERSION"
+
+      - name: Check git tag
+        id: tag_check
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          git fetch --tags
+          if git rev-parse --verify --quiet "refs/tags/$VERSION"; then
+            echo "Tag $VERSION already exists."
+            if [ "${{ github.event_name }}" = "push" ]; then
+              echo "Push event with already tagged version. Skipping publish."
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "Manual trigger. Proceeding with publish..."
+              echo "skip=false" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "Tag $VERSION does not exist yet. Will create tag and publish."
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create and push Git tag
+        if: steps.tag_check.outputs.skip != 'true'
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          if ! git rev-parse --verify --quiet "refs/tags/$VERSION"; then
+            echo "Creating and pushing tag $VERSION..."
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git tag -a "$VERSION" -m "Release $VERSION"
+            git push origin "refs/tags/$VERSION"
+            sleep 3
+          else
+            echo "Tag $VERSION is already present."
+          fi
 
       - name: Set up CocoaPods
+        if: steps.tag_check.outputs.skip != 'true'
         run: |
           gem install cocoapods
           pod setup
 
       - name: Publish to CocoaPods
+        if: steps.tag_check.outputs.skip != 'true'
         run: pod trunk push TPStreamsSDK.podspec --allow-warnings
         env:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+
