@@ -23,7 +23,7 @@ jobs:
   release:
     name: GitHub Release
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success') }}
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success')
 
     steps:
       - name: Checkout repository
@@ -34,16 +34,18 @@ jobs:
       - name: Determine release version
         id: version
         shell: bash
+        env:
+          INPUT_VERSION: ${{ github.event.inputs.version }}
         run: |
           git fetch --tags
-          if [ -n "${{ github.event.inputs.version }}" ]; then
-            VERSION="${{ github.event.inputs.version }}"
+          if [ -n "$INPUT_VERSION" ]; then
+            VERSION="$INPUT_VERSION"
           else
             VERSION=$(ruby -e 'puts File.read("TPStreamsSDK.podspec")[/spec\.version\s*=\s*["\x27]([^"\x27]+)/, 1]')
           fi
 
-          if [ -z "$VERSION" ]; then
-            echo "Error: Could not determine release version" >&2
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.]+)?$ ]]; then
+            echo "Error: Invalid version format: '$VERSION'" >&2
             exit 1
           fi
 
@@ -73,11 +75,12 @@ jobs:
         if: steps.check_release.outputs.skip != 'true'
         id: changelog
         shell: bash
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
         run: |
-          VERSION="${{ steps.version.outputs.version }}"
           python3 -c "
-          import re, sys
-          v = '${VERSION}'.lstrip('v')
+          import os, re, sys
+          v = os.environ.get('VERSION', '').lstrip('v')
           with open('CHANGELOG.md', 'r', encoding='utf-8') as f:
               content = f.read()
           pattern = rf'^##\s+(?:\[)?v?{re.escape(v)}(?:\])?(?:\s*-\s*[^\n]*)?\n(.*?)(?=\n##\s+|\Z)'
