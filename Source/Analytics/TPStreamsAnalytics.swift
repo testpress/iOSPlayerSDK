@@ -44,6 +44,8 @@ internal final class TPStreamsAnalyticsUploader {
     private var presignedRequestInFlight = false
     private var presignedRequestCompletions: [(Bool) -> Void] = []
     private var pendingUploads: [(Int, (Bool) -> Void)] = []
+    private var queuedUploads: [(Int, (Bool) -> Void)] = []
+    private var uploadInFlight = false
 
     init(orgID: String, assetID: String, visitorID: String, sessionID: String,
          accessToken: String?, userAgent: String) {
@@ -66,7 +68,7 @@ internal final class TPStreamsAnalyticsUploader {
                 self.fetchPresignedURLOnQueue(completion: nil)
                 return
             }
-            self.sendUploadOnQueue(durationSeconds: durationSeconds, completion: completion)
+            self.enqueueUploadOnQueue(durationSeconds: durationSeconds, completion: completion)
         }
     }
 
@@ -111,7 +113,7 @@ internal final class TPStreamsAnalyticsUploader {
                 self.pendingUploads.removeAll()
                 if success {
                     queuedUploads.forEach {
-                        self.sendUploadOnQueue(durationSeconds: $0.0, completion: $0.1)
+                        self.enqueueUploadOnQueue(durationSeconds: $0.0, completion: $0.1)
                     }
                 } else {
                     queuedUploads.forEach { $0.1(false) }
@@ -120,12 +122,26 @@ internal final class TPStreamsAnalyticsUploader {
         }
     }
 
+    private func enqueueUploadOnQueue(durationSeconds: Int, completion: @escaping (Bool) -> Void) {
+        guard presignedUploadURL != nil else {
+            pendingUploads.append((durationSeconds, completion))
+            fetchPresignedURLOnQueue(completion: nil)
+            return
+        }
+        guard !uploadInFlight else {
+            queuedUploads.append((durationSeconds, completion))
+            return
+        }
+        sendUploadOnQueue(durationSeconds: durationSeconds, completion: completion)
+    }
+
     private func sendUploadOnQueue(
         durationSeconds: Int,
         retryAfterForbidden: Bool = true,
         completion: @escaping (Bool) -> Void
     ) {
         guard let uploadURL = presignedUploadURL else { completion(false); return }
+        uploadInFlight = true
         TPStreamsSDK.provider.API.uploadAnalytics(
             uploadURL,
             assetID,
@@ -141,7 +157,7 @@ internal final class TPStreamsAnalyticsUploader {
                 if statusCode == 403 {
                     self.presignedUploadURL = nil
                     guard retryAfterForbidden else {
-                        completion(false)
+                        self.completeUploadOnQueue(success: false, completion: completion)
                         return
                     }
 
@@ -149,7 +165,7 @@ internal final class TPStreamsAnalyticsUploader {
                     // once and retry this same duration so the final release upload is not lost.
                     self.fetchPresignedURLOnQueue { refreshed in
                         guard refreshed else {
-                            completion(false)
+                            self.completeUploadOnQueue(success: false, completion: completion)
                             return
                         }
                         self.sendUploadOnQueue(
@@ -160,9 +176,18 @@ internal final class TPStreamsAnalyticsUploader {
                     }
                     return
                 }
-                completion(success)
+                self.completeUploadOnQueue(success: success, completion: completion)
             }
         }
+    }
+
+    private func completeUploadOnQueue(success: Bool, completion: @escaping (Bool) -> Void) {
+        uploadInFlight = false
+        if !queuedUploads.isEmpty {
+            let nextUpload = queuedUploads.removeFirst()
+            enqueueUploadOnQueue(durationSeconds: nextUpload.0, completion: nextUpload.1)
+        }
+        completion(success)
     }
 }
 
@@ -235,7 +260,12 @@ internal final class TPStreamsAnalyticsTracker {
         if started {
             // Accumulate the time since the last heartbeat before sending the final value.
             stopPlaying()
-            uploadIfNeeded()
+            let seconds = Int(cumulativeDuration)
+            if seconds > 0, seconds > highestUploadedDuration {
+                // Queue the final value independently of the tracker lifecycle. The uploader
+                // serializes it behind any heartbeat or pause upload already in flight.
+                uploader.upload(durationSeconds: seconds) { _ in }
+            }
         }
         invalidateHeartbeatTimer()
         released = true
