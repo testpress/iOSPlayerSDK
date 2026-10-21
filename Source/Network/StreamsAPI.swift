@@ -11,13 +11,17 @@ class StreamsAPI: BaseAPI {
     class override var VIDEO_DETAIL_API: String {
         return "https://app.tpstreams.com/api/v1/%@/assets/%@/?access_token=%@"
     }
-    
+
     class override var DRM_LICENSE_API: String {
         return "https://app.tpstreams.com/api/v1/%@/assets/%@/drm_license/?access_token=%@&drm_type=fairplay&download=%@"
     }
-    
+
     class override var AES_ENCRYPTION_KEY_API: String {
         return "https://app.tpstreams.com/api/v1/%@/assets/%@/aes_key/"
+    }
+
+    class override var ANALYTICS_PRESIGNED_URL_API: String {
+        return "https://app.tpstreams.com/api/v1/%@/assets/%@/presigned_urls/"
     }
     
     override class var parser: APIParser {

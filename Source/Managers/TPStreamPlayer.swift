@@ -42,6 +42,7 @@ class TPStreamPlayer: NSObject {
     private var didClearLastWatchedPosition = false
     private var lastWatchedPositionSyncTimer: Timer?
     private let userId: String?
+    private let analyticsTracker: TPStreamsAnalyticsTracker?
 
     /// `true` when the SDK can synchronize and restore the user's last watched position.
     /// The resume state is synced using the provided `userId` and the asset ID,
@@ -66,6 +67,7 @@ class TPStreamPlayer: NSObject {
     init(player: TPAVPlayer, userId: String? = nil) {
         self.player = player
         self.userId = userId
+        self.analyticsTracker = TPStreamsAnalyticsTracker(player: player, accessToken: player.accessToken)
         super.init()
         self.observePlaybackStatusChange()
         self.observePlayerCurrentTimeChange()
@@ -77,6 +79,7 @@ class TPStreamPlayer: NSObject {
     deinit {
         updateLastWatchedPosition()
         stopLastWatchedPositionSync()
+        analyticsTracker?.finishSession()
     }
     
     private func observeCurrentItemChanges() {
@@ -170,6 +173,7 @@ class TPStreamPlayer: NSObject {
     
     @objc private func playerDidFinishPlaying(){
         status = "ended"
+        analyticsTracker?.playbackDidChange(to: "ended")
         deleteLastWatchedPosition()
     }
     
@@ -177,9 +181,11 @@ class TPStreamPlayer: NSObject {
         switch player.timeControlStatus {
         case .playing:
             status = "playing"
+            analyticsTracker?.playbackDidChange(to: "playing")
         case .paused:
             if status == "ended" {return}
             status = "paused"
+            analyticsTracker?.playbackDidChange(to: "paused")
             updateLastWatchedPosition()
         case .waitingToPlayAtSpecifiedRate:
             break
@@ -193,10 +199,12 @@ class TPStreamPlayer: NSObject {
         case #keyPath(AVPlayerItem.isPlaybackBufferEmpty):
             if playerItem.isPlaybackBufferEmpty {
                 status = "buffering"
+                analyticsTracker?.playbackDidChange(to: "buffering")
             }
         case #keyPath(AVPlayerItem.isPlaybackLikelyToKeepUp):
             if playerItem.isPlaybackLikelyToKeepUp {
                 status = self.player.timeControlStatus == .playing ? "playing" : "paused"
+                analyticsTracker?.playbackDidChange(to: status)
             }
         default:
             break
@@ -207,9 +215,11 @@ class TPStreamPlayer: NSObject {
         switch player.status {
         case .readyToPlay:
             status = "ready"
+            analyticsTracker?.start()
             restoreLastWatchedPosition()
         case .failed:
             status = "failed"
+            analyticsTracker?.finishSession()
         case .unknown:
             break
         @unknown default:
@@ -321,6 +331,7 @@ class TPStreamPlayer: NSObject {
         player?.seek(to: seekTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero){ [weak self] _ in
             guard let self = self else { return }
             self.isSeeking = false
+            self.analyticsTracker?.seeked()
             self.updateLastWatchedPosition()
         }
     }

@@ -18,6 +18,9 @@ class BaseAPI {
     class var AES_ENCRYPTION_KEY_API: String {
         fatalError("AES_ENCRYPTION_KEY_API must be implemented by subclasses.")
     }
+    class var ANALYTICS_PRESIGNED_URL_API: String {
+        fatalError("ANALYTICS_PRESIGNED_URL_API must be implemented by subclasses.")
+    }
     class var parser: APIParser {
         fatalError("parser must be implemented by subclasses.")
     }
@@ -93,6 +96,95 @@ class BaseAPI {
                 completion(nil, TPStreamPlayerError.failedToFetchLicenseKey)
             }
             
+        }
+    }
+
+    static func fetchAnalyticsPresignedURL(
+        _ orgID: String,
+        _ assetID: String,
+        _ visitorID: String,
+        _ sessionID: String,
+        _ accessToken: String?,
+        _ userAgent: String,
+        completion: @escaping (TPStreamsAnalyticsPresignedResponse?) -> Void
+    ) {
+        guard TPStreamsSDK.provider == .tpstreams,
+              var components = URLComponents(string: String(format: ANALYTICS_PRESIGNED_URL_API, orgID, assetID)) else {
+            completion(nil)
+            return
+        }
+
+        var queryItems = [
+            URLQueryItem(name: "visitorId", value: visitorID),
+            URLQueryItem(name: "sessionId", value: sessionID)
+        ]
+        if let accessToken = accessToken, !accessToken.isEmpty {
+            queryItems.append(URLQueryItem(name: "access_token", value: accessToken))
+        }
+        components.queryItems = queryItems
+
+        guard let url = components.url else {
+            completion(nil)
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = Data()
+        request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
+        if let authToken = TPStreamsSDK.authToken, !authToken.isEmpty {
+            request.setValue("JWT \(authToken)", forHTTPHeaderField: "Authorization")
+        }
+
+        AF.request(request).responseData { response in
+            guard let statusCode = response.response?.statusCode,
+                  (200..<300).contains(statusCode),
+                  let data = response.data else {
+                completion(nil)
+                return
+            }
+            completion(StreamsAPIParser.parseAnalyticsPresignedResponse(data: data))
+        }
+    }
+
+    static func uploadAnalytics(
+        _ putURL: URL,
+        _ assetID: String,
+        _ orgID: String,
+        _ visitorID: String,
+        _ sessionID: String,
+        _ durationSeconds: Int,
+        _ userAgent: String,
+        _ ipAddress: String?,
+        _ location: String?,
+        completion: @escaping (Bool, Int?) -> Void
+    ) {
+        guard TPStreamsSDK.provider == .tpstreams else {
+            completion(false, nil)
+            return
+        }
+
+        let payload: [String: Any] = [
+            "assetId": assetID,
+            "organization": orgID,
+            "visitor_id": visitorID,
+            "session_id": sessionID,
+            "duration": durationSeconds,
+            "user_agent": userAgent,
+            "time_stamp": ISO8601DateFormatter().string(from: Date()),
+            "ip_address": ipAddress ?? "",
+            "location": location ?? ""
+        ]
+
+        AF.request(
+            putURL,
+            method: .put,
+            parameters: payload,
+            encoding: JSONEncoding.default,
+            headers: [.contentType("application/json")]
+        ).response { response in
+            let statusCode = response.response?.statusCode
+            completion(statusCode.map { (200..<300).contains($0) } ?? false, statusCode)
         }
     }
     
