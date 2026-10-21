@@ -3,15 +3,15 @@ import UIKit
 internal enum TPStreamsAnalyticsIdentity {
     private static let service = "com.tpstreams.analytics"
     private static let visitorAccount = "visitor_id"
+    private static let generatedVisitorID = UUID().uuidString.replacingOccurrences(of: "-", with: "")
 
     static var visitorID: String {
         if let data = KeychainUtil.get(service: service, account: visitorAccount),
            let value = String(data: data, encoding: .utf8), !value.isEmpty {
             return value
         }
-        let value = UUID().uuidString.replacingOccurrences(of: "-", with: "")
-        KeychainUtil.save(data: Data(value.utf8), service: service, account: visitorAccount)
-        return value
+        KeychainUtil.save(data: Data(generatedVisitorID.utf8), service: service, account: visitorAccount)
+        return generatedVisitorID
     }
 
     static func sessionID() -> String {
@@ -60,8 +60,7 @@ internal final class TPStreamsAnalyticsUploader {
     }
 
     func upload(durationSeconds: Int, completion: @escaping (Bool) -> Void) {
-        stateQueue.async { [weak self] in
-            guard let self = self else { return }
+        stateQueue.async { [self] in
             guard self.presignedUploadURL != nil else {
                 self.pendingUploads.append((durationSeconds, completion))
                 self.fetchPresignedURLOnQueue(completion: nil)
@@ -72,8 +71,8 @@ internal final class TPStreamsAnalyticsUploader {
     }
 
     private func fetchPresignedURL(completion: @escaping (Bool) -> Void) {
-        stateQueue.async { [weak self] in
-            self?.fetchPresignedURLOnQueue(completion: completion)
+        stateQueue.async { [self] in
+            self.fetchPresignedURLOnQueue(completion: completion)
         }
     }
 
@@ -121,7 +120,11 @@ internal final class TPStreamsAnalyticsUploader {
         }
     }
 
-    private func sendUploadOnQueue(durationSeconds: Int, completion: @escaping (Bool) -> Void) {
+    private func sendUploadOnQueue(
+        durationSeconds: Int,
+        retryAfterForbidden: Bool = true,
+        completion: @escaping (Bool) -> Void
+    ) {
         guard let uploadURL = presignedUploadURL else { completion(false); return }
         TPStreamsSDK.provider.API.uploadAnalytics(
             uploadURL,
@@ -135,7 +138,28 @@ internal final class TPStreamsAnalyticsUploader {
             location
         ) { [self] success, statusCode in
             self.stateQueue.async {
-                if statusCode == 403 { self.presignedUploadURL = nil }
+                if statusCode == 403 {
+                    self.presignedUploadURL = nil
+                    guard retryAfterForbidden else {
+                        completion(false)
+                        return
+                    }
+
+                    // A presigned URL can expire while a session is still active. Refresh it
+                    // once and retry this same duration so the final release upload is not lost.
+                    self.fetchPresignedURLOnQueue { refreshed in
+                        guard refreshed else {
+                            completion(false)
+                            return
+                        }
+                        self.sendUploadOnQueue(
+                            durationSeconds: durationSeconds,
+                            retryAfterForbidden: false,
+                            completion: completion
+                        )
+                    }
+                    return
+                }
                 completion(success)
             }
         }
@@ -213,8 +237,7 @@ internal final class TPStreamsAnalyticsTracker {
             stopPlaying()
             uploadIfNeeded()
         }
-        heartbeatTimer?.invalidate()
-        heartbeatTimer = nil
+        invalidateHeartbeatTimer()
         released = true
     }
 
@@ -222,7 +245,7 @@ internal final class TPStreamsAnalyticsTracker {
         guard !isPlaying else { return }
         isPlaying = true
         playingStartedAt = ProcessInfo.processInfo.systemUptime
-        heartbeatTimer?.invalidate()
+        invalidateHeartbeatTimer()
         let timer = Timer(timeInterval: heartbeatInterval, repeats: true) { [weak self] _ in
             self?.uploadIfNeeded()
         }
@@ -235,8 +258,19 @@ internal final class TPStreamsAnalyticsTracker {
         accumulatePlayingTime()
         isPlaying = false
         playingStartedAt = nil
-        heartbeatTimer?.invalidate()
+        invalidateHeartbeatTimer()
+    }
+
+    private func invalidateHeartbeatTimer() {
+        guard let timer = heartbeatTimer else { return }
         heartbeatTimer = nil
+        if Thread.isMainThread {
+            timer.invalidate()
+        } else {
+            DispatchQueue.main.async {
+                timer.invalidate()
+            }
+        }
     }
 
     private func accumulatePlayingTime() {
