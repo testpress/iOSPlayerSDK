@@ -67,7 +67,18 @@ class TPStreamPlayer: NSObject {
     init(player: TPAVPlayer, userId: String? = nil) {
         self.player = player
         self.userId = userId
-        self.analyticsTracker = TPStreamsAnalyticsTracker(player: player, accessToken: player.accessToken)
+        if TPStreamsSDK.provider == .tpstreams,
+           !player.isPlaybackOffline,
+           let orgID = TPStreamsSDK.orgCode,
+           let assetID = player.assetID {
+            self.analyticsTracker = TPStreamsAnalyticsTracker(
+                orgID: orgID,
+                assetID: assetID,
+                accessToken: player.accessToken
+            )
+        } else {
+            self.analyticsTracker = nil
+        }
         super.init()
         self.observePlaybackStatusChange()
         self.observePlayerCurrentTimeChange()

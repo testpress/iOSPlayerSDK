@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 import Alamofire
 
 class BaseAPI {
@@ -36,6 +37,14 @@ class BaseAPI {
             return "\(prefix) \(systemUserAgent)"
         }
         return systemUserAgent
+    }
+
+    private static var analyticsUserAgent: String {
+        let systemVersion = UIDevice.current.systemVersion
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return "Mozilla/5.0 (iPad; CPU OS \(systemVersion) like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15 TPStreamsIOSPlayer/1.0"
+        }
+        return "Mozilla/5.0 (iPhone; CPU iPhone OS \(systemVersion) like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1 TPStreamsIOSPlayer/1.0"
     }
     
     static func getAsset(_ assetID: String, _ accessToken: String?, completion: @escaping (Asset?, Error?) -> Void) {
@@ -105,7 +114,6 @@ class BaseAPI {
         _ visitorID: String,
         _ sessionID: String,
         _ accessToken: String?,
-        _ userAgent: String,
         completion: @escaping (TPStreamsAnalyticsPresignedResponse?) -> Void
     ) {
         guard TPStreamsSDK.provider == .tpstreams,
@@ -131,7 +139,7 @@ class BaseAPI {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.httpBody = Data()
-        request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
+        request.setValue(analyticsUserAgent, forHTTPHeaderField: "User-Agent")
         if let authToken = TPStreamsSDK.authToken, !authToken.isEmpty {
             request.setValue("JWT \(authToken)", forHTTPHeaderField: "Authorization")
         }
@@ -154,7 +162,6 @@ class BaseAPI {
         _ visitorID: String,
         _ sessionID: String,
         _ durationSeconds: Int,
-        _ userAgent: String,
         _ ipAddress: String?,
         _ location: String?,
         completion: @escaping (Bool, Int?) -> Void
@@ -170,7 +177,7 @@ class BaseAPI {
             "visitor_id": visitorID,
             "session_id": sessionID,
             "duration": durationSeconds,
-            "user_agent": userAgent,
+            "user_agent": analyticsUserAgent,
             "time_stamp": ISO8601DateFormatter().string(from: Date()),
             "ip_address": ipAddress ?? "",
             "location": location ?? ""

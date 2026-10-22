@@ -1,4 +1,4 @@
-import UIKit
+import Foundation
 
 internal enum TPStreamsAnalyticsIdentity {
     private static let service = "com.tpstreams.analytics"
@@ -19,23 +19,12 @@ internal enum TPStreamsAnalyticsIdentity {
     }
 }
 
-internal enum TPStreamsAnalyticsUserAgent {
-    static var value: String {
-        let systemVersion = UIDevice.current.systemVersion
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            return "Mozilla/5.0 (iPad; CPU OS \(systemVersion) like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15 TPStreamsIOSPlayer/1.0"
-        }
-        return "Mozilla/5.0 (iPhone; CPU iPhone OS \(systemVersion) like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1 TPStreamsIOSPlayer/1.0"
-    }
-}
-
 internal final class TPStreamsAnalyticsUploader {
     private let orgID: String
     private let assetID: String
     private let visitorID: String
     private let sessionID: String
     private let accessToken: String?
-    private let userAgent: String
 
     private var presignedUploadURL: URL?
     private var ipAddress: String?
@@ -48,13 +37,12 @@ internal final class TPStreamsAnalyticsUploader {
     private var uploadInFlight = false
 
     init(orgID: String, assetID: String, visitorID: String, sessionID: String,
-         accessToken: String?, userAgent: String) {
+         accessToken: String?) {
         self.orgID = orgID
         self.assetID = assetID
         self.visitorID = visitorID
         self.sessionID = sessionID
         self.accessToken = accessToken
-        self.userAgent = userAgent
     }
 
     func start(completion: @escaping () -> Void) {
@@ -90,8 +78,7 @@ internal final class TPStreamsAnalyticsUploader {
             assetID,
             visitorID,
             sessionID,
-            accessToken,
-            userAgent
+            accessToken
         ) { [self] value in
             self.stateQueue.async {
                 let success: Bool
@@ -149,7 +136,6 @@ internal final class TPStreamsAnalyticsUploader {
             visitorID,
             sessionID,
             durationSeconds,
-            userAgent,
             ipAddress,
             location
         ) { [self] success, statusCode in
@@ -205,17 +191,12 @@ internal final class TPStreamsAnalyticsTracker {
     private var uploadInFlight = false
     private var uploadPending = false
 
-    init?(player: TPAVPlayer, accessToken: String?) {
-        guard TPStreamsSDK.provider == .tpstreams,
-              !player.isPlaybackOffline,
-              let orgID = TPStreamsSDK.orgCode,
-              let assetID = player.assetID else { return nil }
+    init(orgID: String, assetID: String, accessToken: String?) {
         uploader = TPStreamsAnalyticsUploader(
             orgID: orgID, assetID: assetID,
             visitorID: TPStreamsAnalyticsIdentity.visitorID,
             sessionID: TPStreamsAnalyticsIdentity.sessionID(),
-            accessToken: accessToken,
-            userAgent: TPStreamsAnalyticsUserAgent.value
+            accessToken: accessToken
         )
     }
 
