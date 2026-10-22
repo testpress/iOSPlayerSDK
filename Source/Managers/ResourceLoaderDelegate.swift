@@ -89,12 +89,18 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
     
     private func setEncryptionKeyResponse(for loadingRequest: AVAssetResourceLoadingRequest, data: Data) {
         let allowedTypes = loadingRequest.contentInformationRequest?.allowedContentTypes
-        let responseContentType = allowedTypes?.contains("application/octet-stream") == true
-            ? "application/octet-stream"
-            : nil
+        let responseContentType: String? = {
+            guard let allowedTypes else {
+                return "application/octet-stream"
+            }
 
-        if let allowedTypes {
-            SentrySDK.configureScope { scope in
+            return allowedTypes.contains("application/octet-stream")
+                ? "application/octet-stream"
+                : nil
+        }()
+
+        if let allowedTypes, !allowedTypes.contains("application/octet-stream") {
+            SentrySDK.capture(message: "TPStreamsSDK AES key content type not allowed") { scope in
                 scope.setTag(value: assetId ?? "unknown", key: "resource_loader_asset_id")
                 scope.setContext(value: [
                     "allowed_content_types": allowedTypes,
@@ -110,7 +116,7 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
             // Only declare a content type when AVFoundation explicitly accepts it.
             // Otherwise, nil is valid and avoids an allowed-content-type mismatch.
             info.contentType = responseContentType
-            info.isByteRangeAccessSupported = false
+            info.isByteRangeAccessSupported = true
             info.contentLength = Int64(data.count)
         }
         loadingRequest.dataRequest?.respond(with: data)
