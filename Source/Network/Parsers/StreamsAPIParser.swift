@@ -59,4 +59,18 @@ class StreamsAPIParser: APIParser {
    
         return LiveStream(status: status, hlsUrl: hlsUrl, transcodeRecordedVideo: transcodeRecordedVideo, chatEmbedUrl: chatEmbedUrl, noticeMessage: noticeMessage, enableDRM: enableDRM)
     }
+
+    static func parseAnalyticsPresignedResponse(data: Data) -> TPStreamsAnalyticsPresignedResponse? {
+        guard let response = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let urlString = response["presigned_put_url"] as? String,
+              let putURL = URL(string: urlString) else {
+            return nil
+        }
+
+        return TPStreamsAnalyticsPresignedResponse(
+            presignedUploadURL: putURL,
+            ipAddress: response["ip_address"] as? String,
+            location: response["location"] as? String
+        )
+    }
 }
