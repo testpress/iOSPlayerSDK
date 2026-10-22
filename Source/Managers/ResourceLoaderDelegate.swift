@@ -7,6 +7,7 @@
 
 import Foundation
 import AVFoundation
+import Sentry
 
 class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
     let accessToken: String?
@@ -87,9 +88,29 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
     }
     
     private func setEncryptionKeyResponse(for loadingRequest: AVAssetResourceLoadingRequest, data: Data) {
+        let allowedTypes = loadingRequest.contentInformationRequest?.allowedContentTypes
+        let responseContentType = allowedTypes?.contains("application/octet-stream") == true
+            ? "application/octet-stream"
+            : nil
+
+        if let allowedTypes {
+            SentrySDK.configureScope { scope in
+                scope.setTag(value: assetId ?? "unknown", key: "resource_loader_asset_id")
+                scope.setContext(value: [
+                    "allowed_content_types": allowedTypes,
+                    "response_content_type": responseContentType ?? "nil",
+                    "request_scheme": loadingRequest.request.url?.scheme ?? "nil",
+                    "offline_playback": isPlaybackOffline,
+                    "key_length": data.count
+                ], key: "TPStreamsSDK Resource Loader")
+            }
+        }
+
         if let info = loadingRequest.contentInformationRequest {
-            info.contentType = "application/octet-stream"
-            info.isByteRangeAccessSupported = true
+            // Only declare a content type when AVFoundation explicitly accepts it.
+            // Otherwise, nil is valid and avoids an allowed-content-type mismatch.
+            info.contentType = responseContentType
+            info.isByteRangeAccessSupported = false
             info.contentLength = Int64(data.count)
         }
         loadingRequest.dataRequest?.respond(with: data)
