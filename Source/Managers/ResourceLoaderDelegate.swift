@@ -7,6 +7,7 @@
 
 import Foundation
 import AVFoundation
+import Sentry
 
 class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
     let accessToken: String?
@@ -87,8 +88,44 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
     }
     
     private func setEncryptionKeyResponse(for loadingRequest: AVAssetResourceLoadingRequest, data: Data) {
+        let allowedTypes = loadingRequest.contentInformationRequest?.allowedContentTypes
+        let shouldAttachDiagnostics = allowedTypes?.contains("application/octet-stream") == false
+        let responseContentType: String? = {
+            guard let allowedTypes else {
+                return "application/octet-stream"
+            }
+
+            return allowedTypes.contains("application/octet-stream")
+                ? "application/octet-stream"
+                : nil
+        }()
+
+        if shouldAttachDiagnostics, let allowedTypes {
+            SentrySDK.configureScope { scope in
+                scope.setTag(value: assetId ?? "unknown", key: "resource_loader_asset_id")
+                scope.setContext(value: [
+                    "allowed_content_types": allowedTypes,
+                    "response_content_type": responseContentType ?? "nil",
+                    "request_scheme": loadingRequest.request.url?.scheme ?? "nil",
+                    "offline_playback": isPlaybackOffline,
+                    "key_length": data.count
+                ], key: "TPStreamsSDK Resource Loader")
+            }
+        }
+
+        defer {
+            guard shouldAttachDiagnostics else { return }
+
+            SentrySDK.configureScope { scope in
+                scope.removeTag(key: "resource_loader_asset_id")
+                scope.removeContext(key: "TPStreamsSDK Resource Loader")
+            }
+        }
+
         if let info = loadingRequest.contentInformationRequest {
-            info.contentType = "application/octet-stream"
+            // Only declare a content type when AVFoundation explicitly accepts it.
+            // Otherwise, nil is valid and avoids an allowed-content-type mismatch.
+            info.contentType = responseContentType
             info.isByteRangeAccessSupported = true
             info.contentLength = Int64(data.count)
         }
