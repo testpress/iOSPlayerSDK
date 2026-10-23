@@ -1,4 +1,10 @@
 
+## 1.2.45 - 2026-10-23
+
+### Bug Fixes
+
+- Fix CocoaPods validation failures in the resource loader during SDK distribution
+
 ## 1.2.44 - 2026-10-23
 
 
