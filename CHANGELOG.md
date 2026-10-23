@@ -1,20 +1,13 @@
 
 ## 1.2.45 - 2026-10-23
 
-### Bug Fixes
-
-- Fix CocoaPods validation failures in the resource loader during SDK distribution
-
-## 1.2.44 - 2026-10-23
-
-
 ### Features
 
 - Add TPStreams analytics playback tracking for iOS, including playback events, stream metadata, and periodic progress updates
 
 
 ### Bug Fixes
-
+- Fix CocoaPods validation failures in the resource loader during SDK distribution
 - Fix AES-encrypted videos failing to play on some iPad devices
 
 
