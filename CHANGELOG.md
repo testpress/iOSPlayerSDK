@@ -1,4 +1,17 @@
 
+## 1.2.44 - 2026-10-23
+
+
+### Features
+
+- Add TPStreams analytics playback tracking for iOS, including playback events, stream metadata, and periodic progress updates
+
+
+### Bug Fixes
+
+- Fix AES-encrypted videos failing to play on some iPad devices
+
+
 ## 1.2.43 - 2026-09-10
 
 
