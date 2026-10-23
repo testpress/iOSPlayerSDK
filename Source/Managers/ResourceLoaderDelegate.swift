@@ -102,23 +102,23 @@ class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate {
 
         if shouldAttachDiagnostics, let allowedTypes {
             SentrySDK.configureScope { scope in
-                scope.setTag(value: assetId ?? "unknown", key: "resource_loader_asset_id")
+                scope.setTag(value: self.assetId ?? "unknown", key: "resource_loader_asset_id")
                 scope.setContext(value: [
                     "allowed_content_types": allowedTypes,
                     "response_content_type": responseContentType ?? "nil",
                     "request_scheme": loadingRequest.request.url?.scheme ?? "nil",
-                    "offline_playback": isPlaybackOffline,
+                    "offline_playback": self.isPlaybackOffline,
                     "key_length": data.count
                 ], key: "TPStreamsSDK Resource Loader")
             }
         }
 
         defer {
-            guard shouldAttachDiagnostics else { return }
-
-            SentrySDK.configureScope { scope in
-                scope.removeTag(key: "resource_loader_asset_id")
-                scope.removeContext(key: "TPStreamsSDK Resource Loader")
+            if shouldAttachDiagnostics {
+                SentrySDK.configureScope { scope in
+                    scope.removeTag(key: "resource_loader_asset_id")
+                    scope.removeContext(key: "TPStreamsSDK Resource Loader")
+                }
             }
         }
 
