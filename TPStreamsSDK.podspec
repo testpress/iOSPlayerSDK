@@ -6,7 +6,7 @@ Pod::Spec.new do |spec|
   spec.homepage     = "https://developer.tpstreams.com/docs/mobile-sdk/ios-native-sdk/getting-started"
   spec.license      = { :type => "Apache License", :file => "LICENSE" }
   spec.author             = { "hari-testpress" => "hari@testpress.in" }
-  spec.ios.deployment_target = "12.0"
+  spec.ios.deployment_target = "15.0"
   spec.swift_versions = '5.0'
   spec.source       = { :git => "https://github.com/testpress/iOSPlayerSDK.git", :tag => spec.version }
   spec.source_files  = "Source/**/*.{swift,plist}"
@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   spec.dependency 'Alamofire', '~> 5.9.0'
   spec.dependency 'M3U8Kit', '~> 1.2.0'
   spec.dependency 'ReachabilitySwift', '~> 5.2.2'
-  spec.dependency 'RealmSwift', '~> 20.0.4'
+  spec.dependency 'RealmSwift', '~> 20.0.5'
   spec.dependency 'SwiftSubtitles', '1.8.1'
 
   spec.pod_target_xcconfig = {

@@ -17,7 +17,6 @@
 		0374E3702C1AD23100CE9CF2 /* StreamsAPIParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0374E36F2C1AD23100CE9CF2 /* StreamsAPIParser.swift */; };
 		0374E3722C1AD2A200CE9CF2 /* TestpressAPIParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0374E3712C1AD2A200CE9CF2 /* TestpressAPIParser.swift */; };
 		0374E3742C1B159A00CE9CF2 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0374E3732C1B159A00CE9CF2 /* Video.swift */; };
-		A1B2C3D82E5F678900112233 /* TPStreamsAnalyticsPresignedResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D92E5F678900112233 /* TPStreamsAnalyticsPresignedResponse.swift */; };
 		0374E3762C1B15C200CE9CF2 /* LiveStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0374E3752C1B15C200CE9CF2 /* LiveStream.swift */; };
 		0374E3782C1B26EC00CE9CF2 /* NoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0374E3772C1B26EC00CE9CF2 /* NoticeView.swift */; };
 		0377C40E2A2B1C7300F7E58F /* BaseAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0377C40D2A2B1C7300F7E58F /* BaseAPI.swift */; };
@@ -28,7 +27,6 @@
 		0394CA312B5E5529006BED3B /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = 0394CA302B5E5529006BED3B /* Reachability */; };
 		0397C4872C1C630600D701AA /* TPStreamPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0397C4862C1C630600D701AA /* TPStreamPlayerViewModel.swift */; };
 		03B8090A2A2DF8A000AB3D03 /* TPStreamPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B809092A2DF8A000AB3D03 /* TPStreamPlayer.swift */; };
-		A1B2C3D42E5F678900112233 /* TPStreamsAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D32E5F678900112233 /* TPStreamsAnalytics.swift */; };
 		03B8090C2A2DF9A200AB3D03 /* PlayerControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B8090B2A2DF9A200AB3D03 /* PlayerControlsView.swift */; };
 		03B8090E2A2DFC0F00AB3D03 /* TPStreamsSDKAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B8090D2A2DFC0F00AB3D03 /* TPStreamsSDKAssets.xcassets */; };
 		03B8FD902A690CAA00DAB7AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B8FD8F2A690CAA00DAB7AE /* AppDelegate.swift */; };
@@ -50,7 +48,6 @@
 		03CC86682AE142FF002F5D28 /* ResourceLoaderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CC86672AE142FF002F5D28 /* ResourceLoaderDelegate.swift */; };
 		03CE75002A7946A800B84304 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CE74FF2A7946A800B84304 /* Time.swift */; };
 		03CE75022A7A337B00B84304 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CE75012A7A337B00B84304 /* UIView.swift */; };
-		70B85460303D9F3E00353310 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B8545F303D9F3E00353310 /* UIColor.swift */; };
 		03D7F4252C21C64D00DF3597 /* LiveIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D7F4242C21C64D00DF3597 /* LiveIndicatorView.swift */; };
 		03D7F4282C22C4F900DF3597 /* PlaybackSpeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D7F4272C22C4F900DF3597 /* PlaybackSpeed.swift */; };
 		2A9F8C1E5B6D7F0A3C4E5D6B /* TpstreamsAssetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4E7A9B2D5F8C0A3B6E9D2F /* TpstreamsAssetData.swift */; };
@@ -68,6 +65,7 @@
 		2DD12A212D4CF75400272433 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D92E48F22CB0226A00B1FAC3 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		2DF3CE142FED6494001872ED /* SubtitleTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF3CE132FED6494001872ED /* SubtitleTextView.swift */; };
 		4F02A7FA872249B68023A541 /* SubtitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F02A7FA872249B68023A540 /* SubtitleView.swift */; };
+		70B85460303D9F3E00353310 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B8545F303D9F3E00353310 /* UIColor.swift */; };
 		70D42E0B2E6075F3002AC32C /* AnyRealmValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D42E0A2E6075F3002AC32C /* AnyRealmValue.swift */; };
 		8E6389BC2A2724D000306FA4 /* TPStreamPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389BB2A2724D000306FA4 /* TPStreamPlayerView.swift */; };
 		8E6389C42A27277D00306FA4 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6389C32A27277D00306FA4 /* ExampleApp.swift */; };
@@ -85,6 +83,8 @@
 		8EDE99AF2A2643B000E43EA9 /* TPStreamsSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EDE99A42A2643B000E43EA9 /* TPStreamsSDK.framework */; };
 		8EDE99B42A2643B000E43EA9 /* iOSPlayerSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */; };
 		8EDE99B52A2643B000E43EA9 /* iOSPlayerSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 8EDE99A72A2643B000E43EA9 /* iOSPlayerSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A1B2C3D42E5F678900112233 /* TPStreamsAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D32E5F678900112233 /* TPStreamsAnalytics.swift */; };
+		A1B2C3D82E5F678900112233 /* TPStreamsAnalyticsPresignedResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D92E5F678900112233 /* TPStreamsAnalyticsPresignedResponse.swift */; };
 		D91453032CC68A2C009E416C /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = D91453022CC68A2C009E416C /* Time.swift */; };
 		D927AF262CC635F9004600ED /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D927AF252CC635F9004600ED /* MainViewController.swift */; };
 		D92AD0D42CC6665400C15694 /* DownloadListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92AD0D32CC6665400C15694 /* DownloadListViewController.swift */; };
@@ -184,7 +184,6 @@
 		0374E36F2C1AD23100CE9CF2 /* StreamsAPIParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamsAPIParser.swift; sourceTree = "<group>"; };
 		0374E3712C1AD2A200CE9CF2 /* TestpressAPIParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestpressAPIParser.swift; sourceTree = "<group>"; };
 		0374E3732C1B159A00CE9CF2 /* Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
-		A1B2C3D92E5F678900112233 /* TPStreamsAnalyticsPresignedResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsAnalyticsPresignedResponse.swift; sourceTree = "<group>"; };
 		0374E3752C1B15C200CE9CF2 /* LiveStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveStream.swift; sourceTree = "<group>"; };
 		0374E3772C1B26EC00CE9CF2 /* NoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeView.swift; sourceTree = "<group>"; };
 		0377C40D2A2B1C7300F7E58F /* BaseAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAPI.swift; sourceTree = "<group>"; };
@@ -194,7 +193,6 @@
 		03913C472A850BF9002E7E0C /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
 		0397C4862C1C630600D701AA /* TPStreamPlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayerViewModel.swift; sourceTree = "<group>"; };
 		03B809092A2DF8A000AB3D03 /* TPStreamPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamPlayer.swift; sourceTree = "<group>"; };
-		A1B2C3D32E5F678900112233 /* TPStreamsAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsAnalytics.swift; sourceTree = "<group>"; };
 		03B8090B2A2DF9A200AB3D03 /* PlayerControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlsView.swift; sourceTree = "<group>"; };
 		03B8090D2A2DFC0F00AB3D03 /* TPStreamsSDKAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TPStreamsSDKAssets.xcassets; sourceTree = "<group>"; };
 		03B8FD8D2A690CAA00DAB7AE /* StoryboardExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StoryboardExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -247,6 +245,8 @@
 		8EDE99A72A2643B000E43EA9 /* iOSPlayerSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = iOSPlayerSDK.h; sourceTree = "<group>"; };
 		8EDE99AE2A2643B000E43EA9 /* iOSPlayerSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSPlayerSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EDE99B32A2643B000E43EA9 /* iOSPlayerSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSPlayerSDKTests.swift; sourceTree = "<group>"; };
+		A1B2C3D32E5F678900112233 /* TPStreamsAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsAnalytics.swift; sourceTree = "<group>"; };
+		A1B2C3D92E5F678900112233 /* TPStreamsAnalyticsPresignedResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPStreamsAnalyticsPresignedResponse.swift; sourceTree = "<group>"; };
 		D904B1DD2B3C5BAC00A7E26C /* TPStreamsSDK.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TPStreamsSDK.xctestplan; sourceTree = "<group>"; };
 		D91453022CC68A2C009E416C /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		D927AF252CC635F9004600ED /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -466,14 +466,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		A1B2C3D22E5F678900112233 /* Analytics */ = {
-			isa = PBXGroup;
-			children = (
-				A1B2C3D32E5F678900112233 /* TPStreamsAnalytics.swift */,
-			);
-			path = Analytics;
-			sourceTree = "<group>";
-		};
 		8E6389E02A275A2700306FA4 /* Network */ = {
 			isa = PBXGroup;
 			children = (
@@ -556,6 +548,14 @@
 				D9BCDC252CB3F51E009FF2AB /* TPStreamsDownloadManagerTests.swift */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		A1B2C3D22E5F678900112233 /* Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D32E5F678900112233 /* TPStreamsAnalytics.swift */,
+			);
+			path = Analytics;
 			sourceTree = "<group>";
 		};
 		D91453012CC68A18009E416C /* Utils */ = {
@@ -955,7 +955,7 @@
 				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -985,7 +985,7 @@
 				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1016,7 +1016,7 @@
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1047,7 +1047,7 @@
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1198,7 +1198,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1233,7 +1233,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1385,7 +1385,7 @@
 			repositoryURL = "https://github.com/realm/realm-swift";
 			requirement = {
 				kind = exactVersion;
-				version = 20.0.4;
+				version = 20.0.5;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
