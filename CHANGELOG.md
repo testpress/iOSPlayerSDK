@@ -1,4 +1,11 @@
 
+## 1.2.46 - 2026-11-05
+
+### Improvements
+
+- Add support for Xcode 27 with iOS 15 as the minimum supported version
+
+
 ## 1.2.45 - 2026-10-23
 
 ### Features
