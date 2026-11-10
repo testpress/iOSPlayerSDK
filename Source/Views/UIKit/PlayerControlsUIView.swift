@@ -333,8 +333,8 @@ class PlayerControlsUIView: UIView, UIAdaptivePresentationControllerDelegate {
         })
 
         if let rotatedWindow {
-            rotatedWindow.rootViewController?.present(alert, animated: true)
             alert.presentationController?.delegate = self
+            rotatedWindow.rootViewController?.present(alert, animated: true)
         } else {
             parentViewController?.present(alert, animated: true)
         }
@@ -345,7 +345,8 @@ class PlayerControlsUIView: UIView, UIAdaptivePresentationControllerDelegate {
               let playerWindow = container.window, let scene = playerWindow.windowScene else { return nil }
 
         dismissSettingsMenu()
-        let window = UIWindow(windowScene: scene)
+        let window = RotatedSettingsWindow(windowScene: scene)
+        window.onMissingDialog = { [weak self] window in self?.dismissSettingsMenu(in: window) }
         window.windowLevel = UIWindow.Level(rawValue: playerWindow.windowLevel.rawValue + 1)
         window.overrideUserInterfaceStyle = container.traitCollection.userInterfaceStyle
         window.tintColor = container.tintColor
@@ -360,9 +361,12 @@ class PlayerControlsUIView: UIView, UIAdaptivePresentationControllerDelegate {
     }
 
     func updateSettingsMenuGeometry() {
-        guard let settingsWindow, let container = superview, let playerWindow = container.window else { return }
+        guard let settingsWindow, let scene = settingsWindow.windowScene,
+              let container = superview, let playerWindow = container.window else { return }
+        let center = CGPoint(x: container.bounds.midX, y: container.bounds.midY)
+        let centerInPlayerWindow = container.convert(center, to: playerWindow)
         settingsWindow.bounds.size = container.bounds.size
-        settingsWindow.center = playerWindow.center
+        settingsWindow.center = playerWindow.convert(centerInPlayerWindow, to: scene.coordinateSpace)
         settingsWindow.transform = container.transform
     }
 
@@ -425,4 +429,17 @@ private struct SettingsOption {
     let title: String
     var selected = false
     let handler: () -> Void
+}
+
+private final class RotatedSettingsWindow: UIWindow {
+    var onMissingDialog: ((UIWindow) -> Void)?
+
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        // An alert dismissed by UIKit may bypass its actions and the adaptive delegate.
+        guard rootViewController?.presentedViewController != nil else {
+            onMissingDialog?(self)
+            return nil
+        }
+        return super.hitTest(point, with: event)
+    }
 }
