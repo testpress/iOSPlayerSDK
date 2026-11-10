@@ -315,20 +315,21 @@ class PlayerControlsUIView: UIView, UIAdaptivePresentationControllerDelegate {
         )
         let rotatedWindow = makeRotatedSettingsWindow()
         for option in definition.options {
-            let action = UIAlertAction(title: option.title, style: .default) { [weak self, weak rotatedWindow] _ in
-                if let rotatedWindow {
-                    self?.dismissSettingsMenu(in: rotatedWindow)
+            let action = UIAlertAction(title: option.title, style: .default) { [weak self, weak alert, weak rotatedWindow] _ in
+                if let self, let rotatedWindow {
+                    self.finishSettingsSelection(in: rotatedWindow, alert: alert, action: option.handler)
+                } else {
+                    option.handler()
                 }
-                option.handler()
             }
             if option.selected {
                 action.setValue(UIImage(named: "checkmark", in: bundle, compatibleWith: nil), forKey: "image")
             }
             alert.addAction(action)
         }
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { [weak self, weak rotatedWindow] _ in
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { [weak self, weak alert, weak rotatedWindow] _ in
             if let rotatedWindow {
-                self?.dismissSettingsMenu(in: rotatedWindow)
+                self?.finishSettingsSelection(in: rotatedWindow, alert: alert)
             }
         })
 
@@ -337,6 +338,19 @@ class PlayerControlsUIView: UIView, UIAdaptivePresentationControllerDelegate {
             rotatedWindow.rootViewController?.present(alert, animated: true)
         } else {
             parentViewController?.present(alert, animated: true)
+        }
+    }
+
+    private func finishSettingsSelection(in window: UIWindow, alert: UIAlertController?, action: (() -> Void)? = nil) {
+        let finish = { [weak self, weak window] in
+            if let window {
+                self?.dismissSettingsMenu(in: window)
+            }
+            action?()
+        }
+        let coordinator = alert?.transitionCoordinator ?? window.rootViewController?.transitionCoordinator
+        if coordinator?.animate(alongsideTransition: nil, completion: { _ in finish() }) != true {
+            finish()
         }
     }
 
