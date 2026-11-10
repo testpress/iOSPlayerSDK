@@ -299,6 +299,7 @@ public class TPStreamPlayerViewController: UIViewController {
         imageWatermarkOverlayView.frame = containerView.bounds
         imageWatermarkOverlayView.setWatermarkContentRect(videoView.videoRect)
         controlsView.frame = contentBounds ?? containerView.bounds
+        controlsView.updateSettingsMenuGeometry()
         noticeView.frame = containerView.bounds
         noticeMessageLabel.frame = contentBounds ?? noticeView.bounds
     }
@@ -387,7 +388,6 @@ public class TPStreamPlayerViewController: UIViewController {
     
     private func setupTapGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(toggleControlsVisibility))
-        tapGesture.delegate = controlsView
         containerView.addGestureRecognizer(tapGesture)
     }
     

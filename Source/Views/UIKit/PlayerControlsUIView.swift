@@ -10,7 +10,7 @@ import UIKit
 
 let ACTION_SHEET_PREFERRED_STYLE: UIAlertController.Style  = UIDevice.current.userInterfaceIdiom == .pad ? .alert : .actionSheet
 
-class PlayerControlsUIView: UIView, UIGestureRecognizerDelegate {
+class PlayerControlsUIView: UIView, UIAdaptivePresentationControllerDelegate {
     @IBOutlet weak var playPauseButton: UIButton!
     @IBOutlet weak var currentTimelabel: UILabel!
     @IBOutlet weak var videoDurationLabel: UILabel!
@@ -50,7 +50,7 @@ class PlayerControlsUIView: UIView, UIGestureRecognizerDelegate {
     }
     
     weak var parentViewController: UIViewController?
-    private weak var settingsMenuView: UIView?
+    private var settingsWindow: UIWindow?
     var selectedSubtitleTrack: SubtitleTrack?
     var onSubtitleTrackSelected: ((SubtitleTrack?) -> Void)?
     weak var fullScreenToggleDelegate: FullScreenToggleDelegate?
@@ -310,35 +310,83 @@ class PlayerControlsUIView: UIView, UIGestureRecognizerDelegate {
     }
 
     private func presentSettingsMenu(_ definition: SettingsMenuDefinition) {
-        if isFullScreen, let container = superview, !container.transform.isIdentity {
-            dismissSettingsMenu()
-            let menu = FullscreenSettingsMenu(frame: container.bounds, definition: definition)
-            container.addSubview(menu)
-            settingsMenuView = menu
-            UIAccessibility.post(notification: .screenChanged, argument: menu)
-            return
-        }
-
         let alert = UIAlertController(
             title: definition.title, message: definition.message, preferredStyle: ACTION_SHEET_PREFERRED_STYLE
         )
+        let rotatedWindow = makeRotatedSettingsWindow()
         for option in definition.options {
-            let action = UIAlertAction(title: option.title, style: .default) { _ in option.handler() }
+            let action = UIAlertAction(title: option.title, style: .default) { [weak self, weak rotatedWindow] _ in
+                if let rotatedWindow {
+                    self?.dismissSettingsMenu(in: rotatedWindow)
+                }
+                option.handler()
+            }
             if option.selected {
                 action.setValue(UIImage(named: "checkmark", in: bundle, compatibleWith: nil), forKey: "image")
             }
             alert.addAction(action)
         }
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        parentViewController?.present(alert, animated: true)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { [weak self, weak rotatedWindow] _ in
+            if let rotatedWindow {
+                self?.dismissSettingsMenu(in: rotatedWindow)
+            }
+        })
+
+        if let rotatedWindow {
+            rotatedWindow.rootViewController?.present(alert, animated: true)
+            alert.presentationController?.delegate = self
+        } else {
+            parentViewController?.present(alert, animated: true)
+        }
     }
 
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        settingsMenuView == nil
+    private func makeRotatedSettingsWindow() -> UIWindow? {
+        guard isFullScreen, let container = superview, !container.transform.isIdentity,
+              let playerWindow = container.window, let scene = playerWindow.windowScene else { return nil }
+
+        dismissSettingsMenu()
+        let window = UIWindow(windowScene: scene)
+        window.windowLevel = UIWindow.Level(rawValue: playerWindow.windowLevel.rawValue + 1)
+        window.overrideUserInterfaceStyle = container.traitCollection.userInterfaceStyle
+        window.tintColor = container.tintColor
+        let presenter = UIViewController()
+        presenter.view.backgroundColor = .clear
+        window.rootViewController = presenter
+        settingsWindow = window
+        updateSettingsMenuGeometry()
+        // Keep the player window key so it continues receiving physical rotation events.
+        window.isHidden = false
+        return window
+    }
+
+    func updateSettingsMenuGeometry() {
+        guard let settingsWindow, let container = superview, let playerWindow = container.window else { return }
+        settingsWindow.bounds.size = container.bounds.size
+        settingsWindow.center = playerWindow.center
+        settingsWindow.transform = container.transform
+    }
+
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        if let window = presentationController.presentingViewController.viewIfLoaded?.window {
+            dismissSettingsMenu(in: window)
+        }
+    }
+
+    private func dismissSettingsMenu(in window: UIWindow) {
+        guard settingsWindow === window else { return }
+        dismissSettingsMenu()
+    }
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        if window == nil {
+            dismissSettingsMenu()
+        }
     }
 
     func dismissSettingsMenu() {
-        settingsMenuView?.removeFromSuperview()
+        settingsWindow?.isHidden = true
+        settingsWindow = nil
     }
 
     @IBAction func toggleFullScreen(_ sender: Any) {
@@ -377,93 +425,4 @@ private struct SettingsOption {
     let title: String
     var selected = false
     let handler: () -> Void
-}
-
-private final class FullscreenSettingsMenu: UIView {
-    init(frame: CGRect, definition: SettingsMenuDefinition) {
-        super.init(frame: frame)
-        autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        backgroundColor = UIColor.black.withAlphaComponent(0.45)
-        accessibilityViewIsModal = true
-
-        let panel = UIScrollView()
-        panel.translatesAutoresizingMaskIntoConstraints = false
-        panel.backgroundColor = .secondarySystemBackground
-        panel.layer.cornerRadius = 14
-        addSubview(panel)
-
-        let rows = UIStackView()
-        rows.axis = .vertical
-        rows.spacing = 4
-        rows.isLayoutMarginsRelativeArrangement = true
-        rows.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12)
-        rows.translatesAutoresizingMaskIntoConstraints = false
-        panel.addSubview(rows)
-
-        if let title = definition.title {
-            rows.addArrangedSubview(makeLabel(title, style: .headline))
-        }
-        if let message = definition.message {
-            rows.addArrangedSubview(makeLabel(message, style: .footnote))
-        }
-        for option in definition.options {
-            rows.addArrangedSubview(makeButton(option.title, selected: option.selected, action: option.handler))
-        }
-        rows.addArrangedSubview(makeButton("Cancel"))
-
-        let preferredWidth = panel.widthAnchor.constraint(equalToConstant: 360)
-        preferredWidth.priority = .defaultHigh
-        let preferredHeight = panel.heightAnchor.constraint(equalTo: rows.heightAnchor)
-        preferredHeight.priority = .defaultHigh
-        NSLayoutConstraint.activate([
-            panel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            panel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            panel.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, constant: -32),
-            panel.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor, constant: -32),
-            preferredWidth, preferredHeight,
-            rows.topAnchor.constraint(equalTo: panel.contentLayoutGuide.topAnchor),
-            rows.bottomAnchor.constraint(equalTo: panel.contentLayoutGuide.bottomAnchor),
-            rows.leadingAnchor.constraint(equalTo: panel.contentLayoutGuide.leadingAnchor),
-            rows.trailingAnchor.constraint(equalTo: panel.contentLayoutGuide.trailingAnchor),
-            rows.widthAnchor.constraint(equalTo: panel.frameLayoutGuide.widthAnchor)
-        ])
-    }
-
-    required init?(coder: NSCoder) {
-        return nil
-    }
-
-    override func accessibilityPerformEscape() -> Bool {
-        removeFromSuperview()
-        return true
-    }
-
-    private func makeLabel(_ text: String, style: UIFont.TextStyle) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.font = .preferredFont(forTextStyle: style)
-        label.adjustsFontForContentSizeCategory = true
-        label.numberOfLines = 0
-        return label
-    }
-
-    private func makeButton(_ title: String, selected: Bool = false, action: (() -> Void)? = nil) -> UIButton {
-        var configuration = UIButton.Configuration.plain()
-        configuration.title = title
-        if selected {
-            configuration.image = UIImage(systemName: "checkmark")
-            configuration.imagePadding = 8
-        }
-        let button = UIButton(configuration: configuration)
-        button.addAction(UIAction { [weak self] _ in
-            self?.removeFromSuperview()
-            action?()
-        }, for: .primaryActionTriggered)
-        button.contentHorizontalAlignment = .leading
-        if selected {
-            button.accessibilityTraits.insert(.selected)
-        }
-        button.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
-        return button
-    }
 }
