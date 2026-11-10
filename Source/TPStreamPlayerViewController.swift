@@ -185,9 +185,14 @@ public class TPStreamPlayerViewController: UIViewController {
 
     private func playerWindowChanged() {
         updateDeviceOrientationObservation()
-        // Wait for UIKit to finish attaching the inline view before reparenting it.
+        // Reparent the container after UIKit finishes propagating the window change.
         DispatchQueue.main.async { [weak self] in
-            guard let self, self.view.window != nil, !self.isFullScreen else { return }
+            guard let self else { return }
+            let window = self.view.window
+            if self.isFullScreen, window == nil || self.fullscreenOverlay?.window !== window {
+                self.exitFullScreen()
+            }
+            guard window != nil, !self.isFullScreen else { return }
             let startInFullscreen = !self.hasAttachedPlayer && self.config.startInFullscreen
             self.hasAttachedPlayer = true
             if self.pendingFullscreenEntry || startInFullscreen {
@@ -282,7 +287,8 @@ public class TPStreamPlayerViewController: UIViewController {
             guard let self else { return }
             self.layoutContainerSubviews()
             guard self.autoFullScreenOnRotate, self.isFullScreen == wasFullScreen,
-                  let orientation = self.view.window?.windowScene?.interfaceOrientation,
+                  let window = self.view.window, !self.view.isHidden, !window.isHidden,
+                  let orientation = window.windowScene?.interfaceOrientation,
                   orientation != previousOrientation else { return }
             if orientation.isLandscape {
                 self.enterFullScreen(automatically: true)
