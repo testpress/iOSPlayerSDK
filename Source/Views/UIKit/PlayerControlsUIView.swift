@@ -350,7 +350,12 @@ class PlayerControlsUIView: UIView, UIAdaptivePresentationControllerDelegate {
             action?()
         }
         let coordinator = alert?.transitionCoordinator ?? window.rootViewController?.transitionCoordinator
-        if coordinator?.animate(alongsideTransition: nil, completion: { _ in finish() }) != true {
+        if coordinator?.animate(alongsideTransition: nil, completion: { _ in finish() }) == true {
+            return
+        }
+        if let alert, alert.presentingViewController != nil {
+            alert.dismiss(animated: true, completion: finish)
+        } else {
             finish()
         }
     }
