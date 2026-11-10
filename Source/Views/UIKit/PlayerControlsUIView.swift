@@ -334,6 +334,7 @@ class PlayerControlsUIView: UIView, UIAdaptivePresentationControllerDelegate {
         })
 
         if let rotatedWindow {
+            rotatedWindow.dialog = alert
             alert.presentationController?.delegate = self
             rotatedWindow.rootViewController?.present(alert, animated: true)
         } else {
@@ -354,7 +355,7 @@ class PlayerControlsUIView: UIView, UIAdaptivePresentationControllerDelegate {
         }
     }
 
-    private func makeRotatedSettingsWindow() -> UIWindow? {
+    private func makeRotatedSettingsWindow() -> RotatedSettingsWindow? {
         guard isFullScreen, let container = superview, !container.transform.isIdentity,
               let playerWindow = container.window, let scene = playerWindow.windowScene else { return nil }
 
@@ -446,14 +447,19 @@ private struct SettingsOption {
 }
 
 private final class RotatedSettingsWindow: UIWindow {
+    weak var dialog: UIAlertController?
     var onMissingDialog: ((UIWindow) -> Void)?
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         // An alert dismissed by UIKit may bypass its actions and the adaptive delegate.
-        guard rootViewController?.presentedViewController != nil else {
-            onMissingDialog?(self)
-            return nil
+        if rootViewController?.presentedViewController != nil ||
+            rootViewController?.transitionCoordinator != nil ||
+            dialog?.transitionCoordinator != nil || dialog?.isBeingDismissed == true {
+            return super.hitTest(point, with: event)
         }
-        return super.hitTest(point, with: event)
+        if event != nil {
+            onMissingDialog?(self)
+        }
+        return nil
     }
 }
