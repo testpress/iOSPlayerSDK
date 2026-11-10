@@ -222,8 +222,10 @@ public class TPStreamPlayerViewController: UIViewController {
 
     private func deviceOrientationChanged() {
         guard autoFullScreenOnRotate, let window = viewIfLoaded?.window,
-              window.windowScene?.activationState == .foregroundActive,
               !view.isHidden, !window.isHidden else { return }
+        let isForeground = window.windowScene.map { $0.activationState == .foregroundActive }
+            ?? (UIApplication.shared.applicationState == .active)
+        guard isForeground else { return }
 
         let orientation = UIDevice.current.orientation
         if orientation == .portrait {
