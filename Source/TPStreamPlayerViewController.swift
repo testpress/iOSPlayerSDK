@@ -221,7 +221,8 @@ public class TPStreamPlayerViewController: UIViewController {
     }
 
     private func deviceOrientationChanged() {
-        guard autoFullScreenOnRotate, let window = viewIfLoaded?.window, window.isKeyWindow,
+        guard autoFullScreenOnRotate, let window = viewIfLoaded?.window,
+              window.windowScene?.activationState == .foregroundActive,
               !view.isHidden, !window.isHidden else { return }
 
         let orientation = UIDevice.current.orientation
@@ -235,10 +236,18 @@ public class TPStreamPlayerViewController: UIViewController {
                 guard overlay.openedAutomatically, overlay.rotationAngle != angle else { return }
                 overlay.rotationAngle = angle
                 layoutContainerSubviews()
-            } else {
+            } else if canEnterFullscreenOnRotation(in: window) {
                 enterFullScreen(automatically: true, rotationAngle: angle)
             }
         }
+    }
+
+    private func canEnterFullscreenOnRotation(in window: UIWindow) -> Bool {
+        let visibleBounds = view.convert(view.bounds, to: window).intersection(window.bounds)
+        guard !visibleBounds.isEmpty else { return false }
+        let center = CGPoint(x: visibleBounds.midX, y: visibleBounds.midY)
+        // A covered player should not take over the window when the device rotates.
+        return window.hitTest(center, with: nil)?.isDescendant(of: view) == true
     }
 
     private func layoutContainerSubviews() {
@@ -293,7 +302,7 @@ public class TPStreamPlayerViewController: UIViewController {
                   let window = self.view.window, !self.view.isHidden, !window.isHidden,
                   let orientation = window.windowScene?.interfaceOrientation,
                   orientation != previousOrientation else { return }
-            if orientation.isLandscape {
+            if orientation.isLandscape && self.canEnterFullscreenOnRotation(in: window) {
                 self.enterFullScreen(automatically: true)
             } else if orientation.isPortrait && previousOrientation?.isLandscape == true,
                       self.fullscreenOverlay?.openedAutomatically == true {
@@ -423,12 +432,14 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
             return
         }
         pendingFullscreenEntry = false
+        guard !window.subviews.contains(where: { $0 is FullscreenOverlayView }) else { return }
         hasAttachedPlayer = true
 
         delegate?.willEnterFullScreenMode()
         let overlay = FullscreenOverlayView(frame: window.bounds)
         overlay.openedAutomatically = automatically
-        overlay.rotationAngle = rotationAngle ?? .pi / 2
+        let deviceAngle: CGFloat = UIDevice.current.orientation == .landscapeRight ? -.pi / 2 : .pi / 2
+        overlay.rotationAngle = rotationAngle ?? deviceAngle
         overlay.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         overlay.backgroundColor = .black
         overlay.onLayout = { [weak self] in self?.layoutContainerSubviews() }
