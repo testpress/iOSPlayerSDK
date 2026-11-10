@@ -52,8 +52,8 @@ class PlayerControlsUIView: UIView {
     weak var parentViewController: UIViewController?
     var selectedSubtitleTrack: SubtitleTrack?
     var onSubtitleTrackSelected: ((SubtitleTrack?) -> Void)?
-    var fullScreenToggleDelegate: FullScreenToggleDelegate?
-    var controlsDelegate: PlayerControlsDelegate?
+    weak var fullScreenToggleDelegate: FullScreenToggleDelegate?
+    weak var controlsDelegate: PlayerControlsDelegate?
     var isFullScreen: Bool = false {
         didSet {
             updateFullScreenButtonIcon()
@@ -328,11 +328,11 @@ class PlayerControlsUIView: UIView {
     }
 }
 
-protocol PlayerControlsDelegate {
+protocol PlayerControlsDelegate: AnyObject {
     func didTapReplay()
 }
 
-protocol FullScreenToggleDelegate {
+protocol FullScreenToggleDelegate: AnyObject {
     func enterFullScreen()
     func exitFullScreen()
 }

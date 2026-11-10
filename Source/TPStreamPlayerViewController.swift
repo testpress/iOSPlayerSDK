@@ -25,7 +25,9 @@ public class TPStreamPlayerViewController: UIViewController {
             setupPlayerTimeControlObserver(for: player)
             setupPlayerTimeObserver()
             showLiveStreamNotice()
-            player.onError = showError
+            player.onError = { [weak self] error, sentryIssueId in
+                self?.showError(error: error, sentryIssueId: sentryIssueId)
+            }
         }
     }
     private var playerStatusObservation: NSKeyValueObservation?
@@ -38,7 +40,7 @@ public class TPStreamPlayerViewController: UIViewController {
             subtitleView.setTrack(activeSubtitleTrack)
             if isViewLoaded {
                 controlsView.selectedSubtitleTrack = activeSubtitleTrack
-                textWatermarkOverlayView.setReservedBottomHeight(subtitleReservedHeight)
+                layoutContainerSubviews()
             }
             delegate?.onSubtitleStateChanged(enabled: activeSubtitleTrack != nil, language: activeSubtitleTrack?.language)
         }
@@ -51,7 +53,9 @@ public class TPStreamPlayerViewController: UIViewController {
     }
     
     public var delegate: TPStreamPlayerViewControllerDelegate?
-    public var autoFullScreenOnRotate = true
+    public var autoFullScreenOnRotate = true {
+        didSet { updateDeviceOrientationObservation() }
+    }
     public var config = TPStreamPlayerConfiguration(){
         didSet {
             controlsView.playerConfig = config
@@ -60,6 +64,10 @@ public class TPStreamPlayerViewController: UIViewController {
         }
     }
     private var controlsVisibilityTimer: Timer?
+    private var fullscreenOverlay: FullscreenOverlayView?
+    private var pendingFullscreenEntry = false
+    private var hasAttachedPlayer = false
+    private var deviceOrientationObserver: NSObjectProtocol?
     public private(set) var isFullScreen: Bool = false {
         didSet {
             controlsView.isFullScreen = isFullScreen
@@ -137,6 +145,11 @@ public class TPStreamPlayerViewController: UIViewController {
     }()
     
     deinit {
+        if let observer = deviceOrientationObserver {
+            NotificationCenter.default.removeObserver(observer)
+            UIDevice.current.endGeneratingDeviceOrientationNotifications()
+        }
+        fullscreenOverlay?.removeFromSuperview()
         playerStatusObservation = nil
         playerTimeControlObservation = nil
         if let observer = playerTimeObserver, let player = player {
@@ -147,7 +160,12 @@ public class TPStreamPlayerViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(containerView)
-        
+        // Flutter attaches the player view directly, without controller appearance callbacks.
+        let attachmentView = WindowAttachmentView(frame: .zero)
+        attachmentView.isUserInteractionEnabled = false
+        attachmentView.onWindowChanged = { [weak self] in self?.playerWindowChanged() }
+        view.addSubview(attachmentView)
+
         setupTapGesture()
         handlePlayerInitializationError()
         controlsView.selectedSubtitleTrack = activeSubtitleTrack
@@ -165,28 +183,113 @@ public class TPStreamPlayerViewController: UIViewController {
         layoutContainerSubviews()
     }
 
+    private func playerWindowChanged() {
+        updateDeviceOrientationObservation()
+        // Wait for UIKit to finish attaching the inline view before reparenting it.
+        DispatchQueue.main.async { [weak self] in
+            guard let self, self.view.window != nil, !self.isFullScreen else { return }
+            let startInFullscreen = !self.hasAttachedPlayer && self.config.startInFullscreen
+            self.hasAttachedPlayer = true
+            if self.pendingFullscreenEntry || startInFullscreen {
+                self.enterFullScreen()
+            }
+        }
+    }
+
+    private func updateDeviceOrientationObservation() {
+        if autoFullScreenOnRotate && viewIfLoaded?.window != nil {
+            guard deviceOrientationObserver == nil else { return }
+            UIDevice.current.beginGeneratingDeviceOrientationNotifications()
+            deviceOrientationObserver = NotificationCenter.default.addObserver(
+                forName: UIDevice.orientationDidChangeNotification, object: UIDevice.current, queue: .main
+            ) { [weak self] _ in
+                self?.deviceOrientationChanged()
+            }
+        } else if let observer = deviceOrientationObserver {
+            NotificationCenter.default.removeObserver(observer)
+            deviceOrientationObserver = nil
+            UIDevice.current.endGeneratingDeviceOrientationNotifications()
+        }
+    }
+
+    private func deviceOrientationChanged() {
+        guard autoFullScreenOnRotate, let window = viewIfLoaded?.window, window.isKeyWindow,
+              !view.isHidden, !window.isHidden else { return }
+
+        let orientation = UIDevice.current.orientation
+        if orientation == .portrait {
+            if fullscreenOverlay?.openedAutomatically == true {
+                exitFullScreen()
+            }
+        } else if orientation.isLandscape {
+            let angle: CGFloat = orientation == .landscapeLeft ? .pi / 2 : -.pi / 2
+            if let overlay = fullscreenOverlay {
+                guard overlay.openedAutomatically, overlay.rotationAngle != angle else { return }
+                overlay.rotationAngle = angle
+                layoutContainerSubviews()
+            } else {
+                enterFullScreen(automatically: true, rotationAngle: angle)
+            }
+        }
+    }
+
     private func layoutContainerSubviews() {
-        containerView.frame = containerView.superview!.bounds
+        var contentBounds: CGRect?
+        if let overlay = fullscreenOverlay {
+            let bounds = overlay.bounds
+            let orientation = overlay.window?.windowScene?.interfaceOrientation
+            let rotatesPlayer = orientation == nil || orientation == .unknown
+                ? bounds.height > bounds.width
+                : orientation?.isPortrait == true
+            containerView.transform = rotatesPlayer ? CGAffineTransform(rotationAngle: overlay.rotationAngle) : .identity
+            containerView.bounds.size = rotatesPlayer
+                ? CGSize(width: bounds.height, height: bounds.width)
+                : bounds.size
+            containerView.center = CGPoint(x: bounds.midX, y: bounds.midY)
+
+            if rotatesPlayer {
+                let insets = overlay.safeAreaInsets
+                let rotatedInsets = overlay.rotationAngle > 0
+                    ? UIEdgeInsets(top: insets.right, left: insets.top, bottom: insets.left, right: insets.bottom)
+                    : UIEdgeInsets(top: insets.left, left: insets.bottom, bottom: insets.right, right: insets.top)
+                contentBounds = containerView.bounds.inset(by: rotatedInsets)
+            }
+        } else {
+            containerView.frame = view.bounds
+        }
+
         videoView.frame = containerView.bounds
-        subtitleView.frame = containerView.bounds
+        subtitleView.frame = contentBounds ?? containerView.bounds
         textWatermarkOverlayView.frame = containerView.bounds
         textWatermarkOverlayView.setWatermarkContentRect(videoView.videoRect)
-        textWatermarkOverlayView.setReservedBottomHeight(subtitleReservedHeight)
+        let subtitleBottomInset = containerView.bounds.maxY - subtitleView.frame.maxY
+        textWatermarkOverlayView.setReservedBottomHeight(
+            subtitleReservedHeight > 0 ? subtitleReservedHeight + subtitleBottomInset : 0
+        )
         imageWatermarkOverlayView.frame = containerView.bounds
         imageWatermarkOverlayView.setWatermarkContentRect(videoView.videoRect)
-        controlsView.frame = containerView.bounds
+        controlsView.frame = contentBounds ?? containerView.bounds
         noticeView.frame = containerView.bounds
-        noticeMessageLabel.frame = noticeView.bounds
+        noticeMessageLabel.frame = contentBounds ?? noticeView.bounds
     }
     
     public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        
-        guard autoFullScreenOnRotate else { return }
-        if containerView.getCurrentOrientation().isLandscape {
-            enterFullScreen()
-        } else {
-            exitFullScreen()
+
+        let previousOrientation = view.window?.windowScene?.interfaceOrientation
+        let wasFullScreen = isFullScreen
+        coordinator.animate(alongsideTransition: nil) { [weak self] _ in
+            guard let self else { return }
+            self.layoutContainerSubviews()
+            guard self.autoFullScreenOnRotate, self.isFullScreen == wasFullScreen,
+                  let orientation = self.view.window?.windowScene?.interfaceOrientation,
+                  orientation != previousOrientation else { return }
+            if orientation.isLandscape {
+                self.enterFullScreen(automatically: true)
+            } else if orientation.isPortrait && previousOrientation?.isLandscape == true,
+                      self.fullscreenOverlay?.openedAutomatically == true {
+                self.exitFullScreen()
+            }
         }
     }
     
@@ -301,45 +404,71 @@ public class TPStreamPlayerViewController: UIViewController {
 
 extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControlsDelegate {
     public func enterFullScreen() {
+        enterFullScreen(automatically: false)
+    }
+
+    private func enterFullScreen(automatically: Bool, rotationAngle: CGFloat? = nil) {
+        guard !isFullScreen else { return }
+        guard let window = view.window else {
+            pendingFullscreenEntry = true
+            return
+        }
+        pendingFullscreenEntry = false
+        hasAttachedPlayer = true
+
         delegate?.willEnterFullScreenMode()
-        changeOrientation(orientation: .landscape)
-        resizeContainerToWindow()
+        let overlay = FullscreenOverlayView(frame: window.bounds)
+        overlay.openedAutomatically = automatically
+        overlay.rotationAngle = rotationAngle ?? .pi / 2
+        overlay.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        overlay.backgroundColor = .black
+        overlay.onLayout = { [weak self] in self?.layoutContainerSubviews() }
+        fullscreenOverlay = overlay
+        window.addSubview(overlay)
+        overlay.addSubview(containerView)
+        isFullScreen = true
+        layoutContainerSubviews()
+
+        if rotationAngle == nil, let scene = window.windowScene,
+           !scene.interfaceOrientation.isLandscape,
+           !UIApplication.shared.supportedInterfaceOrientations(for: window).intersection(.landscape).isEmpty {
+            overlay.requestedLandscape = true
+            changeOrientation(orientation: .landscape, in: scene) { [weak overlay] _ in
+                DispatchQueue.main.async {
+                    overlay?.requestedLandscape = false
+                }
+            }
+        }
         delegate?.didEnterFullScreenMode()
     }
     
     public func exitFullScreen() {
+        pendingFullscreenEntry = false
+        guard isFullScreen else { return }
         delegate?.willExitFullScreenMode()
-        changeOrientation(orientation: .portrait)
-        resizeContainerToParentView()
+        let scene = fullscreenOverlay?.window?.windowScene
+        let requestedLandscape = fullscreenOverlay?.requestedLandscape == true
+
+        containerView.transform = .identity
+        view.addSubview(containerView)
+        fullscreenOverlay?.removeFromSuperview()
+        fullscreenOverlay = nil
+        isFullScreen = false
+        layoutContainerSubviews()
+
+        if let scene, scene.interfaceOrientation.isLandscape || requestedLandscape {
+            changeOrientation(orientation: .portrait, in: scene)
+        }
         delegate?.didExitFullScreenMode()
     }
     
-    func resizeContainerToWindow(){
-        if let window = UIApplication.shared.keyWindow{
-            containerView.removeFromSuperview()
-            window.addSubview(containerView)
-            containerView.frame = window.bounds
-            isFullScreen = true
-            DispatchQueue.main.async { [weak self] in
-                self?.layoutContainerSubviews()
-            }
-        }
-    }
-    
-    func resizeContainerToParentView(){
-        containerView.removeFromSuperview()
-        view.addSubview(containerView)
-        containerView.frame = view.bounds
-        isFullScreen = false
-        DispatchQueue.main.async { [weak self] in
-            self?.layoutContainerSubviews()
-        }
-    }
-    
-    func changeOrientation(orientation: UIInterfaceOrientationMask) {
+    private func changeOrientation(
+        orientation: UIInterfaceOrientationMask,
+        in scene: UIWindowScene,
+        onError: ((Error) -> Void)? = nil
+    ) {
         if #available(iOS 16.0, *) {
-            let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
-            windowScene?.requestGeometryUpdate(.iOS(interfaceOrientations: orientation))
+            scene.requestGeometryUpdate(.iOS(interfaceOrientations: orientation), errorHandler: onError)
         } else {
             UIDevice.current.setValue(orientation.toUIInterfaceOrientation.rawValue, forKey: "orientation")
         }
@@ -363,4 +492,30 @@ public protocol TPStreamPlayerViewControllerDelegate {
 public extension TPStreamPlayerViewControllerDelegate {
     func didTapReplay() {}
     func onSubtitleStateChanged(enabled: Bool, language: String?) {}
+}
+
+private final class WindowAttachmentView: UIView {
+    var onWindowChanged: (() -> Void)?
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        onWindowChanged?()
+    }
+}
+
+private final class FullscreenOverlayView: UIView {
+    var openedAutomatically = false
+    var rotationAngle: CGFloat = .pi / 2
+    var requestedLandscape = false
+    var onLayout: (() -> Void)?
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        onLayout?()
+    }
+
+    override func safeAreaInsetsDidChange() {
+        super.safeAreaInsetsDidChange()
+        setNeedsLayout()
+    }
 }
