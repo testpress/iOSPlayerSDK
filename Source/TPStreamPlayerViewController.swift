@@ -502,7 +502,10 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
         onError: ((Error) -> Void)? = nil
     ) {
         if #available(iOS 16.0, *) {
-            scene.requestGeometryUpdate(.iOS(interfaceOrientations: orientation), errorHandler: onError)
+            scene.requestGeometryUpdate(.iOS(interfaceOrientations: orientation)) { error in
+                NSLog("TPStreamsSDK fullscreen orientation request failed: %@", error.localizedDescription)
+                onError?(error)
+            }
         } else {
             UIDevice.current.setValue(orientation.toUIInterfaceOrientation.rawValue, forKey: "orientation")
         }
