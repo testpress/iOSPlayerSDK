@@ -145,11 +145,22 @@ public class TPStreamPlayerViewController: UIViewController {
     }()
     
     deinit {
-        if let observer = deviceOrientationObserver {
+        let observer = deviceOrientationObserver
+        if let observer {
             NotificationCenter.default.removeObserver(observer)
-            UIDevice.current.endGeneratingDeviceOrientationNotifications()
         }
-        fullscreenOverlay?.removeFromSuperview()
+        let overlay = fullscreenOverlay
+        let cleanup = {
+            if observer != nil {
+                UIDevice.current.endGeneratingDeviceOrientationNotifications()
+            }
+            overlay?.removeFromSuperview()
+        }
+        if Thread.isMainThread {
+            cleanup()
+        } else {
+            DispatchQueue.main.async(execute: cleanup)
+        }
         playerStatusObservation = nil
         playerTimeControlObservation = nil
         if let observer = playerTimeObserver, let player = player {
@@ -434,6 +445,7 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
             return
         }
         pendingFullscreenEntry = false
+        // The existing fullscreen player owns this window. Drop competing requests.
         guard !window.subviews.contains(where: { $0 is FullscreenOverlayView }) else { return }
         hasAttachedPlayer = true
 
@@ -454,10 +466,10 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
         if rotationAngle == nil, let scene = window.windowScene,
            !scene.interfaceOrientation.isLandscape,
            !UIApplication.shared.supportedInterfaceOrientations(for: window).intersection(.landscape).isEmpty {
-            overlay.requestedLandscape = true
+            overlay.didRequestLandscape = true
             changeOrientation(orientation: .landscape, in: scene) { [weak overlay] _ in
                 DispatchQueue.main.async {
-                    overlay?.requestedLandscape = false
+                    overlay?.didRequestLandscape = false
                 }
             }
         }
@@ -469,7 +481,7 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
         guard isFullScreen else { return }
         delegate?.willExitFullScreenMode()
         let scene = fullscreenOverlay?.window?.windowScene
-        let requestedLandscape = fullscreenOverlay?.requestedLandscape == true
+        let didRequestLandscape = fullscreenOverlay?.didRequestLandscape == true
 
         containerView.transform = .identity
         view.addSubview(containerView)
@@ -478,7 +490,7 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
         isFullScreen = false
         layoutContainerSubviews()
 
-        if let scene, scene.interfaceOrientation.isLandscape || requestedLandscape {
+        if let scene, scene.interfaceOrientation.isLandscape || didRequestLandscape {
             changeOrientation(orientation: .portrait, in: scene)
         }
         delegate?.didExitFullScreenMode()
@@ -528,7 +540,7 @@ private final class WindowAttachmentView: UIView {
 private final class FullscreenOverlayView: UIView {
     var openedAutomatically = false
     var rotationAngle: CGFloat = .pi / 2
-    var requestedLandscape = false
+    var didRequestLandscape = false
     var onLayout: (() -> Void)?
 
     override func layoutSubviews() {
