@@ -184,6 +184,9 @@ public class TPStreamPlayerViewController: UIViewController {
     }
 
     private func playerWindowChanged() {
+        if view.window == nil {
+            pendingFullscreenEntry = false
+        }
         updateDeviceOrientationObservation()
         // Reparent the container after UIKit finishes propagating the window change.
         DispatchQueue.main.async { [weak self] in
