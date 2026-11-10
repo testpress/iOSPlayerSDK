@@ -10,7 +10,7 @@ import UIKit
 
 let ACTION_SHEET_PREFERRED_STYLE: UIAlertController.Style  = UIDevice.current.userInterfaceIdiom == .pad ? .alert : .actionSheet
 
-class PlayerControlsUIView: UIView {
+class PlayerControlsUIView: UIView, UIGestureRecognizerDelegate {
     @IBOutlet weak var playPauseButton: UIButton!
     @IBOutlet weak var currentTimelabel: UILabel!
     @IBOutlet weak var videoDurationLabel: UILabel!
@@ -50,6 +50,7 @@ class PlayerControlsUIView: UIView {
     }
     
     weak var parentViewController: UIViewController?
+    private weak var settingsMenuView: UIView?
     var selectedSubtitleTrack: SubtitleTrack?
     var onSubtitleTrackSelected: ((SubtitleTrack?) -> Void)?
     weak var fullScreenToggleDelegate: FullScreenToggleDelegate?
@@ -156,149 +157,146 @@ class PlayerControlsUIView: UIView {
     }
     
     @IBAction func showOptionsMenu(_ sender: Any) {
-        let optionsMenu = UIAlertController(title: nil, message: nil, preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
-        
+        var optionsMenu = SettingsMenuDefinition(title: nil, message: nil)
+
         if playerConfig.enablePlaybackSpeed {
-             optionsMenu.addAction(UIAlertAction(title: "Playback Speed", style: .default) { _ in self.showPlaybackSpeedMenu()})
+            optionsMenu.options.append(SettingsOption(title: "Playback Speed") { [weak self] in
+                self?.showPlaybackSpeedMenu()
+            })
         }
-        
+
         if playerConfig.enableCaptions, let tracks = player.asset?.video?.tracks, !tracks.isEmpty {
-            optionsMenu.addAction(UIAlertAction(title: "Captions", style: .default) { _ in self.showCaptionsMenu()})
+            optionsMenu.options.append(SettingsOption(title: "Captions") { [weak self] in
+                self?.showCaptionsMenu()
+            })
         }
-        
+
         if !player.player.isPlaybackOffline {
-            addOnlinePlaybackButtons(to: optionsMenu)
+            addOnlinePlaybackButtons(to: &optionsMenu)
         }
-        optionsMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        parentViewController?.present(optionsMenu, animated: true, completion: nil)
+        presentSettingsMenu(optionsMenu)
     }
-    
+
     private func showCaptionsMenu() {
         guard let captionsMenu = createCaptionsMenu() else { return }
-        parentViewController?.present(captionsMenu, animated: true, completion: nil)
+        presentSettingsMenu(captionsMenu)
     }
-    
-    private func createCaptionsMenu() -> UIAlertController? {
+
+    private func createCaptionsMenu() -> SettingsMenuDefinition? {
         guard let tracks = player.asset?.video?.tracks else { return nil }
-        let captionsMenu = UIAlertController(title: "Captions", message: nil, preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
-        
-        captionsMenu.addAction(createActionForCaptionTrack(nil))
-        
+        var captionsMenu = SettingsMenuDefinition(title: "Captions", message: nil)
+
+        captionsMenu.options.append(createActionForCaptionTrack(nil))
+
         for track in tracks {
             let action = createActionForCaptionTrack(track)
-            captionsMenu.addAction(action)
+            captionsMenu.options.append(action)
         }
-        
-        captionsMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
         return captionsMenu
     }
-    
-    private func createActionForCaptionTrack(_ track: SubtitleTrack?) -> UIAlertAction {
+
+    private func createActionForCaptionTrack(_ track: SubtitleTrack?) -> SettingsOption {
         let title = track?.displayName ?? "Off"
-        let action = UIAlertAction(title: title, style: .default) { [weak self] _ in
+        var action = SettingsOption(title: title) { [weak self] in
             self?.selectedSubtitleTrack = track
             self?.onSubtitleTrackSelected?(track)
         }
         if track?.url == selectedSubtitleTrack?.url {
-            action.setValue(UIImage(named: "checkmark", in: bundle, compatibleWith: nil), forKey: "image")
+            action.selected = true
         }
         return action
     }
-    
-    private func addOnlinePlaybackButtons(to menu: UIAlertController) {
+
+    private func addOnlinePlaybackButtons(to menu: inout SettingsMenuDefinition) {
         if playerConfig.showResolutionOptions {
-            menu.addAction(UIAlertAction(title: "Video Quality", style: .default) { _ in
-                self.showVideoQualityMenu()
+            menu.options.append(SettingsOption(title: "Video Quality") { [weak self] in
+                self?.showVideoQualityMenu()
             })
         }
-        
+
         if playerConfig.showDownloadOption {
-            menu.addAction(UIAlertAction(title: "Download", style: .default) { _ in
-                self.showDownloadQualityMenu()
+            menu.options.append(SettingsOption(title: "Download") { [weak self] in
+                self?.showDownloadQualityMenu()
             })
         }
     }
-    
-    func showPlaybackSpeedMenu(){
+
+    private func showPlaybackSpeedMenu(){
         let playbackSpeedMenu = createPlaybackSpeedMenu()
-        parentViewController?.present(playbackSpeedMenu, animated: true, completion: nil)
+        presentSettingsMenu(playbackSpeedMenu)
     }
-    
-    func showVideoQualityMenu(){
+
+    private func showVideoQualityMenu(){
         let videoQualityMenu = createVideoQualityMenu()
-        parentViewController?.present(videoQualityMenu, animated: true, completion: nil)
+        presentSettingsMenu(videoQualityMenu)
     }
-    
-    func showDownloadQualityMenu(){
+
+    private func showDownloadQualityMenu(){
         let downloadQualityMenu = createDownloadQualityMenu()
-        parentViewController?.present(downloadQualityMenu, animated: true, completion: nil)
+        presentSettingsMenu(downloadQualityMenu)
     }
-    
-    func createPlaybackSpeedMenu() -> UIAlertController {
-        let playbackSpeedMenu = UIAlertController(title: "Playback Speed", message: nil, preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
-        
+
+    private func createPlaybackSpeedMenu() -> SettingsMenuDefinition {
+        var playbackSpeedMenu = SettingsMenuDefinition(title: "Playback Speed", message: nil)
+
         for playbackSpeed in PlaybackSpeed.allCases {
             let action = createActionForPlaybackSpeed(playbackSpeed)
-            playbackSpeedMenu.addAction(action)
+            playbackSpeedMenu.options.append(action)
         }
-        
-        playbackSpeedMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
         return playbackSpeedMenu
     }
-    
-    func createVideoQualityMenu() -> UIAlertController {
-        let qualityMenu = UIAlertController(title: "Available resolutions", message: "Video quality adjusts based on your internet speed. Your selection sets the highest possible quality.", preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
+
+    private func createVideoQualityMenu() -> SettingsMenuDefinition {
+        var qualityMenu = SettingsMenuDefinition(title: "Available resolutions", message: "Video quality adjusts based on your internet speed. Your selection sets the highest possible quality.")
         for quality in self.player.availableVideoQualities {
             let action = createActionForVideoQuality(quality)
-            qualityMenu.addAction(action)
+            qualityMenu.options.append(action)
         }
-        qualityMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         return qualityMenu
     }
-    
-    func createDownloadQualityMenu() -> UIAlertController {
-        let qualityMenu = UIAlertController(title: "Available resolutions", message: nil, preferredStyle: ACTION_SHEET_PREFERRED_STYLE)
-        var availableVideoQualities = player.availableVideoQualities
-        // Remove Auto Quality from the Array
-        availableVideoQualities.remove(at: 0)
-        for quality in availableVideoQualities {
+
+    private func createDownloadQualityMenu() -> SettingsMenuDefinition {
+        var qualityMenu = SettingsMenuDefinition(title: "Available resolutions", message: nil)
+        for quality in player.availableVideoQualities.dropFirst() {
             let action = createActionForDownload(quality)
-            qualityMenu.addAction(action)
+            qualityMenu.options.append(action)
         }
-        qualityMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         return qualityMenu
     }
-    
-    func createActionForPlaybackSpeed(_ playbackSpeed: PlaybackSpeed) -> UIAlertAction {
-        let action = UIAlertAction(title: playbackSpeed.label, style: .default) { [weak self] _ in
+
+    private func createActionForPlaybackSpeed(_ playbackSpeed: PlaybackSpeed) -> SettingsOption {
+        var action = SettingsOption(title: playbackSpeed.label) { [weak self] in
             self?.player.changePlaybackSpeed(playbackSpeed)
         }
-        
+
         if playbackSpeed == .normal && self.player.currentPlaybackSpeed.rawValue == 0.0 || (playbackSpeed.rawValue == self.player.currentPlaybackSpeed.rawValue) {
-            action.setValue(UIImage(named: "checkmark", in: bundle, compatibleWith: nil), forKey: "image")
+            action.selected = true
         }
         return action
     }
-    
-    func createActionForVideoQuality(_ quality: VideoQuality) -> UIAlertAction {
+
+    private func createActionForVideoQuality(_ quality: VideoQuality) -> SettingsOption {
         let label = VideoQualityUtils.getDisplayLabel(for: quality)
-        let action = UIAlertAction(title: label, style: .default, handler: { (_) in
-            self.player.changeVideoQuality(quality)
+        var action = SettingsOption(title: label, handler: { [weak self] in
+            self?.player.changeVideoQuality(quality)
         })
-        
+
         if (quality.bitrate == player.currentVideoQuality?.bitrate) {
-            action.setValue(UIImage(named: "checkmark", in: bundle, compatibleWith: nil), forKey: "image")
+            action.selected = true
         }
-        
+
         return action
     }
-    
-    func createActionForDownload(_ quality: VideoQuality) -> UIAlertAction {
-        let action = UIAlertAction(title: quality.resolution, style: .default, handler: { (_) in
+
+    private func createActionForDownload(_ quality: VideoQuality) -> SettingsOption {
+        let action = SettingsOption(title: quality.resolution, handler: { [weak self] in
+            guard let self, let asset = self.player.asset else { return }
             do {
                 try TPStreamsDownloadManager.shared.enqueueDownload(
-                    asset: self.player.asset!, 
-                    accessToken: self.player.player.accessToken, 
+                    asset: asset,
+                    accessToken: self.player.player.accessToken,
                     videoQuality: quality,
                     metadata: self.playerConfig.downloadMetadata,
                     offlineLicenseDurationSeconds: self.playerConfig.licenseDurationSeconds
@@ -310,7 +308,39 @@ class PlayerControlsUIView: UIView {
 
         return action
     }
-    
+
+    private func presentSettingsMenu(_ definition: SettingsMenuDefinition) {
+        if isFullScreen, let container = superview, !container.transform.isIdentity {
+            dismissSettingsMenu()
+            let menu = FullscreenSettingsMenu(frame: container.bounds, definition: definition)
+            container.addSubview(menu)
+            settingsMenuView = menu
+            UIAccessibility.post(notification: .screenChanged, argument: menu)
+            return
+        }
+
+        let alert = UIAlertController(
+            title: definition.title, message: definition.message, preferredStyle: ACTION_SHEET_PREFERRED_STYLE
+        )
+        for option in definition.options {
+            let action = UIAlertAction(title: option.title, style: .default) { _ in option.handler() }
+            if option.selected {
+                action.setValue(UIImage(named: "checkmark", in: bundle, compatibleWith: nil), forKey: "image")
+            }
+            alert.addAction(action)
+        }
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        parentViewController?.present(alert, animated: true)
+    }
+
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        settingsMenuView == nil
+    }
+
+    func dismissSettingsMenu() {
+        settingsMenuView?.removeFromSuperview()
+    }
+
     @IBAction func toggleFullScreen(_ sender: Any) {
         if isFullScreen {
             fullScreenToggleDelegate?.exitFullScreen()
@@ -335,4 +365,105 @@ protocol PlayerControlsDelegate: AnyObject {
 protocol FullScreenToggleDelegate: AnyObject {
     func enterFullScreen()
     func exitFullScreen()
+}
+
+private struct SettingsMenuDefinition {
+    let title: String?
+    let message: String?
+    var options: [SettingsOption] = []
+}
+
+private struct SettingsOption {
+    let title: String
+    var selected = false
+    let handler: () -> Void
+}
+
+private final class FullscreenSettingsMenu: UIView {
+    init(frame: CGRect, definition: SettingsMenuDefinition) {
+        super.init(frame: frame)
+        autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        backgroundColor = UIColor.black.withAlphaComponent(0.45)
+        accessibilityViewIsModal = true
+
+        let panel = UIScrollView()
+        panel.translatesAutoresizingMaskIntoConstraints = false
+        panel.backgroundColor = .secondarySystemBackground
+        panel.layer.cornerRadius = 14
+        addSubview(panel)
+
+        let rows = UIStackView()
+        rows.axis = .vertical
+        rows.spacing = 4
+        rows.isLayoutMarginsRelativeArrangement = true
+        rows.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12)
+        rows.translatesAutoresizingMaskIntoConstraints = false
+        panel.addSubview(rows)
+
+        if let title = definition.title {
+            rows.addArrangedSubview(makeLabel(title, style: .headline))
+        }
+        if let message = definition.message {
+            rows.addArrangedSubview(makeLabel(message, style: .footnote))
+        }
+        for option in definition.options {
+            rows.addArrangedSubview(makeButton(option.title, selected: option.selected, action: option.handler))
+        }
+        rows.addArrangedSubview(makeButton("Cancel"))
+
+        let preferredWidth = panel.widthAnchor.constraint(equalToConstant: 360)
+        preferredWidth.priority = .defaultHigh
+        let preferredHeight = panel.heightAnchor.constraint(equalTo: rows.heightAnchor)
+        preferredHeight.priority = .defaultHigh
+        NSLayoutConstraint.activate([
+            panel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            panel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            panel.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, constant: -32),
+            panel.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor, constant: -32),
+            preferredWidth, preferredHeight,
+            rows.topAnchor.constraint(equalTo: panel.contentLayoutGuide.topAnchor),
+            rows.bottomAnchor.constraint(equalTo: panel.contentLayoutGuide.bottomAnchor),
+            rows.leadingAnchor.constraint(equalTo: panel.contentLayoutGuide.leadingAnchor),
+            rows.trailingAnchor.constraint(equalTo: panel.contentLayoutGuide.trailingAnchor),
+            rows.widthAnchor.constraint(equalTo: panel.frameLayoutGuide.widthAnchor)
+        ])
+    }
+
+    required init?(coder: NSCoder) {
+        return nil
+    }
+
+    override func accessibilityPerformEscape() -> Bool {
+        removeFromSuperview()
+        return true
+    }
+
+    private func makeLabel(_ text: String, style: UIFont.TextStyle) -> UILabel {
+        let label = UILabel()
+        label.text = text
+        label.font = .preferredFont(forTextStyle: style)
+        label.adjustsFontForContentSizeCategory = true
+        label.numberOfLines = 0
+        return label
+    }
+
+    private func makeButton(_ title: String, selected: Bool = false, action: (() -> Void)? = nil) -> UIButton {
+        var configuration = UIButton.Configuration.plain()
+        configuration.title = title
+        if selected {
+            configuration.image = UIImage(systemName: "checkmark")
+            configuration.imagePadding = 8
+        }
+        let button = UIButton(configuration: configuration)
+        button.addAction(UIAction { [weak self] _ in
+            self?.removeFromSuperview()
+            action?()
+        }, for: .primaryActionTriggered)
+        button.contentHorizontalAlignment = .leading
+        if selected {
+            button.accessibilityTraits.insert(.selected)
+        }
+        button.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
+        return button
+    }
 }

@@ -387,6 +387,7 @@ public class TPStreamPlayerViewController: UIViewController {
     
     private func setupTapGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(toggleControlsVisibility))
+        tapGesture.delegate = controlsView
         containerView.addGestureRecognizer(tapGesture)
     }
     
@@ -483,6 +484,7 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
         let scene = fullscreenOverlay?.window?.windowScene
         let didRequestLandscape = fullscreenOverlay?.didRequestLandscape == true
 
+        controlsView.dismissSettingsMenu()
         containerView.transform = .identity
         view.addSubview(containerView)
         fullscreenOverlay?.removeFromSuperview()
