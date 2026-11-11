@@ -144,8 +144,13 @@ public class TPStreamPlayerViewController: UIViewController {
     deinit {
         if let observer = orientationObserver {
             NotificationCenter.default.removeObserver(observer)
+            orientationObserver = nil
+            UIDevice.current.endGeneratingDeviceOrientationNotifications()
         }
-        UIDevice.current.endGeneratingDeviceOrientationNotifications()
+        if let fullScreenVC = fullScreenViewController {
+            let dismisser = fullScreenVC.presentingViewController ?? fullScreenVC
+            dismisser.dismiss(animated: false)
+        }
         playerStatusObservation = nil
         playerTimeControlObservation = nil
         if let observer = playerTimeObserver, let player = player {
@@ -167,6 +172,13 @@ public class TPStreamPlayerViewController: UIViewController {
         super.viewWillAppear(animated)
         if config.startInFullscreen && !isFullScreen {
             enterFullScreen()
+        }
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if isFullScreen && !isPresentingFullScreen && (isMovingFromParent || isBeingDismissed || navigationController?.isBeingDismissed == true) {
+            exitFullScreen()
         }
     }
     
@@ -209,6 +221,9 @@ public class TPStreamPlayerViewController: UIViewController {
 
     private func handleDeviceOrientationChange() {
         guard autoFullScreenOnRotate else { return }
+        let isVisible = isFullScreen ? (fullScreenViewController?.view.window != nil) : (isViewLoaded && view.window != nil)
+        guard isVisible else { return }
+
         let currentOrientation = UIDevice.current.orientation
         
         // Strictly handle portrait upright, landscape left, landscape right.
@@ -379,13 +394,24 @@ final class TPStreamFullScreenViewController: UIViewController {
         super.viewWillAppear(animated)
         if #available(iOS 16.0, *) {
             setNeedsUpdateOfSupportedInterfaceOrientations()
-            let scene = view.window?.windowScene ?? UIApplication.shared.connectedScenes
-                .compactMap { $0 as? UIWindowScene }
-                .first { $0.activationState == .foregroundActive }
-                ?? UIApplication.shared.connectedScenes.first as? UIWindowScene
-            scene?.requestGeometryUpdate(.iOS(interfaceOrientations: targetOrientation))
         } else {
             UIViewController.attemptRotationToDeviceOrientation()
+        }
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if #available(iOS 16.0, *) {
+            let currentOrientation = view.window?.windowScene?.interfaceOrientation
+            // If UIKit already presented in landscape, avoid calling requestGeometryUpdate
+            // which causes a secondary rotation animation.
+            if currentOrientation != .landscapeLeft && currentOrientation != .landscapeRight {
+                let scene = view.window?.windowScene ?? UIApplication.shared.connectedScenes
+                    .compactMap { $0 as? UIWindowScene }
+                    .first { $0.activationState == .foregroundActive }
+                    ?? UIApplication.shared.connectedScenes.first as? UIWindowScene
+                scene?.requestGeometryUpdate(.iOS(interfaceOrientations: targetOrientation))
+            }
         }
     }
 
@@ -427,15 +453,27 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
     }
 
     public func enterFullScreen() {
+        enterFullScreen(retryCount: 0)
+    }
+
+    private func enterFullScreen(retryCount: Int) {
         guard !isFullScreen, !isPresentingFullScreen else { return }
         guard let presenter = topMostViewController else {
             print("[TPStreamsSDK] Warning: Cannot enter fullscreen because no presenting view controller was found.")
             return
         }
+        guard presenter.view.window != nil else {
+            print("[TPStreamsSDK] Warning: Presenter is not in a window.")
+            return
+        }
         if presenter.isBeingPresented || presenter.isBeingDismissed {
-            print("[TPStreamsSDK] Warning: Presenter is currently transitioning (\(presenter)). Retrying after delay.")
+            guard retryCount < 3 else {
+                print("[TPStreamsSDK] Warning: enterFullScreen exceeded maximum retry attempts.")
+                return
+            }
+            print("[TPStreamsSDK] Warning: Presenter is currently transitioning (\(presenter)). Retrying after delay (attempt \(retryCount + 1)).")
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
-                self?.enterFullScreen()
+                self?.enterFullScreen(retryCount: retryCount + 1)
             }
             return
         }
@@ -508,38 +546,43 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
             self.delegate?.didExitFullScreenMode()
         }
 
-        // Dismiss the landscape-only fullscreen controller first, then request
-        // portrait once the underlying controller is active again. Requesting
-        // portrait while a landscape-only controller is presented can be rejected
-        // by UIKit.
-        if let fullScreenVC = self.fullScreenViewController {
-            fullScreenVC.dismiss(animated: false) { [weak self] in
-                guard let self = self else { return }
-                cleanup()
-                self.changeOrientation(orientation: .portrait)
-            }
-        } else {
+        guard let fullScreenVC = self.fullScreenViewController else {
             cleanup()
-            changeOrientation(orientation: .portrait)
+            changeOrientation(orientation: .portrait, animated: false)
+            return
+        }
+
+        let dismisser = fullScreenVC.presentingViewController ?? fullScreenVC
+        UIView.performWithoutAnimation {
+            dismisser.dismiss(animated: false) { [weak self] in
+                guard let self = self else { return }
+                self.changeOrientation(orientation: .portrait, animated: false)
+                cleanup()
+            }
         }
     }
     
-    func changeOrientation(orientation: UIInterfaceOrientationMask, completion: ((Bool) -> Void)? = nil) {
+    func changeOrientation(orientation: UIInterfaceOrientationMask, animated: Bool = true) {
         if #available(iOS 16.0, *) {
-            guard let scene = currentWindowScene else {
-                completion?(false)
-                return
+            guard let scene = currentWindowScene else { return }
+            if animated {
+                scene.requestGeometryUpdate(.iOS(interfaceOrientations: orientation)) { error in
+                    print("[TPStreamsSDK] requestGeometryUpdate failed: \(error.localizedDescription)")
+                }
+            } else {
+                UIView.performWithoutAnimation {
+                    CATransaction.begin()
+                    CATransaction.setDisableActions(true)
+                    scene.requestGeometryUpdate(.iOS(interfaceOrientations: orientation)) { error in
+                        print("[TPStreamsSDK] requestGeometryUpdate failed: \(error.localizedDescription)")
+                    }
+                    CATransaction.commit()
+                }
             }
-            scene.requestGeometryUpdate(.iOS(interfaceOrientations: orientation)) { error in
-                print("[TPStreamsSDK] requestGeometryUpdate failed: \(error.localizedDescription)")
-                completion?(false)
-            }
-            completion?(true)
         } else {
             // iOS 15 fallback
             UIDevice.current.setValue(orientation.toUIInterfaceOrientation.rawValue, forKey: "orientation")
             UIViewController.attemptRotationToDeviceOrientation()
-            completion?(true)
         }
     }
 
