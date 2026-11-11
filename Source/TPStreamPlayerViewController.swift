@@ -478,8 +478,8 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
             return
         }
 
-        // If user tapped fullscreen button while device is in portrait, mark as manual override
-        if UIDevice.current.orientation.isPortrait {
+        // If user tapped fullscreen button while device is not already physically in landscape (e.g. portrait, faceUp, flat), mark as manual override
+        if !UIDevice.current.orientation.isLandscape {
             isManualFullScreen = true
         }
 
@@ -520,6 +520,21 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
             self.layoutContainerSubviews()
             self.delegate?.didEnterFullScreenMode()
         }
+
+        // Roll back state if presentation fails or is dropped by UIKit
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+            guard let self = self, self.isPresentingFullScreen else { return }
+            if self.fullScreenViewController?.presentingViewController == nil {
+                print("[TPStreamsSDK] Warning: Fullscreen presentation timed out or was dropped. Rolling back state.")
+                self.isPresentingFullScreen = false
+                self.containerView.removeFromSuperview()
+                self.view.addSubview(self.containerView)
+                self.containerView.frame = self.view.bounds
+                self.controlsView.parentViewController = self
+                self.fullScreenViewController = nil
+                self.layoutContainerSubviews()
+            }
+        }
     }
     
     public func exitFullScreen() {
@@ -543,13 +558,22 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
             self.fullScreenViewController = nil
             self.isFullScreen = false
             self.layoutContainerSubviews()
-            self.delegate?.didExitFullScreenMode()
+            // Dispatch to the next run loop pass so interface orientation and window geometry
+            // have fully settled before delegates read bounds or orientation.
+            DispatchQueue.main.async { [weak self] in
+                self?.delegate?.didExitFullScreenMode()
+            }
         }
 
         guard let fullScreenVC = self.fullScreenViewController else {
             cleanup()
             changeOrientation(orientation: .portrait, animated: false)
             return
+        }
+
+        // Dismiss any sheet or alert presented over fullscreen first
+        if let presented = fullScreenVC.presentedViewController {
+            presented.dismiss(animated: false)
         }
 
         let dismisser = fullScreenVC.presentingViewController ?? fullScreenVC
@@ -596,6 +620,7 @@ public protocol TPStreamPlayerViewControllerDelegate {
     func willEnterFullScreenMode()
     func didEnterFullScreenMode()
     func willExitFullScreenMode()
+    /// Called after the player has exited fullscreen mode and the interface orientation and view bounds have settled back to portrait.
     func didExitFullScreenMode()
     func didTapReplay()
     func onSubtitleStateChanged(enabled: Bool, language: String?)
