@@ -1,4 +1,11 @@
 
+## 1.2.47 - 2026-11-11
+
+### Bug Fixes
+
+- Fix fullscreen landscape orientation when host app restricts orientation to portrait (e.g., Flutter or portrait-only apps) by presenting a dedicated `TPStreamFullScreenViewController` (#185)
+
+
 ## 1.2.46 - 2026-11-05
 
 ### Improvements
