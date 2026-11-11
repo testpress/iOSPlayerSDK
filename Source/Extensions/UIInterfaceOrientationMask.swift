@@ -14,6 +14,10 @@ extension UIInterfaceOrientationMask {
         switch self {
         case .portrait:
             return UIInterfaceOrientation.portrait
+        case .landscapeLeft:
+            return UIInterfaceOrientation.landscapeLeft
+        case .landscapeRight:
+            return UIInterfaceOrientation.landscapeRight
         case .landscape:
             return UIInterfaceOrientation.landscapeRight
         default:
