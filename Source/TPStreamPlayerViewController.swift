@@ -399,22 +399,6 @@ final class TPStreamFullScreenViewController: UIViewController {
         }
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if #available(iOS 16.0, *) {
-            let currentOrientation = view.window?.windowScene?.interfaceOrientation
-            // If UIKit already presented in landscape, avoid calling requestGeometryUpdate
-            // which causes a secondary rotation animation.
-            if currentOrientation != .landscapeLeft && currentOrientation != .landscapeRight {
-                let scene = view.window?.windowScene ?? UIApplication.shared.connectedScenes
-                    .compactMap { $0 as? UIWindowScene }
-                    .first { $0.activationState == .foregroundActive }
-                    ?? UIApplication.shared.connectedScenes.first as? UIWindowScene
-                scene?.requestGeometryUpdate(.iOS(interfaceOrientations: targetOrientation))
-            }
-        }
-    }
-
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         onLayout?()
