@@ -419,6 +419,9 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
             guard let self = self else { return }
             self.isPresentingFullScreen = false
             self.isFullScreen = true
+            if #available(iOS 16.0, *), let scene = self.currentWindowScene, scene.interfaceOrientation.isPortrait {
+                self.changeOrientation(orientation: fullScreenVC.targetOrientation)
+            }
             self.layoutContainerSubviews()
             self.delegate?.didEnterFullScreenMode()
         }
@@ -429,7 +432,9 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
     }
 
     private func rollbackFullScreenPresentationStateIfNeeded() {
-        guard isPresentingFullScreen, fullScreenViewController?.presentingViewController == nil else { return }
+        guard isPresentingFullScreen,
+              fullScreenViewController?.presentingViewController == nil,
+              fullScreenViewController?.isBeingPresented != true else { return }
         isPresentingFullScreen = false
         containerView.removeFromSuperview()
         view.addSubview(containerView)
@@ -498,12 +503,16 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
         if #available(iOS 16.0, *) {
             guard let scene = currentWindowScene else { return }
             if animated {
-                scene.requestGeometryUpdate(.iOS(interfaceOrientations: orientation))
+                scene.requestGeometryUpdate(.iOS(interfaceOrientations: orientation)) { error in
+                    print("[TPStreamsSDK] requestGeometryUpdate failed: \(error.localizedDescription)")
+                }
             } else {
                 UIView.performWithoutAnimation {
                     CATransaction.begin()
                     CATransaction.setDisableActions(true)
-                    scene.requestGeometryUpdate(.iOS(interfaceOrientations: orientation))
+                    scene.requestGeometryUpdate(.iOS(interfaceOrientations: orientation)) { error in
+                        print("[TPStreamsSDK] requestGeometryUpdate failed: \(error.localizedDescription)")
+                    }
                     CATransaction.commit()
                 }
             }
