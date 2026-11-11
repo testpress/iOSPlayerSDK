@@ -419,7 +419,7 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
             guard let self = self else { return }
             self.isPresentingFullScreen = false
             self.isFullScreen = true
-            if #available(iOS 16.0, *), let scene = self.currentWindowScene, scene.interfaceOrientation.isPortrait {
+            if let scene = self.currentWindowScene, scene.interfaceOrientation.isPortrait {
                 self.changeOrientation(orientation: fullScreenVC.targetOrientation)
             }
             self.layoutContainerSubviews()
