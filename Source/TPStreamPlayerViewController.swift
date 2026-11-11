@@ -225,33 +225,22 @@ public class TPStreamPlayerViewController: UIViewController {
         guard isVisible else { return }
 
         let currentOrientation = UIDevice.current.orientation
-        
-        // Strictly handle portrait upright, landscape left, landscape right.
-        // Explicitly ignore portraitUpsideDown, faceUp, faceDown, unknown.
         guard currentOrientation == .portrait || currentOrientation == .landscapeLeft || currentOrientation == .landscapeRight else { return }
         guard currentOrientation != lastDeviceOrientation else { return }
         lastDeviceOrientation = currentOrientation
         
         if currentOrientation == .landscapeLeft || currentOrientation == .landscapeRight {
             if isFullScreen {
-                // If user physically rotated into landscape while already fullscreen, clear manual override.
-                // UIKit's native shouldAutorotate and supportedInterfaceOrientations (.landscape)
-                // handle rotating between landscapeLeft and landscapeRight smoothly.
                 isManualFullScreen = false
-            } else {
-                // Only auto-enter if not manually minimized by the user
-                if !isManualFullScreen {
-                    enterFullScreen()
-                }
+            } else if !isManualFullScreen {
+                enterFullScreen()
             }
         } else if currentOrientation == .portrait {
             if isFullScreen {
-                // Only auto-exit if not manually maximized by the user
                 if !isManualFullScreen {
                     exitFullScreen()
                 }
             } else {
-                // Device returned to portrait, clear manual override so auto-rotate resumes
                 isManualFullScreen = false
             }
         }
@@ -366,53 +355,6 @@ public class TPStreamPlayerViewController: UIViewController {
 }
 
 
-final class TPStreamFullScreenViewController: UIViewController {
-    var onLayout: (() -> Void)?
-    var targetOrientation: UIInterfaceOrientationMask = .landscapeRight
-
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return .landscape
-    }
-    
-    override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
-        return targetOrientation.toUIInterfaceOrientation
-    }
-    
-    override var shouldAutorotate: Bool {
-        return true
-    }
-    
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
-    
-    override var prefersHomeIndicatorAutoHidden: Bool {
-        return true
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        if #available(iOS 16.0, *) {
-            setNeedsUpdateOfSupportedInterfaceOrientations()
-        } else {
-            UIViewController.attemptRotationToDeviceOrientation()
-        }
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        onLayout?()
-    }
-
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        coordinator.animate(alongsideTransition: { [weak self] _ in
-            self?.onLayout?()
-        })
-    }
-}
-
-
 extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControlsDelegate {
     private var currentWindowScene: UIWindowScene? {
         if let scene = view.window?.windowScene {
@@ -442,27 +384,15 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
 
     private func enterFullScreen(retryCount: Int) {
         guard !isFullScreen, !isPresentingFullScreen else { return }
-        guard let presenter = topMostViewController else {
-            print("[TPStreamsSDK] Warning: Cannot enter fullscreen because no presenting view controller was found.")
-            return
-        }
-        guard presenter.view.window != nil else {
-            print("[TPStreamsSDK] Warning: Presenter is not in a window.")
-            return
-        }
+        guard let presenter = topMostViewController, presenter.view.window != nil else { return }
         if presenter.isBeingPresented || presenter.isBeingDismissed {
-            guard retryCount < 3 else {
-                print("[TPStreamsSDK] Warning: enterFullScreen exceeded maximum retry attempts.")
-                return
-            }
-            print("[TPStreamsSDK] Warning: Presenter is currently transitioning (\(presenter)). Retrying after delay (attempt \(retryCount + 1)).")
+            guard retryCount < 3 else { return }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
                 self?.enterFullScreen(retryCount: retryCount + 1)
             }
             return
         }
 
-        // If user tapped fullscreen button while device is not already physically in landscape (e.g. portrait, faceUp, flat), mark as manual override
         if !UIDevice.current.orientation.isLandscape {
             isManualFullScreen = true
         }
@@ -472,23 +402,11 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
 
         let fullScreenVC = TPStreamFullScreenViewController()
         fullScreenVC.modalPresentationStyle = .fullScreen
-        self.fullScreenViewController = fullScreenVC
-
-        let deviceOrientation = UIDevice.current.orientation
-        let targetOrientation: UIInterfaceOrientationMask
-        switch deviceOrientation {
-        case .landscapeLeft:
-            targetOrientation = .landscapeRight
-        case .landscapeRight:
-            targetOrientation = .landscapeLeft
-        default:
-            targetOrientation = .landscapeRight
-        }
-        fullScreenVC.targetOrientation = targetOrientation
-
+        fullScreenVC.targetOrientation = targetLandscapeOrientation(for: UIDevice.current.orientation)
         fullScreenVC.onLayout = { [weak self] in
             self?.layoutContainerSubviews()
         }
+        self.fullScreenViewController = fullScreenVC
 
         containerView.removeFromSuperview()
         fullScreenVC.view.addSubview(containerView)
@@ -505,26 +423,36 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
             self.delegate?.didEnterFullScreenMode()
         }
 
-        // Roll back state if presentation fails or is dropped by UIKit
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
-            guard let self = self, self.isPresentingFullScreen else { return }
-            if self.fullScreenViewController?.presentingViewController == nil {
-                print("[TPStreamsSDK] Warning: Fullscreen presentation timed out or was dropped. Rolling back state.")
-                self.isPresentingFullScreen = false
-                self.containerView.removeFromSuperview()
-                self.view.addSubview(self.containerView)
-                self.containerView.frame = self.view.bounds
-                self.controlsView.parentViewController = self
-                self.fullScreenViewController = nil
-                self.layoutContainerSubviews()
-            }
+            self?.rollbackFullScreenPresentationStateIfNeeded()
         }
     }
-    
+
+    private func rollbackFullScreenPresentationStateIfNeeded() {
+        guard isPresentingFullScreen, fullScreenViewController?.presentingViewController == nil else { return }
+        isPresentingFullScreen = false
+        containerView.removeFromSuperview()
+        view.addSubview(containerView)
+        containerView.frame = view.bounds
+        controlsView.parentViewController = self
+        fullScreenViewController = nil
+        layoutContainerSubviews()
+    }
+
+    private func targetLandscapeOrientation(for deviceOrientation: UIDeviceOrientation) -> UIInterfaceOrientationMask {
+        switch deviceOrientation {
+        case .landscapeLeft:
+            return .landscapeRight
+        case .landscapeRight:
+            return .landscapeLeft
+        default:
+            return .landscapeRight
+        }
+    }
+
     public func exitFullScreen() {
         guard isFullScreen else { return }
 
-        // If user tapped minimize while device is physically in landscape, mark as manual override
         if UIDevice.current.orientation.isLandscape {
             isManualFullScreen = true
         }
@@ -532,30 +460,12 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
         lastDeviceOrientation = UIDevice.current.orientation
         delegate?.willExitFullScreenMode()
 
-        let cleanup: () -> Void = { [weak self] in
-            guard let self = self else { return }
-            self.containerView.removeFromSuperview()
-            self.view.addSubview(self.containerView)
-            self.containerView.frame = self.view.bounds
-            self.containerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-            self.controlsView.parentViewController = self
-            self.fullScreenViewController = nil
-            self.isFullScreen = false
-            self.layoutContainerSubviews()
-            // Dispatch to the next run loop pass so interface orientation and window geometry
-            // have fully settled before delegates read bounds or orientation.
-            DispatchQueue.main.async { [weak self] in
-                self?.delegate?.didExitFullScreenMode()
-            }
-        }
-
         guard let fullScreenVC = self.fullScreenViewController else {
-            cleanup()
+            cleanupFullScreenHierarchy()
             changeOrientation(orientation: .portrait, animated: false)
             return
         }
 
-        // Dismiss any sheet or alert presented over fullscreen first
         if let presented = fullScreenVC.presentedViewController {
             presented.dismiss(animated: false)
         }
@@ -565,30 +475,39 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
             dismisser.dismiss(animated: false) { [weak self] in
                 guard let self = self else { return }
                 self.changeOrientation(orientation: .portrait, animated: false)
-                cleanup()
+                self.cleanupFullScreenHierarchy()
             }
         }
     }
-    
+
+    private func cleanupFullScreenHierarchy() {
+        containerView.removeFromSuperview()
+        view.addSubview(containerView)
+        containerView.frame = view.bounds
+        containerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        controlsView.parentViewController = self
+        fullScreenViewController = nil
+        isFullScreen = false
+        layoutContainerSubviews()
+        DispatchQueue.main.async { [weak self] in
+            self?.delegate?.didExitFullScreenMode()
+        }
+    }
+
     func changeOrientation(orientation: UIInterfaceOrientationMask, animated: Bool = true) {
         if #available(iOS 16.0, *) {
             guard let scene = currentWindowScene else { return }
             if animated {
-                scene.requestGeometryUpdate(.iOS(interfaceOrientations: orientation)) { error in
-                    print("[TPStreamsSDK] requestGeometryUpdate failed: \(error.localizedDescription)")
-                }
+                scene.requestGeometryUpdate(.iOS(interfaceOrientations: orientation))
             } else {
                 UIView.performWithoutAnimation {
                     CATransaction.begin()
                     CATransaction.setDisableActions(true)
-                    scene.requestGeometryUpdate(.iOS(interfaceOrientations: orientation)) { error in
-                        print("[TPStreamsSDK] requestGeometryUpdate failed: \(error.localizedDescription)")
-                    }
+                    scene.requestGeometryUpdate(.iOS(interfaceOrientations: orientation))
                     CATransaction.commit()
                 }
             }
         } else {
-            // iOS 15 fallback
             UIDevice.current.setValue(orientation.toUIInterfaceOrientation.rawValue, forKey: "orientation")
             UIViewController.attemptRotationToDeviceOrientation()
         }
@@ -604,7 +523,6 @@ public protocol TPStreamPlayerViewControllerDelegate {
     func willEnterFullScreenMode()
     func didEnterFullScreenMode()
     func willExitFullScreenMode()
-    /// Called after the player has exited fullscreen mode and the interface orientation and view bounds have settled back to portrait.
     func didExitFullScreenMode()
     func didTapReplay()
     func onSubtitleStateChanged(enabled: Bool, language: String?)
