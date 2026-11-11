@@ -9,6 +9,7 @@ import UIKit
 
 final class TPStreamFullScreenViewController: UIViewController {
     var onLayout: (() -> Void)?
+    var onDismiss: (() -> Void)?
     var targetOrientation: UIInterfaceOrientationMask = .landscapeRight
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -43,6 +44,13 @@ final class TPStreamFullScreenViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         onLayout?()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        if isBeingDismissed || presentingViewController == nil {
+            onDismiss?()
+        }
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {

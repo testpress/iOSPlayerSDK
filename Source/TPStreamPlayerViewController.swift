@@ -406,6 +406,11 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
         fullScreenVC.onLayout = { [weak self] in
             self?.layoutContainerSubviews()
         }
+        fullScreenVC.onDismiss = { [weak self] in
+            guard let self = self, self.isFullScreen else { return }
+            self.changeOrientation(orientation: .portrait, animated: false)
+            self.cleanupFullScreenHierarchy()
+        }
         self.fullScreenViewController = fullScreenVC
 
         containerView.removeFromSuperview()
@@ -471,6 +476,8 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
             return
         }
 
+        fullScreenVC.onDismiss = nil
+
         if let presented = fullScreenVC.presentedViewController {
             presented.dismiss(animated: false)
         }
@@ -486,6 +493,7 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
     }
 
     private func cleanupFullScreenHierarchy() {
+        guard isFullScreen else { return }
         containerView.removeFromSuperview()
         view.addSubview(containerView)
         containerView.frame = view.bounds
