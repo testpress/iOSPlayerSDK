@@ -148,6 +148,7 @@ public class TPStreamPlayerViewController: UIViewController {
             UIDevice.current.endGeneratingDeviceOrientationNotifications()
         }
         if let fullScreenVC = fullScreenViewController {
+            fullScreenVC.onDismiss = nil
             let dismisser = fullScreenVC.presentingViewController ?? fullScreenVC
             dismisser.dismiss(animated: false)
         }
@@ -408,6 +409,7 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
         }
         fullScreenVC.onDismiss = { [weak self] in
             guard let self = self, self.isFullScreen else { return }
+            self.prepareForExitFullScreen()
             self.changeOrientation(orientation: .portrait, animated: false)
             self.cleanupFullScreenHierarchy()
         }
@@ -463,16 +465,11 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
     public func exitFullScreen() {
         guard isFullScreen else { return }
 
-        if UIDevice.current.orientation.isLandscape {
-            isManualFullScreen = true
-        }
-
-        lastDeviceOrientation = UIDevice.current.orientation
-        delegate?.willExitFullScreenMode()
+        prepareForExitFullScreen()
 
         guard let fullScreenVC = self.fullScreenViewController else {
-            cleanupFullScreenHierarchy()
             changeOrientation(orientation: .portrait, animated: false)
+            cleanupFullScreenHierarchy()
             return
         }
 
@@ -490,6 +487,14 @@ extension TPStreamPlayerViewController: FullScreenToggleDelegate, PlayerControls
                 self.cleanupFullScreenHierarchy()
             }
         }
+    }
+
+    private func prepareForExitFullScreen() {
+        if UIDevice.current.orientation.isLandscape {
+            isManualFullScreen = true
+        }
+        lastDeviceOrientation = UIDevice.current.orientation
+        delegate?.willExitFullScreenMode()
     }
 
     private func cleanupFullScreenHierarchy() {
