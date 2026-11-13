@@ -72,13 +72,15 @@ extension ContentKeyDelegate {
             guard let ckcData = ckcData else { return }
             
             do {
+                var contentKeyResponseData = ckcData
                 if self.requestingPersistentKey {
                     let persistentKey = try keyRequest.persistableContentKey(fromKeyVendorResponse: ckcData, options: nil)
                     let expiryDate = Date().addingTimeInterval(self.licenseDurationSeconds ?? DEFAULT_LICENSE_EXPIRY_SECONDS)
                     try self.storePersistentContentKey(contentKey: persistentKey, expiryDate: expiryDate)
+                    contentKeyResponseData = persistentKey
                 }
                 
-                let keyResponse = AVContentKeyResponse(fairPlayStreamingKeyResponseData: ckcData)
+                let keyResponse = AVContentKeyResponse(fairPlayStreamingKeyResponseData: contentKeyResponseData)
                 keyRequest.processContentKeyResponse(keyResponse)
             } catch {
                 print(error)
