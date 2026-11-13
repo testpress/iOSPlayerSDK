@@ -34,6 +34,7 @@ public class TPAVPlayer: AVPlayer {
     private var contentKeySession: AVContentKeySession?
     private var contentKeyDelegate: ContentKeyDelegate?
     private let contentKeyDelegateQueue = DispatchQueue(label: "com.tpstreams.iOSPlayerSDK.ContentKeyDelegateQueue")
+    private var shouldResumeAfterContentKeyRenewal = false
     
     public var availableVideoQualities: [VideoQuality] = [VideoQuality(resolution:"Auto", bitrate: 0)]
     
@@ -210,7 +211,24 @@ public class TPAVPlayer: AVPlayer {
             return
         }
         contentKeyDelegate.onRequestOfflineLicenseRenewal = { [weak self] assetId, completion in
+            if let self = self {
+                let updateResumeIntent = {
+                    self.shouldResumeAfterContentKeyRenewal = self.rate > 0 || self.timeControlStatus == .waitingToPlayAtSpecifiedRate
+                }
+                if Thread.isMainThread {
+                    updateResumeIntent()
+                } else {
+                    DispatchQueue.main.sync(execute: updateResumeIntent)
+                }
+            }
             self?.onRequestOfflineLicenseRenewal?(assetId, completion)
+        }
+        contentKeyDelegate.onContentKeyResponseProcessed = { [weak self] in
+            DispatchQueue.main.async {
+                guard let self = self, self.shouldResumeAfterContentKeyRenewal else { return }
+                self.shouldResumeAfterContentKeyRenewal = false
+                self.recreateCurrentItemAndResumePlayback()
+            }
         }
         contentKeyDelegate.onError = { [weak self] error in
             guard let self = self else { return }
@@ -221,6 +239,46 @@ public class TPAVPlayer: AVPlayer {
 
         contentKeyDelegate.setAssetDetails(assetID, accessToken, isPlaybackOffline)
         contentKeySession.addContentKeyRecipient(avURLAsset)
+    }
+
+    private func recreateCurrentItemAndResumePlayback() {
+        guard let currentItem = currentItem else {
+            return
+        }
+
+        let asset = currentItem.asset
+        let resumeTime = currentItem.currentTime()
+        let replacementItem = AVPlayerItem(asset: asset)
+        replacementItem.preferredForwardBufferDuration = currentItem.preferredForwardBufferDuration
+
+        replaceCurrentItem(with: replacementItem)
+
+        var statusObservation: NSKeyValueObservation?
+        statusObservation = replacementItem.observe(\AVPlayerItem.status, options: [.new]) { [weak self] item, _ in
+            guard item.status == .readyToPlay else {
+                if item.status == .failed {
+                    statusObservation?.invalidate()
+                    statusObservation = nil
+                }
+                return
+            }
+
+            statusObservation?.invalidate()
+            statusObservation = nil
+            guard let self = self, self.currentItem === item else { return }
+
+            let resume = {
+                self.play()
+            }
+
+            if resumeTime.isNumeric {
+                self.seek(to: resumeTime, toleranceBefore: .zero, toleranceAfter: .zero) { _ in
+                    resume()
+                }
+            } else {
+                resume()
+            }
+        }
     }
     
     private func populateAvailableVideoQualities(_ url: URL, completion: @escaping () -> Void) {

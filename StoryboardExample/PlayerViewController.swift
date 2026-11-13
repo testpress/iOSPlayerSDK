@@ -68,6 +68,7 @@ class PlayerViewController: UIViewController {
             .setprogressBarThumbColor(.systemBlue)
             .setwatchedProgressTrackColor(.systemBlue)
             .showDownloadOption()
+            .setLicenseDurationSeconds(120)
             .enableCaptions(true)
             .autoSelectFirstSubtitle(true)
             .setUserId("storyboard-example-user")
