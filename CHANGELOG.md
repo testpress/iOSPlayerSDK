@@ -1,4 +1,11 @@
 
+## 1.2.48 - 2026-11-13
+
+### Bug Fixes
+
+- Fix offline playback becoming stuck in an endless buffering state after an expired license is renewed while the video is open.
+
+
 ## 1.2.47 - 2026-11-11
 
 ### Bug Fixes
